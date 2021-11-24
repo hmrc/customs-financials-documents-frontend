@@ -1,0 +1,164 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.html.components._
+@import models.PostponedVatStatementFile
+@import models.FileFormat._
+@import views.helpers.Formatters
+@import models.FileRole.PostponedVATStatement
+@import views.html.Layout
+@import models.PostponedVatStatementGroup
+@import models.FileFormat
+@import models.DutyPaymentMethod.CDS
+@import models.DutyPaymentMethod.CHIEF
+
+@this(
+    layout: Layout
+)
+
+
+@(eori: String, statementGroups: Seq[PostponedVatStatementGroup], hasRequestedStatements: Boolean, cdsOnly: Boolean, location: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+
+@layout(pageTitle = Some(messages("cf.account.pvat.title")) , backLink = location.map(_ => appConfig.customsFinancialsFrontendHomepage)) {
+    <span class="govuk-caption-xl" id="eori-heading">
+        @messages("cf.eori")
+        <span id="eori">@{
+            eori
+        }</span>
+    </span>
+    <h1 class="govuk-heading-xl  govuk-!-margin-bottom-6">
+    @messages("cf.account.pvat.title")
+    </h1>
+
+    @if(messages.isDefinedAt("cf.account.pvat.holding-message.1")) {
+        <p class="govuk-body govuk-!-margin-bottom-6" id="postponed-vat-holding-message">
+            @messages("cf.account.pvat.holding-message.1")
+            <a class="govuk-link" href="https://www.gov.uk/guidance/check-when-you-can-account-for-import-vat-on-your-vat-return">@messages("cf.account.pvat.link-message")</a>
+            @messages("cf.account.pvat.holding-message.2")
+        </p>
+    }
+
+    <p class="govuk-body govuk-!-margin-bottom-6" id="postponed-vat-content">
+    @messages("cf.account.pvat.content")
+    </p>
+
+    @if(hasRequestedStatements) {
+        <div id="notification-panel" class="notifications-panel">
+            <ul class="govuk-list govuk-!-margin-top-0 govuk-!-margin-bottom-0">
+                <li>@messages("cf.account.detail.requested-certificates-available-text.pre") <a href="@{
+                    appConfig.requestedStatements(PostponedVATStatement)
+                }" class="govuk-link">@messages("cf.postponed-vat.requested-statements-available-link-text")</a> @messages("cf.account.detail.requested-certificates-available-text.post")</li>
+            </ul>
+        </div>
+    }
+
+    @for(statementGroup <- statementGroups) {
+        <div id=@{
+            statementGroup.periodId
+        }>
+            <h2 class="govuk-heading-m">@{
+                Formatters.dateAsMonthAndYear(statementGroup.startDate)
+            }</h2>
+            @if(statementGroup.noStatements) {
+                <ul class="govuk-list">
+                    <li>@messages("cf.account.pvat.statements.unavailable",Formatters.dateAsMonth(statementGroup.startDate))</li>
+                </ul>
+
+            } else {
+                <ul class="govuk-list">
+                @for(source <- Seq(CDS, CHIEF)) {
+                    @collapsibleStatementGroup(
+                        statementGroup.collectFiles(amended = true, source),
+                        "cf.account.pvat.amended-download-link",
+                        "cf.account.pvat.aria.amended-download-link",
+                        None,
+                        source,
+                        Formatters.dateAsMonthAndYear(statementGroup.startDate)
+                    )
+                    @defining(if(statementGroup.collectFiles(amended = true, source).isEmpty) "" else "original.") { original =>
+                        @collapsibleStatementGroup(
+                            statementGroup.collectFiles(amended = false, source),
+                            s"cf.account.pvat.${original}download-link",
+                            s"cf.account.pvat.aria.${original}download-link",
+                            Some(s"cf.account.pvat.${original}missing-file-type"),
+                            source,
+                            Formatters.dateAsMonthAndYear(statementGroup.startDate)
+                        )
+                    }
+                }
+                </ul>
+            }
+        </div>
+    }
+
+    @if(statementGroups.isEmpty) {
+        <div class="govuk-inset-text govuk-!-margin-bottom-9 govuk-!-margin-top-8">
+        @messages("cf.account.pvat.no-statements-yet")
+        </div>
+    } else {
+        <div id="missing-documents-guidance" class="govuk-!-padding-top-2">
+            <h2 id="missing-documents-guidance-heading" class="govuk-heading-m govuk-!-margin-top-6">
+                @messages("cf.common.missing-documents-guidance.heading", messages(s"cf.common.missing-documents-guidance.statement"))
+            </h2>
+
+            <p id="missing-documents-guidance-text2" class="govuk-body" >@messages("cf.common.missing-documents-guidance.text2",
+                messages(s"cf.common.missing-documents-guidance.statements"))</p>
+        </div>
+        <p id="historic-statement-request" class="govuk-body govuk-!-padding-bottom-7">
+            @messages("cf.account.pvat.historic.description")<a href="@{appConfig.historicRequestUrl(PostponedVATStatement)}" class="govuk-link">
+            @messages("cf.account.pvat.historic.request")</a>
+        </p>
+    }
+
+}
+
+@collapsibleStatementGroup(certificateFiles: Seq[PostponedVatStatementFile], downloadLinkMessage: String, downloadAriaLabel: String, missingFileMessage: Option[String], source: String, period: String) = {
+@if(certificateFiles.nonEmpty) {
+    @for(certificates <- certificateFiles.groupBy(_.eori).values) {
+        @for(fileFormat <- PvatFileFormats) {
+            @downloadLink(fileFormat, certificates.filter(_.fileFormat == fileFormat), downloadLinkMessage, downloadAriaLabel, period)
+        }
+    }
+} else {
+    @missingFileMessage.map{v => <li>@messages(v, source)</li>}
+}
+}
+
+@downloadLink(fileFormat: FileFormat, certificateFiles: Seq[PostponedVatStatementFile], downloadLinkMessage: String, downloadAriaLabel: String, period: String) = {
+@for(certificateFile <- certificateFiles) {
+    <li>
+        <a
+        class="govuk-link"
+        href="@{certificateFile.downloadURL}"
+        aria-label="@{messages(
+            downloadAriaLabel,
+            certificateFile.metadata.source,
+            period,
+            fileFormat.name,
+            Formatters.fileSize(certificateFile.size)
+        )}"
+        >
+        @messages(
+            downloadLinkMessage,
+            certificateFile.metadata.source,
+            fileFormat.name,
+            Formatters.fileSize(certificateFile.size),
+            period
+        )
+        </a>
+    </li>
+}
+}
