@@ -14,18 +14,7 @@
  * limitations under the License.
  */
 
-package config
+package models
 
-import actions.{AuthAction, IdentifierAction, PvatAuthAction, PvatIdentifierAction}
-import com.google.inject.AbstractModule
-import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.play.bootstrap.auth.DefaultAuthConnector
-
-class Module extends AbstractModule {
-
-  override def configure(): Unit = {
-    bind(classOf[PvatIdentifierAction]).to(classOf[PvatAuthAction]).asEagerSingleton()
-    bind(classOf[AuthConnector]).to(classOf[DefaultAuthConnector])
-    bind(classOf[IdentifierAction]).to(classOf[AuthAction]).asEagerSingleton()
-  }
-}
+case class VatCertificatesForEori(eoriHistory: EoriHistory, currentCertificates: Seq[VatCertificatesByMonth], requestedCertificates: Seq[VatCertificatesByMonth])
+  extends OrderedByEoriHistory[VatCertificatesForEori]

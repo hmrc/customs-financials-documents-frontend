@@ -1,11 +1,19 @@
 service.name = Bwrw golwg dros eich cyfrifon ariannol ar gyfer y tollau
 service.text = Dyma'ch gwasanaeth newydd
+cf.account.details.previous-eori=EORI: {0}
 
 # Help and support
 # ------------------------------------------------------------------------
 help.heading=Help a chymorth
 help.p1=Os ydych yn profi anawsterau, ffoniwch 0300 200 3705.
 help.p2=Ar agor rhwng 08:30 a 17:00 o ddydd Llun i ddydd Gwener (ar gau ar wyliau banc).
+# ------------------------------------------------------------------------
+
+# BETA Banner
+# ------------------------------------------------------------------------
+feedback.before =  Gwasanaeth newydd yw hwn – bydd eich
+feedback.link =  adborth
+feedback.after =  yn ein helpu i’w wella.
 # ------------------------------------------------------------------------
 
 # Date Format
@@ -76,3 +84,78 @@ cf.account.pvat.statements.unavailable = Nid oedd unrhyw ddatganiadau i mewn {0}
 cf.account.pvat.historic.description=Dim ond ar gyfer y 6 mis diwethaf y gallwn ddangos datganiadau. Os oes angen, gallwch
 cf.account.pvat.historic.request=ofyn am ddatganiadau hŷn.
 # ------------------------------------------------------------------------
+
+
+# Security Statements View
+# ------------------------------------------------------------------------
+cf.security-statements.title=Hysbysiad o ddatganiadau addasu
+cf.security-statements.help.get-help=Help
+cf.security-statements.help.number=Llinell gymorth 0300 200 3705
+cf.security-statements.understanding-your-statement=Deall eich datganiad
+cf.security-statements.no-statements=Nid oes datganiadau ar gael i’w gweld.
+cf.security-statements.screen-reader.unavailable=Nid yw {0} ar gyfer {1} i {2} ar gael
+
+cf.security-statements.static-text=Mae’r datganiadau’n cwmpasu’r 7 diwrnod diwethaf o ddydd Iau i ddydd Mercher.
+cf.security-statements.historic.description=Rydym ond yn dangos datganiadau ar gyfer y 6 mis diwethaf. Os oes angen, mae modd
+cf.security-statements.historic.request=gofyn am ddatganiadau hŷn.
+cf.security-statements.requested-link=Datganiadau y gofynnwyd amdanynt
+cf.security-statements.unavailable=Mae’n ddrwg gennym – nid yw’ch datganiadau ar gael ar hyn o bryd. Rhowch gynnig arall arni yn nes ymlaen.
+# ------------------------------------------------------------------------
+
+# Security Statements requested view
+# ------------------------------------------------------------------------
+cf.security-statements.requested.title=Hysbysiad o ddatganiadau addasu y gofynnwyd amdanynt
+cf.security-statements.requested.available.text=Mae datganiadau y gofynnwyd amdanynt ar gael i’w gweld am 10 diwrnod. Gallwn ddarparu’r rhain ar ffurf PDF yn unig.
+cf.security-statements.requested.period={0} i {1}
+cf.security-statements.requested.download-link.aria-text=Lawrlwytho {0} ar gyfer {1} i {2} ({3})
+# ------------------------------------------------------------------------
+
+# VAT Detail view
+# ------------------------------------------------------------------------
+cf.account.vat.title=Tystysgrifau TAW mewnforio (C79)
+cf.account.vat.help.get-help=Help
+cf.account.vat.help.number=Llinell gymorth 0300 200 3705
+cf.account.vat.download-link=Lawrlwytho {0} o {1} ({2})
+cf.account.vat.missing-file=Nid yw ar gael
+cf.account.vat.missing-file-hidden-text=Nid yw {0} ar gyfer {1} ar gael
+cf.account.vat.no-certificates-available=Nid oes tystysgrifau ar gael i’w gweld.
+cf.account.vat.historic.description=Rydym ond yn dangos tystysgrifau ar gyfer y 6 mis diwethaf. Os oes angen, mae modd
+cf.account.vat.historic.request=gofyn am dystysgrifau hŷn.
+cf.account.vat.unavailable=Mae’n ddrwg gennym, nid yw’ch tystysgrifau ar gael ar hyn o bryd. Rhowch gynnig arall arni yn nes ymlaen.
+cf.account.vat.statements.unavailable = Nid oedd unrhyw dystysgrifau i mewn {0}
+# ------------------------------------------------------------------------
+
+# Import VAT requested statements view
+# ------------------------------------------------------------------------
+cf.import-vat.requested.title=Tystysgrifau TAW mewnforio (C79) y gofynnwyd amdanynt
+cf.import-vat.requested.available.text=Mae tystysgrifau y gofynnwyd amdanynt ar gael i’w gweld am 10 diwrnod. Gallwn ddarparu’r rhain ar ffurf PDF yn unig.
+# ------------------------------------------------------------------------
+
+# Not subscribed to CDS
+# ------------------------------------------------------------------------
+cf.not-subscribed-to-cds.detail.title=Heb gofrestru â’r Gwasanaeth Datgan Tollau
+cf.not-subscribed-to-cds.detail.heading=Er mwyn mynd yn eich blaen, mae angen i chi gael mynediad at y Gwasanaeth Datgan Tollau (CDS)
+cf.not-subscribed-to-cds.detail.eori-info=Bydd angen y canlynol arnoch:
+cf.not-subscribed-to-cds.detail.eori-link=Rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI) (yn agor ffenestr neu dab newydd)
+cf.not-subscribed-to-cds.detail.get-access-info=Os oes gennych rif EORI eisoes, gallwch
+cf.not-subscribed-to-cds.detail.get-access-link=cael mynediad at CDS (yn agor ffenestr neu dab newydd)
+cf.not-subscribed-to-cds.detail.how-to-get-access-info=Sut i gael mynediad at CDS
+cf.not-subscribed-to-cds.detail.process-application-info=Gall gymryd hyd at awr i CThEM brosesu’ch cais.
+# ------------------------------------------------------------------------
+
+#Requested
+# ------------------------------------------------------------------------
+cf.account.detail.requested-certificates-available-text.pre=Eich
+cf.account.detail.requested-certificates-available-link-text=datganiadau y gofynnwyd amdanynt
+cf.import-vat.requested-certificates-available-link-text=tystysgrifau y gofynnwyd amdanynt
+cf.postponed-vat.requested-statements-available-link-text=datganiadau y gofynnwyd amdanynt
+cf.account.detail.requested-certificates-available-text.post=nawr ar gael
+# ------------------------------------------------------------------------
+
+# Timeout Messages
+# ----------------------------------------------------------
+timeout.title=Rydych ar fin cael eich allgofnodi
+timeout.message="Am resymau diogelwch, cewch eich allgofnodi o’r gwasanaeth hwn ymhen"
+timeout.keepAlive=Parhau i fod wedi’ch mewngofnodi
+timeout.signOut=Allgofnodi
+# ----------------------------------------------------------

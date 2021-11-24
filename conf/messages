@@ -1,6 +1,7 @@
 service.name = View your customs financial accounts
 
 cf.eori=EORI number:
+cf.account.details.previous-eori=EORI: {0}
 
 # Postponed VAT view
 # ------------------------------------------------------------------------
@@ -86,4 +87,78 @@ help.p2 = Open 8am to 6pm, Monday to Friday (closed bank holidays).
 feedback.before = This is a new service - your
 feedback.link = feedback
 feedback.after = will help us to improve it.
+# ------------------------------------------------------------------------
+
+# Security Statements View
+# ------------------------------------------------------------------------
+cf.security-statements.title=Notification of adjustment statements
+cf.security-statements.help.get-help=Get Help
+cf.security-statements.help.number=Helpline 0300 200 3701
+cf.security-statements.understanding-your-statement=Understanding your statement
+cf.security-statements.no-statements=There are no statements available to view.
+cf.security-statements.screen-reader.unavailable={0} for {1} to {2} unavailable
+
+cf.security-statements.static-text=Statements cover the last 7 days from Thursday to Wednesday.
+cf.security-statements.historic.description=We only show statements for the last 6 months. If required, you can
+cf.security-statements.historic.request=request older statements.
+cf.security-statements.requested-link=requested statements
+cf.security-statements.unavailable= Sorry, your statements are not available at the moment. Please try again later.
+# ------------------------------------------------------------------------
+
+# Security Statements requested view
+# ------------------------------------------------------------------------
+cf.security-statements.requested.title=Requested notification of adjustment statements
+cf.security-statements.requested.available.text=Requested statements are available to view for 10 days. We can only provide these in PDF format.
+cf.security-statements.requested.period={0} to {1}
+cf.security-statements.requested.download-link.aria-text=Download {1} to {2} {0} ({3})
+# ------------------------------------------------------------------------
+
+# VAT Detail view
+# ------------------------------------------------------------------------
+cf.account.vat.title=Import VAT certificates (C79)
+cf.account.vat.help.get-help=Get Help
+cf.account.vat.help.number=Helpline 0300 200 3701
+cf.account.vat.download-link=Download {1} {0} ({2})
+cf.account.vat.missing-file=Unavailable
+cf.account.vat.missing-file-hidden-text={0} for {1} unavailable
+cf.account.vat.no-certificates-available=There are no certificates available to view.
+cf.account.vat.historic.description=We only show certificates for the last 6 months. If required, you can
+cf.account.vat.historic.request=request older certificates.
+cf.account.vat.unavailable=Sorry, your certificates are not available at the moment. Please try again later.
+cf.account.vat.statements.unavailable = There were no certificates in {0}
+# ------------------------------------------------------------------------
+
+# Import VAT requested statements view
+# ------------------------------------------------------------------------
+cf.import-vat.requested.title=Requested import VAT certificates (C79)
+cf.import-vat.requested.available.text=Requested certificates are available to view for 10 days. We can only provide these in PDF format.
+# ------------------------------------------------------------------------
+
+# Not subscribed to CDS
+# ------------------------------------------------------------------------
+cf.not-subscribed-to-cds.detail.title=Not registered with CDS
+cf.not-subscribed-to-cds.detail.heading=To continue with this you need to get access to Customs Declaration Services (CDS)
+cf.not-subscribed-to-cds.detail.eori-info=You''ll need an
+cf.not-subscribed-to-cds.detail.eori-link=Economic Operator and Registration Identification (EORI) number (opens in a new window or tab)
+cf.not-subscribed-to-cds.detail.get-access-info=If you already have an EORI number, you can
+cf.not-subscribed-to-cds.detail.get-access-link=get access to CDS (opens in a new window or tab)
+cf.not-subscribed-to-cds.detail.how-to-get-access-info=How to get access to CDS
+cf.not-subscribed-to-cds.detail.process-application-info=It can take up to two hours for HMRC to process your application.
+# ------------------------------------------------------------------------
+
+#Requested
+# ------------------------------------------------------------------------
+cf.account.detail.requested-certificates-available-text.pre=Your
+cf.account.detail.requested-certificates-available-text.post=are now available
+cf.import-vat.requested-certificates-available-link-text=requested certificates
+cf.postponed-vat.requested-statements-available-link-text=requested statements
+cf.security-statements.requested-link=requested statements
+# ------------------------------------------------------------------------
+
+# Timeout Messages
+# ------------------------------------------------------------------------
+timeout.title = You’re about to be signed out
+timeout.message = For security reasons, you will be signed out of this service in
+timeout.keepAlive = Stay signed in
+timeout.signOut = Sign out
 # ------------------------------------------------------------------------

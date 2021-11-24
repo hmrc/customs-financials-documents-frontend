@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package config
+package models
 
-import actions.{AuthAction, IdentifierAction, PvatAuthAction, PvatIdentifierAction}
-import com.google.inject.AbstractModule
-import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.play.bootstrap.auth.DefaultAuthConnector
+trait OrderedByEoriHistory[T <: OrderedByEoriHistory[_]] extends Ordered[T] {
+  val eoriHistory: EoriHistory
 
-class Module extends AbstractModule {
-
-  override def configure(): Unit = {
-    bind(classOf[PvatIdentifierAction]).to(classOf[PvatAuthAction]).asEagerSingleton()
-    bind(classOf[AuthConnector]).to(classOf[DefaultAuthConnector])
-    bind(classOf[IdentifierAction]).to(classOf[AuthAction]).asEagerSingleton()
+  override def compare(that: T): Int = {
+    (for {
+      thatValidFrom <- that.eoriHistory.validFrom
+      thisValidFrom <- this.eoriHistory.validFrom
+    } yield {
+      thatValidFrom.compareTo(thisValidFrom)
+    }).getOrElse(1)
   }
 }

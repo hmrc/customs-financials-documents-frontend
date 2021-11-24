@@ -1,10 +1,18 @@
 # microservice specific routes
 
-->         /hmrc-frontend                 hmrcfrontend.Routes
+->         /hmrc-frontend                              hmrcfrontend.Routes
 
-GET        /assets/*file                  controllers.Assets.versioned(path = "/public", file: Asset)
-GET        /logout                        controllers.LogoutController.logout
-GET        /postponed-vat                 controllers.PostponedVatController.show(location: Option[String])
-GET        /logout-no-survey              controllers.LogoutController.logoutNoSurvey
-GET        /not-subscribed-for-cds        controllers.UnauthorisedController.onPageLoad
+GET        /assets/*file                               controllers.Assets.versioned(path = "/public", file: Asset)
 
+GET        /logout                                     controllers.LogoutController.logout
+GET        /logout-no-survey                           controllers.LogoutController.logoutNoSurvey
+GET        /not-subscribed-for-cds                     controllers.UnauthorisedController.onPageLoad
+
+
+GET        /postponed-vat                              controllers.PostponedVatController.show(location: Option[String])
+
+GET        /adjustments                                controllers.SecuritiesController.showSecurityStatements
+GET        /adjustments/statements-unavailable         controllers.SecuritiesController.statementsUnavailablePage()
+
+GET        /import-vat                                 controllers.VatController.showVatAccount
+GET        /import-vat/certificates-unavailable        controllers.VatController.certificatesUnavailablePage()

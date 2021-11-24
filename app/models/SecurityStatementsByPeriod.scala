@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package config
+package models
 
-import actions.{AuthAction, IdentifierAction, PvatAuthAction, PvatIdentifierAction}
-import com.google.inject.AbstractModule
-import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.play.bootstrap.auth.DefaultAuthConnector
+import models.FileFormat.Pdf
 
-class Module extends AbstractModule {
+import java.time.LocalDate
 
-  override def configure(): Unit = {
-    bind(classOf[PvatIdentifierAction]).to(classOf[PvatAuthAction]).asEagerSingleton()
-    bind(classOf[AuthConnector]).to(classOf[DefaultAuthConnector])
-    bind(classOf[IdentifierAction]).to(classOf[AuthAction]).asEagerSingleton()
-  }
+case class SecurityStatementsByPeriod(startDate: LocalDate, endDate: LocalDate, files: Seq[SecurityStatementFile]) extends Ordered[SecurityStatementsByPeriod] {
+  val pdf: Option[SecurityStatementFile] = files.find(_.fileFormat == Pdf)
+
+  override def compare(that: SecurityStatementsByPeriod): Int = startDate.compareTo(that.startDate)
 }

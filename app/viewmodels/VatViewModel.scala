@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-package config
+package viewmodels
 
-import actions.{AuthAction, IdentifierAction, PvatAuthAction, PvatIdentifierAction}
-import com.google.inject.AbstractModule
-import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.play.bootstrap.auth.DefaultAuthConnector
+import models.VatCertificatesForEori
 
-class Module extends AbstractModule {
-
-  override def configure(): Unit = {
-    bind(classOf[PvatIdentifierAction]).to(classOf[PvatAuthAction]).asEagerSingleton()
-    bind(classOf[AuthConnector]).to(classOf[DefaultAuthConnector])
-    bind(classOf[IdentifierAction]).to(classOf[AuthAction]).asEagerSingleton()
-  }
+case class VatViewModel(certificatesForAllEoris: Seq[VatCertificatesForEori]) {
+  val hasRequestedCertificates: Boolean = certificatesForAllEoris.exists(_.requestedCertificates.nonEmpty)
+  val hasCurrentCertificates: Boolean = certificatesForAllEoris.exists(_.currentCertificates.nonEmpty)
 }
