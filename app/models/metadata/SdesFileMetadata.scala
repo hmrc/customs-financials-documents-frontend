@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package models
+package models.metadata
+
+import models.{FileFormat, FileRole}
 
 trait SdesFileMetadata {
   this: Product =>
@@ -33,10 +35,6 @@ trait SdesFileMetadata {
     fieldNames.zip(fieldValues).toMap
   }
 }
-
-//TODO check if required
-case class SdesFileWithId[A <: SdesFile](sdesFile: A, id: String)
-
 
 case class SecurityStatementFileMetadata(periodStartYear: Int,
                                          periodStartMonth: Int,

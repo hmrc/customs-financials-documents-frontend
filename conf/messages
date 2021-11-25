@@ -162,3 +162,28 @@ timeout.message = For security reasons, you will be signed out of this service i
 timeout.keepAlive = Stay signed in
 timeout.signOut = Sign out
 # ------------------------------------------------------------------------
+
+#Verify Your Email Address
+# ------------------------------------------------------------------------
+cf.verify.your.email.title=You need to verify the registered CDS email address
+cf.verify.your.email.heading=You need to verify the registered CDS email address
+cf.verify.your.email.p1=This is the email address your organisation has registered for the Customs Declaration Service (CDS). You need to verify this email address or change it. You can verify the email instantly provided you have access to the email account.
+cf.verify.your.email.need-to-verify=This will be the only email address we use for:
+cf.verify.your.email.list.1=updates on changes to the Customs Declaration Service
+cf.verify.your.email.list.2=urgent updates about goods in customs
+cf.verify.your.email.list.3=some financial notifications, including Direct Debit notices and VAT
+cf.verify.your.email.link-text=Verify or change email address
+# ------------------------------------------------------------------------
+
+#Undeliverable Email Address
+# ------------------------------------------------------------------------
+cf.undeliverable.email.title=There''s a problem with the CDS registered email address
+cf.undeliverable.email.heading=There''s a problem with the CDS registered email address
+cf.undeliverable.email.p1=We tried to send you an email but it could not be delivered. This could be because the inbox is full, or due to a technical problem with your email provider.
+cf.undeliverable.email.p2=This is the email address your organisation has registered for the Customs Declaration Service (CDS). You need to verify this email address or change it. You can verify the email instantly provided you have access to the email account.
+cf.undeliverable.email.p3=This will be the only email address we use for:
+cf.undeliverable.email.list.1=updates on changes to the Customs Declaration Service
+cf.undeliverable.email.list.2=urgent updates about goods in customs
+cf.undeliverable.email.list.3=some financial notifications, including Direct Debit notices and VAT
+cf.undeliverable.email.link-text=Verify or change email address
+# ------------------------------------------------------------------------

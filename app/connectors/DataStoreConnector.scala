@@ -28,7 +28,9 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DataStoreConnector @Inject()(http: HttpClient, metricsReporter: MetricsReporterService)(implicit appConfig: AppConfig, ec: ExecutionContext) extends Logging {
+class DataStoreConnector @Inject()(http: HttpClient,
+                                   metricsReporter: MetricsReporterService,
+                                   appConfig: AppConfig)(implicit ec: ExecutionContext) extends Logging {
 
   def getAllEoriHistory(eori: String)(implicit hc: HeaderCarrier): Future[Seq[EoriHistory]] = {
     val dataStoreEndpoint = appConfig.customsDataStore + s"/eori/$eori/eori-history"
@@ -54,16 +56,4 @@ class DataStoreConnector @Inject()(http: HttpClient, metricsReporter: MetricsRep
       }
     }
   }
-}
-
-case class EmailResponse(address: Option[String], timestamp: Option[String], undeliverable: Option[UndeliverableInformation])
-
-object EmailResponse {
-  implicit val format: OFormat[EmailResponse] = Json.format[EmailResponse]
-}
-
-case class EoriHistoryResponse(eoriHistory: Seq[EoriHistory])
-
-object EoriHistoryResponse {
-  implicit val format: OFormat[EoriHistoryResponse] = Json.format[EoriHistoryResponse]
 }

@@ -16,6 +16,7 @@
 
 package models
 
+import models.metadata.Metadata
 import play.api.libs.json.{Format, Json}
 
 case class FileInformation(filename: String,

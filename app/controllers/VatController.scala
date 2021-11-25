@@ -16,27 +16,28 @@
 
 package controllers
 
-import actions.{AuthenticatedRequestWithSessionId, IdentifierAction, SessionIdAction}
+import actions.{AuthenticatedRequestWithSessionId, EmailAction, IdentifierAction, SessionIdAction}
 import config.{AppConfig, ErrorHandler}
 import connectors.{FinancialsApiConnector, SdesConnector}
-import models.{EoriHistory, VatCertificatesByMonth, VatCertificatesForEori}
 import models.FileRole.C79Certificate
+import models.{EoriHistory, VatCertificatesByMonth, VatCertificatesForEori}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.api.{Logger, LoggerLike}
 import services.DateTimeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import viewmodels.VatViewModel
-
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
 import views.html.import_vat.{import_vat, import_vat_not_available}
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class VatController @Inject()(val authenticate: IdentifierAction,
                               val resolveSessionId: SessionIdAction,
                               val sdesConnector: SdesConnector,
                               dateTimeService: DateTimeService,
                               financialsApiConnector: FinancialsApiConnector,
+                              checkEmailIsVerified: EmailAction,
                               importVatView: import_vat,
                               importVatNotAvailableView: import_vat_not_available,
                               implicit val mcc: MessagesControllerComponents)
@@ -45,11 +46,11 @@ class VatController @Inject()(val authenticate: IdentifierAction,
 
   val log: LoggerLike = Logger(this.getClass)
 
-  def showVatAccount(): Action[AnyContent] = (authenticate andThen resolveSessionId) async { implicit req =>
-    financialsApiConnector.deleteNotification(req.user.eori, C79Certificate)
+  def showVatAccount(): Action[AnyContent] = (authenticate andThen checkEmailIsVerified andThen resolveSessionId) async { implicit req =>
+    financialsApiConnector.deleteNotification(req.eori, C79Certificate)
 
     (for {
-      allCertificates <- Future.sequence(req.user.allEoriHistory.map(getCertificates(_)))
+      allCertificates <- Future.sequence(req.allEoriHistory.map(getCertificates(_)))
       viewModel = VatViewModel(allCertificates.sorted)
     } yield Ok(importVatView(viewModel))
       ).recover {
@@ -59,12 +60,11 @@ class VatController @Inject()(val authenticate: IdentifierAction,
     }
   }
 
-  def certificatesUnavailablePage(): Action[AnyContent] = authenticate async { implicit req =>
+  def certificatesUnavailablePage(): Action[AnyContent] = authenticate andThen checkEmailIsVerified async { implicit req =>
     Future.successful(Ok(importVatNotAvailableView()))
   }
 
   private def getCertificates(historicEori: EoriHistory)(implicit req: AuthenticatedRequestWithSessionId[_]): Future[VatCertificatesForEori] = {
-
     val certificates = sdesConnector.getVatCertificates(historicEori.eori)
       .map(_.groupBy(_.monthAndYear).map { case (month, filesForMonth) => VatCertificatesByMonth(month, filesForMonth) }.toList)
       .map(_.partition(_.files.exists(_.metadata.statementRequestId.isEmpty)))

@@ -25,24 +25,26 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 @Singleton
 class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig) {
 
-  val appName: String = config.get[String]("appName")
+  lazy val appName: String = config.get[String]("appName")
 
-  val timeout: Int = config.get[Int]("timeout.timeout")
-  val countdown: Int = config.get[Int]("timeout.countdown")
-  val helpMakeGovUkBetterUrl: String = config.get[String]("external-urls.helpMakeGovUkBetterUrl")
-  val customsFinancialsFrontendHomepage: String = config.get[String]("external-urls.customsFinancialsHomepage")
-  val customsDataStore: String = servicesConfig.baseUrl("customs-data-store") +
+  lazy val timeout: Int = config.get[Int]("timeout.timeout")
+  lazy val countdown: Int = config.get[Int]("timeout.countdown")
+  lazy val helpMakeGovUkBetterUrl: String = config.get[String]("external-urls.helpMakeGovUkBetterUrl")
+  lazy val customsFinancialsFrontendHomepage: String = config.get[String]("external-urls.customsFinancialsHomepage")
+  lazy val customsDataStore: String = servicesConfig.baseUrl("customs-data-store") +
     config.get[String]("microservice.services.customs-data-store.context")
 
-  val loginUrl: String = config.get[String]("external-urls.login")
-  val loginContinueUrl: String = config.get[String]("external-urls.loginContinue")
-  val registerCdsUrl: String = config.get[String]("external-urls.cdsRegisterUrl")
-  val subscribeCdsUrl: String = config.get[String]("external-urls.cdsSubscribeUrl")
-  val pvatLoginContinueUrl: String = config.get[String]("external-urls.pvatLoginContinue")
-  val feedbackService: String = config.get[String]("microservice.services.feedback.url") + config.get[String]("microservice.services.feedback.source")
-  val signOutUrl: String = config.get[String]("external-urls.signOut")
-  val requestedStatements: String = config.get[String]("external-urls.requestedStatements")
-  val historicRequest: String = config.get[String]("external-urls.historicRequest")
+  lazy val loginUrl: String = config.get[String]("external-urls.login")
+  lazy val loginContinueUrl: String = config.get[String]("external-urls.loginContinue")
+  lazy val registerCdsUrl: String = config.get[String]("external-urls.cdsRegisterUrl")
+  lazy val subscribeCdsUrl: String = config.get[String]("external-urls.cdsSubscribeUrl")
+  lazy val pvatLoginContinueUrl: String = config.get[String]("external-urls.pvatLoginContinue")
+  lazy val feedbackService: String = config.get[String]("microservice.services.feedback.url") + config.get[String]("microservice.services.feedback.source")
+  lazy val signOutUrl: String = config.get[String]("external-urls.signOut")
+  lazy val requestedStatements: String = config.get[String]("external-urls.requestedStatements")
+  lazy val historicRequest: String = config.get[String]("external-urls.historicRequest")
+  lazy val emailFrontendUrl: String = config.get[String]("external-urls.verifyYourEmailUrl")
+
 
   def historicRequestUrl(fileRole: FileRole): String = {
     fileRole match {
@@ -60,13 +62,13 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
     }
   }
 
-  val sdesApi: String = servicesConfig.baseUrl("sdes") +
+  lazy val sdesApi: String = servicesConfig.baseUrl("sdes") +
     config.get[String]("microservice.services.sdes.context")
 
-  val xClientIdHeader: String = config.get[String]("microservice.services.sdes.x-client-id")
-  val fixedDateTime: Boolean = config.get[Boolean]("features.fixed-system-time")
+  lazy val xClientIdHeader: String = config.get[String]("microservice.services.sdes.x-client-id")
+  lazy val fixedDateTime: Boolean = config.get[Boolean]("features.fixed-system-time")
 
-  val customsFinancialsApi: String = servicesConfig.baseUrl("customs-financials-api") +
+  lazy val customsFinancialsApi: String = servicesConfig.baseUrl("customs-financials-api") +
     config.get[String]("microservice.services.customs-financials-api.context")
 
   def filesUrl(fileRole: FileRole): String = s"$sdesApi/files-available/list/${fileRole.name}"

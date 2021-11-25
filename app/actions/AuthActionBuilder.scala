@@ -23,7 +23,6 @@ import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
@@ -40,19 +39,9 @@ trait AuthActionBuilder extends ActionBuilder[AuthenticatedRequest, AnyContent] 
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    authorised().retrieve(Retrievals.credentials and Retrievals.name and Retrievals.email and Retrievals.affinityGroup and Retrievals.internalId and Retrievals.allEnrolments) {
-      case credentials ~ name ~ email ~ affinityGroup ~ internalId ~ allEnrolments =>
+    authorised().retrieve(Retrievals.allEnrolments) { allEnrolments =>
         allEnrolments.getEnrolment("HMRC-CUS-ORG").flatMap(_.getIdentifier("EORINumber")) match {
-          case Some(eori) => authActionHelper
-            .authenticatedRequest(
-              credentials,
-              name,
-              email,
-              eori.value,
-              affinityGroup,
-              internalId,
-              allEnrolments
-            )(request).map(Right(_))
+          case Some(eori) => authActionHelper.authenticatedRequest(eori.value)(request).map(Right(_))
           case None => Future.successful(Left(Redirect(routes.UnauthorisedController.onPageLoad)))
         }
     }

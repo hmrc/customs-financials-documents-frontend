@@ -16,6 +16,7 @@
 
 package models
 
+import models.metadata.{PostponedVatStatementFileMetadata, SdesFileMetadata, SecurityStatementFileMetadata, VatCertificateFileMetadata}
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import views.helpers.Formatters

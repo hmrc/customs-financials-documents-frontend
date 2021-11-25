@@ -16,6 +16,7 @@
 
 package models
 
+import models.metadata.SdesFileMetadata
 import play.api.libs.json.{JsValue, Json, Writes}
 
 case class AuditModel(auditType: String, transactionName: String, detail: JsValue)

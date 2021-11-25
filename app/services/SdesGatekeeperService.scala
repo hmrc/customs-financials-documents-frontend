@@ -18,6 +18,7 @@ package services
 
 import models.DutyPaymentMethod.{CDS, CHIEF}
 import models._
+import models.metadata.{PostponedVatStatementFileMetadata, SecurityStatementFileMetadata, VatCertificateFileMetadata}
 import play.api.i18n.Messages
 
 import javax.inject.Singleton

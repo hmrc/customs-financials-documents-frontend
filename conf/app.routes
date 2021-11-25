@@ -8,6 +8,8 @@ GET        /logout                                     controllers.LogoutControl
 GET        /logout-no-survey                           controllers.LogoutController.logoutNoSurvey
 GET        /not-subscribed-for-cds                     controllers.UnauthorisedController.onPageLoad
 
+GET        /verify-your-email                          controllers.EmailController.showUnverified()
+GET        /email-undeliverable                        controllers.EmailController.showUndeliverable()
 
 GET        /postponed-vat                              controllers.PostponedVatController.show(location: Option[String])
 

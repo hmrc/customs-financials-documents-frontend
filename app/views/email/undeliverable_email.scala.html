@@ -1,0 +1,45 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.html.Layout
+@import views.html.components._
+@import config.AppConfig
+
+@this(
+        p: p,
+        h1: h1,
+        ul: unordered_list,
+        button: button,
+        layout: Layout
+)
+@(nextPage: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@layout(pageTitle = Some(messages("cf.undeliverable.email.title"))) {
+
+    @h1(msg = "cf.undeliverable.email.heading", classes = "govuk-heading-xl govuk-!-margin-bottom-4")
+
+    @p("cf.undeliverable.email.p1")
+    @p("cf.undeliverable.email.p2")
+    @p("cf.undeliverable.email.p3")
+
+    @ul(
+        "cf.undeliverable.email.list.1",
+        "cf.undeliverable.email.list.2",
+        "cf.undeliverable.email.list.3"
+    )
+
+    @button("cf.undeliverable.email.link-text", Some(nextPage))
+}

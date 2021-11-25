@@ -16,15 +16,13 @@
 
 package controllers
 
-import actions.{PvatIdentifierAction, SessionIdAction}
+import actions.{EmailAction, PvatIdentifierAction, SessionIdAction}
 import config.{AppConfig, ErrorHandler}
 import connectors.{FinancialsApiConnector, SdesConnector}
 import models.DutyPaymentMethod.CHIEF
 import models.FileRole.PostponedVATStatement
-import models.{FileFormat, PostponedVatStatementFile}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import play.api.{Logger, LoggerLike}
 import services.DateTimeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import viewmodels.PostponedVatViewModel
@@ -41,52 +39,32 @@ class PostponedVatController @Inject()
  implicit val dateTimeService: DateTimeService,
  postponedImportVatView: postponed_import_vat,
  financialsApiConnector: FinancialsApiConnector,
+ checkEmailIsVerified: EmailAction,
  sdesConnector: SdesConnector,
  implicit val mcc: MessagesControllerComponents)(implicit val appConfig: AppConfig, val errorHandler: ErrorHandler, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
-  val log: LoggerLike = Logger(this.getClass)
-
-  def show(location: Option[String]): Action[AnyContent] = (authenticate andThen resolveSessionId) async { implicit req =>
-
-  //TODO cleanup
-  val currentEori = req.user.eori
-    val filteredHistoricEoris = req.user.allEoriHistory.filterNot(_.eori == currentEori)
-    financialsApiConnector.deleteNotification(currentEori, PostponedVATStatement)
-
-    def filterOnlyPvatFiles(files: Seq[PostponedVatStatementFile]): Seq[PostponedVatStatementFile] = {
-      files.filter { p => FileFormat.PvatFileFormats.contains(p.metadata.fileFormat) }
-    }
-
-    def eventualPvatStatements: Future[Seq[PostponedVatStatementFile]] = {
-      sdesConnector.getPostponedVatStatements(currentEori).map { a =>
-        log.info("POSTPONEDVATSTATEMENTS" + a.toString())
-        filterOnlyPvatFiles(a)
-      }
-    }
-
-    def eventualHistoricPvatStatements: Future[Seq[PostponedVatStatementFile]] = {
-      Future.sequence(filteredHistoricEoris.map { eoriHistory =>
-        sdesConnector.getPostponedVatStatements(eoriHistory.eori).map { response =>
-          filterOnlyPvatFiles(response)
-        }
-      }).map(_.flatten)
-    }
-
+  def show(location: Option[String]): Action[AnyContent] = (authenticate andThen checkEmailIsVerified andThen resolveSessionId) async { implicit req =>
+    financialsApiConnector.deleteNotification(req.eori, PostponedVATStatement)
     for {
-      pVatStatements <- eventualPvatStatements
-      historicPVatStatements <- eventualHistoricPvatStatements
+      postponedVatStatements <- sdesConnector.getPostponedVatStatements(req.eori)
+      filteredHistoricEoris = req.allEoriHistory.filterNot(_.eori == req.eori)
+      historicPostponedVatStatements <- Future.sequence(
+        filteredHistoricEoris.map { eoriHistory =>
+          sdesConnector.getPostponedVatStatements(eoriHistory.eori)
+        }
+      ).map(_.flatten)
     } yield {
-      val allPVatStatements = pVatStatements ++ historicPVatStatements
-      val allPvatStatementsCount = allPVatStatements.size
-      val cdsCount= allPVatStatements.count(_.metadata.source != CHIEF)
-      val cdsOnly = cdsCount == allPvatStatementsCount
-      val hasRequestedStatements = !(allPVatStatements.filter(statement => statement.metadata.statementRequestId != None)).isEmpty
-      log.info(s"postponed vat statements displayed TOTAL: ${allPvatStatementsCount}, hasRequestedStatements: $hasRequestedStatements, CDS: $cdsCount CHIEF: ${allPvatStatementsCount - cdsCount}")
-      Ok(postponedImportVatView(currentEori, PostponedVatViewModel(allPVatStatements), hasRequestedStatements, cdsOnly, location))
+      val allPostponedVatStatements = postponedVatStatements ++ historicPostponedVatStatements
+      Ok(postponedImportVatView(
+        req.eori,
+        PostponedVatViewModel(allPostponedVatStatements),
+        allPostponedVatStatements.exists(statement => statement.metadata.statementRequestId.nonEmpty),
+        allPostponedVatStatements.count(_.metadata.source != CHIEF) == allPostponedVatStatements.size,
+        location)
+      )
     }
   }
-
 }
 
 

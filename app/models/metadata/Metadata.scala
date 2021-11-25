@@ -14,9 +14,16 @@
  * limitations under the License.
  */
 
-package models
+package models.metadata
 
-import play.api.mvc.{Request, WrappedRequest}
+import play.api.libs.json._
 
-final case class AuthenticatedRequest[A](request: Request[A], eori: String, allEoriHistory: Seq[EoriHistory]) extends WrappedRequest[A](request)
+case class Metadata(items: Seq[MetadataItem]) {
+  val asMap: Map[String, String] = items.map(item => (item.key, item.value)).toMap
+}
 
+object Metadata {
+  implicit val metadataReads: Reads[Metadata] = __.read[List[MetadataItem]].map(Metadata.apply)
+  implicit val metadataWrites: Writes[Metadata] = (o: Metadata) => JsArray(o.items.map(
+    item => Json.obj(("metadata", item.key), ("value", item.value))))
+}

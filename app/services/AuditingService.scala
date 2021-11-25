@@ -17,7 +17,7 @@
 package services
 
 import config.AppConfig
-import models.AuditModel
+import models.{AuditEori, AuditModel, EoriHistory, SdesFile}
 
 import javax.inject.{Inject, Singleton}
 import play.api.http.HeaderNames
@@ -32,37 +32,40 @@ import uk.gov.hmrc.play.audit.model.{DataEvent, ExtendedDataEvent}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AuditingService @Inject()(appConfig: AppConfig, auditConnector: AuditConnector) {
+class AuditingService @Inject()(appConfig: AppConfig, auditConnector: AuditConnector)(implicit executionContext: ExecutionContext) {
 
-  val log: LoggerLike = Logger(this.getClass)
-  implicit val dataEventWrites: Writes[DataEvent] = Json.writes[DataEvent]
-
-  val referrer: HeaderCarrier => String = _.headers(Seq(HeaderNames.REFERER)).headOption.fold("-")(_._2)
-
-  def audit(auditModel: AuditModel)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
-    val dataEvent = toExtendedDataEvent(appConfig.appName, auditModel, referrer(hc))
-
-    auditConnector.sendExtendedEvent(dataEvent)
-      .map { auditResult =>
-        logAuditResult(auditResult)
-        auditResult
-      }
+  def auditFiles[T <: SdesFile](files: Seq[T], eori: String)(implicit hc: HeaderCarrier): Future[Seq[AuditResult]] = {
+    Future.sequence(files.map { file =>audit(file.auditModelFor(eori))})
   }
 
-  private def toExtendedDataEvent(appName: String, auditModel: AuditModel, path: String)(implicit hc: HeaderCarrier): ExtendedDataEvent =
-    ExtendedDataEvent(
-      auditSource = appName,
-      auditType = auditModel.auditType,
-      tags = AuditExtensions.auditHeaderCarrier(hc).toAuditTags(auditModel.transactionName, path),
-      detail = auditModel.detail
-    )
+  def auditVatCertificates(eori: String)(implicit hc: HeaderCarrier): Future[AuditResult] =
+    audit(AuditModel("DisplayVATCertificates", "Display VAT certificates", Json.toJson(AuditEori(eori, isHistoric = false))))
 
-  private def logAuditResult(auditResult: AuditResult): Unit = auditResult match {
-    case Success =>
-      log.debug("Splunk Audit Successful")
-    case Failure(err, _) =>
-      log.debug(s"Splunk Audit Error, message: $err")
-    case Disabled =>
-      log.debug(s"Auditing Disabled")
+  def auditPostponedVatStatements(eori: String)(implicit hc: HeaderCarrier): Future[AuditResult] =
+    audit(AuditModel("DisplayPostponedVATStatements", "Display postponed VAT statements", Json.toJson(AuditEori(eori, isHistoric = false))))
+
+  def auditSecurityStatements(eori: String)(implicit hc: HeaderCarrier): Future[AuditResult] =
+    audit(AuditModel("DisplaySecurityStatements", "Display security statements", Json.toJson(AuditEori(eori, isHistoric = false))))
+
+  def auditHistoricEoris(currentEori: String, allEoriHistory: Seq[EoriHistory])(implicit hc: HeaderCarrier): Future[AuditResult] = {
+      val eoriHistory = allEoriHistory.filterNot(_.eori == currentEori)
+      val historicEoriAuditDetails: Seq[AuditEori] = eoriHistory.map(eoriHistory => AuditEori(eoriHistory.eori, isHistoric = true))
+      val eoriAuditDetails: AuditEori = AuditEori(currentEori, isHistoric = false)
+      val eoriList = eoriAuditDetails +: historicEoriAuditDetails
+      val auditEvent = AuditModel("ViewAccount", "View account", Json.toJson(eoriList))
+      audit(auditEvent)
+  }
+
+  private def audit(auditModel: AuditModel)(implicit hc: HeaderCarrier): Future[AuditResult] = {
+    val referrer: HeaderCarrier => String = _.headers(Seq(HeaderNames.REFERER)).headOption.fold("-")(_._2)
+    implicit val dataEventWrites: Writes[DataEvent] = Json.writes[DataEvent]
+
+    val dataEvent = ExtendedDataEvent(
+      auditSource = appConfig.appName,
+      auditType = auditModel.auditType,
+      tags = AuditExtensions.auditHeaderCarrier(hc).toAuditTags(auditModel.transactionName, referrer(hc)),
+      detail = auditModel.detail)
+
+    auditConnector.sendExtendedEvent(dataEvent)
   }
 }

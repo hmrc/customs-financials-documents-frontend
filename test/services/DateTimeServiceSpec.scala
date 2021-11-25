@@ -14,9 +14,21 @@
  * limitations under the License.
  */
 
-package models
+package services
 
-import play.api.mvc.{Request, WrappedRequest}
+import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import play.api.test.Helpers._
+import utils.SpecBase
 
-final case class AuthenticatedRequest[A](request: Request[A], eori: String, allEoriHistory: Seq[EoriHistory]) extends WrappedRequest[A](request)
+import java.time.{LocalDate, LocalDateTime, LocalTime}
 
+class DateTimeServiceSpec extends SpecBase {
+
+  "return the fixed date if fixedDateTime is enabled" in {
+    val app = application().configure("features.fixed-system-time" -> true).build()
+    val service = app.injector.instanceOf[DateTimeService]
+    running(app) {
+      service.systemDateTime() mustBe LocalDateTime.of(LocalDate.of(2027, 12, 20), LocalTime.of(12, 30))
+    }
+  }
+}

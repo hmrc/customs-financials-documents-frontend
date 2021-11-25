@@ -18,6 +18,7 @@ package models
 
 import models.DutyPaymentMethod.{CDS, CHIEF}
 import models.FileRole.{PostponedVATAmendedStatement, PostponedVATStatement}
+import models.metadata.PostponedVatStatementFileMetadata
 import play.api.i18n.Messages
 import views.helpers.Formatters
 

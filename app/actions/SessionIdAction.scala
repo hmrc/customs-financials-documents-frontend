@@ -18,7 +18,7 @@ package actions
 
 import com.google.inject.Inject
 import config.ErrorHandler
-import models.{AuthenticatedRequest, SignedInUser}
+import models.{AuthenticatedRequest, EoriHistory}
 import play.api.mvc.Results.Unauthorized
 import play.api.mvc._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -27,7 +27,7 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class AuthenticatedRequestWithSessionId[A](request: Request[A], user: SignedInUser, sessionId: SessionId)
+case class AuthenticatedRequestWithSessionId[A](request: Request[A], eori: String, allEoriHistory: Seq[EoriHistory], sessionId: SessionId)
   extends WrappedRequest[A](request)
 
 
@@ -39,7 +39,11 @@ class SessionIdAction @Inject()()(implicit val executionContext: ExecutionContex
 
     hc.sessionId match {
       case None => Future.successful(Left(Unauthorized(errorHandler.unauthorized()(request))))
-      case Some(sessionId) => Future.successful(Right(AuthenticatedRequestWithSessionId(request, request.user, sessionId)))
+      case Some(sessionId) => Future.successful(
+        Right(
+          AuthenticatedRequestWithSessionId(request, request.eori, request.allEoriHistory, sessionId)
+        )
+      )
     }
   }
 

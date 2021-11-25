@@ -16,14 +16,13 @@
 
 package controllers
 
-import actions.{AuthenticatedRequestWithSessionId, IdentifierAction, SessionIdAction}
+import actions.{AuthenticatedRequestWithSessionId, EmailAction, IdentifierAction, SessionIdAction}
 import config.{AppConfig, ErrorHandler}
 import connectors.{FinancialsApiConnector, SdesConnector}
 import models.FileRole.SecurityStatement
 import models.{EoriHistory, SecurityStatementFile, SecurityStatementsByPeriod, SecurityStatementsForEori}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import play.api.{Logger, LoggerLike}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import viewmodels.SecurityStatementsViewModel
 import views.html.securities.{security_statements, security_statements_not_available}
@@ -31,33 +30,28 @@ import views.html.securities.{security_statements, security_statements_not_avail
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SecuritiesController @Inject()(val authenticate: IdentifierAction,
-                                     val resolveSessionId: SessionIdAction,
-                                     val sdesConnector: SdesConnector,
+class SecuritiesController @Inject()(authenticate: IdentifierAction,
+                                     resolveSessionId: SessionIdAction,
+                                     sdesConnector: SdesConnector,
+                                     checkEmailIsVerified: EmailAction,
                                      financialsApiConnector: FinancialsApiConnector,
                                      securityStatementsView: security_statements,
                                      securityStatementsNotAvailableView: security_statements_not_available,
-                                     implicit val mcc: MessagesControllerComponents
+                                     mcc: MessagesControllerComponents
                                     )(implicit val appConfig: AppConfig, val errorHandler: ErrorHandler, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
-  val log: LoggerLike = Logger(this.getClass)
 
-  def showSecurityStatements(): Action[AnyContent] = (authenticate andThen resolveSessionId) async { implicit req =>
-    financialsApiConnector.deleteNotification(req.user.eori, SecurityStatement)
-
+  def showSecurityStatements(): Action[AnyContent] = (authenticate andThen checkEmailIsVerified andThen resolveSessionId) async { implicit req =>
+    financialsApiConnector.deleteNotification(req.eori, SecurityStatement)
     (for {
-      allStatements <- Future.sequence(req.user.allEoriHistory.map(getStatements))
+      allStatements <- Future.sequence(req.allEoriHistory.map(getStatements))
       securityStatementsModel = SecurityStatementsViewModel(allStatements.sorted)
     } yield Ok(securityStatementsView(securityStatementsModel))
-      ).recover {
-      case e =>
-        log.error(s"Unable to retrieve securities statements :${e.getMessage}")
-        Redirect(routes.SecuritiesController.statementsUnavailablePage())
-    }
+      ).recover { case _ => Redirect(routes.SecuritiesController.statementsUnavailablePage()) }
   }
 
-  def statementsUnavailablePage(): Action[AnyContent] = authenticate async { implicit req =>
+  def statementsUnavailablePage(): Action[AnyContent] = authenticate andThen checkEmailIsVerified async { implicit req =>
     Future.successful(Ok(securityStatementsNotAvailableView()))
   }
 

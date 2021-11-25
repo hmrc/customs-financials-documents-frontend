@@ -43,28 +43,6 @@ object FileRole {
 
   implicit val fileRoleFormat = new Format[FileRole] {
     def reads(json: JsValue) = JsSuccess(apply(json.as[String]))
-
     def writes(obj: FileRole) = JsString(obj.name)
   }
-
-  implicit val pathBinder: PathBindable[FileRole] = new PathBindable[FileRole] {
-    override def bind(key: String, value: String): Either[String, FileRole] = {
-      value match {
-        case "import-vat" => Right(C79Certificate)
-        case "postponed-vat" => Right(PostponedVATStatement)
-        case "adjustments" => Right(SecurityStatement)
-        case fileRole => Left(s"unknown file role: ${fileRole}")
-      }
-    }
-
-    override def unbind(key: String, fileRole: FileRole): String = {
-      fileRole match {
-        case C79Certificate => "import-vat"
-        case PostponedVATStatement => "postponed-vat"
-        case SecurityStatement => "adjustments"
-        case _ => "unsupported-file-role"
-      }
-    }
-  }
-
 }

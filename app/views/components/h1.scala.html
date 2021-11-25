@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models
+@this()
 
-import play.api.mvc.{Request, WrappedRequest}
+@(msg: String, id: Option[String] = None, classes: String = "govuk-heading-l")(implicit messages: Messages)
 
-final case class AuthenticatedRequest[A](request: Request[A], eori: String, allEoriHistory: Seq[EoriHistory]) extends WrappedRequest[A](request)
-
+<h1 @{id.fold("")(id => s"id=$id")} class="@classes">@messages(msg)</h1>

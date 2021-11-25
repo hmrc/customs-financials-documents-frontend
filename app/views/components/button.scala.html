@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Button
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
-import play.api.mvc.{Request, WrappedRequest}
+@this(govukButton: GovukButton)
 
-final case class AuthenticatedRequest[A](request: Request[A], eori: String, allEoriHistory: Seq[EoriHistory]) extends WrappedRequest[A](request)
+@(msg: String, href: Option[String])(implicit messages: Messages)
 
+@govukButton(Button(content = Text(messages(msg)), href = href))
