@@ -107,7 +107,7 @@ class AuthActionSpec extends SpecBase {
       running(app) {
         val result = controller.onPageLoad()(fakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get must startWith("/financials-documents/not-subscribed-for-cds")
+        redirectLocation(result).get must startWith("/customs/documents/not-subscribed-for-cds")
       }
     }
 
@@ -139,7 +139,7 @@ class AuthActionSpec extends SpecBase {
       running(app) {
         val result = controller.onPageLoad()(fakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get must startWith("/financials-documents/not-subscribed-for-cds")
+        redirectLocation(result).get must startWith("/customs/documents/not-subscribed-for-cds")
       }
     }
   }
