@@ -21,8 +21,8 @@ import connectors.{DataStoreConnector, FinancialsApiConnector, SdesConnector}
 import models.DutyPaymentMethod.CDS
 import models.FileFormat.{Csv, Pdf}
 import models.FileRole.{PostponedVATAmendedStatement, PostponedVATStatement}
-import models.{EoriHistory, PostponedVatStatementFile}
 import models.metadata.PostponedVatStatementFileMetadata
+import models.{EoriHistory, PostponedVatStatementFile}
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

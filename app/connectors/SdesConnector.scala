@@ -21,7 +21,6 @@ import models.FileFormat.{SdesFileFormats, filterFileFormats}
 import models.FileRole.{C79Certificate, PostponedVATStatement, SecurityStatement}
 import models._
 import play.api.i18n.Messages
-import play.api.libs.json.Json
 import services.{AuditingService, MetricsReporterService, SdesGatekeeperService}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
 

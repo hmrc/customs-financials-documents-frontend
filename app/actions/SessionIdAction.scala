@@ -21,8 +21,7 @@ import config.ErrorHandler
 import models.{AuthenticatedRequest, EoriHistory}
 import play.api.mvc.Results.Unauthorized
 import play.api.mvc._
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.SessionId
+import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}

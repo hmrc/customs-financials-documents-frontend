@@ -16,9 +16,8 @@
 
 package models
 
-import play.api.{Logger, LoggerLike}
 import play.api.libs.json.{Format, JsString, JsSuccess, JsValue}
-import play.api.mvc.PathBindable
+import play.api.{Logger, LoggerLike}
 
 sealed abstract class FileRole(val name: String, val featureName: String, val transactionName: String, val messageKey: String)
 

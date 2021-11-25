@@ -23,7 +23,7 @@ import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class LogoutController @Inject()(override val authConnector: AuthConnector, mcc: MessagesControllerComponents)
                                 (implicit val appConfig: AppConfig, ec: ExecutionContext)

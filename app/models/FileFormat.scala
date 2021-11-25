@@ -16,8 +16,8 @@
 
 package models
 
-import play.api.{Logger, LoggerLike}
 import play.api.libs.json.{Format, JsString, JsSuccess, JsValue}
+import play.api.{Logger, LoggerLike}
 
 import scala.collection.immutable.SortedSet
 

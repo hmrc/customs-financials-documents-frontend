@@ -20,7 +20,6 @@ import config.AppConfig
 import models._
 import play.api.Logging
 import play.api.http.Status.NOT_FOUND
-import play.api.libs.json.{Json, OFormat}
 import services.MetricsReporterService
 import uk.gov.hmrc.auth.core.retrieve.Email
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}

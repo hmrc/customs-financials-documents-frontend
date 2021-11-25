@@ -20,17 +20,14 @@ import config.AppConfig
 import connectors.DataStoreConnector
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.inject
-import play.api.libs.json.Json
 import play.api.mvc.BodyParsers.Default
 import play.api.mvc.{BodyParsers, Results}
 import play.api.test.Helpers._
 import services.AuditingService
-import uk.gov.hmrc.auth.core.retrieve.{Credentials, Email, Name, ~}
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.play.audit.http.connector.AuditResult
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, Email, Name, ~}
 import utils.SpecBase
 
-import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

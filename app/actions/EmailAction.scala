@@ -16,7 +16,6 @@
 
 package actions
 
-import config.AppConfig
 import connectors.DataStoreConnector
 import models.{AuthenticatedRequest, UndeliverableEmail, UnverifiedEmail}
 import play.api.i18n.{I18nSupport, MessagesApi}

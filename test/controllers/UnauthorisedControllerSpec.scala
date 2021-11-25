@@ -17,13 +17,12 @@
 package controllers
 
 import config.AppConfig
-import org.mockito.ArgumentMatchers.any
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
-import play.api.{Application, inject}
 import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core.{AuthConnector, AuthProviders}
+import play.api.{Application, inject}
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
 import uk.gov.hmrc.auth.core.retrieve.EmptyRetrieval
+import uk.gov.hmrc.auth.core.{AuthConnector, AuthProviders}
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
 import utils.SpecBase
 import views.html.not_subscribed_to_cds

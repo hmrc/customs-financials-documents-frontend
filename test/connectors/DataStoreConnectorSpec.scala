@@ -16,7 +16,7 @@
 
 package connectors
 
-import models.{EmailResponse, EoriHistory, EoriHistoryResponse, UndeliverableEmail, UndeliverableInformation, UnverifiedEmail}
+import models._
 import org.mockito.invocation.InvocationOnMock
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.test.Helpers._

@@ -20,8 +20,8 @@ import config.AppConfig
 import models.DutyPaymentMethod.CDS
 import models.FileFormat.{Csv, Pdf}
 import models.FileRole.{C79Certificate, PostponedVATStatement, SecurityStatement}
+import models.metadata._
 import models.{FileInformation, PostponedVatStatementFile, SecurityStatementFile, VatCertificateFile}
-import models.metadata.{Metadata, MetadataItem, PostponedVatStatementFileMetadata, SecurityStatementFileMetadata, VatCertificateFileMetadata}
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.http.Status
 import play.api.i18n.Messages

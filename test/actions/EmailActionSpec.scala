@@ -18,7 +18,6 @@ package actions
 
 import connectors.DataStoreConnector
 import models.{AuthenticatedRequest, UndeliverableEmail, UnverifiedEmail}
-import org.jsoup.Jsoup
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.inject
 import play.api.test.FakeRequest

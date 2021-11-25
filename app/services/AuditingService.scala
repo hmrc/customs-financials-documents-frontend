@@ -18,17 +18,14 @@ package services
 
 import config.AppConfig
 import models.{AuditEori, AuditModel, EoriHistory, SdesFile}
-
-import javax.inject.{Inject, Singleton}
 import play.api.http.HeaderNames
 import play.api.libs.json.{Json, Writes}
-import play.api.{Logger, LoggerLike}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.AuditExtensions
-import uk.gov.hmrc.play.audit.http.connector.AuditResult.{Disabled, Failure, Success}
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.{DataEvent, ExtendedDataEvent}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
