@@ -1,0 +1,86 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import viewmodels.VatViewModel
+@import views.html.components._
+@import views.html.Layout
+@import models.FileRole.C79Certificate
+@import models.FileFormat.Pdf
+@import models.FileFormat.Csv
+
+@this(
+    layout: Layout
+)
+
+
+@(model: VatViewModel)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+
+@layout(pageTitle = Some(messages("cf.account.vat.title")), backLink = Some(appConfig.customsFinancialsFrontendHomepage)) {
+    <h1 id="import-vat-certificates-heading" class="govuk-heading-xl">@messages("cf.account.vat.title")</h1>
+
+    @if(model.hasRequestedCertificates) {
+        <div id="notification-panel" class="notifications-panel">
+            <ul class="govuk-list govuk-!-margin-top-0 govuk-!-margin-bottom-0">
+                <li>@messages("cf.account.detail.requested-certificates-available-text.pre") <a href="@{
+                    appConfig.requestedStatements(C79Certificate)
+                }" class="govuk-link">@messages("cf.import-vat.requested-certificates-available-link-text")</a> @messages("cf.account.detail.requested-certificates-available-text.post")</li>
+            </ul>
+        </div>
+    }
+
+    @if(model.hasCurrentCertificates) {
+        @for(historyIndex <- model.certificatesForAllEoris.indices) {
+            @if(model.certificatesForAllEoris(historyIndex).currentCertificates.nonEmpty) {
+                @if(historyIndex > 0) {
+                    <h2 class="govuk-heading-s" id="historic-eori-@{historyIndex}">@messages("cf.account.details.previous-eori", model.certificatesForAllEoris(historyIndex).eoriHistory.eori)</h2>
+                }
+
+                <dl class="govuk-summary-list statement-list c79-statements" id="statements-list-@{historyIndex}">
+                @for((statementsOfOneMonth, index) <- model.certificatesForAllEoris(historyIndex).currentCertificates.sorted.reverse.zipWithIndex) {
+                    <div class="govuk-summary-list__row" id="statements-list-@{historyIndex}-row-@{index}">
+
+                        <dt id="statements-list-@{historyIndex}-row-@{index}-date-cell" class="govuk-summary-list__value">
+                        @{statementsOfOneMonth.formattedMonthYear}
+                        </dt>
+                        @if(statementsOfOneMonth.files.nonEmpty) {
+                            <dd class="govuk-summary-list__actions">
+                                @download_link(statementsOfOneMonth.pdf, Pdf, s"statements-list-${historyIndex}-row-${index}-pdf-download-link", statementsOfOneMonth.formattedMonthYear)
+                                @download_link(statementsOfOneMonth.csv, Csv, s"statements-list-${historyIndex}-row-${index}-csv-download-link", statementsOfOneMonth.formattedMonthYear)
+                            </dd>
+                        }else{
+                            <dd class="govuk-summary-list__actions">
+                                 @messages("cf.account.vat.statements.unavailable",statementsOfOneMonth.formattedMonth)
+                            </dd>
+                        }
+
+                    </div>
+                }
+                </dl>
+            }
+        }
+    } else {
+        <p id="no-certificates-available-text" class="govuk-body">@messages("cf.account.vat.no-certificates-available")</p>
+    }
+
+    @missing_documents_guidance("certificate")
+
+
+    <p id="historic-statement-request" class="govuk-body govuk-!-padding-bottom-7">
+        @messages("cf.account.vat.historic.description")<a href="@{appConfig.historicRequestUrl(C79Certificate)}" class="govuk-link">
+    @messages("cf.account.vat.historic.request")</a>
+    </p>
+
+}
