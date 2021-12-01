@@ -122,7 +122,7 @@ cf.account.vat.no-certificates-available=Nid oes tystysgrifau ar gael i’w gwel
 cf.account.vat.historic.description=Rydym ond yn dangos tystysgrifau ar gyfer y 6 mis diwethaf. Os oes angen, mae modd
 cf.account.vat.historic.request=gofyn am dystysgrifau hŷn.
 cf.account.vat.unavailable=Mae’n ddrwg gennym, nid yw’ch tystysgrifau ar gael ar hyn o bryd. Rhowch gynnig arall arni yn nes ymlaen.
-cf.account.vat.statements.unavailable = Nid oedd unrhyw dystysgrifau i mewn {0}
+cf.account.vat.statements.unavailable = Nid oedd unrhyw dystysgrifau i mewn {0}.
 # ------------------------------------------------------------------------
 
 # Import VAT requested statements view

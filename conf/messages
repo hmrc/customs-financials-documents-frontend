@@ -125,7 +125,7 @@ cf.account.vat.no-certificates-available=There are no certificates available to 
 cf.account.vat.historic.description=We only show certificates for the last 6 months. If required, you can
 cf.account.vat.historic.request=request older certificates.
 cf.account.vat.unavailable=Sorry, your certificates are not available at the moment. Please try again later.
-cf.account.vat.statements.unavailable = There were no certificates in {0}
+cf.account.vat.statements.unavailable = There were no certificates in {0}.
 # ------------------------------------------------------------------------
 
 # Import VAT requested statements view
