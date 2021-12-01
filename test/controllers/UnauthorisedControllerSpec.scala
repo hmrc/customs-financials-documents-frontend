@@ -38,7 +38,7 @@ class UnauthorisedControllerSpec extends SpecBase {
         .thenReturn(Future.successful({}))
 
       running(app) {
-        val request = fakeRequest(GET, routes.UnauthorisedController.onPageLoad().url)
+        val request = fakeRequest(GET, routes.UnauthorisedController.onPageLoad.url)
         val result = route(app, request).value
         status(result) mustBe OK
         contentAsString(result) mustBe view()(request, messages(app), appConfig).toString()
@@ -51,7 +51,7 @@ class UnauthorisedControllerSpec extends SpecBase {
 
 
       running(app) {
-        val request = fakeRequest(GET, routes.UnauthorisedController.onPageLoad().url)
+        val request = fakeRequest(GET, routes.UnauthorisedController.onPageLoad.url)
         val result = route(app, request).value
         redirectLocation(result).value mustBe s"${appConfig.loginUrl}?continue_url=${URLEncoder.encode(appConfig.loginContinueUrl, "UTF-8")}"
       }

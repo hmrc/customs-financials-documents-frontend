@@ -62,8 +62,8 @@
   timeout = Some(appConfig.timeout),
   countdown = Some(appConfig.countdown),
   keepAliveUrl = Some(request.uri),
-  signOutUrl = Some(routes.LogoutController.logout().url),
-  timeoutUrl = Some(routes.LogoutController.logoutNoSurvey().url)
+  signOutUrl = Some(routes.LogoutController.logout.url),
+  timeoutUrl = Some(routes.LogoutController.logoutNoSurvey.url)
  ))
  }
 
@@ -89,7 +89,7 @@
   userResearchBannerUrl = Some(appConfig.helpMakeGovUkBetterUrl),
   pageTitle = fullPageTitle,
   serviceUrl = Some(appConfig.customsFinancialsFrontendHomepage),
-  signOutUrl = Some(routes.LogoutController.logout().url),
+  signOutUrl = Some(routes.LogoutController.logout.url),
   nonce = CSPNonce.get,
   backLinkUrl = backLink,
   additionalHeadBlock = Some(additionalHead),
