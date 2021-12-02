@@ -29,7 +29,7 @@ class LogoutControllerSpec extends SpecBase {
   "logout" should {
     "redirect to logout link with survey continue" in new Setup {
       running(app) {
-        val request = fakeRequest(GET, routes.LogoutController.logout().url)
+        val request = fakeRequest(GET, routes.LogoutController.logout.url)
         val result = route(app, request).value
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe s"${config.signOutUrl}?continue=${URLEncoder.encode(config.feedbackService, "UTF-8")}"
@@ -39,7 +39,7 @@ class LogoutControllerSpec extends SpecBase {
   "logoutNoSurvey" should {
     "redirect to logout link without survey continue" in new Setup {
       running(app) {
-        val request = fakeRequest(GET, routes.LogoutController.logoutNoSurvey().url)
+        val request = fakeRequest(GET, routes.LogoutController.logoutNoSurvey.url)
         val result = route(app, request).value
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe s"${config.signOutUrl}?continue=${URLEncoder.encode(config.loginContinueUrl, "UTF-8")}"

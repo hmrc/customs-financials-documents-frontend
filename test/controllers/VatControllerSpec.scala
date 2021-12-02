@@ -52,7 +52,7 @@ class VatControllerSpec extends SpecBase {
         .thenReturn(Future.successful(Seq(vatCertificateFile)))
 
       running(app) {
-        val request = fakeRequest(GET, routes.VatController.showVatAccount().url)
+        val request = fakeRequest(GET, routes.VatController.showVatAccount.url)
         val result = route(app, request).value
         status(result) mustBe OK
         contentAsString(result) mustBe view(viewModel)(request, messages(app), appConfig).toString()
@@ -64,10 +64,10 @@ class VatControllerSpec extends SpecBase {
         .thenReturn(Future.failed(new RuntimeException("Something went wrong")))
 
       running(app) {
-        val request = fakeRequest(GET, routes.VatController.showVatAccount().url)
+        val request = fakeRequest(GET, routes.VatController.showVatAccount.url)
         val result = route(app, request).value
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.VatController.certificatesUnavailablePage().url
+        redirectLocation(result).value mustBe routes.VatController.certificatesUnavailablePage.url
       }
     }
   }
@@ -79,7 +79,7 @@ class VatControllerSpec extends SpecBase {
       val appConfig = app.injector.instanceOf[AppConfig]
 
       running(app){
-        val request = fakeRequest(GET, routes.VatController.certificatesUnavailablePage().url)
+        val request = fakeRequest(GET, routes.VatController.certificatesUnavailablePage.url)
         val result = route(app, request).value
         status(result) mustBe OK
         contentAsString(result) mustBe view()(request, messages(app), appConfig).toString()

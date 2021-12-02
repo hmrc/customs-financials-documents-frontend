@@ -38,7 +38,7 @@ class SecuritiesControllerSpec extends SpecBase {
 
     "render the page correctly on successful responses" in new Setup {
       running(app) {
-        val request = fakeRequest(GET, routes.SecuritiesController.showSecurityStatements().url)
+        val request = fakeRequest(GET, routes.SecuritiesController.showSecurityStatements.url)
         val result = route(app, request).value
         status(result) mustBe OK
         contentAsString(result) mustBe view(SecurityStatementsViewModel(Seq(securityStatementsForEori)))(request, messages(app), appConfig).toString()
@@ -63,10 +63,10 @@ class SecuritiesControllerSpec extends SpecBase {
       ).build()
 
       running(app) {
-        val request = fakeRequest(GET, routes.SecuritiesController.showSecurityStatements().url)
+        val request = fakeRequest(GET, routes.SecuritiesController.showSecurityStatements.url)
         val result = route(app, request).value
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.SecuritiesController.statementsUnavailablePage().url
+        redirectLocation(result).value mustBe routes.SecuritiesController.statementsUnavailablePage.url
       }
 
     }
@@ -79,7 +79,7 @@ class SecuritiesControllerSpec extends SpecBase {
       val unavailableView = app.injector.instanceOf[security_statements_not_available]
 
       running(app) {
-        val request = fakeRequest(GET, routes.SecuritiesController.statementsUnavailablePage().url)
+        val request = fakeRequest(GET, routes.SecuritiesController.statementsUnavailablePage.url)
         val result = route(app, request).value
         status(result) mustBe OK
         contentAsString(result) mustBe unavailableView()(request, messages(app), appConfig).toString()
