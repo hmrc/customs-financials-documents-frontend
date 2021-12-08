@@ -27,7 +27,7 @@ cf.account.pvat.link-message=check if you can use postponed VAT accounting
 cf.account.pvat.statements.unavailable = There were no statements in {0}
 
 cf.account.pvat.historic.description=We only show statements for the last 6 months. If required, you can
-cf.account.pvat.historic.request=request older statements.
+cf.account.pvat.historic.request=request older statements
 # ------------------------------------------------------------------------
 
 # Common messages
@@ -100,7 +100,7 @@ cf.security-statements.screen-reader.unavailable={0} for {1} to {2} unavailable
 
 cf.security-statements.static-text=Statements cover the last 7 days from Thursday to Wednesday.
 cf.security-statements.historic.description=We only show statements for the last 6 months. If required, you can
-cf.security-statements.historic.request=request older statements.
+cf.security-statements.historic.request=request older statements
 cf.security-statements.requested-link=requested statements
 cf.security-statements.unavailable= Sorry, your statements are not available at the moment. Please try again later.
 # ------------------------------------------------------------------------
@@ -123,7 +123,7 @@ cf.account.vat.missing-file=Unavailable
 cf.account.vat.missing-file-hidden-text={0} for {1} unavailable
 cf.account.vat.no-certificates-available=There are no certificates available to view.
 cf.account.vat.historic.description=We only show certificates for the last 6 months. If required, you can
-cf.account.vat.historic.request=request older certificates.
+cf.account.vat.historic.request=request older certificates
 cf.account.vat.unavailable=Sorry, your certificates are not available at the moment. Please try again later.
 cf.account.vat.statements.unavailable = There were no certificates in {0}.
 # ------------------------------------------------------------------------

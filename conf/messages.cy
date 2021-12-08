@@ -82,7 +82,7 @@ cf.account.pvat.holding-message.2=ar GOV.UK.
 cf.account.pvat.link-message=wirio os gallwch ddefnyddio cyfrifyddu TAW gohiriedig
 cf.account.pvat.statements.unavailable = Nid oedd unrhyw ddatganiadau i mewn {0}
 cf.account.pvat.historic.description=Dim ond ar gyfer y 6 mis diwethaf y gallwn ddangos datganiadau. Os oes angen, gallwch
-cf.account.pvat.historic.request=ofyn am ddatganiadau hŷn.
+cf.account.pvat.historic.request=ofyn am ddatganiadau hŷn
 # ------------------------------------------------------------------------
 
 
@@ -97,7 +97,7 @@ cf.security-statements.screen-reader.unavailable=Nid yw {0} ar gyfer {1} i {2} a
 
 cf.security-statements.static-text=Mae’r datganiadau’n cwmpasu’r 7 diwrnod diwethaf o ddydd Iau i ddydd Mercher.
 cf.security-statements.historic.description=Rydym ond yn dangos datganiadau ar gyfer y 6 mis diwethaf. Os oes angen, mae modd
-cf.security-statements.historic.request=gofyn am ddatganiadau hŷn.
+cf.security-statements.historic.request=gofyn am ddatganiadau hŷn
 cf.security-statements.requested-link=Datganiadau y gofynnwyd amdanynt
 cf.security-statements.unavailable=Mae’n ddrwg gennym – nid yw’ch datganiadau ar gael ar hyn o bryd. Rhowch gynnig arall arni yn nes ymlaen.
 # ------------------------------------------------------------------------
@@ -120,7 +120,7 @@ cf.account.vat.missing-file=Nid yw ar gael
 cf.account.vat.missing-file-hidden-text=Nid yw {0} ar gyfer {1} ar gael
 cf.account.vat.no-certificates-available=Nid oes tystysgrifau ar gael i’w gweld.
 cf.account.vat.historic.description=Rydym ond yn dangos tystysgrifau ar gyfer y 6 mis diwethaf. Os oes angen, mae modd
-cf.account.vat.historic.request=gofyn am dystysgrifau hŷn.
+cf.account.vat.historic.request=gofyn am dystysgrifau hŷn
 cf.account.vat.unavailable=Mae’n ddrwg gennym, nid yw’ch tystysgrifau ar gael ar hyn o bryd. Rhowch gynnig arall arni yn nes ymlaen.
 cf.account.vat.statements.unavailable = Nid oedd unrhyw dystysgrifau i mewn {0}.
 # ------------------------------------------------------------------------
