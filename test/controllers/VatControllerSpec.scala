@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ class VatControllerSpec extends SpecBase {
 
   "showVatAccount" should {
     "redirect to certificates unavailable page if getting files fails" in new Setup {
-      val vatCertificateFile: VatCertificateFile = VatCertificateFile("name_04", "download_url_06", 111L, VatCertificateFileMetadata(date.getYear, date.minusMonths(1).getMonthValue, Pdf, C79Certificate, None), "")(messages(app))
+      val vatCertificateFile: VatCertificateFile = VatCertificateFile("name_04", "download_url_06", 111L, VatCertificateFileMetadata(date.minusMonths(1).getYear, date.minusMonths(1).getMonthValue, Pdf, C79Certificate, None), "")(messages(app))
       val currentCertificates = Seq(
         VatCertificatesByMonth(date.minusMonths(1), Seq(vatCertificateFile))(messages(app)),
         VatCertificatesByMonth(date.minusMonths(2), Seq())(messages(app)),
