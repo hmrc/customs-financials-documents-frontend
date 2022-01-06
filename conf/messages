@@ -187,3 +187,8 @@ cf.undeliverable.email.list.2=urgent updates about goods in customs
 cf.undeliverable.email.list.3=some financial notifications, including Direct Debit notices and VAT
 cf.undeliverable.email.link-text=Verify or change email address
 # ------------------------------------------------------------------------
+# Unauthorised Error
+cf.error.unauthorized.title=You are not authorised to view this page
+cf.error.unauthorized.heading=Unauthorised
+cf.error.unauthorized.message=You are not authorised to view this page
+# ------------------------------------------------------------------------

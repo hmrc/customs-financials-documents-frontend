@@ -23,7 +23,10 @@
 
 
 @this(
-        layout: Layout
+        layout: Layout,
+        h1: components.h1,
+        h2: components.h2,
+        link: components.link
 )
 
 @(model: SecurityStatementsViewModel)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
@@ -32,16 +35,14 @@
 
 @layout(pageTitle = Some(messages("cf.security-statements.title")), backLink = Some(appConfig.customsFinancialsFrontendHomepage)) {
 
-    <h1 class="govuk-heading-xl">
-        @messages("cf.security-statements.title")
-    </h1>
+    @h1("cf.security-statements.title", classes = "govuk-heading-xl")
 
     @if(model.hasRequestedStatements) {
         <div id="request-statement-link" class="notifications-panel">
             <ul class="govuk-list govuk-!-margin-top-0 govuk-!-margin-bottom-0">
-                <li>@messages("cf.account.detail.requested-certificates-available-text.pre") <a href="@{
-                      appConfig.requestedStatements(SecurityStatement)
-                }" class="govuk-link">@messages("cf.security-statements.requested-link")</a> @messages("cf.account.detail.requested-certificates-available-text.post")</li>
+                <li>@messages("cf.account.detail.requested-certificates-available-text.pre")
+                    @link("cf.security-statements.requested-link", url = appConfig.requestedStatements(SecurityStatement))
+                    @messages("cf.account.detail.requested-certificates-available-text.post")</li>
             </ul>
         </div>
     }
@@ -50,6 +51,7 @@
         @for(historyIndex <- histories) {
             @if(model.statementsForAllEoris(historyIndex).currentStatements.nonEmpty) {
                 @if(historyIndex > 0) {
+                    @h2(msg = "cf.account.details.previous-eori", id = Some(s"historic-eori-@{historyIndex}"), classes ="govuk-heading-s govuk-!-margin-bottom-1")
                     <h2 id="historic-eori-@{historyIndex}"  class="govuk-heading-s govuk-!-margin-bottom-1" style="margin-bottom: -10px;
                         margin-top: 50px;">
                         @messages("cf.account.details.previous-eori",
@@ -74,12 +76,13 @@
                                         <span aria-hidden="true">@messages("cf.unavailable")</span>
                                     </div>
                                 } { pdf =>
-                                    <a class="file-link govuk-link" href="@{pdf.downloadURL}" download
-                                    aria-label="@messages("cf.security-statements.requested.download-link.aria-text",
-                                        Pdf,
-                                        dateAsDayMonthAndYear(statementsOfOneMonth.startDate),
-                                        dateAsDayMonthAndYear(statementsOfOneMonth.endDate),
-                                        pdf.formattedSize)">@Pdf  (@pdf.formattedSize)</a>
+                                    @link(msg = s"PDF (${pdf.formattedSize})", classes = "file-link govuk-link", url = pdf.downloadURL,
+                                        arialLabel = Some(
+                                            messages("cf.security-statements.requested.download-link.aria-text",
+                                            Pdf,
+                                            dateAsDayMonthAndYear(statementsOfOneMonth.startDate),
+                                            dateAsDayMonthAndYear(statementsOfOneMonth.endDate),
+                                            pdf.formattedSize)))
                                 }
                             </dd>
                         </div>
@@ -95,7 +98,7 @@
     @missing_documents_guidance("statement")
 
     <p id="historic-statement-request" class="govuk-body govuk-!-margin-bottom-7">
-        @messages("cf.security-statements.historic.description")<a href="@{appConfig.historicRequestUrl(SecurityStatement)}" class="govuk-link">
-        @messages("cf.security-statements.historic.request")</a>
+        @messages("cf.security-statements.historic.description")
+        @link("cf.security-statements.historic.request", url = appConfig.historicRequestUrl(SecurityStatement))
     </p>
 }

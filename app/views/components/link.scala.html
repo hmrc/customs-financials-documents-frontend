@@ -14,16 +14,8 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components.Text
+@this()
 
-@this(
-        layout: Layout,
-        h1: components.h1
-)
+@(msg: String, id: Option[String] = None, classes: String = "govuk-link", url: String, arialLabel: Option[String] = None )(implicit messages: Messages)
 
-@(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages)
-@layout(pageTitle = Some(pageTitle)) {
-
-  @h1(Text(heading).asHtml.toString(), id = None, classes = "govuk-heading-xl")
-    <p class="govuk-body">@{Text(message).asHtml}</p>
-}
+<a @{id.fold("")(id => s"id=$id")} href="@url" class="@classes">@messages(msg)</a>
