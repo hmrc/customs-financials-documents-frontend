@@ -33,7 +33,8 @@
     linkInner: components.linkInner,
     h1: components.h1,
     h2: components.h2,
-    h2Inner: components.h2Inner
+    h2Inner: components.h2Inner,
+    inset: components.inset
 )
 
 
@@ -107,9 +108,7 @@
     }
 
     @if(statementGroups.isEmpty) {
-        <div class="govuk-inset-text govuk-!-margin-bottom-9 govuk-!-margin-top-8">
-            @messages("cf.account.pvat.no-statements-yet")
-        </div>
+        @inset("cf.account.pvat.no-statements-yet")
     } else {
         <div id="missing-documents-guidance" class="govuk-!-padding-top-2">
             @h2Inner(

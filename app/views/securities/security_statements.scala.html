@@ -28,7 +28,8 @@
         h2: components.h2,
         link: components.link,
         p: components.p,
-        missing_guidance: components.missing_documents_guidance
+        missing_guidance: components.missing_documents_guidance,
+        requested_statements: components.requestedStatements
 )
 
 @(model: SecurityStatementsViewModel)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
@@ -40,13 +41,7 @@
     @h1("cf.security-statements.title", classes = "govuk-heading-xl")
 
     @if(model.hasRequestedStatements) {
-        <div id="request-statement-link" class="notifications-panel">
-            <ul class="govuk-list govuk-!-margin-top-0 govuk-!-margin-bottom-0">
-                <li>@messages("cf.account.detail.requested-certificates-available-text.pre")
-                    @link("cf.security-statements.requested-link", url = appConfig.requestedStatements(SecurityStatement))
-                    @messages("cf.account.detail.requested-certificates-available-text.post")</li>
-            </ul>
-        </div>
+        @requested_statements(appConfig.requestedStatements(SecurityStatement))
     }
 
     @if(model.hasCurrentStatements) {
