@@ -21,41 +21,44 @@
 
 @this(
         layout: Layout,
-        hmrcNewTabLink: HmrcNewTabLink
+        hmrcNewTabLink: HmrcNewTabLink,
+        h1: components.h1,
+        h2: components.h2,
+        p: components.p
 )
 
 
 @()(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @layout(pageTitle = Some(messages("cf.not-subscribed-to-cds.detail.title")), help = false) {
-    <h1 class="govuk-heading-l">@messages("cf.not-subscribed-to-cds.detail.heading")</h1>
-    <h2 class="govuk-heading-m">@messages("cf.not-subscribed-to-cds.detail.how-to-get-access-info")</h2>
+    @h1(msg = "cf.not-subscribed-to-cds.detail.heading")
+    @h2(msg = "cf.not-subscribed-to-cds.detail.how-to-get-access-info")
 
-    <p class="govuk-body">
-        @messages("cf.not-subscribed-to-cds.detail.eori-info")
-        @hmrcNewTabLink(
-            NewTabLink(
-                language = Some(messages.lang.toString),
-                classList = Some("govuk-link"),
-                href=Some(appConfig.registerCdsUrl),
-                text=messages("cf.not-subscribed-to-cds.detail.eori-link")
+    @p(
+        message = "cf.not-subscribed-to-cds.detail.eori-info",
+        tabLink = Some(hmrcNewTabLink(
+                NewTabLink(
+                    language = Some(messages.lang.toString),
+                    classList = Some("govuk-link"),
+                    href=Some(appConfig.registerCdsUrl),
+                    text=messages("cf.not-subscribed-to-cds.detail.eori-link")
+                )
             )
         )
-    </p>
+    )
 
-    <p class="govuk-body">
-        @messages("cf.not-subscribed-to-cds.detail.get-access-info")
-        @hmrcNewTabLink(
-            NewTabLink(
-                language = Some(messages.lang.toString),
-                classList = Some("govuk-link"),
-                href=Some(appConfig.subscribeCdsUrl),
-                text=messages("cf.not-subscribed-to-cds.detail.get-access-link")
+    @p(
+        message = "cf.not-subscribed-to-cds.detail.get-access-info",
+        tabLink = Some(hmrcNewTabLink(
+                NewTabLink(
+                    language = Some(messages.lang.toString),
+                    classList = Some("govuk-link"),
+                    href=Some(appConfig.subscribeCdsUrl),
+                    text=messages("cf.not-subscribed-to-cds.detail.get-access-link")
+                )
             )
         )
-    </p>
+    )
 
-    <p class="govuk-body">
-    @messages("cf.not-subscribed-to-cds.detail.process-application-info")
-    </p>
+    @p("cf.not-subscribed-to-cds.detail.process-application-info")
 }

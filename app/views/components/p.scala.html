@@ -16,6 +16,6 @@
 
 @this()
 
-@(message: String, classes: String = "govuk-body", id: Option[String] = None)(implicit messages: Messages)
+@(message: String, classes: String = "govuk-body", id: Option[String] = None, link: Option[Html] = None, tabLink: Option[Html] = None)(implicit messages: Messages)
 
-<p @{id.fold("")(id => s"id=$id")} class="@{classes}">@messages(message)</p>
+<p @{id.fold("")(id => s"id=$id")} class="@{classes}">@messages(message) @link @tabLink</p>

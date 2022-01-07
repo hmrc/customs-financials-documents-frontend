@@ -14,17 +14,32 @@
  * limitations under the License.
  *@
 
+@this(
+    h2Inner: components.h2Inner,
+    pInner: components.pInner
+)
+
 @(documentType: String)(implicit messages: Messages)
 
 <div id="missing-documents-guidance" class="govuk-!-padding-top-2">
 
-    <h2 id="missing-documents-guidance-heading" class="govuk-heading-m govuk-!-margin-top-6">
-        @messages("cf.common.missing-documents-guidance.heading", messages(s"cf.common.missing-documents-guidance.$documentType")
-        )</h2>
+    @h2Inner(
+        id = Some("missing-documents-guidance-heading"),
+        msg = "cf.common.missing-documents-guidance.heading",
+        innerMsg = s"cf.common.missing-documents-guidance.$documentType",
+        classes = "govuk-heading-m govuk-!-margin-top-6"
+    )
 
-    <p id="missing-documents-guidance-text1" class="govuk-body" >@messages("cf.common.missing-documents-guidance.text1",
-        messages(s"cf.common.missing-documents-guidance.${documentType}s"))</p>
+    @pInner(
+        message = "cf.common.missing-documents-guidance.text1",
+        innerMessage = s"cf.common.missing-documents-guidance.${documentType}s",
+        id= Some("missing-documents-guidance-text1")
+    )
 
-    <p id="missing-documents-guidance-text2" class="govuk-body" >@messages("cf.common.missing-documents-guidance.text2",
-        messages(s"cf.common.missing-documents-guidance.${documentType}s"))</p>
+    @pInner(
+        message = "cf.common.missing-documents-guidance.text2",
+        innerMessage = s"cf.common.missing-documents-guidance.${documentType}s",
+        id = Some("missing-documents-guidance-text2")
+    )
+
 </div>

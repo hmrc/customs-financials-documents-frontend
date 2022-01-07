@@ -24,7 +24,10 @@
 @this(
     layout: Layout,
     h1: components.h1,
-    link: components.link
+    h2: components.h2,
+    link: components.link,
+    p: components.p,
+    missing_guidance: components.missing_documents_guidance
 )
 
 
@@ -75,15 +78,14 @@
             }
         }
     } else {
-        <p id="no-certificates-available-text" class="govuk-body">@messages("cf.account.vat.no-certificates-available")</p>
+        @p("cf.account.vat.no-certificates-available", id = Some("no-certificates-available-text"))
     }
 
-    @missing_documents_guidance("certificate")
+    @missing_guidance("certificate")
 
-
-    <p id="historic-statement-request" class="govuk-body govuk-!-padding-bottom-7">
-        @messages("cf.account.vat.historic.description")
-        @link(msg = "cf.account.vat.historic.request", url = appConfig.historicRequestUrl(C79Certificate))
-    </p>
+    @p(id = Some("historic-statement-request"),
+        classes = "govuk-body govuk-!-padding-bottom-7",
+        message = "cf.account.vat.historic.description",
+        link = Some(link(msg = "cf.account.vat.historic.request", url = appConfig.historicRequestUrl(C79Certificate))))
 
 }
