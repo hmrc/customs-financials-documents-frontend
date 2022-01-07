@@ -184,3 +184,8 @@ cf.undeliverable.email.list.2=diweddariadau brys am nwyddau yn y tollau
 cf.undeliverable.email.list.3=rhai hysbysiadau ariannol, gan gynnwys hysbysiadau Debyd Uniongyrchol a TAW
 cf.undeliverable.email.link-text=Dilysu neu newid y cyfeiriad e-bost
 # ------------------------------------------------------------------------
+# Unauthorised Error
+cf.error.unauthorized.title=Nid ydych wedi’ch awdurdodi i fwrw golwg dros y dudalen hon
+cf.error.unauthorized.heading=Heb awdurdod
+cf.error.unauthorized.message=Nid ydych wedi’ch awdurdodi i fwrw golwg dros y dudalen hon
+# ------------------------------------------------------------------------

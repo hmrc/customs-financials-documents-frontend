@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,9 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models
+@this(
+  link: components.link
+)
 
-case class VatCertificatesForEori(eoriHistory: EoriHistory, currentCertificates: Seq[VatCertificatesByMonth], requestedCertificates: Seq[VatCertificatesByMonth])
-  extends OrderedByEoriHistory[VatCertificatesForEori]
+@(url: String)(implicit messages: Messages)
+  <div id="request-statement-link" class="notifications-panel">
+   <ul class="govuk-list govuk-!-margin-top-0 govuk-!-margin-bottom-0">
+    <li>@messages("cf.account.detail.requested-certificates-available-text.pre")
+     @link("cf.security-statements.requested-link", url = url)
+     @messages("cf.account.detail.requested-certificates-available-text.post")</li>
+   </ul>
+ </div>
+

@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,15 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components.Text
 
-@this(layout: Layout)
+@this(
+        layout: Layout,
+        h1: components.h1,
+        p: components.p
+)
 
 @(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages)
 @layout(pageTitle = Some(pageTitle)) {
-    <h1 class="govuk-heading-xl">@{Text(heading).asHtml}</h1>
-    <p class="govuk-body">@{Text(message).asHtml}</p>
+
+  @h1(Text(heading).asHtml.toString), id = None, classes = "govuk-heading-xl")
+  @p(Text(message).asHtml.toString)
 }

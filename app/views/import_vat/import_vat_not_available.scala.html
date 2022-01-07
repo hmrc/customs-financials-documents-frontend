@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,25 +19,26 @@
 @import models.FileRole.C79Certificate
 
 @this(
-    layout: Layout
+    layout: Layout,
+    h1: components.h1,
+    link: components.link,
+    p: components.p,
+    missing_guidance: components.missing_documents_guidance
 )
 
 @()(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @layout(pageTitle = Some(messages("cf.account.vat.title")), backLink = Some(appConfig.customsFinancialsFrontendHomepage)) {
 
-    <h1 id="import-vat-certificates-heading" class="govuk-heading-xl">@messages("cf.account.vat.title")</h1>
+    @h1("cf.account.vat.title", id = Some("import-vat-certificates-heading"), classes = "govuk-heading-xl")
 
-    <p id="no-certificates-available-text" class="govuk-inset-text">@messages("cf.account.vat.unavailable")</p>
+    @p(message = "cf.account.vat.unavailable", classes = "govuk-inset-text", id = Some("no-certificates-available-text"))
 
-    @missing_documents_guidance("certificate")
+    @missing_guidance("certificate")
 
 
-    <p id="historic-certificate-request" class="govuk-body govuk-!-padding-bottom-7">
-        @messages("cf.account.vat.historic.description") <a href="@{
-        appConfig.historicRequestUrl(C79Certificate)
-    }" class="govuk-link">
-    @messages("cf.account.vat.historic.request")</a>
-    </p>
-
+    @p(id = Some("historic-certificate-request"),
+        classes = "govuk-body govuk-!-padding-bottom-7",
+        message = "cf.account.vat.historic.description",
+        link = Some(link(msg = "cf.account.vat.historic.request", url = appConfig.historicRequestUrl(C79Certificate))))
 }

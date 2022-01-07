@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,11 @@
 @import models.FileRole.SecurityStatement
 
 @this(
-        layout: Layout
+        layout: Layout,
+        h1: components.h1,
+        link: components.link,
+        p: components.p,
+        missing_guidance: components.missing_documents_guidance
 )
 
 @()(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
@@ -27,17 +31,14 @@
 
 @layout(pageTitle = Some(messages("cf.security-statements.title")), backLink = Some(appConfig.customsFinancialsFrontendHomepage)) {
 
-    <h1 id="security-statements-heading" class="govuk-heading-xl">@messages("cf.security-statements.title")</h1>
+    @h1("cf.security-statements.title", id=Some("security-statements-heading"), classes = "govuk-heading-xl")
 
-    <p class="govuk-inset-text" id="no-statements">@messages("cf.security-statements.unavailable")</p>
+    @p(message = "cf.security-statements.unavailable", classes = "govuk-inset-text", id = Some("no-statements"))
 
-    @missing_documents_guidance("statement")
+    @missing_guidance("statement")
 
-    <p id="historic-statement-request" class="govuk-body govuk-!-margin-bottom-7">
-        @messages("cf.security-statements.historic.description") <a href="@{
-        appConfig.historicRequestUrl(SecurityStatement)
-    }" class="govuk-link">
-    @messages("cf.security-statements.historic.request")</a>
-    </p>
-
+    @p(id = Some("historic-statement-request"),
+        classes = "govuk-body govuk-!-padding-bottom-7",
+        message = "cf.security-statements.historic.description",
+        link = Some(link(msg = "cf.security-statements.historic.request", url = appConfig.historicRequestUrl(SecurityStatement))))
 }

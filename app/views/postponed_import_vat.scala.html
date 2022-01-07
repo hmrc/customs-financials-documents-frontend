@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,15 @@
 @import models.DutyPaymentMethod.CHIEF
 
 @this(
-    layout: Layout
+    layout: Layout,
+    p: components.p,
+    pInner: components.pInner,
+    link: components.link,
+    linkInner: components.linkInner,
+    h1: components.h1,
+    h2: components.h2,
+    h2Inner: components.h2Inner,
+    inset: components.inset
 )
 
 
@@ -39,9 +47,7 @@
             eori
         }</span>
     </span>
-    <h1 class="govuk-heading-xl  govuk-!-margin-bottom-6">
-    @messages("cf.account.pvat.title")
-    </h1>
+    @h1(msg = "cf.account.pvat.title", classes = "govuk-heading-xl  govuk-!-margin-bottom-6")
 
     @if(messages.isDefinedAt("cf.account.pvat.holding-message.1")) {
         <p class="govuk-body govuk-!-margin-bottom-6" id="postponed-vat-holding-message">
@@ -51,9 +57,7 @@
         </p>
     }
 
-    <p class="govuk-body govuk-!-margin-bottom-6" id="postponed-vat-content">
-    @messages("cf.account.pvat.content")
-    </p>
+    @p(message = "cf.account.pvat.content",  classes = "govuk-body govuk-!-margin-bottom-6", id = Some("postponed-vat-content"))
 
     @if(hasRequestedStatements) {
         <div id="notification-panel" class="notifications-panel">
@@ -69,9 +73,8 @@
         <div id=@{
             statementGroup.periodId
         }>
-            <h2 class="govuk-heading-m">@{
-                Formatters.dateAsMonthAndYear(statementGroup.startDate)
-            }</h2>
+            @h2(msg = Formatters.dateAsMonthAndYear(statementGroup.startDate))
+
             @if(statementGroup.noStatements) {
                 <ul class="govuk-list">
                     <li>@messages("cf.account.pvat.statements.unavailable",Formatters.dateAsMonth(statementGroup.startDate))</li>
@@ -105,22 +108,26 @@
     }
 
     @if(statementGroups.isEmpty) {
-        <div class="govuk-inset-text govuk-!-margin-bottom-9 govuk-!-margin-top-8">
-        @messages("cf.account.pvat.no-statements-yet")
-        </div>
+        @inset("cf.account.pvat.no-statements-yet")
     } else {
         <div id="missing-documents-guidance" class="govuk-!-padding-top-2">
-            <h2 id="missing-documents-guidance-heading" class="govuk-heading-m govuk-!-margin-top-6">
-                @messages("cf.common.missing-documents-guidance.heading", messages(s"cf.common.missing-documents-guidance.statement"))
-            </h2>
+            @h2Inner(
+                id = Some("missing-documents-guidance-heading"),
+                msg = "cf.common.missing-documents-guidance.heading",
+                innerMsg = "cf.common.missing-documents-guidance.statement",
+                classes = "govuk-heading-m govuk-!-margin-top-6"
+            )
 
-            <p id="missing-documents-guidance-text2" class="govuk-body" >@messages("cf.common.missing-documents-guidance.text2",
-                messages(s"cf.common.missing-documents-guidance.statements"))</p>
+            @pInner("cf.common.missing-documents-guidance.text2", "cf.common.missing-documents-guidance.statements", id = Some("missing-documents-guidance-text2"))
         </div>
-        <p id="historic-statement-request" class="govuk-body govuk-!-padding-bottom-7">
-            @messages("cf.account.pvat.historic.description")<a href="@{appConfig.historicRequestUrl(PostponedVATStatement)}" class="govuk-link">
-            @messages("cf.account.pvat.historic.request")</a>
-        </p>
+
+        @p(
+            id = Some("historic-statement-request"),
+            message = "cf.account.pvat.historic.description",
+            classes = "govuk-body govuk-!-padding-bottom-7",
+            link = Some(link(msg = "cf.account.pvat.historic.request", url = appConfig.historicRequestUrl(PostponedVATStatement)))
+        )
+
     }
 
 }
@@ -140,25 +147,25 @@
 @downloadLink(fileFormat: FileFormat, certificateFiles: Seq[PostponedVatStatementFile], downloadLinkMessage: String, downloadAriaLabel: String, period: String) = {
 @for(certificateFile <- certificateFiles) {
     <li>
-        <a
-        class="govuk-link"
-        href="@{certificateFile.downloadURL}"
-        aria-label="@{messages(
-            downloadAriaLabel,
-            certificateFile.metadata.source,
-            period,
-            fileFormat.name,
-            Formatters.fileSize(certificateFile.size)
-        )}"
-        >
-        @messages(
-            downloadLinkMessage,
-            certificateFile.metadata.source,
-            fileFormat.name,
-            Formatters.fileSize(certificateFile.size),
-            period
+        @linkInner(
+            msgs = messages(
+                downloadLinkMessage,
+                certificateFile.metadata.source,
+                fileFormat.name,
+                Formatters.fileSize(certificateFile.size),
+                period
+            ),
+            url = certificateFile.downloadURL,
+            ariaLabel = Some(
+                messages(
+                    downloadAriaLabel,
+                    certificateFile.metadata.source,
+                    period,
+                    fileFormat.name,
+                    Formatters.fileSize(certificateFile.size)
+                )
+            )
         )
-        </a>
     </li>
 }
 }

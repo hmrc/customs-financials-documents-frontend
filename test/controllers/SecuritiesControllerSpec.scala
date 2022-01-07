@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,7 +91,7 @@ class SecuritiesControllerSpec extends SpecBase {
     val mockFinancialsApiConnector: FinancialsApiConnector = mock[FinancialsApiConnector]
     val mockSdesConnector: SdesConnector = mock[SdesConnector]
     val date: LocalDate = LocalDate.now().withDayOfMonth(28)
-    val securityStatementFile: SecurityStatementFile = SecurityStatementFile("statementfile_00", "download_url_00", 99L, SecurityStatementFileMetadata(date.getYear, date.minusMonths(1).getMonthValue, 28, date.getYear, date.getMonthValue, 28, Pdf, SecurityStatement, "testEori1", 500L, "0000000", None))
+    val securityStatementFile: SecurityStatementFile = SecurityStatementFile("statementfile_00", "download_url_00", 99L, SecurityStatementFileMetadata(date.minusMonths(1).getYear, date.minusMonths(1).getMonthValue, 28, date.getYear, date.getMonthValue, 28, Pdf, SecurityStatement, "testEori1", 500L, "0000000", None))
     val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory("testEori1", None, None))
     val statementsByPeriod: SecurityStatementsByPeriod = SecurityStatementsByPeriod(date.minusMonths(1), date, Seq(securityStatementFile))
     val securityStatementsForEori: SecurityStatementsForEori = SecurityStatementsForEori(EoriHistory("testEori1", None, None),  Seq(statementsByPeriod), Seq.empty)

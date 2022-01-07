@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,6 @@ class PostponedVatControllerSpec extends SpecBase {
       running(app) {
         val request = fakeRequest(GET, routes.PostponedVatController.show(Some("CDS")).url)
         val result = route(app, request).value
-        println(redirectLocation(result))
         status(result) mustBe OK
         contentAsString(result) mustBe view("testEori1", PostponedVatViewModel(postponedVatStatementFiles ++ historicPostponedVatStatementFiles)(messages(app), mockDateTimeService), hasRequestedStatements = false, cdsOnly = false, Some("CDS"))(request, messages(app), config).toString()
       }
