@@ -48,14 +48,16 @@ month.abbr.12 = Rhag
 # Common messages
 # ------------------------------------------------------------------------
 cf.common.missing-documents-guidance.statement = datganiad
-cf.common.missing-documents-guidance.statements = datganiadau
+cf.common.missing-documents-guidance.statements = Datganiadau
 
-cf.common.missing-documents-guidance.certificate = dystysgrif
-cf.common.missing-documents-guidance.certificates = dystysgrifau
+cf.common.missing-documents-guidance.certificate = tystysgrif
+cf.common.missing-documents-guidance.certificates = Tystysgrifau 
 
-cf.common.missing-documents-guidance.heading=Methu gweld y {0} yr ydych yn edrych amdano?
-cf.common.missing-documents-guidance.text1=Nid yw {0} ar gyfer datganiad mewnforio a wnaed yn CHIEF ar gael yn y gwasanaeth hwn.
-cf.common.missing-documents-guidance.text2=Cynhyrchir {0} dim ond ar gyfer cyfnodau y gwnaethoch fewnforio nwyddau ynddynt.
+cf.common.missing-documents-guidance.heading=Pam nad yw fy {0} ar gael?
+cf.common.missing-documents-guidance.chiefHeading={0} a wneir yn CHIEF
+cf.common.missing-documents-guidance.text1=Nid yw {0} ar gyfer datganiadau mewnforio a wneir yn System y Tollau ar gyfer Trin Nwyddau a Gaiff eu Mewnforio a’u Hallforio (CHIEF) ar gael yn y gwasanaeth hwn.
+cf.common.missing-documents-guidance.subHeading={0} sy’n hŷn na chwe mis
+cf.common.missing-documents-guidance.text2= Dim ond ar gyfer cyfnodau lle y gwnaethoch fewnforio nwyddau y mae {0} cael eu creu.
 # ------------------------------------------------------------------------
 
 # Postponed VAT view
@@ -81,8 +83,8 @@ cf.account.pvat.holding-message.1=O 1 Ionawr 2021 ymlaen, mae’n bosibl y gallw
 cf.account.pvat.holding-message.2=ar GOV.UK.
 cf.account.pvat.link-message=wirio os gallwch ddefnyddio cyfrifyddu TAW gohiriedig
 cf.account.pvat.statements.unavailable = Nid oedd unrhyw ddatganiadau i mewn {0}
-cf.account.pvat.historic.description=Dim ond ar gyfer y 6 mis diwethaf y gallwn ddangos datganiadau. Os oes angen, gallwch
-cf.account.pvat.historic.request=ofyn am ddatganiadau hŷn
+cf.account.pvat.historic.description=Dim ond ar gyfer y chwe mis diwethaf y bydd y gwasanaeth hwn yn dangos datganiadau. 
+cf.account.pvat.historic.request=Gwneud cais am ddatganiad sy’n hŷn na chwe mis
 # ------------------------------------------------------------------------
 
 
@@ -96,8 +98,8 @@ cf.security-statements.no-statements=Nid oes datganiadau ar gael i’w gweld.
 cf.security-statements.screen-reader.unavailable=Nid yw {0} ar gyfer {1} i {2} ar gael
 
 cf.security-statements.static-text=Mae’r datganiadau’n cwmpasu’r 7 diwrnod diwethaf o ddydd Iau i ddydd Mercher.
-cf.security-statements.historic.description=Rydym ond yn dangos datganiadau ar gyfer y 6 mis diwethaf. Os oes angen, mae modd
-cf.security-statements.historic.request=gofyn am ddatganiadau hŷn
+cf.security-statements.historic.description=Dim ond ar gyfer y chwe mis diwethaf y bydd y gwasanaeth hwn yn dangos datganiadau. 
+cf.security-statements.historic.request=Gwneud cais am ddatganiad sy’n hŷn na chwe mis
 cf.security-statements.requested-link=Datganiadau y gofynnwyd amdanynt
 cf.security-statements.unavailable=Mae’n ddrwg gennym – nid yw’ch datganiadau ar gael ar hyn o bryd. Rhowch gynnig arall arni yn nes ymlaen.
 # ------------------------------------------------------------------------
@@ -119,8 +121,8 @@ cf.account.vat.download-link=Lawrlwytho {0} o {1} ({2})
 cf.account.vat.missing-file=Nid yw ar gael
 cf.account.vat.missing-file-hidden-text=Nid yw {0} ar gyfer {1} ar gael
 cf.account.vat.no-certificates-available=Nid oes tystysgrifau ar gael i’w gweld.
-cf.account.vat.historic.description=Rydym ond yn dangos tystysgrifau ar gyfer y 6 mis diwethaf. Os oes angen, mae modd
-cf.account.vat.historic.request=gofyn am dystysgrifau hŷn
+cf.account.vat.historic.description=Dim ond ar gyfer y chwe mis diwethaf y bydd y gwasanaeth hwn yn dangos tystysgrifau. 
+cf.account.vat.historic.request=Gwneud cais am dystysgrif sy’n hŷn na chwe mis
 cf.account.vat.unavailable=Mae’n ddrwg gennym, nid yw’ch tystysgrifau ar gael ar hyn o bryd. Rhowch gynnig arall arni yn nes ymlaen.
 cf.account.vat.statements.unavailable = Nid oedd unrhyw dystysgrifau i mewn {0}.
 # ------------------------------------------------------------------------
