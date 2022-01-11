@@ -16,6 +16,7 @@
 
 @this(
     h2Inner: components.h2Inner,
+    h3Inner: components.h3Inner,
     pInner: components.pInner
 )
 
@@ -30,10 +31,24 @@
         classes = "govuk-heading-m govuk-!-margin-top-6"
     )
 
+    @h3Inner(
+        id = Some("missing-documents-guidance-chiefHeading"),
+        msg = "cf.common.missing-documents-guidance.chiefHeading",
+        innerMsg = s"cf.common.missing-documents-guidance.${documentType}s",
+        classes = "govuk-heading-s govuk-!-margin-top-6"
+    )
+
     @pInner(
         message = "cf.common.missing-documents-guidance.text1",
         innerMessage = s"cf.common.missing-documents-guidance.${documentType}s",
         id= Some("missing-documents-guidance-text1")
+    )
+
+    @h3Inner(
+        id = Some("missing-documents-guidance-certificatesHeading"),
+        msg = "cf.common.missing-documents-guidance.subHeading", 
+        innerMsg = s"cf.common.missing-documents-guidance.${documentType}s",
+        classes = "govuk-heading-s govuk-!-margin-top-6"
     )
 
     @pInner(
