@@ -98,11 +98,14 @@
 
     @missing_guidance("statement")
 
-    @p(
-        id = Some("historic-statement-request"),
-        classes = "govuk-body govuk-!-padding-bottom-7",
-        message = "cf.security-statements.historic.description",
-        link = Some(link(msg = "cf.security-statements.historic.request", url = appConfig.historicRequestUrl(SecurityStatement)))
-    )
+    @p(id = Some("historic-statement-request"),
+        message = "cf.security-statements.historic.description")
+    
+    @link(
+        id = Some("historic-statement-request"), 
+        classes = "govuk-body govuk-link", 
+        msg = "cf.security-statements.historic.request",      
+        url = appConfig.historicRequestUrl(SecurityStatement)
+        )
 
 }
