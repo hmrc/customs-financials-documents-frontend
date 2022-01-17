@@ -98,11 +98,13 @@
 
     @missing_guidance("statement")
 
-    @p(
-        id = Some("historic-statement-request"),
-        classes = "govuk-body govuk-!-padding-bottom-7",
-        message = "cf.security-statements.historic.description",
-        link = Some(link(msg = "cf.security-statements.historic.request", url = appConfig.historicRequestUrl(SecurityStatement)))
-    )
+    <div class="govuk-body govuk-!-padding-bottom-7">
+        <p id="historic-statement-request">
+            @messages("cf.security-statements.historic.description")
+        </p>
+        <p id="historic-statement-request">
+            <a class="govuk-link" href="@{appConfig.historicRequestUrl(SecurityStatement)}">@messages("cf.security-statements.historic.request")</a>
+        </p>
+    </div>
 
 }

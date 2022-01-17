@@ -120,14 +120,15 @@
 
             @pInner("cf.common.missing-documents-guidance.text2", "cf.common.missing-documents-guidance.statements", id = Some("missing-documents-guidance-text2"))
         </div>
-
-        @p(
-            id = Some("historic-statement-request"),
-            message = "cf.account.pvat.historic.description",
-            classes = "govuk-body govuk-!-padding-bottom-7",
-            link = Some(link(msg = "cf.account.pvat.historic.request", url = appConfig.historicRequestUrl(PostponedVATStatement)))
-        )
-
+        <div class="govuk-body govuk-!-padding-bottom-7">
+            <p id="historic-statement-request">
+                @messages("cf.account.pvat.historic.description")
+            </p>
+            <p id="historic-statement-request">
+                <a class="govuk-link" href="@{appConfig.historicRequestUrl(PostponedVATStatement)}">@messages("cf.account.pvat.historic.request")</a>
+            </p>
+        </div>
+       
     }
 
 }
