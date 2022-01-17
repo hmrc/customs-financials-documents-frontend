@@ -83,13 +83,14 @@
 
     @missing_guidance("certificate")
 
-        <div class="govuk-body govuk-!-padding-bottom-7">
-            <p id="historic-statement-request">
-                @messages("cf.account.vat.historic.description")
-            </p>
-            <p id="historic-statement-request">
-                <a class="govuk-link" href="@{appConfig.historicRequestUrl(C79Certificate)}">@messages("cf.account.vat.historic.request")</a>
-            </p>
-        </div>
+    @p(id = Some("historic-statement-request"),
+    message = "cf.account.vat.historic.description")
+    
+    @link(
+        id = Some("historic-statement-request"), 
+        classes = "govuk-body govuk-link", 
+        msg = "cf.account.vat.historic.request",      
+        url = appConfig.historicRequestUrl(C79Certificate)
+        )
 
 }
