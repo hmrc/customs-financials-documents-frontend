@@ -23,6 +23,7 @@
     h1: components.h1,
     link: components.link,
     p: components.p,
+    p2: components.p2,
     missing_guidance: components.missing_documents_guidance
 )
 
@@ -37,8 +38,8 @@
     @missing_guidance("certificate")
 
 
-    @p(id = Some("historic-certificate-request"),
-        classes = "govuk-body govuk-!-padding-bottom-7",
-        message = "cf.account.vat.historic.description",
-        link = Some(link(msg = "cf.account.vat.historic.request", url = appConfig.historicRequestUrl(C79Certificate))))
+    @p(id = Some("historic-certificate-request"), message = "cf.account.vat.historic.description")
+
+    @p2(Some("historic-certificate-request-link"),
+        anchor = link(msg = "cf.account.vat.historic.request", url = appConfig.historicRequestUrl(C79Certificate)))
 }
