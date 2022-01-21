@@ -80,8 +80,7 @@ cf.account.pvat.aria.amended.download-link=Datganiad diwygiedig {0} ar gyfer {1}
 
 cf.account.pvat.no-statements-yet=Nid oes datganiadau ar gael i’w gweld eto.
 cf.account.pvat.holding-message.1=O 1 Ionawr 2021 ymlaen, mae’n bosibl y gallwch roi cyfrif am TAW mewnforio ar eich Ffurflen TAW. Gallwch
-cf.account.pvat.holding-message.2=ar GOV.UK.
-cf.account.pvat.link-message=wirio os gallwch ddefnyddio cyfrifyddu TAW gohiriedig
+cf.account.pvat.link-message=wirio os gallwch ddefnyddio cyfrifyddu TAW ohiriedig (yn agor tab newydd)
 cf.account.pvat.statements.unavailable = Nid oedd unrhyw ddatganiadau i mewn {0}
 cf.account.pvat.historic.description=Dim ond ar gyfer y chwe mis diwethaf y bydd y gwasanaeth hwn yn dangos datganiadau. 
 cf.account.pvat.historic.request=Gwneud cais am ddatganiad sy’n hŷn na chwe mis

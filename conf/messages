@@ -22,8 +22,7 @@ cf.account.pvat.aria.amended.download-link={0} amended statement for {1} - {2} (
 
 cf.account.pvat.no-statements-yet=There are no statements available to view yet.
 cf.account.pvat.holding-message.1=From 1 January 2021 you may be able to account for import VAT on your VAT Return. You can
-cf.account.pvat.holding-message.2=on GOV.UK.
-cf.account.pvat.link-message=check if you can use postponed VAT accounting
+cf.account.pvat.link-message=check if you can use postponed VAT accounting (opens in new tab)
 cf.account.pvat.statements.unavailable = There were no statements in {0}
 
 cf.account.pvat.historic.description=This service will only show statements for the last six months.
