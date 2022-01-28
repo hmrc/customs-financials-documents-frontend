@@ -48,12 +48,10 @@
         @for(historyIndex <- histories) {
             @if(model.statementsForAllEoris(historyIndex).currentStatements.nonEmpty) {
                 @if(historyIndex > 0) {
-                    @h2(msg = "cf.account.details.previous-eori", id = Some(s"historic-eori-@{historyIndex}"), classes ="govuk-heading-s govuk-!-margin-bottom-1")
-                    <h2 id="historic-eori-@{historyIndex}"  class="govuk-heading-s govuk-!-margin-bottom-1" style="margin-bottom: -10px;
-                        margin-top: 50px;">
-                        @messages("cf.account.details.previous-eori",
-                            model.statementsForAllEoris(historyIndex).eoriHistory.eori)
-                    </h2>
+                    @h2(msg =  messages("cf.account.details.previous-eori", model.statementsForAllEoris(historyIndex).eoriHistory.eori),
+                        id = Some(s"historic-eori-${historyIndex}"),
+                        classes ="govuk-heading-s govuk-!-margin-bottom-1")
+                    
                 }
 
                 <dl class="govuk-summary-list statement-list" id="statements-list-@{historyIndex}">
