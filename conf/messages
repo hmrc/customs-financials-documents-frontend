@@ -107,6 +107,7 @@ cf.security-statements.requested.download-link.aria-text=Download {1} to {2} {0}
 cf.account.vat.title=Import VAT certificates (C79)
 cf.account.vat.missing-file=Unavailable
 cf.account.vat.missing-file-hidden-text={0} for {1} unavailable
+cf.account.vat.download-link=Download {1} {0} ({2})
 cf.account.vat.no-certificates-available=There are no certificates available to view.
 cf.account.vat.historic.description=This service will only show certificates for the last six months.
 cf.account.vat.historic.request=Request a certificate that’s older than six months
