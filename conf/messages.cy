@@ -107,6 +107,7 @@ cf.security-statements.requested.download-link.aria-text=Lawrlwytho {0} ar gyfer
 # ------------------------------------------------------------------------
 cf.account.vat.title=Tystysgrifau TAW mewnforio (C79)
 cf.account.vat.missing-file=Nid yw ar gael
+cf.account.vat.download-link=Lawrlwytho {0} o {1} ({2})
 cf.account.vat.missing-file-hidden-text=Nid yw {0} ar gyfer {1} ar gael
 cf.account.vat.no-certificates-available=Nid oes tystysgrifau ar gael i’w gweld.
 cf.account.vat.historic.description=Dim ond ar gyfer y chwe mis diwethaf y bydd y gwasanaeth hwn yn dangos tystysgrifau.
