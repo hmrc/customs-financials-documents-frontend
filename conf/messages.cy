@@ -1,19 +1,44 @@
 service.name = Bwrw golwg dros eich cyfrifon ariannol ar gyfer y tollau
-service.text = Dyma'ch gwasanaeth newydd
+
+cf.eori=EORI number:
 cf.account.details.previous-eori=EORI: {0}
 
-# Help and support
+# Postponed VAT view
 # ------------------------------------------------------------------------
-help.heading=Help a chymorth
-help.p1=Os ydych yn profi anawsterau, ffoniwch 0300 200 3705.
-help.p2=Ar agor rhwng 08:30 a 17:00 o ddydd Llun i ddydd Gwener (ar gau ar wyliau banc).
+cf.postponed-vat.view-certificates.description=Datganiadau TAW yw’r rhain rydych wedi’u gohirio ar eich mewnforion i’w defnyddio fel tystiolaeth ar eich Ffurflen TAW.
+cf.postponed-vat.view-certificates.no-certificates=Nid oes unrhyw ddatganiadau TAW mewnforio gohiriedig.
+cf.account.pvat.title=Datganiadau TAW mewnforio gohiriedig
+cf.account.pvat.content=Bydd pob datganiad yn dangos cyfanswm y TAW mewnforio a ohiriwyd ar gyfer y mis blaenorol, oni bai eich bod wedi gohirio’ch datganiad tollau.
+cf.account.pvat.download-link=Datganiad {0} – {1} ({2})
+cf.account.pvat.amended-download-link=Datganiad diwygiedig {0} – {1} ({2})
+cf.account.pvat.original.download-link=Datganiad {0} – {1} ({2})
+cf.account.pvat.missing-file-type=Dim datganiadau {0} ar gael.
+cf.account.pvat.original.missing-file-type=Dim ffeil {0} ar gael.
+cf.account.pvat.aria.download-link=Datganiad {0} ar gyfer {1} – {2} ({3})
+cf.account.pvat.aria.original.download-link=Datganiad {0} ar gyfer {1} – {2} ({3})
+cf.account.pvat.aria.amended.download-link=Datganiad diwygiedig {0} ar gyfer {1} – {2} ({3})
+cf.account.pvat.no-statements-yet=Nid oes datganiadau ar gael i’w gweld eto.
+cf.account.pvat.holding-message.1=O 1 Ionawr 2021 ymlaen, mae’n bosibl y gallwch roi cyfrif am TAW mewnforio ar eich Ffurflen TAW. Gallwch
+cf.account.pvat.link-message=wirio os gallwch ddefnyddio cyfrifyddu TAW ohiriedig (yn agor tab newydd)
+cf.account.pvat.statements.unavailable = Nid oedd unrhyw ddatganiadau i mewn {0}
+cf.account.pvat.historic.description=Dim ond ar gyfer y chwe mis diwethaf y bydd y gwasanaeth hwn yn dangos datganiadau.
+cf.account.pvat.historic.request=Gwneud cais am ddatganiad sy’n hŷn na chwe mis
 # ------------------------------------------------------------------------
 
-# BETA Banner
+
+# Common messages
 # ------------------------------------------------------------------------
-feedback.before =  Gwasanaeth newydd yw hwn – bydd eich
-feedback.link =  adborth
-feedback.after =  yn ein helpu i’w wella.
+cf.common.missing-documents-guidance.statement = datganiad
+cf.common.missing-documents-guidance.statements = Datganiadau
+
+cf.common.missing-documents-guidance.certificate = tystysgrif
+cf.common.missing-documents-guidance.certificates = Tystysgrifau
+
+cf.common.missing-documents-guidance.heading=Pam nad yw fy {0} ar gael?
+cf.common.missing-documents-guidance.chiefHeading={0} a wneir yn CHIEF
+cf.common.missing-documents-guidance.text1=Nid yw {0} ar gyfer datganiadau mewnforio a wneir yn System y Tollau ar gyfer Trin Nwyddau a Gaiff eu Mewnforio a’u Hallforio (CHIEF) ar gael yn y gwasanaeth hwn.
+cf.common.missing-documents-guidance.subHeading={0} sy’n hŷn na chwe mis
+cf.common.missing-documents-guidance.text2= Dim ond ar gyfer cyfnodau lle y gwnaethoch fewnforio nwyddau y mae {0} cael eu creu.
 # ------------------------------------------------------------------------
 
 # Date Format
@@ -45,61 +70,28 @@ month.abbr.11 = Tach
 month.abbr.12 = Rhag
 # ------------------------------------------------------------------------
 
-# Common messages
+# Help and support
 # ------------------------------------------------------------------------
-cf.common.missing-documents-guidance.statement = datganiad
-cf.common.missing-documents-guidance.statements = Datganiadau
-
-cf.common.missing-documents-guidance.certificate = tystysgrif
-cf.common.missing-documents-guidance.certificates = Tystysgrifau 
-
-cf.common.missing-documents-guidance.heading=Pam nad yw fy {0} ar gael?
-cf.common.missing-documents-guidance.chiefHeading={0} a wneir yn CHIEF
-cf.common.missing-documents-guidance.text1=Nid yw {0} ar gyfer datganiadau mewnforio a wneir yn System y Tollau ar gyfer Trin Nwyddau a Gaiff eu Mewnforio a’u Hallforio (CHIEF) ar gael yn y gwasanaeth hwn.
-cf.common.missing-documents-guidance.subHeading={0} sy’n hŷn na chwe mis
-cf.common.missing-documents-guidance.text2= Dim ond ar gyfer cyfnodau lle y gwnaethoch fewnforio nwyddau y mae {0} cael eu creu.
+help.heading=Help a chymorth
+help.p1=Os ydych yn profi anawsterau, ffoniwch 0300 200 3705.
+help.p2=Ar agor rhwng 08:30 a 17:00 o ddydd Llun i ddydd Gwener (ar gau ar wyliau banc).
 # ------------------------------------------------------------------------
 
-# Postponed VAT view
+# BETA Banner
 # ------------------------------------------------------------------------
-cf.postponed-vat.page-heading=Dyma’r adran ynghylch crynodeb o'r cyfrif TAW
-cf.postponed-vat.view-certificates.description=Datganiadau TAW yw’r rhain rydych wedi’u gohirio ar eich mewnforion i’w defnyddio fel tystiolaeth ar eich Ffurflen TAW.
-cf.postponed-vat.view-certificates.no-certificates=Nid oes unrhyw ddatganiadau TAW mewnforio gohiriedig.
-cf.postponed-vat.requested-statements-available-link-text=datganiadau y gofynnwyd amdanynt
-cf.account.pvat.title=Datganiadau TAW mewnforio gohiriedig
-cf.account.pvat.content=Bydd pob datganiad yn dangos cyfanswm y TAW mewnforio a ohiriwyd ar gyfer y mis blaenorol, oni bai eich bod wedi gohirio’ch datganiad tollau.
-
-cf.account.pvat.download-link=Datganiad {0} – {1} ({2})
-cf.account.pvat.amended-download-link=Datganiad diwygiedig {0} – {1} ({2})
-cf.account.pvat.original.download-link=Datganiad {0} – {1} ({2})
-cf.account.pvat.missing-file-type=Dim datganiadau {0} ar gael.
-cf.account.pvat.original.missing-file-type=Dim ffeil {0} ar gael.
-cf.account.pvat.aria.download-link=Datganiad {0} ar gyfer {1} – {2} ({3})
-cf.account.pvat.aria.original.download-link=Datganiad {0} ar gyfer {1} – {2} ({3})
-cf.account.pvat.aria.amended.download-link=Datganiad diwygiedig {0} ar gyfer {1} – {2} ({3})
-
-cf.account.pvat.no-statements-yet=Nid oes datganiadau ar gael i’w gweld eto.
-cf.account.pvat.holding-message.1=O 1 Ionawr 2021 ymlaen, mae’n bosibl y gallwch roi cyfrif am TAW mewnforio ar eich Ffurflen TAW. Gallwch
-cf.account.pvat.link-message=wirio os gallwch ddefnyddio cyfrifyddu TAW ohiriedig (yn agor tab newydd)
-cf.account.pvat.statements.unavailable = Nid oedd unrhyw ddatganiadau i mewn {0}
-cf.account.pvat.historic.description=Dim ond ar gyfer y chwe mis diwethaf y bydd y gwasanaeth hwn yn dangos datganiadau. 
-cf.account.pvat.historic.request=Gwneud cais am ddatganiad sy’n hŷn na chwe mis
+feedback.before =  Gwasanaeth newydd yw hwn – bydd eich
+feedback.link =  adborth
+feedback.after =  yn ein helpu i’w wella.
 # ------------------------------------------------------------------------
-
 
 # Security Statements View
 # ------------------------------------------------------------------------
 cf.security-statements.title=Hysbysiad o ddatganiadau addasu
-cf.security-statements.help.get-help=Help
-cf.security-statements.help.number=Llinell gymorth 0300 200 3705
-cf.security-statements.understanding-your-statement=Deall eich datganiad
 cf.security-statements.no-statements=Nid oes datganiadau ar gael i’w gweld.
 cf.security-statements.screen-reader.unavailable=Nid yw {0} ar gyfer {1} i {2} ar gael
 
-cf.security-statements.static-text=Mae’r datganiadau’n cwmpasu’r 7 diwrnod diwethaf o ddydd Iau i ddydd Mercher.
-cf.security-statements.historic.description=Dim ond ar gyfer y chwe mis diwethaf y bydd y gwasanaeth hwn yn dangos datganiadau. 
+cf.security-statements.historic.description=Dim ond ar gyfer y chwe mis diwethaf y bydd y gwasanaeth hwn yn dangos datganiadau.
 cf.security-statements.historic.request=Gwneud cais am ddatganiad sy’n hŷn na chwe mis
-cf.security-statements.requested-link=Datganiadau y gofynnwyd amdanynt
 cf.security-statements.unavailable=Mae’n ddrwg gennym – nid yw’ch datganiadau ar gael ar hyn o bryd. Rhowch gynnig arall arni yn nes ymlaen.
 # ------------------------------------------------------------------------
 
@@ -114,22 +106,13 @@ cf.security-statements.requested.download-link.aria-text=Lawrlwytho {0} ar gyfer
 # VAT Detail view
 # ------------------------------------------------------------------------
 cf.account.vat.title=Tystysgrifau TAW mewnforio (C79)
-cf.account.vat.help.get-help=Help
-cf.account.vat.help.number=Llinell gymorth 0300 200 3705
-cf.account.vat.download-link=Lawrlwytho {0} o {1} ({2})
 cf.account.vat.missing-file=Nid yw ar gael
 cf.account.vat.missing-file-hidden-text=Nid yw {0} ar gyfer {1} ar gael
 cf.account.vat.no-certificates-available=Nid oes tystysgrifau ar gael i’w gweld.
-cf.account.vat.historic.description=Dim ond ar gyfer y chwe mis diwethaf y bydd y gwasanaeth hwn yn dangos tystysgrifau. 
+cf.account.vat.historic.description=Dim ond ar gyfer y chwe mis diwethaf y bydd y gwasanaeth hwn yn dangos tystysgrifau.
 cf.account.vat.historic.request=Gwneud cais am dystysgrif sy’n hŷn na chwe mis
 cf.account.vat.unavailable=Mae’n ddrwg gennym, nid yw’ch tystysgrifau ar gael ar hyn o bryd. Rhowch gynnig arall arni yn nes ymlaen.
 cf.account.vat.statements.unavailable = Nid oedd unrhyw dystysgrifau i mewn {0}.
-# ------------------------------------------------------------------------
-
-# Import VAT requested statements view
-# ------------------------------------------------------------------------
-cf.import-vat.requested.title=Tystysgrifau TAW mewnforio (C79) y gofynnwyd amdanynt
-cf.import-vat.requested.available.text=Mae tystysgrifau y gofynnwyd amdanynt ar gael i’w gweld am 10 diwrnod. Gallwn ddarparu’r rhain ar ffurf PDF yn unig.
 # ------------------------------------------------------------------------
 
 # Not subscribed to CDS
@@ -147,10 +130,10 @@ cf.not-subscribed-to-cds.detail.process-application-info=Gall gymryd hyd at awr 
 #Requested
 # ------------------------------------------------------------------------
 cf.account.detail.requested-certificates-available-text.pre=Eich
-cf.account.detail.requested-certificates-available-link-text=datganiadau y gofynnwyd amdanynt
+cf.account.detail.requested-certificates-available-text.post=nawr ar gael
 cf.import-vat.requested-certificates-available-link-text=tystysgrifau y gofynnwyd amdanynt
 cf.postponed-vat.requested-statements-available-link-text=datganiadau y gofynnwyd amdanynt
-cf.account.detail.requested-certificates-available-text.post=nawr ar gael
+cf.security-statements.requested-link=Datganiadau y gofynnwyd amdanynt
 # ------------------------------------------------------------------------
 
 # Timeout Messages
