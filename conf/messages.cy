@@ -149,7 +149,7 @@ timeout.signOut=Allgofnodi
 # ------------------------------------------------------------------------
 cf.verify.your.email.title=Mae angen i chi ddilysu’r cyfeiriad e-bost cofrestredig ar gyfer y Gwasanaeth Datganiadau Tollau
 cf.verify.your.email.heading=Mae angen i chi ddilysu’r cyfeiriad e-bost cofrestredig ar gyfer y Gwasanaeth Datganiadau Tollau
-cv.verify.your.email.p1=Dyma’r cyfeiriad e-bost y mae’ch sefydliad wedi’i gofrestru ar gyfer y Gwasanaeth Datganiadau Tollau (CDS). Mae angen i chi ddilysu’r cyfeiriad e-bost hwn neu ei newid. Gallwch ddilysu’r cyfeiriad e-bost ar unwaith os oes gennych fynediad at y cyfrif e-bost.
+cf.verify.your.email.p1=Dyma’r cyfeiriad e-bost y mae’ch sefydliad wedi’i gofrestru ar gyfer y Gwasanaeth Datganiadau Tollau (CDS). Mae angen i chi ddilysu’r cyfeiriad e-bost hwn neu ei newid. Gallwch ddilysu’r cyfeiriad e-bost ar unwaith os oes gennych fynediad at y cyfrif e-bost.
 cf.verify.your.email.need-to-verify=Dyma fydd yr unig gyfeiriad e-bost a ddefnyddiwn ar gyfer:
 cf.verify.your.email.list.1=diweddariadau ar newidiadau i’r Gwasanaeth Datganiadau Tollau
 cf.verify.your.email.list.2=diweddariadau brys am nwyddau yn y tollau
