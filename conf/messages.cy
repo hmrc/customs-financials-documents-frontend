@@ -1,6 +1,6 @@
 service.name = Bwrw golwg dros eich cyfrifon ariannol ar gyfer y tollau
 
-cf.eori=EORI number:
+cf.eori=Rhif EORI:
 cf.account.details.previous-eori=EORI: {0}
 
 # Postponed VAT view
