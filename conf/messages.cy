@@ -169,8 +169,20 @@ cf.undeliverable.email.list.2=diweddariadau brys am nwyddau yn y tollau
 cf.undeliverable.email.list.3=rhai hysbysiadau ariannol, gan gynnwys hysbysiadau Debyd Uniongyrchol a TAW
 cf.undeliverable.email.link-text=Dilysu neu newid y cyfeiriad e-bost
 # ------------------------------------------------------------------------
+
 # Unauthorised Error
 cf.error.unauthorized.title=Nid ydych wedi’ch awdurdodi i fwrw golwg dros y dudalen hon
 cf.error.unauthorized.heading=Heb awdurdod
 cf.error.unauthorized.message=Nid ydych wedi’ch awdurdodi i fwrw golwg dros y dudalen hon
 # ------------------------------------------------------------------------
+
+# Page Not Found Error
+# ----------------------------------------------------------
+cf.error.not-found.title=Heb ddod o hyd i’r dudalen
+cf.error.not-found.heading=Heb ddod o hyd i’r dudalen
+cf.error.not-found.message.address-typed-wrong=Os gwnaethoch deipio’r cyfeiriad gwe, gwiriwch ei fod yn gywir.
+cf.error.not-found.message.address-pasted-wrong=Os gwnaethoch ludo’r cyfeiriad gwe, gwiriwch eich bod wedi copïo’r cyfeiriad yn llawn.
+cf.error.not-found.message.go-to-home-page-text1=Neu gallwch
+cf.error.not-found.message.go-to-home-page-text2=.
+cf.accounts.view-customs-account=fwrw golwg dros eich cyfrifon ariannol ar gyfer y tollau
+# ----------------------------------------------------------

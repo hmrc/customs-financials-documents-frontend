@@ -87,10 +87,10 @@
     message = "cf.account.vat.historic.description")
     
     @link(
-        id = Some("historic-statement-request-link"), 
-        classes = "govuk-body govuk-link", 
-        msg = "cf.account.vat.historic.request",      
-        url = appConfig.historicRequestUrl(C79Certificate)
+        linkId = Some("historic-statement-request-link"),
+        linkClass = "govuk-body govuk-link",
+        linkMessage = "cf.account.vat.historic.request",
+        location = appConfig.historicRequestUrl(C79Certificate)
         )
 
 }

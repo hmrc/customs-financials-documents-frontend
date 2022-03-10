@@ -16,6 +16,27 @@
 
 @this()
 
-@(msg: String, id: Option[String] = None, classes: String = "govuk-link", url: String, ariaLabel: Option[String] = None)(implicit messages: Messages)
+@(linkMessage: String,
+   location: String,
+   linkId: Option[String] = None,
+   linkClass: String = "govuk-link",
+   ariaLabel: Option[String] = None,
+   pWrapped: Boolean = true,
+   linkSentence: Boolean = false,
+   preLinkMessage: Option[String] = None,
+   postLinkMessage: Option[String] = None,
+   pId: Option[String] = None,
+   pClass: String = "govuk-body")(implicit messages: Messages
+)
 
-<a @{id.fold("")(id => s"id=$id")} href="@url" class="@classes" >@messages(msg)</a>
+@link = {
+  <a @{linkId.fold("")(id => s"id=$id")} class="@linkClass" href="@location">@Html(messages(linkMessage))</a>@if(linkSentence){.}
+}
+
+@if(pWrapped) {
+ <p @{pId.fold("")(id => s"id=$id")} class="@pClass">
+   @preLinkMessage.map(m => messages(m))
+   @link
+   @postLinkMessage.map(m => messages(m))
+ </p>
+}
