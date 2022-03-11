@@ -168,8 +168,19 @@ cf.undeliverable.email.list.2=urgent updates about goods in customs
 cf.undeliverable.email.list.3=some financial notifications, including Direct Debit notices and VAT
 cf.undeliverable.email.link-text=Verify or change email address
 # ------------------------------------------------------------------------
+
 # Unauthorised Error
 cf.error.unauthorized.title=You are not authorised to view this page
 cf.error.unauthorized.heading=Unauthorised
 cf.error.unauthorized.message=You are not authorised to view this page
 # ------------------------------------------------------------------------
+
+# Page Not Found Error
+# ----------------------------------------------------------
+cf.error.not-found.title=Page not found
+cf.error.not-found.heading=Page not found
+cf.error.not-found.message.address-typed-wrong=If you typed the web address, check it is correct.
+cf.error.not-found.message.address-pasted-wrong=If you pasted the web address, check you copied the entire address.
+cf.error.not-found.message.go-to-home-page-text1=Or you can
+cf.error.not-found.message.go-to-home-page-text2=.
+cf.accounts.view-customs-account=view your customs financial accounts
