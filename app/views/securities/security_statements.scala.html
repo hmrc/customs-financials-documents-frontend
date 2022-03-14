@@ -71,7 +71,7 @@
                                         <span aria-hidden="true">@messages("cf.unavailable")</span>
                                     </div>
                                 } { pdf =>
-                                    @link(linkMessage = s"PDF (${pdf.formattedSize})", linkClass = "file-link govuk-link", location = pdf.downloadURL, pClass= "",
+                                    @link(linkMessage = s"PDF (${pdf.formattedSize})", linkClass = "file-link govuk-link", location = pdf.downloadURL, pWrapped = false,
                                         ariaLabel = Some(
                                             messages("cf.security-statements.requested.download-link.aria-text",
                                             Pdf,
