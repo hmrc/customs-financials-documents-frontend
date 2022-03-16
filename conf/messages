@@ -21,8 +21,8 @@ cf.account.pvat.no-statements-yet=There are no statements available to view yet.
 cf.account.pvat.holding-message.1=From 1 January 2021 you may be able to account for import VAT on your VAT Return. You can
 cf.account.pvat.link-message=check if you can use postponed VAT accounting (opens in new tab)
 cf.account.pvat.statements.unavailable = There were no statements in {0}
-cf.account.pvat.historic.description=This service will only show statements for the last six months.
-cf.account.pvat.historic.request=Request a statement that’s older than six months
+cf.account.pvat.historic.description=This service will only show statements for the last 6 months.
+cf.account.pvat.historic.request=Request a statement that’s older than 6 months
 # ------------------------------------------------------------------------
 
 # Common messages
@@ -36,7 +36,7 @@ cf.common.missing-documents-guidance.certificates = Certificates
 cf.common.missing-documents-guidance.heading=Why is my {0} not available?
 cf.common.missing-documents-guidance.chiefHeading={0} made in CHIEF
 cf.common.missing-documents-guidance.text1={0} for import declarations made in Customs Handling of Import and Export Freight (CHIEF) are not available in this service.
-cf.common.missing-documents-guidance.subHeading={0} older than six months
+cf.common.missing-documents-guidance.subHeading={0} older than 6 months
 cf.common.missing-documents-guidance.text2={0} are only created for periods in which you imported goods.
 # ------------------------------------------------------------------------
 
@@ -89,8 +89,8 @@ cf.security-statements.title=Notification of adjustment statements
 cf.security-statements.no-statements=There are no statements available to view.
 cf.security-statements.screen-reader.unavailable={0} for {1} to {2} unavailable
 
-cf.security-statements.historic.description=This service will only show statements for the last six months.
-cf.security-statements.historic.request=Request a statement that’s older than six months
+cf.security-statements.historic.description=This service will only show statements for the last 6 months.
+cf.security-statements.historic.request=Request a statement that’s older than 6 months
 cf.security-statements.unavailable= Sorry, your statements are not available at the moment. Please try again later.
 # ------------------------------------------------------------------------
 
@@ -109,8 +109,8 @@ cf.account.vat.missing-file=Unavailable
 cf.account.vat.missing-file-hidden-text={0} for {1} unavailable
 cf.account.vat.download-link=Download {1} {0} ({2})
 cf.account.vat.no-certificates-available=There are no certificates available to view.
-cf.account.vat.historic.description=This service will only show certificates for the last six months.
-cf.account.vat.historic.request=Request a certificate that’s older than six months
+cf.account.vat.historic.description=This service will only show certificates for the last 6 months.
+cf.account.vat.historic.request=Request a certificate that’s older than 6 months
 cf.account.vat.unavailable=Sorry, your certificates are not available at the moment. Please try again later.
 cf.account.vat.statements.unavailable = There were no certificates in {0}.
 # ------------------------------------------------------------------------
