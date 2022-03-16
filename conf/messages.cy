@@ -21,8 +21,8 @@ cf.account.pvat.no-statements-yet=Nid oes datganiadau ar gael i’w gweld eto.
 cf.account.pvat.holding-message.1=O 1 Ionawr 2021 ymlaen, mae’n bosibl y gallwch roi cyfrif am TAW mewnforio ar eich Ffurflen TAW. Gallwch
 cf.account.pvat.link-message=wirio os gallwch ddefnyddio cyfrifyddu TAW ohiriedig (yn agor tab newydd)
 cf.account.pvat.statements.unavailable = Nid oedd unrhyw ddatganiadau i mewn {0}
-cf.account.pvat.historic.description=Dim ond ar gyfer y chwe mis diwethaf y bydd y gwasanaeth hwn yn dangos datganiadau.
-cf.account.pvat.historic.request=Gwneud cais am ddatganiad sy’n hŷn na chwe mis
+cf.account.pvat.historic.description=Dim ond ar gyfer y 6 mis diwethaf y bydd y gwasanaeth hwn yn dangos datganiadau.
+cf.account.pvat.historic.request=Gwneud cais am ddatganiad sy’n hŷn na 6 mis
 # ------------------------------------------------------------------------
 
 
@@ -37,7 +37,7 @@ cf.common.missing-documents-guidance.certificates = Tystysgrifau
 cf.common.missing-documents-guidance.heading=Pam nad yw fy {0} ar gael?
 cf.common.missing-documents-guidance.chiefHeading={0} a wneir yn CHIEF
 cf.common.missing-documents-guidance.text1=Nid yw {0} ar gyfer datganiadau mewnforio a wneir yn System y Tollau ar gyfer Trin Nwyddau a Gaiff eu Mewnforio a’u Hallforio (CHIEF) ar gael yn y gwasanaeth hwn.
-cf.common.missing-documents-guidance.subHeading={0} sy’n hŷn na chwe mis
+cf.common.missing-documents-guidance.subHeading={0} sy’n hŷn na 6 mis
 cf.common.missing-documents-guidance.text2= Dim ond ar gyfer cyfnodau lle y gwnaethoch fewnforio nwyddau y mae {0} cael eu creu.
 # ------------------------------------------------------------------------
 
@@ -90,8 +90,8 @@ cf.security-statements.title=Hysbysiad o ddatganiadau addasu
 cf.security-statements.no-statements=Nid oes datganiadau ar gael i’w gweld.
 cf.security-statements.screen-reader.unavailable=Nid yw {0} ar gyfer {1} i {2} ar gael
 
-cf.security-statements.historic.description=Dim ond ar gyfer y chwe mis diwethaf y bydd y gwasanaeth hwn yn dangos datganiadau.
-cf.security-statements.historic.request=Gwneud cais am ddatganiad sy’n hŷn na chwe mis
+cf.security-statements.historic.description=Dim ond ar gyfer y 6 mis diwethaf y bydd y gwasanaeth hwn yn dangos datganiadau.
+cf.security-statements.historic.request=Gwneud cais am ddatganiad sy’n hŷn na 6 mis
 cf.security-statements.unavailable=Mae’n ddrwg gennym – nid yw’ch datganiadau ar gael ar hyn o bryd. Rhowch gynnig arall arni yn nes ymlaen.
 # ------------------------------------------------------------------------
 
@@ -110,8 +110,8 @@ cf.account.vat.missing-file=Nid yw ar gael
 cf.account.vat.download-link=Lawrlwytho {0} o {1} ({2})
 cf.account.vat.missing-file-hidden-text=Nid yw {0} ar gyfer {1} ar gael
 cf.account.vat.no-certificates-available=Nid oes tystysgrifau ar gael i’w gweld.
-cf.account.vat.historic.description=Dim ond ar gyfer y chwe mis diwethaf y bydd y gwasanaeth hwn yn dangos tystysgrifau.
-cf.account.vat.historic.request=Gwneud cais am dystysgrif sy’n hŷn na chwe mis
+cf.account.vat.historic.description=Dim ond ar gyfer y 6 mis diwethaf y bydd y gwasanaeth hwn yn dangos tystysgrifau.
+cf.account.vat.historic.request=Gwneud cais am dystysgrif sy’n hŷn na 6 mis
 cf.account.vat.unavailable=Mae’n ddrwg gennym, nid yw’ch tystysgrifau ar gael ar hyn o bryd. Rhowch gynnig arall arni yn nes ymlaen.
 cf.account.vat.statements.unavailable = Nid oedd unrhyw dystysgrifau i mewn {0}.
 # ------------------------------------------------------------------------
