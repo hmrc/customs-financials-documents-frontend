@@ -72,6 +72,7 @@
                                     </div>
                                 } { pdf =>
                                     @link(linkMessage = s"PDF (${pdf.formattedSize})", linkClass = "file-link govuk-link", location = pdf.downloadURL,
+                                         pClass = "",
                                         ariaLabel = Some(
                                             messages("cf.security-statements.requested.download-link.aria-text",
                                             Pdf,
