@@ -20,7 +20,7 @@
    location: String,
    linkId: Option[String] = None,
    linkClass: String = "govuk-link",
-   ariaLabel: Option[String] = Some(""),
+   ariaLabel: Option[String] = None,
    pWrapped: Boolean = true,
    linkSentence: Boolean = false,
    preLinkMessage: Option[String] = None,
@@ -30,7 +30,7 @@
 )
 
 @link = {
-  <a @{linkId.fold("")(id => s"id=$id")} class="@linkClass" href="@location" aria-label="@ariaLabel.map(m => messages(m))">
+  <a @{linkId.fold("")(id => s"id=$id")} class="@linkClass" href="@location" @if(ariaLabel.isDefined){aria-label="@ariaLabel"}>
     @Html(messages(linkMessage))
   </a>@if(linkSentence){.}
 }
