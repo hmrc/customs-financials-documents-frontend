@@ -30,7 +30,9 @@
 )
 
 @link = {
-  <a @{linkId.fold("")(id => s"id=$id")} class="@linkClass" href="@location">@Html(messages(linkMessage))</a>@if(linkSentence){.}
+  <a @{linkId.fold("")(id => s"id=$id")} class="@linkClass" href="@location" @if(ariaLabel.isDefined){aria-label="@ariaLabel"}>
+    @Html(messages(linkMessage))
+  </a>@if(linkSentence){.}
 }
 
 @if(pWrapped) {
