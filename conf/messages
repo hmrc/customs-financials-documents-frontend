@@ -130,7 +130,7 @@ cf.not-subscribed-to-cds.detail.process-application-info=It can take up to two h
 #Requested
 # ------------------------------------------------------------------------
 cf.account.detail.requested-certificates-available-text.pre=Your
-cf.account.detail.requested-certificates-available-text.post=are now available
+cf.account.detail.requested-certificates-available-text.post=are now available.
 cf.import-vat.requested-certificates-available-link-text=requested certificates
 cf.postponed-vat.requested-statements-available-link-text=requested statements
 cf.security-statements.requested-link=requested statements

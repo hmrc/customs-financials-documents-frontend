@@ -21,9 +21,12 @@
 @(url: String)(implicit messages: Messages)
   <div id="request-statement-link" class="notifications-panel">
    <ul class="govuk-list govuk-!-margin-top-0 govuk-!-margin-bottom-0">
-    <li>@messages("cf.account.detail.requested-certificates-available-text.pre")
-     @link("cf.security-statements.requested-link", location = url)
-     @messages("cf.account.detail.requested-certificates-available-text.post")</li>
+    <li>
+     @link("cf.security-statements.requested-link",
+       location = url,
+       preLinkMessage = Some("cf.account.detail.requested-certificates-available-text.pre"),
+       postLinkMessage = Some("cf.account.detail.requested-certificates-available-text.post"))
+    </li>
    </ul>
  </div>
 

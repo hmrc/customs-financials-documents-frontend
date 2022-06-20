@@ -131,7 +131,7 @@ cf.not-subscribed-to-cds.detail.process-application-info=Gall gymryd hyd at awr 
 #Requested
 # ------------------------------------------------------------------------
 cf.account.detail.requested-certificates-available-text.pre=Eich
-cf.account.detail.requested-certificates-available-text.post=nawr ar gael
+cf.account.detail.requested-certificates-available-text.post=nawr ar gael.
 cf.import-vat.requested-certificates-available-link-text=tystysgrifau y gofynnwyd amdanynt
 cf.postponed-vat.requested-statements-available-link-text=datganiadau y gofynnwyd amdanynt
 cf.security-statements.requested-link=Datganiadau y gofynnwyd amdanynt
