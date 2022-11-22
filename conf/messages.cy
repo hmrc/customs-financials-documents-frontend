@@ -70,13 +70,6 @@ month.abbr.11 = Tach
 month.abbr.12 = Rhag
 # ------------------------------------------------------------------------
 
-# Help and support
-# ------------------------------------------------------------------------
-help.heading=Help a chymorth
-help.p1=Os ydych yn profi anawsterau, ffoniwch 0300 200 3705.
-help.p2=Ar agor rhwng 08:30 a 17:00 o ddydd Llun i ddydd Gwener (ar gau ar wyliau banc).
-# ------------------------------------------------------------------------
-
 # BETA Banner
 # ------------------------------------------------------------------------
 feedback.before =  Gwasanaeth newydd yw hwn – bydd eich
