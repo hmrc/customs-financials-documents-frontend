@@ -124,11 +124,12 @@
         message = "cf.account.pvat.historic.description")
         
         @link(
+            pClass = "govuk-body govuk-!-margin-bottom-9",
             linkId = Some("historic-statement-request-link"),
             linkClass = "govuk-body govuk-link",
             linkMessage = "cf.account.pvat.historic.request",
             location = appConfig.historicRequestUrl(PostponedVATStatement)
-            )     
+        )     
     }
 
 }
