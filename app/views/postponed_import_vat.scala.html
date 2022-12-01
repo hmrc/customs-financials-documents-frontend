@@ -124,13 +124,24 @@
         message = "cf.account.pvat.historic.description")
         
         @link(
-            pClass = "govuk-body govuk-!-margin-bottom-9",
+            pClass = "govuk-body govuk-!-margin-bottom-3",
             linkId = Some("historic-statement-request-link"),
             linkClass = "govuk-body govuk-link",
             linkMessage = "cf.account.pvat.historic.request",
             location = appConfig.historicRequestUrl(PostponedVATStatement)
-        )     
+        )
     }
+    <div id="pvat.support.heading" class="govuk-!-padding-top-2">
+        @h2(
+            id = Some("pvat.support.message"),
+            msg = "cf.account.pvat.support.heading",
+            classes = "govuk-heading-m govuk-!-margin-top-2"
+        )
+        <p class="govuk-body govuk-!-margin-bottom-6" id="pvat.support.message">
+            @messages("cf.account.pvat.support.message")
+            <a class="govuk-link" target="_blank" rel="noreferrer noopener" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/vat-enquiries">@messages("cf.account.pvat.support.link")</a>.
+        </p>
+    </div>
 
 }
 
