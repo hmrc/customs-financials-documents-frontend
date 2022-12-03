@@ -25,7 +25,7 @@ cf.account.pvat.historic.description=Dim ond ar gyfer y 6 mis diwethaf y bydd y 
 cf.account.pvat.historic.request=Gwneud cais am ddatganiad sy’n hŷn na 6 mis
 cf.account.pvat.support.heading=Help a chymorth
 cf.account.pvat.support.message=Os oes angen help
-cf.account.pvat.support.link=arnoch cysylltwch â CThEM ynghylch TAW (yn agor tab newydd).
+cf.account.pvat.support.link=arnoch cysylltwch â CThEM ynghylch TAW (yn agor tab newydd)
 # ------------------------------------------------------------------------
 
 
