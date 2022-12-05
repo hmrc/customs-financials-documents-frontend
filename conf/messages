@@ -111,7 +111,7 @@ cf.account.vat.unavailable=Sorry, your certificates are not available at the mom
 cf.account.vat.statements.unavailable = There were no certificates in {0}.
 cf.account.vat.support.heading=Help and support
 cf.account.vat.support.message=If you need help
-cf.account.vat.support.link=contact HMRC about VAT (opens in new tab)
+cf.account.vat.support.link=contact HMRC about VAT (opens in new tab).
 # ------------------------------------------------------------------------
 
 # Not subscribed to CDS
