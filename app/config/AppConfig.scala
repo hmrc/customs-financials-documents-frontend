@@ -34,6 +34,8 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val customsDataStore: String = servicesConfig.baseUrl("customs-data-store") +
     config.get[String]("microservice.services.customs-data-store.context")
 
+  lazy val viewVatAccountSupportLink: String = config.get[String]("external-urls.viewVatAccountSupportLink")
+
   lazy val loginUrl: String = config.get[String]("external-urls.login")
   lazy val loginContinueUrl: String = config.get[String]("external-urls.loginContinue")
   lazy val registerCdsUrl: String = config.get[String]("external-urls.cdsRegisterUrl")

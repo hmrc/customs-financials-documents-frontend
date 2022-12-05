@@ -101,6 +101,9 @@ cf.security-statements.requested.download-link.aria-text=Lawrlwytho {0} ar gyfer
 
 # VAT Detail view
 # ------------------------------------------------------------------------
+cf.account.vat.support.heading=Help a chymorth
+cf.account.vat.support.message=Os oes angen help
+cf.account.vat.support.link=arnoch cysylltwch â CThEM ynghylch TAW (yn agor tab newydd)
 cf.account.vat.title=Tystysgrifau TAW mewnforio (C79)
 cf.account.vat.missing-file=Nid yw ar gael
 cf.account.vat.download-link=Lawrlwytho {0} o {1} ({2})
