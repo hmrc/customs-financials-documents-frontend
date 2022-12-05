@@ -20,9 +20,12 @@
 @import models.FileRole.C79Certificate
 @import models.FileFormat.Pdf
 @import models.FileFormat.Csv
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcNewTabLink
+@import uk.gov.hmrc.hmrcfrontend.views.Aliases.NewTabLink
 
 @this(
     layout: Layout,
+    hmrcNewTabLink: HmrcNewTabLink,
     h1: components.h1,
     h2: components.h2,
     link: components.link,
@@ -93,5 +96,20 @@
         linkMessage = "cf.account.vat.historic.request",
         location = appConfig.historicRequestUrl(C79Certificate)
         )
+
+    @h2("cf.account.vat.support.heading")
+
+    @p(
+        message = "cf.account.vat.support.message",
+        tabLink = Some(hmrcNewTabLink(
+                NewTabLink(
+                    language = Some(messages.lang.toString),
+                    classList = Some("govuk-link"),
+                    href=Some(appConfig.viewVatAccountSupportLink),
+                    text=messages("cf.account.vat.support.link")
+                )
+            )
+        )
+    )
 
 }
