@@ -25,7 +25,7 @@ cf.account.pvat.historic.description=This service will only show statements for 
 cf.account.pvat.historic.request=Request a statement that’s older than 6 months
 cf.account.pvat.support.heading=Help and support
 cf.account.pvat.support.message=If you need help
-cf.account.pvat.support.link=contact HMRC about VAT (opens in new tab).
+cf.account.pvat.support.link=contact HMRC about VAT (opens in new tab)
 # ------------------------------------------------------------------------
 
 # Common messages
