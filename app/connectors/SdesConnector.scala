@@ -76,12 +76,6 @@ class SdesConnector @Inject()(httpClient: HttpClient,
       httpClient.GET[HttpResponse](url, headers = Seq("x-client-id" -> appConfig.xClientIdHeader, "X-SDES-Key" -> key))(reads, HeaderCarrier(), implicitly)
         .map(readSeq.read("GET", url, _))
         .map(transform)
-        .map{ files =>
-          auditingService.auditFiles(files, key)
-          files
-        }
     }
   }
-
-
 }

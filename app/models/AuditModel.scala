@@ -16,20 +16,6 @@
 
 package models
 
-import models.metadata.SdesFileMetadata
-import play.api.libs.json.{JsValue, Json, Writes}
+import play.api.libs.json.JsValue
 
 case class AuditModel(auditType: String, transactionName: String, detail: JsValue)
-
-case class DownloadStatementAuditData(auditData: Map[String, String])
-
-object DownloadStatementAuditData {
-
-  def apply(metadata: SdesFileMetadata, eori: String): DownloadStatementAuditData = {
-    val auditData = metadata.toMap
-    DownloadStatementAuditData(auditData + ("eori" -> eori))
-  }
-
-  implicit val downloadStatementAuditDataWrites: Writes[DownloadStatementAuditData] =  Json.writes[DownloadStatementAuditData]
-
-}

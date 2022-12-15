@@ -17,7 +17,7 @@
 package services
 
 import config.AppConfig
-import models.{AuditEori, AuditModel, EoriHistory, SdesFile}
+import models.{AuditEori, AuditModel, EoriHistory}
 import play.api.http.HeaderNames
 import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -30,10 +30,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AuditingService @Inject()(appConfig: AppConfig, auditConnector: AuditConnector)(implicit executionContext: ExecutionContext) {
-
-  def auditFiles[T <: SdesFile](files: Seq[T], eori: String)(implicit hc: HeaderCarrier): Future[Seq[AuditResult]] = {
-    Future.sequence(files.map { file =>audit(file.auditModelFor(eori))})
-  }
 
   def auditVatCertificates(eori: String)(implicit hc: HeaderCarrier): Future[AuditResult] =
     audit(AuditModel("DisplayVATCertificates", "Display VAT certificates", Json.toJson(AuditEori(eori, isHistoric = false))))
