@@ -18,7 +18,6 @@ package models
 
 import models.metadata.{PostponedVatStatementFileMetadata, SdesFileMetadata, SecurityStatementFileMetadata, VatCertificateFileMetadata}
 import play.api.i18n.Messages
-import play.api.libs.json.Json
 import views.helpers.Formatters
 
 import java.time.LocalDate
@@ -29,13 +28,6 @@ trait SdesFile {
 
   val fileFormat: FileFormat = metadata.fileFormat
   val monthAndYear: LocalDate = LocalDate.of(metadata.periodStartYear, metadata.periodStartMonth, 1)
-
-  def auditModelFor(eori: String): AuditModel = {
-    val downloadStatementAuditData = DownloadStatementAuditData.apply(metadata, eori)
-    val data = downloadStatementAuditData.auditData
-    val auditModel = AuditModel("DownloadStatement", metadata.fileRole.transactionName, Json.toJson(data))
-    auditModel
-  }
 }
 
 case class SecurityStatementFile(filename: String,
