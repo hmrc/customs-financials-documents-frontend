@@ -21,7 +21,6 @@ import config.AppConfig
 import models.AuthenticatedRequest
 import play.api.mvc._
 import uk.gov.hmrc.auth.core._
-
 import scala.concurrent.ExecutionContext
 
 trait IdentifierAction extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest]

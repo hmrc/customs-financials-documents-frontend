@@ -19,11 +19,11 @@ package services
 import config.AppConfig
 import models.{AuditEori, AuditModel, EoriHistory}
 import play.api.http.HeaderNames
-import play.api.libs.json.{Json, Writes}
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
-import uk.gov.hmrc.play.audit.model.{DataEvent, ExtendedDataEvent}
+import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -51,8 +51,7 @@ class AuditingService @Inject()(appConfig: AppConfig, auditConnector: AuditConne
 
   private def audit(auditModel: AuditModel)(implicit hc: HeaderCarrier): Future[AuditResult] = {
     val referrer: HeaderCarrier => String = _.headers(Seq(HeaderNames.REFERER)).headOption.fold("-")(_._2)
-    implicit val dataEventWrites: Writes[DataEvent] = Json.writes[DataEvent]
-
+   
     val dataEvent = ExtendedDataEvent(
       auditSource = appConfig.appName,
       auditType = auditModel.auditType,
