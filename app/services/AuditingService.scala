@@ -51,8 +51,7 @@ class AuditingService @Inject()(appConfig: AppConfig, auditConnector: AuditConne
 
   private def audit(auditModel: AuditModel)(implicit hc: HeaderCarrier): Future[AuditResult] = {
     val referrer: HeaderCarrier => String = _.headers(Seq(HeaderNames.REFERER)).headOption.fold("-")(_._2)
-    implicit val dataEventWrites: Writes[DataEvent] = Json.writes[DataEvent]
-
+   
     val dataEvent = ExtendedDataEvent(
       auditSource = appConfig.appName,
       auditType = auditModel.auditType,
