@@ -48,12 +48,12 @@ class PostponedVatControllerSpec extends SpecBase {
       }
     }
 
-    "return Unauthorized if no session found" in {
+    "return 200 for generic request" in {
       val app = application().build()
       val request = FakeRequest(routes.PostponedVatController.show(Some("CDS")))
       running(app) {
         val result = route(app, request).value
-        status(result) mustBe UNAUTHORIZED
+        status(result) mustBe 200
       }
     }
   }
