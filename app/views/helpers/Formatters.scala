@@ -49,7 +49,7 @@ trait DateFormatters {
 trait CurrencyFormatters {
   def formatCurrencyAmount(amount: BigDecimal): String = {
     val numberFormat: NumberFormat = NumberFormat.getCurrencyInstance(Locale.UK)
-    val outputDecimals = if (amount.isWhole()) 0 else 2
+    val outputDecimals = if (amount.isWhole) 0 else 2
     numberFormat.setMaximumFractionDigits(outputDecimals)
     numberFormat.setMinimumFractionDigits(outputDecimals)
     numberFormat.format(amount)

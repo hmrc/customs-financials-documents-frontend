@@ -80,7 +80,6 @@
   pageTitle = fullPageTitle,
   serviceUrl = Some(appConfig.customsFinancialsFrontendHomepage),
   signOutUrl = Some(routes.LogoutController.logout.url),
-  nonce = CSPNonce.get,
   backLinkUrl = backLink,
   additionalHeadBlock = Some(additionalHead),
   phaseBanner = Some(PhaseBanner(tag = Some(Tag(content = Text("BETA"))), content = HtmlContent(phaseBannerContent))),
