@@ -1,4 +1,4 @@
-import uk.gov.hmrc.DefaultBuildSettings.integrationTestSettings
+import uk.gov.hmrc.DefaultBuildSettings.{integrationTestSettings, targetJvm}
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName = "customs-financials-documents-frontend"
@@ -12,6 +12,7 @@ lazy val microservice = Project(appName, file("."))
   .settings(
     majorVersion                     := 0,
     scalaVersion                     := "2.13.8",
+    targetJvm                        := "jvm-11",
     libraryDependencies              ++= AppDependencies.compile ++ AppDependencies.test,
     pipelineStages in Assets := Seq(gzip),
     // ***************
