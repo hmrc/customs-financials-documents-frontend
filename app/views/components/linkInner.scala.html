@@ -18,4 +18,7 @@
 
 @(msgs: String, id: Option[String] = None, classes: String = "govuk-link", url: String, ariaLabel: Option[String] = None)(implicit messages: Messages)
 
-<a @{id.fold("")(id => s"id=$id")} href="@url" class="@classes" aria-label="@ariaLabel">@msgs</a>
+<a @{id.fold("")(id => s"id=$id")} href="@url" class="@classes">
+    <span>@msgs</span>
+    <span class="govuk-visually-hidden">@ariaLabel</span>
+</a>

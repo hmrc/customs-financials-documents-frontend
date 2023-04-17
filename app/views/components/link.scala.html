@@ -30,8 +30,11 @@
 )
 
 @link = {
-  <a @{linkId.fold("")(id => s"id=$id")} class="@linkClass" href="@location" @if(ariaLabel.isDefined){aria-label="@ariaLabel"}>
-    @Html(messages(linkMessage))
+  <a @{linkId.fold("")(id => s"id=$id")} class="@linkClass" href="@location">
+    <span>@Html(messages(linkMessage))</span>
+    @if(ariaLabel.isDefined){
+      <span class="govuk-visually-hidden">@ariaLabel</span>
+    }
   </a>@if(linkSentence){.}
 }
 

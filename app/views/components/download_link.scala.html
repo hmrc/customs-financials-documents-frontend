@@ -22,7 +22,16 @@
         <span aria-hidden="true">@messages("cf.account.vat.missing-file")</span>
     </div>
 }{file =>
-    <span class="download-link"><a id="@id" class="file-link govuk-link" href="@{file.downloadURL}" aria-label="@voiceover(fileFormat, period, file.formattedSize)" download>@fileFormat (@file.formattedSize)</a></span>
+    <span class="download-link">
+        <a id="@id" class="file-link govuk-link" href="@{file.downloadURL}" download>
+            <span>
+                @fileFormat (@file.formattedSize)
+            </span>
+            <span class="govuk-visually-hidden">
+                @voiceover(fileFormat, period, file.formattedSize)
+            </span>
+        </a>
+    </span>
 }
 
 @hiddentext(fileFormat: FileFormat, period: String) = {
