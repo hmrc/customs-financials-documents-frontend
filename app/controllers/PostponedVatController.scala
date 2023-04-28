@@ -21,12 +21,14 @@ import config.{AppConfig, ErrorHandler}
 import connectors.{FinancialsApiConnector, SdesConnector}
 import models.DutyPaymentMethod.CHIEF
 import models.FileRole.PostponedVATStatement
+import play.api.{Logger, LoggerLike}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.DateTimeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import viewmodels.PostponedVatViewModel
 import views.html.postponed_import_vat
+import views.html.postponed_import_vat_not_available
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,15 +40,18 @@ class PostponedVatController @Inject()
  val resolveSessionId: SessionIdAction,
  implicit val dateTimeService: DateTimeService,
  postponedImportVatView: postponed_import_vat,
+ postponedImportVatNotAvailableView: postponed_import_vat_not_available,
  financialsApiConnector: FinancialsApiConnector,
  checkEmailIsVerified: EmailAction,
  sdesConnector: SdesConnector,
  implicit val mcc: MessagesControllerComponents)(implicit val appConfig: AppConfig, val errorHandler: ErrorHandler, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
+  val log: LoggerLike = Logger(this.getClass)
+
   def show(location: Option[String]): Action[AnyContent] = (authenticate andThen checkEmailIsVerified andThen resolveSessionId) async { implicit req =>
     financialsApiConnector.deleteNotification(req.eori, PostponedVATStatement)
-    for {
+    (for {
       postponedVatStatements <- sdesConnector.getPostponedVatStatements(req.eori)
       filteredHistoricEoris = req.allEoriHistory.filterNot(_.eori == req.eori)
       historicPostponedVatStatements <- Future.sequence(
@@ -63,7 +68,11 @@ class PostponedVatController @Inject()
         allPostponedVatStatements.count(_.metadata.source != CHIEF) == allPostponedVatStatements.size,
         location)
       )
-    }
+    }).recover { case _ => Redirect(routes.PostponedVatController.statementsUnavailablePage()) }
+  }
+
+  def statementsUnavailablePage(): Action[AnyContent] = authenticate andThen checkEmailIsVerified async { implicit req =>
+    Future.successful(Ok(postponedImportVatNotAvailableView(req.eori)))
   }
 }
 
