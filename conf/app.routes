@@ -12,6 +12,7 @@ GET        /verify-your-email                          controllers.EmailControll
 GET        /email-undeliverable                        controllers.EmailController.showUndeliverable()
 
 GET        /postponed-vat                              controllers.PostponedVatController.show(location: Option[String])
+GET        /postponed-vat/statements-unavailable       controllers.PostponedVatController.statementsUnavailablePage()
 
 GET        /adjustments                                controllers.SecuritiesController.showSecurityStatements
 GET        /adjustments/statements-unavailable         controllers.SecuritiesController.statementsUnavailablePage()

@@ -1,0 +1,84 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.html.components._
+@import models.FileRole.PostponedVATStatement
+@import views.html.Layout
+@import models.PostponedVatStatementGroup
+
+@this(
+layout: Layout,
+p: components.p,
+pInner: components.pInner,
+link: components.link,
+linkInner: components.linkInner,
+h1: components.h1,
+h2: components.h2,
+h2Inner: components.h2Inner,
+inset: components.inset
+)
+
+
+@(eori: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+
+@layout(pageTitle = Some(messages("cf.account.pvat.title")) , backLink = Some(appConfig.customsFinancialsFrontendHomepage)) {
+<span class="govuk-caption-xl" id="eori-heading">
+        @messages("cf.eori")
+        <span id="eori">@{
+            eori
+        }</span>
+    </span>
+@h1(msg = "cf.account.pvat.title", classes = "govuk-heading-xl  govuk-!-margin-bottom-6")
+
+@p(message = "cf.security-statements.unavailable", classes = "govuk-inset-text", id = Some("no-statements"))
+
+<div id="missing-documents-guidance" class="govuk-!-padding-top-2">
+ @h2Inner(
+ id = Some("missing-documents-guidance-heading"),
+ msg = "cf.common.missing-documents-guidance.heading",
+ innerMsg = "cf.common.missing-documents-guidance.statement",
+ classes = "govuk-heading-m govuk-!-margin-top-6"
+ )
+
+ @pInner("cf.common.missing-documents-guidance.text2", "cf.common.missing-documents-guidance.statements", id = Some("missing-documents-guidance-text2"))
+</div>
+
+@p(id = Some("historic-statement-request"),
+message = "cf.account.pvat.historic.description")
+
+@link(
+pClass = "govuk-body govuk-!-margin-bottom-9",
+linkId = Some("historic-statement-request-link"),
+linkClass = "govuk-body govuk-link",
+linkMessage = "cf.account.pvat.historic.request",
+location = appConfig.historicRequestUrl(PostponedVATStatement)
+)
+
+<div id="pvat.support.heading" class="govuk-!-padding-top-2">
+ @h2(
+ id = Some("pvat.support.message.heading"),
+ msg = "cf.account.pvat.support.heading",
+ classes = "govuk-heading-m govuk-!-margin-top-2"
+ )
+ <p class="govuk-body govuk-!-margin-bottom-9" id="pvat.support.message">
+  @messages("cf.account.pvat.support.message")
+  <a  class="govuk-link" target="_blank" rel="noreferrer noopener"
+      href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/vat-enquiries">
+   @messages("cf.account.pvat.support.link")</a>.
+ </p>
+</div>
+
+}
