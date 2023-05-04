@@ -41,12 +41,12 @@
 @(eori: String, statementGroups: Seq[PostponedVatStatementGroup], hasRequestedStatements: Boolean, cdsOnly: Boolean, location: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @layout(pageTitle = Some(messages("cf.account.pvat.title")) , backLink = location.map(_ => appConfig.customsFinancialsFrontendHomepage)) {
-    <span class="govuk-caption-xl" id="eori-heading">
+    <h2 class="govuk-caption-xl" id="eori-heading">
         @messages("cf.eori")
         <span id="eori">@{
             eori
         }</span>
-    </span>
+    </h2>
     @h1(msg = "cf.account.pvat.title", classes = "govuk-heading-xl  govuk-!-margin-bottom-6")
 
     @if(messages.isDefinedAt("cf.account.pvat.holding-message.1")) {
