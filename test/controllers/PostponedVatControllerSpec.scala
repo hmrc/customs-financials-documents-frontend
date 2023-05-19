@@ -159,7 +159,7 @@ class PostponedVatControllerSpec extends SpecBase {
     val date: LocalDate = LocalDate.now()
 
     val postponedVatStatementFiles: Seq[PostponedVatStatementFile] = List(
-      PostponedVatStatementFile("name_04", "/some-url", 111L,¡ PostponedVatStatementFileMetadata(date.getYear, date.minusMonths(7).getMonthValue, Csv, PostponedVATStatement, CDS, None), "testEori1"),
+      PostponedVatStatementFile("name_04", "/some-url", 111L, PostponedVatStatementFileMetadata(date.getYear, date.minusMonths(7).getMonthValue, Csv, PostponedVATStatement, CDS, None), "testEori1"),
       PostponedVatStatementFile("name_04", "/some-url", 111L, PostponedVatStatementFileMetadata(date.getYear, date.minusMonths(7).getMonthValue, Pdf, PostponedVATStatement, CDS, None), "testEori1"),
       PostponedVatStatementFile("name_03", "/some-url", 111L, PostponedVatStatementFileMetadata(date.getYear, date.minusMonths(4).getMonthValue, Pdf, PostponedVATStatement, CDS, None), "testEori1"),
       PostponedVatStatementFile("name_02", "/some-url", 111L, PostponedVatStatementFileMetadata(date.getYear, date.minusMonths(5).getMonthValue, Csv, PostponedVATStatement, CDS, None), "testEori1"),
