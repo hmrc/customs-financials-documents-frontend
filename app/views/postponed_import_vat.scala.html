@@ -67,15 +67,14 @@
     }
 
     @for(statementGroup <- statementGroups) {
-        <div id=@{
-            statementGroup.periodId
-        }>
-        @if(!statementGroup.noStatements || statementGroup.isPreviousMonthAndAfter15th) {
-            @h2(msg = Formatters.dateAsMonthAndYear(statementGroup.startDate))
+            @if(!statementGroup.noStatements || statementGroup.isPreviousMonthAndAfter14Th) {
+                <div id=@{statementGroup.periodId}>
+
+                @h2(msg = Formatters.dateAsMonthAndYear(statementGroup.startDate))
             }
 
             @if(statementGroup.noStatements) {
-                @if(statementGroup.isPreviousMonthAndAfter15th) {
+                @if(statementGroup.isPreviousMonthAndAfter14Th) {
                     <ul class="govuk-list">
                         <li>@messages("cf.account.pvat.statements.unavailable",Formatters.dateAsMonth(statementGroup.startDate))</li>
                     </ul>

@@ -21,6 +21,7 @@ import config.{AppConfig, ErrorHandler}
 import connectors.{FinancialsApiConnector, SdesConnector}
 import models.DutyPaymentMethod.CHIEF
 import models.FileRole.PostponedVATStatement
+import models.PostponedVatStatementFile
 import play.api.{Logger, LoggerLike}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -60,7 +61,7 @@ class PostponedVatController @Inject()
         }
       ).map(_.flatten)
     } yield {
-      val allPostponedVatStatements = postponedVatStatements ++ historicPostponedVatStatements
+      val allPostponedVatStatements: Seq[PostponedVatStatementFile] = postponedVatStatements ++ historicPostponedVatStatements
       Ok(postponedImportVatView(
         req.eori,
         PostponedVatViewModel(allPostponedVatStatements),
