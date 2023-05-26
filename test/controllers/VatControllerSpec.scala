@@ -22,11 +22,14 @@ import models.FileFormat.Pdf
 import models.FileRole.C79Certificate
 import models.metadata.VatCertificateFileMetadata
 import models.{EoriHistory, VatCertificateFile, VatCertificatesByMonth, VatCertificatesForEori}
+import org.jsoup.Jsoup
+import org.mockito.ArgumentMatchers.anyString
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.test.Helpers._
 import play.api.{Application, inject}
 import utils.SpecBase
 import viewmodels.VatViewModel
+import views.helpers.Formatters
 import views.html.import_vat.{import_vat, import_vat_not_available}
 
 import java.time.LocalDate
@@ -68,6 +71,83 @@ class VatControllerSpec extends SpecBase {
         val result = route(app, request).value
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.VatController.certificatesUnavailablePage.url
+      }
+    }
+
+    "show the cert unavailable text for the relevant month when Cert files are retrieved " +
+      "after 14th of the month and cert is not available" in new Setup {
+      val vatCertificateFile: VatCertificateFile = VatCertificateFile("name_04",
+        "download_url_06",
+        111L,
+        VatCertificateFileMetadata(date.minusMonths(1).getYear, date.minusMonths(1).getMonthValue, Pdf, C79Certificate, None),
+        "")(messages(app))
+
+      val currentCertificates = Seq(
+        VatCertificatesByMonth(date.minusMonths(1), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(2), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(3), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(4), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(5), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(6), Seq())(messages(app)),
+      )
+      val vatCertificatesForEoris = Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
+      val viewModel: VatViewModel = VatViewModel(vatCertificatesForEoris)
+
+      when(mockSdesConnector.getVatCertificates(anyString)(any, any))
+        .thenReturn(Future.successful(Seq()))
+
+      when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+        .thenReturn(Future.successful(true))
+
+      running(app) {
+        val request = fakeRequest(GET, routes.VatController.showVatAccount.url)
+        val result = route(app, request).value
+        status(result) mustBe OK
+        contentAsString(result) mustBe view(viewModel)(request, messages(app), appConfig).toString()
+        val doc = Jsoup.parse(contentAsString(result))
+
+        doc.getElementById("statements-list-0-row-5") should not be null
+        doc.getElementById("statements-list-0-row-0").children().text() should include(messages(app)(
+          "cf.account.vat.statements.unavailable", Formatters.dateAsMonth(date.minusMonths(1))(messages(app))))
+      }
+    }
+
+    "should not show the cert row for the immediate previous month when Cert files are retrieved " +
+      "before 15th of the month and cert is not available" in new Setup {
+
+      val currentCertificates = Seq(
+        //VatCertificatesByMonth(date.minusMonths(1), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(2), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(3), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(4), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(5), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(6), Seq())(messages(app)),
+      )
+      val vatCertificatesForEoris = Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
+      val viewModel: VatViewModel = VatViewModel(vatCertificatesForEoris)
+
+      when(mockSdesConnector.getVatCertificates(anyString)(any, any))
+        .thenReturn(Future.successful(Seq()))
+
+      when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+        .thenReturn(Future.successful(true))
+
+      running(app) {
+        val request = fakeRequest(GET, routes.VatController.showVatAccount.url)
+        val result = route(app, request).value
+        status(result) mustBe OK
+        contentAsString(result) mustBe view(viewModel)(request, messages(app), appConfig).toString()
+        val doc = Jsoup.parse(contentAsString(result))
+
+        doc.getElementById("statements-list-0-row-5") mustBe null
+        doc.getElementById("statements-list-0-row-0") should not be null
+        doc.getElementById("statements-list-0-row-1") should not be null
+        doc.getElementById("statements-list-0-row-2") should not be null
+        doc.getElementById("statements-list-0-row-3") should not be null
+        doc.getElementById("statements-list-0-row-4") should not be null
+
+        doc.getElementById("statements-list-0-row-0").children().text() should include(messages(app)(
+          "cf.account.vat.statements.unavailable", Formatters.dateAsMonth(date.minusMonths(1))(messages(app))))
       }
     }
   }
