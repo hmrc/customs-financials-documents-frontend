@@ -26,9 +26,11 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.api.{Logger, LoggerLike}
 import services.DateTimeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import utils.DateUtils._
 import viewmodels.VatViewModel
 import views.html.import_vat.{import_vat, import_vat_not_available}
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -76,10 +78,17 @@ class VatController @Inject()(val authenticate: IdentifierAction,
     for {
       certs <- certificates
       monthList = (1 to 6).map(n => dateTimeService.systemDateTime().toLocalDate.minusMonths(n))
-      populatedEmptyMonth = monthList.map {
+      populatedEmptyMonth: Seq[VatCertificatesByMonth] = monthList.map {
         date => certs.currentCertificates.find(_.date.getMonth == date.getMonth).getOrElse(VatCertificatesByMonth(date, Seq.empty))
       }
-      response = certs.copy(currentCertificates = populatedEmptyMonth)
+      response = certs.copy(currentCertificates = dropImmediatePreviousMonthCertIfUnavailable(populatedEmptyMonth))
     } yield response
+  }
+
+  private def dropImmediatePreviousMonthCertIfUnavailable(currentCerts: Seq[VatCertificatesByMonth]): Seq[VatCertificatesByMonth] = {
+    if (isDayBefore15ThDayOfTheMonth(LocalDate.now) && currentCerts.head.files.isEmpty) {
+      currentCerts.drop(1)
+    } else
+      currentCerts
   }
 }
