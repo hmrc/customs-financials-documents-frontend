@@ -151,6 +151,57 @@ class VatControllerSpec extends SpecBase {
         }
       }
     }
+
+    "should show all the certs' row when Cert files are retrieved before 15th of the month and cert is available" in new Setup {
+      val vatCertificateFile: VatCertificateFile = VatCertificateFile("name_04",
+        "download_url_06",
+        111L,
+        VatCertificateFileMetadata(date.minusMonths(1).getYear,
+          date.minusMonths(1).getMonthValue,
+          Pdf,
+          C79Certificate,
+          None),
+        "")(messages(app))
+
+      val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
+        VatCertificatesByMonth(date.minusMonths(1), Seq(vatCertificateFile))(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(2), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(3), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(4), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(5), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(6), Seq())(messages(app)),
+      )
+      val vatCertificatesForEoris: Seq[VatCertificatesForEori] = Seq(VatCertificatesForEori(eoriHistory.head,
+        currentCertificates, Seq.empty))
+      val viewModel: VatViewModel = VatViewModel(vatCertificatesForEoris)
+
+      when(mockSdesConnector.getVatCertificates(anyString)(any, any))
+        .thenReturn(Future.successful(Seq(vatCertificateFile)))
+
+      when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+        .thenReturn(Future.successful(true))
+
+      running(app) {
+        val request = fakeRequest(GET, routes.VatController.showVatAccount.url)
+        val result = route(app, request).value
+        status(result) mustBe OK
+
+        if (DateUtils.isDayBefore15ThDayOfTheMonth(LocalDate.now())) {
+          contentAsString(result) mustBe view(viewModel)(request, messages(app), appConfig).toString()
+          val doc = Jsoup.parse(contentAsString(result))
+
+          doc.getElementById("statements-list-0-row-0") should not be null
+          doc.getElementById("statements-list-0-row-1") should not be null
+          doc.getElementById("statements-list-0-row-2") should not be null
+          doc.getElementById("statements-list-0-row-3") should not be null
+          doc.getElementById("statements-list-0-row-4") should not be null
+          doc.getElementById("statements-list-0-row-5") should not be null
+
+          doc.getElementById("statements-list-0-row-0").children().text() should not include (messages(app)(
+            "cf.account.vat.statements.unavailable", Formatters.dateAsMonth(date.minusMonths(1))(messages(app))))
+        }
+      }
+    }
   }
 
   "certificatesUnavailablePage" should {
