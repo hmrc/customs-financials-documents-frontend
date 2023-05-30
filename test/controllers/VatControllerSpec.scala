@@ -109,7 +109,6 @@ class VatControllerSpec extends SpecBase {
         status(result) mustBe OK
 
         if (!DateUtils.isDayBefore15ThDayOfTheMonth(LocalDate.now())) {
-          println("====== Inside before 15th Day clause when it is false")
           contentAsString(result) mustBe view(viewModel)(request, messages(app), appConfig).toString()
           val doc = Jsoup.parse(contentAsString(result))
 
