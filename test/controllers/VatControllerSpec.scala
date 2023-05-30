@@ -76,15 +76,6 @@ class VatControllerSpec extends SpecBase {
 
     "show the cert unavailable text for the relevant month when Cert files are retrieved " +
       "after 14th of the month and cert is not available" in new Setup {
-      val vatCertificateFile: VatCertificateFile = VatCertificateFile("name_04",
-        "download_url_06",
-        111L,
-        VatCertificateFileMetadata(date.minusMonths(1).getYear,
-          date.minusMonths(1).getMonthValue,
-          Pdf,
-          C79Certificate,
-          None),
-        "")(messages(app))
 
       val currentCertificates = Seq(
         VatCertificatesByMonth(date.minusMonths(1), Seq())(messages(app)),
@@ -129,7 +120,8 @@ class VatControllerSpec extends SpecBase {
         VatCertificatesByMonth(date.minusMonths(5), Seq())(messages(app)),
         VatCertificatesByMonth(date.minusMonths(6), Seq())(messages(app)),
       )
-      val vatCertificatesForEoris: Seq[VatCertificatesForEori] = Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
+      val vatCertificatesForEoris: Seq[VatCertificatesForEori] = Seq(VatCertificatesForEori(eoriHistory.head,
+        currentCertificates, Seq.empty))
       val viewModel: VatViewModel = VatViewModel(vatCertificatesForEoris)
 
       when(mockSdesConnector.getVatCertificates(anyString)(any, any))
