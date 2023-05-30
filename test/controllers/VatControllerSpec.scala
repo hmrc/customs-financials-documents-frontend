@@ -110,7 +110,7 @@ class VatControllerSpec extends SpecBase {
       }
     }
 
-    "should not show the cert row for the immediate previous month when Cert files are retrieved " +
+    "not show the cert row for the immediate previous month when Cert files are retrieved " +
       "before 15th of the month and cert is not available" in new Setup {
 
       val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
@@ -152,7 +152,7 @@ class VatControllerSpec extends SpecBase {
       }
     }
 
-    "should show all the certs' row when Cert files are retrieved before 15th of the month and cert is available" in new Setup {
+    "show all the certs' row when Cert files are retrieved before 15th of the month and cert is available" in new Setup {
       val vatCertificateFile: VatCertificateFile = VatCertificateFile("name_04",
         "download_url_06",
         111L,
