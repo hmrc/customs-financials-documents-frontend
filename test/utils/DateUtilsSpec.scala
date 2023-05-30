@@ -24,7 +24,10 @@ class DateUtilsSpec extends SpecBase {
   "isBefore15ThDayOfTheMonth" should {
     "return true when input day is before 15th day of the current month" in {
       val dateBefore15ThDay: LocalDate = LocalDate.of(2023, 5, 12)
+      val dateOf14ThDayOfTheMonth: LocalDate = LocalDate.of(2023, 5, 14)
+
       isDayBefore15ThDayOfTheMonth(dateBefore15ThDay) shouldBe true
+      isDayBefore15ThDayOfTheMonth(dateOf14ThDayOfTheMonth) shouldBe true
     }
 
     "return false when input day is after 15th day of the current month" in {
