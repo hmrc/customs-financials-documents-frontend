@@ -85,10 +85,9 @@ class VatController @Inject()(val authenticate: IdentifierAction,
     } yield response
   }
 
-  private def dropImmediatePreviousMonthCertIfUnavailable(currentCerts: Seq[VatCertificatesByMonth]): Seq[VatCertificatesByMonth] = {
+  private def dropImmediatePreviousMonthCertIfUnavailable(currentCerts: Seq[VatCertificatesByMonth]): Seq[VatCertificatesByMonth] =
     if (isDayBefore15ThDayOfTheMonth(LocalDate.now) && currentCerts.head.files.isEmpty) {
       currentCerts.drop(1)
     } else
       currentCerts
-  }
 }
