@@ -42,11 +42,9 @@
 
     @if(model.hasRequestedCertificates) {
         <div id="notification-panel" class="notifications-panel">
-            <ul class="govuk-list govuk-!-margin-top-0 govuk-!-margin-bottom-0">
-                <li>@messages("cf.account.detail.requested-certificates-available-text.pre") <a href="@{
-                    appConfig.requestedStatements(C79Certificate)
-                }" class="govuk-link">@messages("cf.import-vat.requested-certificates-available-link-text")</a> @messages("cf.account.detail.requested-certificates-available-text.post")</li>
-            </ul>
+            <p class="govuk-body govuk-!-margin-bottom-1">@messages("cf.account.detail.requested-certificates-available-text.pre") <a href="@{
+                appConfig.requestedStatements(C79Certificate)
+            }" class="govuk-link">@messages("cf.import-vat.requested-certificates-available-link-text")</a> @messages("cf.account.detail.requested-certificates-available-text.post")</p>
         </div>
     }
 
