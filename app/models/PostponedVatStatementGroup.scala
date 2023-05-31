@@ -42,6 +42,14 @@ case class PostponedVatStatementGroup(startDate: LocalDate, files: Seq[Postponed
       .filter(_.metadata.source == source)
   }
 
+  def isPreviousMonthAndAfter15th: Boolean = {
+    val currentDate = LocalDate.now()
+    val previousMonth = currentDate.minusMonths(1).getMonthValue
+    val pvatGroupMonth = startDate.getMonthValue
+
+    previousMonth == pvatGroupMonth && currentDate.getDayOfMonth >= 15 || previousMonth != pvatGroupMonth
+  }
+
   override def compare(that: PostponedVatStatementGroup): Int = startDate.compareTo(that.startDate)
 
 }

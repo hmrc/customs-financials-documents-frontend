@@ -70,13 +70,16 @@
         <div id=@{
             statementGroup.periodId
         }>
+        @if(!statementGroup.noStatements || statementGroup.isPreviousMonthAndAfter15th) {
             @h2(msg = Formatters.dateAsMonthAndYear(statementGroup.startDate))
+            }
 
             @if(statementGroup.noStatements) {
-                <ul class="govuk-list">
-                    <li>@messages("cf.account.pvat.statements.unavailable",Formatters.dateAsMonth(statementGroup.startDate))</li>
-                </ul>
-
+                @if(statementGroup.isPreviousMonthAndAfter15th) {
+                    <ul class="govuk-list">
+                        <li>@messages("cf.account.pvat.statements.unavailable",Formatters.dateAsMonth(statementGroup.startDate))</li>
+                    </ul>
+                }
             } else {
                 <ul class="govuk-list">
                 @for(source <- Seq(CDS, CHIEF)) {
