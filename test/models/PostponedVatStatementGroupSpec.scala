@@ -32,18 +32,24 @@ class PostponedVatStatementGroupSpec extends SpecBase {
       }
     }
 
-    "return false if statement date is not from the previous month" in new Setup {
-      val dateOfCurrentMonth: LocalDate = LocalDate.now.withDayOfMonth(16)
-      PostponedVatStatementGroup(dateOfCurrentMonth, Seq())(messages(app)).isPreviousMonthAndAfter14Th mustBe false
+    "return false if statement date is of previous month and is accessed on or before " +
+      "14th day of the current month" in new Setup {
+      val dateOfPreviousMonth: LocalDate = LocalDate.now.minusMonths(1).withDayOfMonth(10)
+      PostponedVatStatementGroup(dateOfPreviousMonth, Seq())(messages(app)).isPreviousMonthAndAfter14Th mustBe false
     }
 
-    "return false if statement date is not from the previous month and accessed " +
+    "return true if statement date is not from the previous month" in new Setup {
+      val dateOfCurrentMonth: LocalDate = LocalDate.now.withDayOfMonth(16)
+      PostponedVatStatementGroup(dateOfCurrentMonth, Seq())(messages(app)).isPreviousMonthAndAfter14Th mustBe true
+    }
+
+    "return true if statement date is not from the previous month and accessed " +
       "before 15th day of current date " in new Setup {
       val dateOfCurrentMonthAndBefore15ThDay: LocalDate = LocalDate.now.withDayOfMonth(12)
       if (LocalDate.now.getDayOfMonth < 15) {
         PostponedVatStatementGroup(
           dateOfCurrentMonthAndBefore15ThDay,
-          Seq())(messages(app)).isPreviousMonthAndAfter14Th mustBe false
+          Seq())(messages(app)).isPreviousMonthAndAfter14Th mustBe true
       }
     }
   }
