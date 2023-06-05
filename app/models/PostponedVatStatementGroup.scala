@@ -47,7 +47,7 @@ case class PostponedVatStatementGroup(startDate: LocalDate, files: Seq[Postponed
     val previousMonth = currentDate.minusMonths(1).getMonthValue
     val pvatGroupMonth = startDate.getMonthValue
 
-    previousMonth == pvatGroupMonth && currentDate.getDayOfMonth > 14
+    previousMonth == pvatGroupMonth && currentDate.getDayOfMonth > 14 || previousMonth != pvatGroupMonth
   }
 
   override def compare(that: PostponedVatStatementGroup): Int = startDate.compareTo(that.startDate)
