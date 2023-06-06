@@ -93,7 +93,7 @@ class VatController @Inject()(val authenticate: IdentifierAction,
    * @return Seq[VatCertificatesByMonth] Updated Certs as per the date check
    */
   private def dropImmediatePreviousMonthCertIfUnavailable(currentCerts: Seq[VatCertificatesByMonth]): Seq[VatCertificatesByMonth] =
-    if (isDayBefore15ThDayOfTheMonth(LocalDate.now) && currentCerts.head.files.isEmpty) {
+    if (isDayBefore15ThDayOfTheMonth(dateTimeService.systemDateTime().toLocalDate) && currentCerts.head.files.isEmpty) {
       currentCerts.drop(1)
     } else
       currentCerts

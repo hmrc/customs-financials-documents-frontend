@@ -21,10 +21,12 @@ import models.FileRole.{PostponedVATAmendedStatement, PostponedVATStatement}
 import models.metadata.PostponedVatStatementFileMetadata
 import play.api.i18n.Messages
 import views.helpers.Formatters
+import services.DateTimeService
 
 import java.time.LocalDate
 
-case class PostponedVatStatementGroup(startDate: LocalDate, files: Seq[PostponedVatStatementFile])(implicit messages: Messages) extends Ordered[PostponedVatStatementGroup] {
+case class PostponedVatStatementGroup(startDate: LocalDate, files: Seq[PostponedVatStatementFile])(implicit messages: Messages, dateTimeService: DateTimeService)
+  extends Ordered[PostponedVatStatementGroup] {
 
   private val periodName = Formatters.dateAsMonthAndYear(startDate).replace(" ", "-").toLowerCase
   val periodId: String = s"""period-$periodName"""
@@ -43,7 +45,7 @@ case class PostponedVatStatementGroup(startDate: LocalDate, files: Seq[Postponed
   }
 
   def isPreviousMonthAndAfter14Th: Boolean = {
-    val currentDate = LocalDate.now()
+    val currentDate = dateTimeService.systemDateTime().toLocalDate
     val previousMonth = currentDate.minusMonths(1).getMonthValue
     val pvatGroupMonth = startDate.getMonthValue
 
