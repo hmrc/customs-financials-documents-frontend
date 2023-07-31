@@ -65,7 +65,6 @@ class PSpec extends SpecBase {
                     tabLink = Some(tabContent)
                 )(messages(app))
                 val html: Document = Jsoup.parse(contentAsString(output))
-            
 
                 html.getElementById("test-id").text() must include("Hello, world!")
                 html.getElementById("test-id").select("a").get(0).text() mustBe "Link"
