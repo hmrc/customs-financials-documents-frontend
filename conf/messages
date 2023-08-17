@@ -34,7 +34,6 @@ cf.account.pvat.older-statements.description.1=There are 2 ways to request state
 cf.account.pvat.older-statements.description.2=For declarations made using the Customs Declaration Service,
 cf.account.pvat.older-statements.description.link=complete and send a statement request.
 cf.account.pvat.older-statements.description.3=For declarations made using CHIEF, email your request to
-cf.account.pvat.older-statements.description.email=pvaenquiries@hmrc.gov.uk
 # ------------------------------------------------------------------------
 
 # Common messages
