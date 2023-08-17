@@ -46,6 +46,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val requestedStatements: String = config.get[String]("external-urls.requestedStatements")
   lazy val historicRequest: String = config.get[String]("external-urls.historicRequest")
   lazy val emailFrontendUrl: String = config.get[String]("external-urls.verifyYourEmailUrl")
+  lazy val pvEmailEmailAddress: String = config.get[String]("external-urls.pvEmailEmailAddressUrl")
 
 
   def historicRequestUrl(fileRole: FileRole): String = {

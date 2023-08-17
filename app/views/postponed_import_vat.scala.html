@@ -50,13 +50,13 @@
     @h1(msg = "cf.account.pvat.title", classes = "govuk-heading-xl  govuk-!-margin-bottom-6")
 
     @if(messages.isDefinedAt("cf.account.pvat.holding-message.1")) {
-        <p class="govuk-body govuk-!-margin-bottom-6" id="postponed-vat-holding-message">
-            @messages("cf.account.pvat.holding-message.1")
-            <a class="govuk-link" target="_blank" rel="noreferrer noopener" href="https://www.gov.uk/guidance/check-when-you-can-account-for-import-vat-on-your-vat-return">@messages("cf.account.pvat.link-message")</a>.
-        </p>
+        @p(message= "cf.account.pvat.holding-message.1", id = Some("postponed-vat-holding-message"))
+        @p(message= "cf.account.pvat.holding-message.2")
+        @p(message= "cf.account.pvat.holding-message.3", classes="govuk-body govuk-!-margin-bottom-6")
     }
 
-    @p(message = "cf.account.pvat.content",  classes = "govuk-body govuk-!-margin-bottom-6", id = Some("postponed-vat-content"))
+    @h2("cf.account.pvat.your-statements.heading")
+
 
     @if(hasRequestedStatements) {
         <div id="notification-panel" class="notifications-panel">
@@ -70,40 +70,40 @@
             @if(!statementGroup.noStatements || statementGroup.isPreviousMonthAndAfter14Th) {
                 <div id=@{statementGroup.periodId}>
 
-                @h2(msg = Formatters.dateAsMonthAndYear(statementGroup.startDate))
+                    @h2(msg = Formatters.dateAsMonthAndYear(statementGroup.startDate))
 
 
-            @if(statementGroup.noStatements) {
-                @if(statementGroup.isPreviousMonthAndAfter14Th) {
-                    <ul class="govuk-list">
-                        <li>@messages("cf.account.pvat.statements.unavailable",Formatters.dateAsMonth(statementGroup.startDate))</li>
-                    </ul>
-                }
-            } else {
-                <ul class="govuk-list">
-                @for(source <- Seq(CDS, CHIEF)) {
-                    @collapsibleStatementGroup(
-                        statementGroup.collectFiles(amended = true, source),
-                        "cf.account.pvat.amended-download-link",
-                        "cf.account.pvat.aria.amended-download-link",
-                        None,
-                        source,
-                        Formatters.dateAsMonthAndYear(statementGroup.startDate)
-                    )
-                    @defining(if(statementGroup.collectFiles(amended = true, source).isEmpty) "" else "original.") { original =>
-                        @collapsibleStatementGroup(
-                            statementGroup.collectFiles(amended = false, source),
-                            s"cf.account.pvat.${original}download-link",
-                            s"cf.account.pvat.aria.${original}download-link",
-                            Some(s"cf.account.pvat.${original}missing-file-type"),
-                            source,
-                            Formatters.dateAsMonthAndYear(statementGroup.startDate)
-                        )
+                @if(statementGroup.noStatements) {
+                    @if(statementGroup.isPreviousMonthAndAfter14Th) {
+                        <ul class="govuk-list">
+                            <li>@messages("cf.account.pvat.statements.unavailable",Formatters.dateAsMonth(statementGroup.startDate))</li>
+                        </ul>
                     }
-                }
-                </ul>
-                    }
-            </div>
+                } else {
+                            <ul class="govuk-list">
+                                @for(source <- Seq(CDS, CHIEF)) {
+                                    @collapsibleStatementGroup(
+                                        statementGroup.collectFiles(amended = true, source),
+                                        "cf.account.pvat.amended-download-link",
+                                        "cf.account.pvat.aria.amended-download-link",
+                                        None,
+                                        source,
+                                        Formatters.dateAsMonthAndYear(statementGroup.startDate)
+                                    )
+                                    @defining(if(statementGroup.collectFiles(amended = true, source).isEmpty) "" else "original.") { original =>
+                                        @collapsibleStatementGroup(
+                                            statementGroup.collectFiles(amended = false, source),
+                                            s"cf.account.pvat.${original}download-link",
+                                            s"cf.account.pvat.aria.${original}download-link",
+                                            Some(s"cf.account.pvat.${original}missing-file-type"),
+                                            source,
+                                            Formatters.dateAsMonthAndYear(statementGroup.startDate)
+                                        )
+                                    }
+                                }
+                            </ul>
+                        }
+                </div>
             }
     }
 
@@ -111,26 +111,27 @@
         @inset("cf.account.pvat.no-statements-yet")
     } else {
         <div id="missing-documents-guidance" class="govuk-!-padding-top-2">
-            @h2Inner(
+            @h2(
+                "cf.account.pvat.older-statements.heading",
                 id = Some("missing-documents-guidance-heading"),
-                msg = "cf.common.missing-documents-guidance.heading",
-                innerMsg = "cf.common.missing-documents-guidance.statement",
                 classes = "govuk-heading-m govuk-!-margin-top-6"
             )
 
-            @pInner("cf.common.missing-documents-guidance.text2", "cf.common.missing-documents-guidance.statements", id = Some("missing-documents-guidance-text2"))
-        </div>
+            @p(message="cf.account.pvat.older-statements.description.1")
+    
+            @link(
+                "cf.account.pvat.older-statements.description.link",
+                location = appConfig.historicRequestUrl(PostponedVATStatement),
+                preLinkMessage = Some("cf.account.pvat.older-statements.description.2")
+            )
 
-        @p(id = Some("historic-statement-request"),
-        message = "cf.account.pvat.historic.description")
-        
-        @link(
-            pClass = "govuk-body govuk-!-margin-bottom-9",
-            linkId = Some("historic-statement-request-link"),
-            linkClass = "govuk-body govuk-link",
-            linkMessage = "cf.account.pvat.historic.request",
-            location = appConfig.historicRequestUrl(PostponedVATStatement)
-        )     
+            @link(
+                appConfig.pvEmailEmailAddress,
+                location = appConfig.pvEmailEmailAddress,
+                preLinkMessage = Some("cf.account.pvat.older-statements.description.3")
+            )
+            
+        </div>
     }
     <div id="pvat.support.heading" class="govuk-!-padding-top-2">
         @h2(
@@ -141,8 +142,9 @@
         <p class="govuk-body govuk-!-margin-bottom-9" id="pvat.support.message">
             @messages("cf.account.pvat.support.message")
             <a  class="govuk-link" target="_blank" rel="noreferrer noopener"
-                href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/vat-enquiries">
-                @messages("cf.account.pvat.support.link")</a>.
+                href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/customs-international-trade-and-excise-enquiries">
+                @messages("cf.account.pvat.support.link")
+            </a>.
         </p>
     </div>
 
