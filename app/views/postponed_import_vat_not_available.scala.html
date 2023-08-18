@@ -38,47 +38,49 @@ inset: components.inset
 <h2 class="govuk-caption-xl" id="eori-heading">
     @messages("cf.eori")
     <span id="eori">@{
-        eori
-    }</span>
+         eori
+     }</span>
 </h2>
 @h1(msg = "cf.account.pvat.title", classes = "govuk-heading-xl  govuk-!-margin-bottom-6")
 
 @p(message = "cf.security-statements.unavailable", id = Some("no-statements"))
 
 <div id="missing-documents-guidance" class="govuk-!-padding-top-2">
- @h2Inner(
- id = Some("missing-documents-guidance-heading"),
- msg = "cf.common.missing-documents-guidance.heading",
- innerMsg = "cf.common.missing-documents-guidance.statement",
- classes = "govuk-heading-m govuk-!-margin-top-6"
- )
+    @h2(
+    "cf.account.pvat.older-statements.heading",
+    id = Some("missing-documents-guidance-heading"),
+    classes = "govuk-heading-m govuk-!-margin-top-6"
+    )
 
- @pInner("cf.common.missing-documents-guidance.text2", "cf.common.missing-documents-guidance.statements", id = Some("missing-documents-guidance-text2"))
+    @p(message="cf.account.pvat.older-statements.description.1")
+
+    @link(
+    "cf.account.pvat.older-statements.description.link",
+    location = routes.RequestServiceUnavailableController.requestServiceUnavailablePage.url,
+    preLinkMessage = Some("cf.account.pvat.older-statements.description.2")
+    )
+
+    @link(
+    appConfig.pvEmailEmailAddress,
+    location = appConfig.pvEmailEmailAddressHref,
+    preLinkMessage = Some("cf.account.pvat.older-statements.description.3")
+    )
+
 </div>
 
-@p(id = Some("historic-statement-request"),
-message = "cf.account.pvat.historic.description")
-
-@link(
-pClass = "govuk-body govuk-!-margin-bottom-9",
-linkId = Some("historic-statement-request-link"),
-linkClass = "govuk-body govuk-link",
-linkMessage = "cf.account.pvat.historic.request",
-location = appConfig.historicRequestUrl(PostponedVATStatement)
-)
-
 <div id="pvat.support.heading" class="govuk-!-padding-top-2">
- @h2(
- id = Some("pvat.support.message.heading"),
- msg = "cf.account.pvat.support.heading",
- classes = "govuk-heading-m govuk-!-margin-top-2"
- )
- <p class="govuk-body govuk-!-margin-bottom-9" id="pvat.support.message">
-  @messages("cf.account.pvat.support.message")
-  <a  class="govuk-link" target="_blank" rel="noreferrer noopener"
-      href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/vat-enquiries">
-   @messages("cf.account.pvat.support.link")</a>.
- </p>
+    @h2(
+    id = Some("pvat.support.message.heading"),
+    msg = "cf.account.pvat.support.heading",
+    classes = "govuk-heading-m govuk-!-margin-top-2"
+    )
+    <p class="govuk-body govuk-!-margin-bottom-9" id="pvat.support.message">
+        @messages("cf.account.pvat.support.message")
+        <a class="govuk-link" target="_blank" rel="noreferrer noopener"
+           href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/customs-international-trade-and-excise-enquiries">
+            @messages("cf.account.pvat.support.link")
+        </a>.
+    </p>
 </div>
 
 }

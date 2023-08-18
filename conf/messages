@@ -191,3 +191,11 @@ cf.error.not-found.message.address-pasted-wrong=If you pasted the web address, c
 cf.error.not-found.message.go-to-home-page-text1=Or you can
 cf.error.not-found.message.go-to-home-page-text2=.
 cf.accounts.view-customs-account=view your customs financial accounts
+
+#Historic request service unavailable page
+# ----------------------------------------------------------------------------
+cf.historic-request-service-unavailable.title=Sorry, this service is currently unavailable
+cf.historic-request-service-unavailable.heading=Sorry, this service is currently unavailable
+cf.historic-request-service-unavailable.description.1=Email
+cf.historic-request-service-unavailable.description.2=to get older statements or certificates for declarations made using the Customs Declaration Service.
+cf.historic-request-service-unavailable.description.3=Give details of your EORI number, the type of statement or certificate you need and the date range you need it for.

@@ -121,13 +121,13 @@
     
             @link(
                 "cf.account.pvat.older-statements.description.link",
-                location = appConfig.historicRequestUrl(PostponedVATStatement),
+                location = routes.RequestServiceUnavailableController.requestServiceUnavailablePage.url,
                 preLinkMessage = Some("cf.account.pvat.older-statements.description.2")
             )
 
             @link(
                 appConfig.pvEmailEmailAddress,
-                location = appConfig.pvEmailEmailAddress,
+                location = appConfig.pvEmailEmailAddressHref,
                 preLinkMessage = Some("cf.account.pvat.older-statements.description.3")
             )
             
