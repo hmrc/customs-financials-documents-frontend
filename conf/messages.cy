@@ -18,14 +18,22 @@ cf.account.pvat.aria.download-link=Datganiad {0} ar gyfer {1} – {2} ({3})
 cf.account.pvat.aria.original.download-link=Datganiad {0} ar gyfer {1} – {2} ({3})
 cf.account.pvat.aria.amended.download-link=Datganiad diwygiedig {0} ar gyfer {1} – {2} ({3})
 cf.account.pvat.no-statements-yet=Nid oes datganiadau ar gael i’w gweld eto.
-cf.account.pvat.holding-message.1=O 1 Ionawr 2021 ymlaen, mae’n bosibl y gallwch roi cyfrif am TAW mewnforio ar eich Ffurflen TAW. Gallwch
+cf.account.pvat.holding-message.1=Dim ond ar gyfer cyfnodau lle y gwnaethoch fewnforio nwyddau y mae datganiadau’n cael eu creu.
+cf.account.pvat.holding-message.2=Fel arfer, bydd eich datganiadau ar gael ar ôl yr 8fed diwrnod gwaith o bob mis.
+cf.account.pvat.holding-message.3=Gallwch ddefnyddio’r gwasanaeth yma er mwyn bwrw golwg dros a lawrlwytho eich datganiadau ar gyfer y 6 mis diwethaf. Gellir gwneud cais am ddatganiadau hŷn gan ddefnyddio’r opsiynau cais ar waelod y dudalen hon.
 cf.account.pvat.link-message=wirio os gallwch ddefnyddio cyfrifyddu TAW ohiriedig (yn agor tab newydd)
 cf.account.pvat.statements.unavailable = Nid oedd unrhyw ddatganiadau i mewn {0}
 cf.account.pvat.historic.description=Dim ond ar gyfer y 6 mis diwethaf y bydd y gwasanaeth hwn yn dangos datganiadau.
 cf.account.pvat.historic.request=Gwneud cais am ddatganiad sy’n hŷn na 6 mis
 cf.account.pvat.support.heading=Help a chymorth
-cf.account.pvat.support.message=Os oes angen help
-cf.account.pvat.support.link=arnoch cysylltwch â CThEM ynghylch TAW (yn agor tab newydd)
+cf.account.pvat.support.message=Os oes angen help arnoch gyda TAW mewnforio
+cf.account.pvat.support.link=cysylltwch â’r Llinell Gymorth TAW ac Ecséis (yn agor mewn tab newydd)
+cf.account.pvat.your-statements.heading=Eich datganiadau ar gyfer y 6 mis diwethaf
+cf.account.pvat.older-statements.heading=Datganiadau sy’n hŷn na 6 mis
+cf.account.pvat.older-statements.description.1=Mae 2 ffordd i ofyn am ddatganiadau.
+cf.account.pvat.older-statements.description.2=Ar gyfer datganiadau a wnaed gan ddefnyddio’r Gwasanaeth Datganiadau Tollau,
+cf.account.pvat.older-statements.description.link=llenwch ac anfon cais am ddatganiad.
+cf.account.pvat.older-statements.description.3=Ar gyfer datganiadau a wneir gan ddefnyddio’r gwasanaeth CHIEF, e-bostiwch eich cais i
 # ------------------------------------------------------------------------
 
 
@@ -185,3 +193,11 @@ cf.error.not-found.message.go-to-home-page-text1=Neu gallwch
 cf.error.not-found.message.go-to-home-page-text2=.
 cf.accounts.view-customs-account=fwrw golwg dros eich cyfrifon ariannol ar gyfer y tollau
 # ----------------------------------------------------------
+
+#Historic request service unavailable page
+# ----------------------------------------------------------------------------
+cf.historic-request-service-unavailable.title=Mae’n ddrwg gennym, nid yw’r gwasanaeth hwn ar gael ar hyn o bryd
+cf.historic-request-service-unavailable.heading=Mae’n ddrwg gennym, nid yw’r gwasanaeth hwn ar gael ar hyn o bryd
+cf.historic-request-service-unavailable.description.1=Gallwch anfon e-bost
+cf.historic-request-service-unavailable.description.2=i gael datganiadau hŷn neu dystysgrifau ar gyfer datganiadau a wneir gan ddefnyddio’r Gwasanaeth Datganiad Tollau.
+cf.historic-request-service-unavailable.description.3=Rhowch fanylion eich rhif EORI, y math o ddatganiad neu dystysgrif sydd ei angen arnoch a’r cyfnod y mae ei angen arnoch.

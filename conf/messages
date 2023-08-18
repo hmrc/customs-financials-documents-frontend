@@ -18,14 +18,22 @@ cf.account.pvat.aria.download-link={1} {0} statement - {2} ({3})
 cf.account.pvat.aria.original.download-link={0} statement for {1} - {2} ({3})
 cf.account.pvat.aria.amended.download-link={0} amended statement for {1} - {2} ({3})
 cf.account.pvat.no-statements-yet=There are no statements available to view yet.
-cf.account.pvat.holding-message.1=From 1 January 2021 you may be able to account for import VAT on your VAT Return. You can
+cf.account.pvat.holding-message.1=Statements are only created for periods in which you imported goods.
+cf.account.pvat.holding-message.2=Your statements will usually be available after the 8th working day of each month.
+cf.account.pvat.holding-message.3=You can view and download your statements for the last 6 months on this service. Older statements can be requested using the request options at the bottom of this page.
 cf.account.pvat.link-message=check if you can use postponed VAT accounting (opens in new tab)
 cf.account.pvat.statements.unavailable = There were no statements in {0}
 cf.account.pvat.historic.description=This service will only show statements for the last 6 months.
 cf.account.pvat.historic.request=Request a statement that’s older than 6 months
 cf.account.pvat.support.heading=Help and support
-cf.account.pvat.support.message=If you need help
-cf.account.pvat.support.link=contact HMRC about VAT (opens in new tab)
+cf.account.pvat.support.message=If you need help with import VAT contact
+cf.account.pvat.support.link=Imports and exports: general enquiries (opens in new tab)
+cf.account.pvat.your-statements.heading=Your statements for the last 6 months
+cf.account.pvat.older-statements.heading=Statements older than 6 months
+cf.account.pvat.older-statements.description.1=There are 2 ways to request statements.
+cf.account.pvat.older-statements.description.2=For declarations made using the Customs Declaration Service,
+cf.account.pvat.older-statements.description.link=complete and send a statement request.
+cf.account.pvat.older-statements.description.3=For declarations made using CHIEF, email your request to
 # ------------------------------------------------------------------------
 
 # Common messages
@@ -183,3 +191,11 @@ cf.error.not-found.message.address-pasted-wrong=If you pasted the web address, c
 cf.error.not-found.message.go-to-home-page-text1=Or you can
 cf.error.not-found.message.go-to-home-page-text2=.
 cf.accounts.view-customs-account=view your customs financial accounts
+
+#Historic request service unavailable page
+# ----------------------------------------------------------------------------
+cf.historic-request-service-unavailable.title=Sorry, this service is currently unavailable
+cf.historic-request-service-unavailable.heading=Sorry, this service is currently unavailable
+cf.historic-request-service-unavailable.description.1=Email
+cf.historic-request-service-unavailable.description.2=to get older statements or certificates for declarations made using the Customs Declaration Service.
+cf.historic-request-service-unavailable.description.3=Give details of your EORI number, the type of statement or certificate you need and the date range you need it for.

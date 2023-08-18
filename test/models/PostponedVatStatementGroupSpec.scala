@@ -52,8 +52,6 @@ class PostponedVatStatementGroupSpec extends SpecBase {
 
     "return true if statement date is not from the previous month and accessed " +
       "before 15th day of current date " in new Setup {
-      when(mockDateTimeService.systemDateTime())
-        .thenReturn(date.atStartOfDay())
       val dateOfCurrentMonthAndBefore15ThDay: LocalDate = date.withDayOfMonth(12)
       if (LocalDate.now.getDayOfMonth < 15) {
         PostponedVatStatementGroup(
