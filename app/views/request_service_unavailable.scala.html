@@ -25,9 +25,9 @@
 )
 
 
-@()(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(backlink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@layout(pageTitle = Some(messages("cf.historic-request-service-unavailable.title")) , backLink = Some(routes.PostponedVatController.show(Some("CDS")).url)) {
+@layout(pageTitle = Some(messages("cf.historic-request-service-unavailable.title")) , backLink = backlink) {
 
 @h1(msg = "cf.historic-request-service-unavailable.heading", classes = "govuk-heading-xl  govuk-!-margin-bottom-6")
 

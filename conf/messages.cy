@@ -110,8 +110,10 @@ cf.security-statements.requested.download-link.aria-text=Lawrlwytho {0} ar gyfer
 # VAT Detail view
 # ------------------------------------------------------------------------
 cf.account.vat.support.heading=Help a chymorth
-cf.account.vat.support.message=Os oes angen help
-cf.account.vat.support.link=arnoch cysylltwch â CThEM ynghylch TAW (yn agor tab newydd).
+cf.account.vat.available-text=Fel arfer, bydd eich tystysgrifau ar gael ar ôl yr 8fed diwrnod gwaith o bob mis.
+cf.account.vat.your-certificates.heading=Eich tystysgrifau ar gyfer y chwe mis diwethaf
+cf.account.vat.support.message=Os oes angen help arnoch gyda TAW mewnforio, cysylltwch â’r
+cf.account.vat.support.link=Llinell Gymorth TAW ac Ecséis (yn agor mewn tab newydd).
 cf.account.vat.title=Tystysgrifau TAW mewnforio (C79)
 cf.account.vat.missing-file=Nid yw ar gael
 cf.account.vat.download-link=Lawrlwytho {0} o {1} ({2})
@@ -121,6 +123,10 @@ cf.account.vat.historic.description=Dim ond ar gyfer y 6 mis diwethaf y bydd y g
 cf.account.vat.historic.request=Gwneud cais am dystysgrif sy’n hŷn na 6 mis
 cf.account.vat.unavailable=Mae’n ddrwg gennym, nid yw’ch tystysgrifau ar gael ar hyn o bryd. Rhowch gynnig arall arni yn nes ymlaen.
 cf.account.vat.statements.unavailable = Nid oedd unrhyw dystysgrifau i mewn {0}.
+cf.account.vat.older-certificates.heading=Tystysgrifau sy’n hŷn na 6 mis
+cf.account.vat.older-certificates.description.1=Ar gyfer datganiadau a wnaed gan ddefnyddio’r Gwasanaeth Datganiadau Tollau,
+cf.account.vat.chief.heading=Datganiadau a wnaed gan ddefnyddio’r gwasanaeth CHIEF
+cf.account.vat.older-certificates.description.2=Caiff tystysgrifau C79 eu hanfon atoch drwy’r post. Os oes angen copi o dystysgrif arnoch, anfonwch eich cais drwy e-bost at
 # ------------------------------------------------------------------------
 
 # Not subscribed to CDS

@@ -40,6 +40,10 @@
 
     @h1("cf.account.vat.title", id = Some("import-vat-certificates-heading"), classes = "govuk-heading-xl")
 
+    @p("cf.account.vat.available-text")
+
+    @h2("cf.account.vat.your-certificates.heading")
+
     @if(model.hasRequestedCertificates) {
         <div id="notification-panel" class="notifications-panel">
             <p class="govuk-body govuk-!-margin-bottom-1">@messages("cf.account.detail.requested-certificates-available-text.pre") <a href="@{
@@ -82,20 +86,39 @@
         @p("cf.account.vat.no-certificates-available", id = Some("no-certificates-available-text"))
     }
 
-    @missing_guidance("certificate")
+<div id="missing-certificates-guidance" class="govuk-!-padding-top-2">
+    @h2(
+    "cf.account.vat.older-certificates.heading",
+    id = Some("missing-certificates-guidance-heading"),
+    classes = "govuk-heading-m govuk-!-margin-top-6"
+    )
 
-    @p(id = Some("historic-statement-request"),
-    message = "cf.account.vat.historic.description")
-    
     @link(
-        pClass = "govuk-body govuk-!-margin-bottom-9",
-        linkId = Some("historic-statement-request-link"),
-        linkClass = "govuk-body govuk-link",
-        linkMessage = "cf.account.vat.historic.request",
-        location = appConfig.historicRequestUrl(C79Certificate)
-        )
+    "cf.account.pvat.older-statements.description.link",
+    location = routes.RequestServiceUnavailableController.requestServiceUnavailablePage("c79").url,
+    preLinkMessage = Some("cf.account.vat.older-certificates.description.1")
+    )
 
-    @h2("cf.account.vat.support.heading")
+    @h2(
+    "cf.account.vat.chief.heading",
+    id = Some("chief-guidance-heading"),
+    classes = "govuk-heading-m govuk-!-margin-top-6"
+    )
+
+    @link(
+    appConfig.c79EmailAddress,
+    location = appConfig.c79EmailAddressHref,
+    preLinkMessage = Some("cf.account.vat.older-certificates.description.2")
+    )
+
+</div>
+
+<div id="vat.support.heading" class="govuk-!-padding-top-2">
+    @h2(
+        id = Some("vat.support.message.heading"),
+        msg = "cf.account.vat.support.heading",
+        classes = "govuk-heading-m govuk-!-margin-top-2"
+    )
 
     @p(
         message = "cf.account.vat.support.message",
@@ -110,5 +133,5 @@
             )
         )
     )
-
+</div>
 }
