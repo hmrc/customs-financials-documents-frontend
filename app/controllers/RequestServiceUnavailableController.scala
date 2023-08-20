@@ -33,7 +33,11 @@ class RequestServiceUnavailableController @Inject()(authenticate: IdentifierActi
                                                    (implicit val appConfig: AppConfig)
   extends FrontendController(mcc) with I18nSupport{
 
-  def requestServiceUnavailablePage(): Action[AnyContent]= authenticate andThen checkEmailIsVerified async { implicit req =>
-    Future.successful(Ok(requestServiceUnavailableView()))
+  def requestServiceUnavailablePage(statementType: String): Action[AnyContent]= authenticate andThen checkEmailIsVerified async { implicit req =>
+    val backlink = statementType match {
+      case "pvat" => Some(routes.PostponedVatController.show(Some("CDS")).url)
+      case "c79" => Some(routes.VatController.showVatAccount.url)
+    }
+    Future.successful(Ok(requestServiceUnavailableView(backlink)))
   }
 }

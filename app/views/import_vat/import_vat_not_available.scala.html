@@ -17,10 +17,14 @@
 @import views.html.components._
 @import views.html.Layout
 @import models.FileRole.C79Certificate
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcNewTabLink
+@import uk.gov.hmrc.hmrcfrontend.views.Aliases.NewTabLink
 
 @this(
     layout: Layout,
     h1: components.h1,
+    h2: components.h2,
+    hmrcNewTabLink: HmrcNewTabLink,
     link: components.link,
     p: components.p,
     p2: components.p2,
@@ -35,11 +39,52 @@
 
     @p(message = "cf.account.vat.unavailable", id = Some("no-certificates-available-text"))
 
-    @missing_guidance("certificate")
+    <div id="missing-certificates-guidance" class="govuk-!-padding-top-2">
+        @h2(
+            "cf.account.vat.older-certificates.heading",
+            id = Some("missing-certificates-guidance-heading"),
+            classes = "govuk-heading-m govuk-!-margin-top-6"
+        )
 
+        @link(
+            "cf.account.pvat.older-statements.description.link",
+            location = routes.RequestServiceUnavailableController.requestServiceUnavailablePage("c79").url,
+            preLinkMessage = Some("cf.account.vat.older-certificates.description.1")
+        )
 
-    @p(id = Some("historic-certificate-request"), message = "cf.account.vat.historic.description")
+        @h2(
+            "cf.account.vat.chief.heading",
+            id = Some("chief-guidance-heading"),
+            classes = "govuk-heading-m govuk-!-margin-top-6"
+        )
 
-    @p2(Some("historic-certificate-request-link"),
-        anchor = link(linkMessage = "cf.account.vat.historic.request", location = appConfig.historicRequestUrl(C79Certificate)))
+        @link(
+            appConfig.c79EmailAddress,
+            location = appConfig.c79EmailAddressHref,
+            preLinkMessage = Some("cf.account.vat.older-certificates.description.2")
+        )
+
+    </div>
+
+    <div id="vat.support.heading" class="govuk-!-padding-top-2">
+        @h2(
+            id = Some("vat.support.message.heading"),
+            msg = "cf.account.vat.support.heading",
+            classes = "govuk-heading-m govuk-!-margin-top-2"
+        )
+
+        @p(
+            message = "cf.account.vat.support.message",
+            classes = "govuk-body govuk-!-margin-bottom-9",
+            tabLink = Some(hmrcNewTabLink(
+                NewTabLink(
+                    language = Some(messages.lang.toString),
+                    classList = Some("govuk-link"),
+                    href=Some(appConfig.viewVatAccountSupportLink),
+                    text=messages("cf.account.vat.support.link")
+                    )
+                )
+            )
+        )
+    </div>
 }

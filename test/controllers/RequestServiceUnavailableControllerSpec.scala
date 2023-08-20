@@ -30,15 +30,29 @@ import scala.concurrent.Future
 
 class RequestServiceUnavailableControllerSpec extends SpecBase {
   "requestServiceUnavailablePage" should {
-    "render the historic request service unavailable page" in new Setup {
+    "render the historic request service unavailable page for PVAT" in new Setup {
       when(mockDataStoreConnector.getEmail(any)(any))
         .thenReturn(Future.successful(Right(Email("some@email.com"))))
 
       running(app) {
-        val request = fakeRequest(GET, routes.RequestServiceUnavailableController.requestServiceUnavailablePage().url)
+        val request = fakeRequest(GET, routes.RequestServiceUnavailableController.requestServiceUnavailablePage("pvat").url)
         val result = route(app, request).value
         status(result) mustBe OK
-        contentAsString(result) mustBe view()(request, messages(app), appConfig).toString()
+        val backlink = Some(routes.PostponedVatController.show(Some("CDS")).url)
+        contentAsString(result) mustBe view(backlink)(request, messages(app), appConfig).toString()
+      }
+    }
+
+    "render the historic request service unavailable page for C79" in new Setup {
+      when(mockDataStoreConnector.getEmail(any)(any))
+        .thenReturn(Future.successful(Right(Email("some@email.com"))))
+
+      running(app) {
+        val request = fakeRequest(GET, routes.RequestServiceUnavailableController.requestServiceUnavailablePage("c79").url)
+        val result = route(app, request).value
+        status(result) mustBe OK
+        val backlink = Some(routes.VatController.showVatAccount.url)
+        contentAsString(result) mustBe view(backlink)(request, messages(app), appConfig).toString()
       }
     }
   }

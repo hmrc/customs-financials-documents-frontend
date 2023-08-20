@@ -109,6 +109,8 @@ cf.security-statements.requested.download-link.aria-text=Download {1} to {2} {0}
 # VAT Detail view
 # ------------------------------------------------------------------------
 cf.account.vat.title=Import VAT certificates (C79)
+cf.account.vat.available-text=Your certificates will usually be available after the 8th working day of each month.
+cf.account.vat.your-certificates.heading=Your certificates for the last 6 months
 cf.account.vat.missing-file=Unavailable
 cf.account.vat.missing-file-hidden-text={0} for {1} unavailable
 cf.account.vat.download-link=Download {1} {0} ({2})
@@ -118,8 +120,12 @@ cf.account.vat.historic.request=Request a certificate that’s older than 6 mont
 cf.account.vat.unavailable=Sorry, your certificates are not available at the moment. Please try again later.
 cf.account.vat.statements.unavailable = There were no certificates in {0}.
 cf.account.vat.support.heading=Help and support
-cf.account.vat.support.message=If you need help
-cf.account.vat.support.link=contact HMRC about VAT (opens in new tab).
+cf.account.vat.support.message=If you need help with import VAT contact
+cf.account.vat.support.link=Imports and exports: general enquiries (opens in new tab).
+cf.account.vat.older-certificates.heading=Certificates older than 6 months
+cf.account.vat.older-certificates.description.1=For declarations made using the Customs Declaration Service,
+cf.account.vat.chief.heading=Declarations made using CHIEF
+cf.account.vat.older-certificates.description.2=C79 certificates are sent to you in the post. If you need a copy of a certificate email your request to
 # ------------------------------------------------------------------------
 
 # Not subscribed to CDS
