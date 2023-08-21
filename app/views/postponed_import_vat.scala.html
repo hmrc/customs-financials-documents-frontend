@@ -70,7 +70,7 @@
             }" class="govuk-link">@messages("cf.postponed-vat.requested-statements-available-link-text")</a> @messages("cf.account.detail.requested-certificates-available-text.post")</p>
         </div>
     }
-<dl class="govuk-summary-list statement-list c79-statements">
+<dl class="govuk-summary-list statement-list pVat-statements">
     @for(statementGroup <- statementGroups) {
             @if(!statementGroup.noStatements || statementGroup.isPreviousMonthAndAfter14Th) {
             <div class="govuk-summary-list__row" id=@{statementGroup.periodId}>
