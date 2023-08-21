@@ -56,7 +56,7 @@ inset: components.inset
 
     @link(
     "cf.account.pvat.older-statements.description.link",
-    location = routes.RequestServiceUnavailableController.requestServiceUnavailablePage("pvat").url,
+    location = appConfig.historicRequestUrl(PostponedVATStatement),
     preLinkMessage = Some("cf.account.pvat.older-statements.description.2")
     )
 
