@@ -27,3 +27,20 @@
 	}
 
 }
+
+.pVat-statements {
+	.govuk-summary-list__actions,
+	.govuk-summary-list__value {
+		width: 100%;
+	}
+
+	@media (min-width: 641px) {
+		.govuk-summary-list__actions {
+			width: 70%
+		}
+
+		.govuk-summary-list__value {
+			width: 100%;
+		}
+	}
+}

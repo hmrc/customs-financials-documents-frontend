@@ -9,7 +9,7 @@ cf.postponed-vat.view-certificates.description=These are statements of VAT you h
 cf.postponed-vat.view-certificates.no-certificates=There are no postponed import VAT statements.
 cf.account.pvat.title=Postponed import VAT statements
 cf.account.pvat.content=Unless you have delayed your customs declaration, each statement will show the total import VAT postponed for the previous month.
-cf.account.pvat.download-link={0} statement - {1} ({2})
+cf.account.pvat.download-link={0} - {1} ({2})
 cf.account.pvat.amended-download-link={0} amended statement - {1} ({2})
 cf.account.pvat.original.download-link={0} statement - {1} ({2})
 cf.account.pvat.missing-file-type=No {0} statements available.
@@ -49,6 +49,7 @@ cf.common.missing-documents-guidance.chiefHeading={0} made in CHIEF
 cf.common.missing-documents-guidance.text1={0} for import declarations made in Customs Handling of Import and Export Freight (CHIEF) are not available in this service.
 cf.common.missing-documents-guidance.subHeading={0} older than 6 months
 cf.common.missing-documents-guidance.text2={0} are only created for periods in which you imported goods.
+cf.common.not-available=Not available
 # ------------------------------------------------------------------------
 
 # Date Format

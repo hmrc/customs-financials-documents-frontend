@@ -62,7 +62,7 @@ class PostponedVatControllerSpec extends SpecBase {
         val result = route(app, request).value
         status(result) mustBe OK
         contentAsString(result) mustBe view("testEori1",
-          PostponedVatViewModel(postponedVatStatementFiles ++ historicPostponedVatStatementFiles)(messages(app), mockDateTimeService), hasRequestedStatements = false, cdsOnly = false, Some("CDS"))(request, messages(app), config).toString()
+          PostponedVatViewModel(postponedVatStatementFiles ++ historicPostponedVatStatementFiles)(messages(app), mockDateTimeService), hasRequestedStatements = false, cdsOnly = true, Some("CDS"))(request, messages(app), config).toString()
       }
     }
 
@@ -94,7 +94,7 @@ class PostponedVatControllerSpec extends SpecBase {
             PostponedVatViewModel(postponedVatStatementFilesWithImmediateUnavailable ++ historicPostponedVatStatementFiles)(
               messages(app), mockDateTimeService),
             hasRequestedStatements = false,
-            cdsOnly = false,
+            cdsOnly = true,
             Some("CDS"))(request, messages(app), config).toString()
 
           val doc = Jsoup.parse(contentAsString(result))
@@ -102,7 +102,7 @@ class PostponedVatControllerSpec extends SpecBase {
             date.minusMonths(1))(messages(app)).replace(" ", "-").toLowerCase
 
           doc.getElementById(s"period-$periodElement").children().text() should include(messages(app)(
-            "cf.account.pvat.statements.unavailable", Formatters.dateAsMonth(date.minusMonths(1))(messages(app))
+            "cf.common.not-available", Formatters.dateAsMonth(date.minusMonths(1))(messages(app))
           ))
         }
       }

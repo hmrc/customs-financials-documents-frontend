@@ -37,8 +37,13 @@
     inset: components.inset
 )
 
-
-@(eori: String, statementGroups: Seq[PostponedVatStatementGroup], hasRequestedStatements: Boolean, cdsOnly: Boolean, location: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(
+    eori: String,
+    statementGroups: Seq[PostponedVatStatementGroup],
+    hasRequestedStatements: Boolean,
+    cdsOnly: Boolean,
+    location: Option[String]
+)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @layout(pageTitle = Some(messages("cf.account.pvat.title")) , backLink = location.map(_ => appConfig.customsFinancialsFrontendHomepage)) {
     <h2 class="govuk-caption-xl" id="eori-heading">
@@ -65,22 +70,21 @@
             }" class="govuk-link">@messages("cf.postponed-vat.requested-statements-available-link-text")</a> @messages("cf.account.detail.requested-certificates-available-text.post")</p>
         </div>
     }
-
+<dl class="govuk-summary-list statement-list pVat-statements">
     @for(statementGroup <- statementGroups) {
             @if(!statementGroup.noStatements || statementGroup.isPreviousMonthAndAfter14Th) {
-                <div id=@{statementGroup.periodId}>
+            <div class="govuk-summary-list__row" id=@{statementGroup.periodId}>
 
-                    @h2(msg = Formatters.dateAsMonthAndYear(statementGroup.startDate))
-
+                <dt class="govuk-summary-list__value">@h2(msg = Formatters.dateAsMonthAndYear(statementGroup.startDate))</dt>
 
                 @if(statementGroup.noStatements) {
                     @if(statementGroup.isPreviousMonthAndAfter14Th) {
-                        <ul class="govuk-list">
-                            <li>@messages("cf.account.pvat.statements.unavailable",Formatters.dateAsMonth(statementGroup.startDate))</li>
-                        </ul>
+                            <dd class="govuk-summary-list__actions">@messages("cf.common.not-available")</dd>
+                    @if(!cdsOnly){
+                            <dd class="govuk-summary-list__actions">@messages("cf.common.not-available")</dd>
+                            }
                     }
                 } else {
-                            <ul class="govuk-list">
                                 @for(source <- Seq(CDS, CHIEF)) {
                                     @collapsibleStatementGroup(
                                         statementGroup.collectFiles(amended = true, source),
@@ -95,18 +99,17 @@
                                             statementGroup.collectFiles(amended = false, source),
                                             s"cf.account.pvat.${original}download-link",
                                             s"cf.account.pvat.aria.${original}download-link",
-                                            Some(s"cf.account.pvat.${original}missing-file-type"),
+                                            Some("cf.common.not-available"),
                                             source,
                                             Formatters.dateAsMonthAndYear(statementGroup.startDate)
                                         )
                                     }
                                 }
-                            </ul>
                         }
                 </div>
             }
     }
-
+</dl>
     @if(statementGroups.isEmpty) {
         @inset("cf.account.pvat.no-statements-yet")
     } else {
@@ -150,21 +153,36 @@
 
 }
 
-@collapsibleStatementGroup(certificateFiles: Seq[PostponedVatStatementFile], downloadLinkMessage: String, downloadAriaLabel: String, missingFileMessage: Option[String], source: String, period: String) = {
+@collapsibleStatementGroup(
+    certificateFiles: Seq[PostponedVatStatementFile],
+    downloadLinkMessage: String,
+    downloadAriaLabel: String,
+    missingFileMessage: Option[String],
+    source: String,
+    period: String) = {
+
 @if(certificateFiles.nonEmpty) {
     @for(certificates <- certificateFiles.groupBy(_.eori).values) {
         @for(fileFormat <- PvatFileFormats) {
-            @downloadLink(fileFormat, certificates.filter(_.fileFormat == fileFormat), downloadLinkMessage, downloadAriaLabel, period)
+            <dd class="govuk-summary-list__actions">@downloadLink(fileFormat, certificates.filter(_.fileFormat == fileFormat), downloadLinkMessage, downloadAriaLabel, period)</dd>
         }
     }
 } else {
-    @missingFileMessage.map{v => <li>@messages(v, source)</li>}
-}
+    @if(!cdsOnly) {
+        @missingFileMessage.map{v => <dd class="govuk-summary-list__actions">@messages(v, source)</dd>}
+    }
 }
 
-@downloadLink(fileFormat: FileFormat, certificateFiles: Seq[PostponedVatStatementFile], downloadLinkMessage: String, downloadAriaLabel: String, period: String) = {
+}
+
+@downloadLink(
+    fileFormat: FileFormat,
+    certificateFiles: Seq[PostponedVatStatementFile],
+    downloadLinkMessage: String,
+    downloadAriaLabel: String,
+    period: String) = {
+
 @for(certificateFile <- certificateFiles) {
-    <li>
         @linkInner(
             msgs = messages(
                 downloadLinkMessage,
@@ -184,6 +202,5 @@
                 )
             )
         )
-    </li>
-}
+    }
 }
