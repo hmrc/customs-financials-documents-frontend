@@ -14,14 +14,12 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcNewTabLink
-@import uk.gov.hmrc.hmrcfrontend.views.Aliases.NewTabLink
 @import views.html.Layout
 
 
 @this(
         layout: Layout,
-        hmrcNewTabLink: HmrcNewTabLink,
+        link: components.link,
         h1: components.h1,
         h2: components.h2,
         p: components.p
@@ -32,33 +30,18 @@
 
 @layout(pageTitle = Some(messages("cf.not-subscribed-to-cds.detail.title")), help = false) {
     @h1(msg = "cf.not-subscribed-to-cds.detail.heading")
-    @h2(msg = "cf.not-subscribed-to-cds.detail.how-to-get-access-info")
+    @h2("cf.not-subscribed-to-cds.detail.already-subscribed-to-cds", id = Some("already-subscribed-heading"))
 
-    @p(
-        message = "cf.not-subscribed-to-cds.detail.eori-info",
-        tabLink = Some(hmrcNewTabLink(
-                NewTabLink(
-                    language = Some(messages.lang.toString),
-                    classList = Some("govuk-link"),
-                    href=Some(appConfig.registerCdsUrl),
-                    text=messages("cf.not-subscribed-to-cds.detail.eori-link")
-                )
-            )
+    @p("cf.not-subscribed-to-cds.detail.already-subscribed-to-cds-guidance-text")
+
+    @h2(messages("cf.not-subscribed-to-cds.details.subscribe-to-cds"), id = Some("subscribed-to-cds-heading"))
+
+    <p class="govuk-body govuk-!-margin-bottom-7">
+        @link(
+        "cf.not-subscribed-to-cds.details.subscribe-to-cds-link-text",
+        appConfig.subscribeCdsUrl,
+        linkId = Some("subscribe-to-cds"),
+        pWrapped = false
         )
-    )
-
-    @p(
-        message = "cf.not-subscribed-to-cds.detail.get-access-info",
-        tabLink = Some(hmrcNewTabLink(
-                NewTabLink(
-                    language = Some(messages.lang.toString),
-                    classList = Some("govuk-link"),
-                    href=Some(appConfig.subscribeCdsUrl),
-                    text=messages("cf.not-subscribed-to-cds.detail.get-access-link")
-                )
-            )
-        )
-    )
-
-    @p("cf.not-subscribed-to-cds.detail.process-application-info")
+    </p>
 }
