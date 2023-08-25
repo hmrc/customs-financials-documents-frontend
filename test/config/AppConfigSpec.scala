@@ -28,7 +28,7 @@ class AppConfigSpec extends SpecBase {
 
     "include the app name" in new Setup {
       running(app) {
-        appConfig.appName mustBe ("customs-financials-documents-frontend")
+        appConfig.appName mustBe "customs-financials-documents-frontend"
       }
     }
 
