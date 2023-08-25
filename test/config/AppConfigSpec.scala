@@ -18,6 +18,7 @@ package config
 
 import models.FileRole
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import play.api.Application
 import utils.SpecBase
 import play.api.test.Helpers.running
 
@@ -70,10 +71,15 @@ class AppConfigSpec extends SpecBase {
         }
       }
     }
+
+    "contain correct subscribeCdsUrl" in new Setup {
+      appConfig.subscribeCdsUrl mustBe
+        "https://www.tax.service.gov.uk/customs-enrolment-services/cds/subscribe"
+    }
   }
 
   trait Setup {
-    val app = application(allEoriHistory = Seq.empty).build()
-    val appConfig = app.injector.instanceOf[AppConfig]
+    val app: Application = application(allEoriHistory = Seq.empty).build()
+    val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
   }
 }
