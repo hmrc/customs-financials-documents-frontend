@@ -24,6 +24,7 @@
 @import models.FileFormat
 @import models.DutyPaymentMethod.CDS
 @import models.DutyPaymentMethod.CHIEF
+@import utils.Utils.emptyString
 
 @this(
     layout: Layout,
@@ -42,7 +43,8 @@
     statementGroups: Seq[PostponedVatStatementGroup],
     hasRequestedStatements: Boolean,
     cdsOnly: Boolean,
-    location: Option[String]
+    location: Option[String],
+    serviceUnavailableUrl: Option[String] = None
 )(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @layout(pageTitle = Some(messages("cf.account.pvat.title")) , backLink = location.map(_ => appConfig.customsFinancialsFrontendHomepage)) {
@@ -124,7 +126,7 @@
     
             @link(
                 "cf.account.pvat.older-statements.description.link",
-                location = appConfig.historicRequestUrl(PostponedVATStatement),
+                location = serviceUnavailableUrl.getOrElse(emptyString),
                 preLinkMessage = Some("cf.account.pvat.older-statements.description.2")
             )
 

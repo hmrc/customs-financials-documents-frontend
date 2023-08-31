@@ -67,7 +67,8 @@ class PostponedVatController @Inject()
         PostponedVatViewModel(allPostponedVatStatements),
         allPostponedVatStatements.exists(statement => statement.metadata.statementRequestId.nonEmpty),
         allPostponedVatStatements.count(_.metadata.source != CHIEF) == allPostponedVatStatements.size,
-        location)
+        location,
+        Some(routes.ServiceUnavailableController.onPageLoad("postponed-vat").url))
       )
     }).recover { case _ => Redirect(routes.PostponedVatController.statementsUnavailablePage()) }
   }

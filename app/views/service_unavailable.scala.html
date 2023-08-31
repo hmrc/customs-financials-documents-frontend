@@ -25,24 +25,18 @@
 )
 
 
-@(backlink: Option[String])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(backlink: Option[String] = None)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@layout(pageTitle = Some(messages("cf.historic-request-service-unavailable.title")) , backLink = backlink) {
+@layout(pageTitle = Some(messages("cf.service-unavailable.title")) , backLink = backlink, deskpro = false) {
 
-@h1(msg = "cf.historic-request-service-unavailable.heading", classes = "govuk-heading-xl  govuk-!-margin-bottom-6")
+@h1(msg = "cf.service-unavailable.heading", classes = "govuk-heading-xl  govuk-!-margin-bottom-6", id = Some("service-unavailable.heading"))
 
 @link(
-    appConfig.cdsEmailEnquiries,
+    linkMessage = "cf.service-unavailable.description.2",
     location = appConfig.cdsEmailEnquiriesHref,
-    preLinkMessage = Some("cf.historic-request-service-unavailable.description.1"),
-    postLinkMessage = Some("cf.historic-request-service-unavailable.description.2")
+    preLinkMessage = Some("cf.service-unavailable.description.1")
 )
 
-@p(message="cf.historic-request-service-unavailable.description.3")
-
-<br>
-<br>
-<br>
-<br>
+@p(message="cf.service-unavailable.description.3", classes="govuk-body govuk-!-margin-bottom-6")
 
 }
