@@ -23,8 +23,8 @@ import javax.inject.Inject
 
 @Singleton
 class Navigator @Inject()() {
-   private[navigation] val importVatPageId = "import-vat"
-   private[navigation] val postponedVatPageId = "postponed-vat"
+   val importVatPageId = "import-vat"
+   val postponedVatPageId = "postponed-vat"
 
   def backLinkUrlForServiceUnavailablePage(id: String): Option[String] =
     id match {

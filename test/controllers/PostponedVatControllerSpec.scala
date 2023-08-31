@@ -41,6 +41,8 @@ class PostponedVatControllerSpec extends SpecBase {
 
   "show" should {
     "display the PostponedVat page" in new Setup {
+      val serviceUnavailableUrl: String =
+        routes.ServiceUnavailableController.onPageLoad("postponed-vat").url
 
       when(mockDataStoreConnector.getEmail(any)(any))
         .thenReturn(Future.successful(Right(Email("some@email.com"))))
@@ -60,9 +62,18 @@ class PostponedVatControllerSpec extends SpecBase {
       running(app) {
         val request = fakeRequest(GET, routes.PostponedVatController.show(Some("CDS")).url)
         val result = route(app, request).value
+
         status(result) mustBe OK
+
         contentAsString(result) mustBe view("testEori1",
-          PostponedVatViewModel(postponedVatStatementFiles ++ historicPostponedVatStatementFiles)(messages(app), mockDateTimeService), hasRequestedStatements = false, cdsOnly = true, Some("CDS"))(request, messages(app), config).toString()
+          PostponedVatViewModel(
+            postponedVatStatementFiles ++ historicPostponedVatStatementFiles)(messages(app), mockDateTimeService),
+          hasRequestedStatements = false,
+          cdsOnly = true,
+          Some("CDS"),
+          Some(serviceUnavailableUrl))(request, messages(app), config).toString()
+
+        contentAsString(result).contains(serviceUnavailableUrl)
       }
     }
 
@@ -110,6 +121,7 @@ class PostponedVatControllerSpec extends SpecBase {
 
     "not display the immediate previous month statement on PostponedVat page when accessed " +
       "before 15th day of the month and statement is not available" in new Setup {
+      val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("postponed-vat").url
 
       when(mockDataStoreConnector.getEmail(any)(any))
         .thenReturn(Future.successful(Right(Email("some@email.com"))))
@@ -138,7 +150,8 @@ class PostponedVatControllerSpec extends SpecBase {
               messages(app), mockDateTimeService),
             hasRequestedStatements = false,
             cdsOnly = false,
-            Some("CDS"))(request, messages(app), config).toString()
+            Some("CDS"),
+            Some(serviceUnavailableUrl))(request, messages(app), config).toString()
 
           val doc = Jsoup.parse(contentAsString(result))
           val periodElement = Formatters.dateAsMonthAndYear(

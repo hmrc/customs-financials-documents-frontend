@@ -42,13 +42,15 @@ class PostponedImportVatSpec extends SpecBase {
     "display the correct title and guidance" in new Setup {
       when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
 
+      val serviceUnavailbleUrl: Option[String] = Option("service_unavailable_url")
       val view: Document = Jsoup.parse(
         app.injector.instanceOf[postponed_import_vat].apply(
           "testEori1",
           PostponedVatViewModel(postponedVatStatementFiles),
           hasRequestedStatements = true,
           cdsOnly = true,
-          Option("some_url")).body)
+          Option("some_url"),
+          serviceUnavailbleUrl).body)
 
       running(app) {
         view.title() mustBe s"${messages(app)("cf.account.pvat.title")} - ${messages(app)("service.name")} - GOV.UK"
@@ -58,6 +60,7 @@ class PostponedImportVatSpec extends SpecBase {
         view.getElementsByTag("dd").size() must be > 0
         view.getElementById("pvat.support.heading").html() must not be empty
         view.getElementById("pvat.support.message").html() must not be empty
+        view.html().contains(serviceUnavailbleUrl)
       }
     }
 

@@ -21,6 +21,7 @@ import config.{AppConfig, ErrorHandler}
 import connectors.{FinancialsApiConnector, SdesConnector}
 import models.FileRole.C79Certificate
 import models.{EoriHistory, VatCertificatesByMonth, VatCertificatesForEori}
+import navigation.Navigator
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.api.{Logger, LoggerLike}
@@ -41,6 +42,7 @@ class VatController @Inject()(val authenticate: IdentifierAction,
                               checkEmailIsVerified: EmailAction,
                               importVatView: import_vat,
                               importVatNotAvailableView: import_vat_not_available,
+                              navigator: Navigator,
                               implicit val mcc: MessagesControllerComponents)
                              (implicit val appConfig: AppConfig, val errorHandler: ErrorHandler, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
@@ -55,7 +57,7 @@ class VatController @Inject()(val authenticate: IdentifierAction,
       viewModel = VatViewModel(allCertificates.sorted)
     } yield Ok(importVatView(
       viewModel,
-      Some(routes.ServiceUnavailableController.onPageLoad("import-vat").url)))
+      Some(routes.ServiceUnavailableController.onPageLoad(navigator.importVatPageId).url)))
       ).recover {
       case e =>
         log.error(s"Unable to retrieve VAT certificates :${e.getMessage}")

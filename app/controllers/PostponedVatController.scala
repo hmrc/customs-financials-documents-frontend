@@ -22,6 +22,7 @@ import connectors.{FinancialsApiConnector, SdesConnector}
 import models.DutyPaymentMethod.CHIEF
 import models.FileRole.PostponedVATStatement
 import models.PostponedVatStatementFile
+import navigation.Navigator
 import play.api.{Logger, LoggerLike}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,17 +37,18 @@ import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
-class PostponedVatController @Inject()
-(val authenticate: PvatIdentifierAction,
- val resolveSessionId: SessionIdAction,
- implicit val dateTimeService: DateTimeService,
- postponedImportVatView: postponed_import_vat,
- postponedImportVatNotAvailableView: postponed_import_vat_not_available,
- financialsApiConnector: FinancialsApiConnector,
- checkEmailIsVerified: EmailAction,
- sdesConnector: SdesConnector,
- implicit val mcc: MessagesControllerComponents)(implicit val appConfig: AppConfig, val errorHandler: ErrorHandler, ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport {
+class PostponedVatController @Inject()(val authenticate: PvatIdentifierAction,
+                                        val resolveSessionId: SessionIdAction,
+                                        implicit val dateTimeService: DateTimeService,
+                                        postponedImportVatView: postponed_import_vat,
+                                        postponedImportVatNotAvailableView: postponed_import_vat_not_available,
+                                        financialsApiConnector: FinancialsApiConnector,
+                                        checkEmailIsVerified: EmailAction,
+                                        sdesConnector: SdesConnector,
+                                        navigator: Navigator,
+                                        implicit val mcc: MessagesControllerComponents)(
+                                        implicit val appConfig: AppConfig, val errorHandler: ErrorHandler, ec: ExecutionContext)
+                                        extends FrontendController(mcc) with I18nSupport {
 
   val log: LoggerLike = Logger(this.getClass)
 
@@ -68,7 +70,7 @@ class PostponedVatController @Inject()
         allPostponedVatStatements.exists(statement => statement.metadata.statementRequestId.nonEmpty),
         allPostponedVatStatements.count(_.metadata.source != CHIEF) == allPostponedVatStatements.size,
         location,
-        Some(routes.ServiceUnavailableController.onPageLoad("postponed-vat").url))
+        Some(routes.ServiceUnavailableController.onPageLoad(navigator.postponedVatPageId).url))
       )
     }).recover { case _ => Redirect(routes.PostponedVatController.statementsUnavailablePage()) }
   }

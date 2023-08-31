@@ -37,7 +37,8 @@
 
 @(
     model: VatViewModel,
-    serviceUnavailableUrl: Option[String] = None)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+    serviceUnavailableUrl: Option[String] = None
+)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @layout(pageTitle = Some(messages("cf.account.vat.title")), backLink = Some(appConfig.customsFinancialsFrontendHomepage)) {
 
