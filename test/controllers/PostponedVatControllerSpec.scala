@@ -23,6 +23,7 @@ import models.FileFormat.{Csv, Pdf}
 import models.FileRole.{PostponedVATAmendedStatement, PostponedVATStatement}
 import models.metadata.PostponedVatStatementFileMetadata
 import models.{EoriHistory, PostponedVatStatementFile}
+import navigation.Navigator
 import org.jsoup.Jsoup
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.test.Helpers._
@@ -32,7 +33,7 @@ import uk.gov.hmrc.auth.core.retrieve.Email
 import utils.SpecBase
 import viewmodels.PostponedVatViewModel
 import views.helpers.Formatters
-import views.html.postponed_import_vat
+import views.html.{postponed_import_vat, postponed_import_vat_not_available}
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -159,6 +160,27 @@ class PostponedVatControllerSpec extends SpecBase {
 
           doc.getElementById(s"period-$periodElement") mustBe null
         }
+      }
+    }
+  }
+
+  "statementsUnavailablePage" should {
+    "display the view correctly" in {
+      val app = application().build()
+      val view = app.injector.instanceOf[postponed_import_vat_not_available]
+      val appConfig = app.injector.instanceOf[AppConfig]
+      val navigator = app.injector.instanceOf[Navigator]
+
+      val serviceUnavailableUrl: String =
+        routes.ServiceUnavailableController.onPageLoad(navigator.postponedVatNotAvailablePageId).url
+
+      running(app) {
+        val request = fakeRequest(GET, routes.PostponedVatController.statementsUnavailablePage().url)
+        val result = route(app, request).value
+
+        status(result) mustBe OK
+        contentAsString(result) mustBe
+          view("testEori1", Some(serviceUnavailableUrl))(request, messages(app), appConfig).toString()
       }
     }
   }

@@ -22,6 +22,7 @@ import models.FileFormat.Pdf
 import models.FileRole.C79Certificate
 import models.metadata.VatCertificateFileMetadata
 import models.{EoriHistory, VatCertificateFile, VatCertificatesByMonth, VatCertificatesForEori}
+import navigation.Navigator
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers.anyString
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
@@ -39,7 +40,7 @@ class VatControllerSpec extends SpecBase {
 
   "showVatAccount" should {
     "redirect to certificates unavailable page if getting files fails" in new Setup {
-      val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("import-vat").url
+      val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad(navigator.importVatPageId).url
       val vatCertificateFile: VatCertificateFile = VatCertificateFile(
         "name_04",
         "download_url_06",
@@ -224,12 +225,17 @@ class VatControllerSpec extends SpecBase {
       val app = application().build()
       val view = app.injector.instanceOf[import_vat_not_available]
       val appConfig = app.injector.instanceOf[AppConfig]
+      val navigator = app.injector.instanceOf[Navigator]
 
-      running(app){
+      val serviceUnavailableUrl: String =
+        routes.ServiceUnavailableController.onPageLoad(navigator.importVatNotAvailablePageId).url
+
+      running(app) {
         val request = fakeRequest(GET, routes.VatController.certificatesUnavailablePage().url)
         val result = route(app, request).value
         status(result) mustBe OK
-        contentAsString(result) mustBe view()(request, messages(app), appConfig).toString()
+        contentAsString(result) mustBe
+          view(Some(serviceUnavailableUrl))(request, messages(app), appConfig).toString()
       }
     }
   }
@@ -239,6 +245,7 @@ class VatControllerSpec extends SpecBase {
     val mockSdesConnector: SdesConnector = mock[SdesConnector]
     val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory("testEori1", None, None))
     val date: LocalDate = LocalDate.now().withDayOfMonth(28)
+    val navigator = new Navigator()
 
     when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
       .thenReturn(Future.successful(true))
@@ -246,7 +253,8 @@ class VatControllerSpec extends SpecBase {
 
     val app: Application = application(eoriHistory).overrides(
       inject.bind[FinancialsApiConnector].toInstance(mockFinancialsApiConnector),
-      inject.bind[SdesConnector].toInstance(mockSdesConnector)
+      inject.bind[SdesConnector].toInstance(mockSdesConnector),
+      inject.bind[Navigator].toInstance(navigator)
     ).build()
 
     val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
