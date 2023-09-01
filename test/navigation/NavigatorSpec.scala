@@ -28,6 +28,12 @@ class NavigatorSpec extends SpecBase {
       navigatorOb.backLinkUrlForServiceUnavailablePage(navigatorOb.postponedVatPageId) mustBe
         Some(controllers.routes.PostponedVatController.show(Some("CDS")).url)
 
+      navigatorOb.backLinkUrlForServiceUnavailablePage(navigatorOb.importVatNotAvailablePageId) mustBe
+        Some(controllers.routes.VatController.certificatesUnavailablePage().url)
+
+      navigatorOb.backLinkUrlForServiceUnavailablePage(navigatorOb.postponedVatNotAvailablePageId) mustBe
+        Some(controllers.routes.PostponedVatController.statementsUnavailablePage().url)
+
       navigatorOb.backLinkUrlForServiceUnavailablePage("Some_Id") mustBe empty
     }
   }

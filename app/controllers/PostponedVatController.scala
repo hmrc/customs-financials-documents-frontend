@@ -76,7 +76,10 @@ class PostponedVatController @Inject()(val authenticate: PvatIdentifierAction,
   }
 
   def statementsUnavailablePage(): Action[AnyContent] = authenticate andThen checkEmailIsVerified async { implicit req =>
-    Future.successful(Ok(postponedImportVatNotAvailableView(req.eori)))
+    Future.successful(Ok(postponedImportVatNotAvailableView(
+      req.eori,
+      Some(routes.ServiceUnavailableController.onPageLoad(navigator.postponedVatNotAvailablePageId).url))
+    ))
   }
 }
 

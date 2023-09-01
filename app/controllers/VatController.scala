@@ -66,7 +66,8 @@ class VatController @Inject()(val authenticate: IdentifierAction,
   }
 
   def certificatesUnavailablePage(): Action[AnyContent] = authenticate andThen checkEmailIsVerified async { implicit req =>
-    Future.successful(Ok(importVatNotAvailableView()))
+    Future.successful(Ok(importVatNotAvailableView(
+      Some(routes.ServiceUnavailableController.onPageLoad(navigator.importVatNotAvailablePageId).url))))
   }
 
   private def getCertificates(historicEori: EoriHistory)(implicit req: AuthenticatedRequestWithSessionId[_]): Future[VatCertificatesForEori] = {
