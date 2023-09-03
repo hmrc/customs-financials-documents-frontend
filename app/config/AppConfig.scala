@@ -74,6 +74,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   lazy val xClientIdHeader: String = config.get[String]("microservice.services.sdes.x-client-id")
   lazy val fixedDateTime: Boolean = config.get[Boolean]("features.fixed-system-time")
+  lazy val historicStatementsEnabled: Boolean = config.get[Boolean]("features.historic-statements-enabaled")
 
   lazy val customsFinancialsApi: String = servicesConfig.baseUrl("customs-financials-api") +
     config.get[String]("microservice.services.customs-financials-api.context")
