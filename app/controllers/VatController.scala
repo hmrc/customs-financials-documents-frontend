@@ -30,7 +30,6 @@ import utils.DateUtils._
 import viewmodels.VatViewModel
 import views.html.import_vat.{import_vat, import_vat_not_available}
 
-import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -54,7 +53,10 @@ class VatController @Inject()(val authenticate: IdentifierAction,
     (for {
       allCertificates <- Future.sequence(req.allEoriHistory.map(getCertificates(_)))
       viewModel = VatViewModel(allCertificates.sorted)
-    } yield Ok(importVatView(viewModel))
+    } yield {
+      val isHistoricStatementsEnabled: Boolean = appConfig.historicStatementsEnabled
+      Ok(importVatView(viewModel, isHistoricStatementsEnabled))
+    }
       ).recover {
       case e =>
         log.error(s"Unable to retrieve VAT certificates :${e.getMessage}")

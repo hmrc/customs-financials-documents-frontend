@@ -62,12 +62,14 @@ class PostponedVatController @Inject()
       ).map(_.flatten)
     } yield {
       val allPostponedVatStatements: Seq[PostponedVatStatementFile] = postponedVatStatements ++ historicPostponedVatStatements
+      val isHistoricStatementsEnabled: Boolean = appConfig.historicStatementsEnabled
+
       Ok(postponedImportVatView(
         req.eori,
         PostponedVatViewModel(allPostponedVatStatements),
         allPostponedVatStatements.exists(statement => statement.metadata.statementRequestId.nonEmpty),
         allPostponedVatStatements.count(_.metadata.source != CHIEF) == allPostponedVatStatements.size,
-        location)
+        location, isHistoricStatementsEnabled)
       )
     }).recover { case _ => Redirect(routes.PostponedVatController.statementsUnavailablePage()) }
   }

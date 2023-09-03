@@ -42,13 +42,15 @@ class PostponedImportVatSpec extends SpecBase {
     "display the correct title and guidance" in new Setup {
       when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
 
+      val isHistoricStatementsEnabled: Boolean = true
+
       val view: Document = Jsoup.parse(
         app.injector.instanceOf[postponed_import_vat].apply(
           "testEori1",
           PostponedVatViewModel(postponedVatStatementFiles),
           hasRequestedStatements = true,
           cdsOnly = true,
-          Option("some_url")).body)
+          Option("some_url"), isHistoricStatementsEnabled).body)
 
       running(app) {
         view.title() mustBe s"${messages(app)("cf.account.pvat.title")} - ${messages(app)("service.name")} - GOV.UK"
@@ -64,13 +66,15 @@ class PostponedImportVatSpec extends SpecBase {
     "not display CHIEF doc column when there are no CHIEF doc" in new Setup {
       when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
 
+      val isHistoricStatementsEnabled: Boolean = true
+
       val view: Document = Jsoup.parse(
         app.injector.instanceOf[postponed_import_vat].apply(
           "testEori1",
           PostponedVatViewModel(postponedVatStatementFiles),
           hasRequestedStatements = true,
           cdsOnly = true,
-          Option("some_url")).body)
+          Option("some_url"), isHistoricStatementsEnabled).body)
 
       running(app) {
         view.html().contains(messages(app)("cf.account.pvat.download-link", "CDS", "PDF", "111KB"))

@@ -57,8 +57,10 @@ class VatControllerSpec extends SpecBase {
       running(app) {
         val request = fakeRequest(GET, routes.VatController.showVatAccount.url)
         val result = route(app, request).value
+        val isHistoricStatementsEnabled: Boolean = true
+
         status(result) mustBe OK
-        contentAsString(result) mustBe view(viewModel)(request, messages(app), appConfig).toString()
+        contentAsString(result) mustBe view(viewModel, isHistoricStatementsEnabled)(request, messages(app), appConfig).toString()
       }
     }
 
@@ -99,8 +101,9 @@ class VatControllerSpec extends SpecBase {
         val result = route(app, request).value
         status(result) mustBe OK
 
+        val isHistoricStatementsEnabled: Boolean = true
         if (!DateUtils.isDayBefore15ThDayOfTheMonth(LocalDate.now())) {
-          contentAsString(result) mustBe view(viewModel)(request, messages(app), appConfig).toString()
+          contentAsString(result) mustBe view(viewModel, isHistoricStatementsEnabled)(request, messages(app), appConfig).toString()
           val doc = Jsoup.parse(contentAsString(result))
 
           doc.getElementById("statements-list-0-row-5") should not be null
@@ -135,8 +138,10 @@ class VatControllerSpec extends SpecBase {
         val result = route(app, request).value
         status(result) mustBe OK
 
+        val isHistoricStatementsEnabled: Boolean = true
+
         if (DateUtils.isDayBefore15ThDayOfTheMonth(LocalDate.now())) {
-          contentAsString(result) mustBe view(viewModel)(request, messages(app), appConfig).toString()
+          contentAsString(result) mustBe view(viewModel, isHistoricStatementsEnabled)(request, messages(app), appConfig).toString()
           val doc = Jsoup.parse(contentAsString(result))
 
           doc.getElementById("statements-list-0-row-5") mustBe null
@@ -186,8 +191,10 @@ class VatControllerSpec extends SpecBase {
         val result = route(app, request).value
         status(result) mustBe OK
 
+        val isHistoricStatementsEnabled: Boolean = true
+
         if (DateUtils.isDayBefore15ThDayOfTheMonth(LocalDate.now())) {
-          contentAsString(result) mustBe view(viewModel)(request, messages(app), appConfig).toString()
+          contentAsString(result) mustBe view(viewModel, isHistoricStatementsEnabled)(request, messages(app), appConfig).toString()
           val doc = Jsoup.parse(contentAsString(result))
 
           doc.getElementById("statements-list-0-row-0") should not be null

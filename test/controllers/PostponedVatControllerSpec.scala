@@ -59,10 +59,12 @@ class PostponedVatControllerSpec extends SpecBase {
 
       running(app) {
         val request = fakeRequest(GET, routes.PostponedVatController.show(Some("CDS")).url)
+        val isHistoricStatementsEnabled: Boolean = true
+
         val result = route(app, request).value
         status(result) mustBe OK
         contentAsString(result) mustBe view("testEori1",
-          PostponedVatViewModel(postponedVatStatementFiles ++ historicPostponedVatStatementFiles)(messages(app), mockDateTimeService), hasRequestedStatements = false, cdsOnly = true, Some("CDS"))(request, messages(app), config).toString()
+          PostponedVatViewModel(postponedVatStatementFiles ++ historicPostponedVatStatementFiles)(messages(app), mockDateTimeService), hasRequestedStatements = false, cdsOnly = true, Some("CDS"), isHistoricStatementsEnabled)(request, messages(app), config).toString()
       }
     }
 
@@ -84,6 +86,8 @@ class PostponedVatControllerSpec extends SpecBase {
       running(app) {
         val request = fakeRequest(GET, routes.PostponedVatController.show(Some("CDS")).url)
         val result = route(app, request).value
+        val isHistoricStatementsEnabled: Boolean = true
+
         status(result) mustBe OK
 
         if (LocalDate.now().getDayOfMonth > 14) {
@@ -95,7 +99,7 @@ class PostponedVatControllerSpec extends SpecBase {
               messages(app), mockDateTimeService),
             hasRequestedStatements = false,
             cdsOnly = true,
-            Some("CDS"))(request, messages(app), config).toString()
+            Some("CDS"), isHistoricStatementsEnabled)(request, messages(app), config).toString()
 
           val doc = Jsoup.parse(contentAsString(result))
           val periodElement = Formatters.dateAsMonthAndYear(
@@ -126,6 +130,8 @@ class PostponedVatControllerSpec extends SpecBase {
       running(app) {
         val request = fakeRequest(GET, routes.PostponedVatController.show(Some("CDS")).url)
         val result = route(app, request).value
+        val isHistoricStatementsEnabled: Boolean = true
+
         status(result) mustBe OK
 
         if(LocalDate.now().getDayOfMonth < 15) {
@@ -138,7 +144,7 @@ class PostponedVatControllerSpec extends SpecBase {
               messages(app), mockDateTimeService),
             hasRequestedStatements = false,
             cdsOnly = false,
-            Some("CDS"))(request, messages(app), config).toString()
+            Some("CDS"), isHistoricStatementsEnabled)(request, messages(app), config).toString()
 
           val doc = Jsoup.parse(contentAsString(result))
           val periodElement = Formatters.dateAsMonthAndYear(

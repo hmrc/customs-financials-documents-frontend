@@ -34,7 +34,7 @@
 )
 
 
-@(model: VatViewModel)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(model: VatViewModel, isHistoricStatementsEnabled: Boolean)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @layout(pageTitle = Some(messages("cf.account.vat.title")), backLink = Some(appConfig.customsFinancialsFrontendHomepage)) {
 
@@ -87,17 +87,20 @@
     }
 
 <div id="missing-certificates-guidance" class="govuk-!-padding-top-2">
-    @h2(
-    "cf.account.vat.older-certificates.heading",
-    id = Some("missing-certificates-guidance-heading"),
-    classes = "govuk-heading-m govuk-!-margin-top-6"
-    )
 
-    @link(
-    "cf.account.pvat.older-statements.description.link",
-    location = appConfig.historicRequestUrl(C79Certificate),
-    preLinkMessage = Some("cf.account.vat.older-certificates.description.1")
-    )
+    @if(isHistoricStatementsEnabled) {
+        @h2(
+        "cf.account.vat.older-certificates.heading",
+        id = Some("missing-certificates-guidance-heading"),
+        classes = "govuk-heading-m govuk-!-margin-top-6"
+        )
+
+        @link(
+        "cf.account.pvat.older-statements.description.link",
+        location = appConfig.historicRequestUrl(C79Certificate),
+        preLinkMessage = Some("cf.account.vat.older-certificates.description.1")
+        )
+    }
 
     @h2(
     "cf.account.vat.chief.heading",
