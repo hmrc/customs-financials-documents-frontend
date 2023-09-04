@@ -85,9 +85,9 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   lazy val contactFrontEndServiceId: String = config.get[String]("contact-frontend.serviceId")
 
-  private val contactFrontEndBaseUrl = servicesConfig.baseUrl("contact-frontend")
+  private lazy val contactFrontEndBaseUrl = servicesConfig.baseUrl("contact-frontend")
 
-  private val platformHost: Option[String] = config.getOptional[String]("platform.frontend.host")
+  private lazy val platformHost: Option[String] = config.getOptional[String]("platform.frontend.host")
 
   /**
    * Creates the deskPro url that is used exclusively as of now for service unavailable page
