@@ -16,6 +16,18 @@
 
 package utils
 
+import play.api.mvc.RequestHeader
 object Utils {
   val emptyString = ""
+  private val questionMark = "?"
+  val semiColon = ":"
+  val doubleForwardSlash = "//"
+
+  def referrerUrl(platformHost: Option[String])(implicit request: RequestHeader): Option[String] =
+    Some(s"${platformHost.getOrElse("")}${pathWithQueryString(request)}")
+
+  def pathWithQueryString(request: RequestHeader): String = {
+    import request._
+    s"$path${if (rawQueryString.nonEmpty) questionMark else emptyString}$rawQueryString"
+  }
 }

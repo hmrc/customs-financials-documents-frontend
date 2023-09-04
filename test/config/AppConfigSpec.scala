@@ -19,6 +19,8 @@ package config
 import models.FileRole
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.Application
+import play.api.mvc.AnyContentAsEmpty
+import play.api.test.FakeRequest
 import utils.SpecBase
 import play.api.test.Helpers.running
 
@@ -75,6 +77,23 @@ class AppConfigSpec extends SpecBase {
     "contain correct subscribeCdsUrl" in new Setup {
       appConfig.subscribeCdsUrl mustBe
         "https://www.tax.service.gov.uk/customs-enrolment-services/cds/subscribe"
+    }
+
+    "contain correct contactFrontEndServiceId" in new Setup {
+      appConfig.contactFrontEndServiceId mustBe "CDS Financials"
+    }
+
+    "contain correct contactFrontEndUrl" in new Setup {
+      appConfig.contactFrontEndUrl mustBe "http://localhost:9250"
+    }
+
+    "return correct value for deskProLinkUrlForServiceUnavailable" in new Setup {
+      val path = "test_Path"
+      implicit val reqHeaders: FakeRequest[AnyContentAsEmpty.type] = fakeRequest("GET", path)
+
+      appConfig.deskProLinkUrlForServiceUnavailable mustBe
+        "http://localhost:9250" +
+          "/contact/report-technical-problem?newTab=true&amp;service=CDS%20FinancialsreferrerUrl=test_Path"
     }
   }
 

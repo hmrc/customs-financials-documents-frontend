@@ -18,7 +18,10 @@ package config
 
 import models.FileRole
 import play.api.Configuration
+import play.api.mvc.RequestHeader
+import uk.gov.hmrc.hmrcfrontend.views.Utils.urlEncode
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+import utils.Utils.{doubleForwardSlash, emptyString, referrerUrl, semiColon}
 
 import javax.inject.{Inject, Singleton}
 
@@ -79,4 +82,29 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
     config.get[String]("microservice.services.customs-financials-api.context")
 
   def filesUrl(fileRole: FileRole): String = s"$sdesApi/files-available/list/${fileRole.name}"
+
+  lazy val contactFrontEndServiceId: String = config.get[String]("contact-frontend.serviceId")
+
+  /**
+   * Creates the complete Contact Frontend url by concatenating protocol, host and port
+   */
+  lazy val contactFrontEndUrl: String =
+    s"${config.get[String]("microservice.services.contact-frontend.protocol")}$semiColon$doubleForwardSlash" +
+      s"${config.get[String]("microservice.services.contact-frontend.host")}$semiColon" +
+      s"${config.get[String]("microservice.services.contact-frontend.port")}"
+
+  private val platformHost: Option[String] = config.getOptional[String]("platform.frontend.host")
+
+  /**
+   * Creates the deskPro url that is used exclusively as of now for service unavailable page
+   */
+  def deskProLinkUrlForServiceUnavailable(implicit request: RequestHeader): String =
+    s"$contactFrontEndUrl/contact/report-technical-problem?newTab=true&amp;service=${
+      urlEncode(contactFrontEndServiceId)
+    }${
+      if (referrerUrl(platformHost).nonEmpty) s"referrerUrl=${
+        urlEncode(referrerUrl(platformHost).get)
+      }" else emptyString
+    }"
+
 }
