@@ -27,34 +27,11 @@ class UtilsSpec extends SpecBase {
       emptyString mustBe ""
     }
   }
-  "semiColon" should {
-    "return correct value" in {
-      semiColon mustBe ":"
-    }
-  }
-
-  "doubleForwardSlash" should {
-    "return correct value" in {
-      doubleForwardSlash mustBe "//"
-    }
-  }
 
   "pathWithQueryString" should {
     "return correct value" in {
       val path = "somePath"
       pathWithQueryString(fakeRequest("GET", path)) mustBe s"$path"
-    }
-  }
-
-  "httpsProtocol" should {
-    "return correct value" in {
-      httpsProtocol mustBe "https"
-    }
-  }
-
-  "localhostString" should {
-    "return correct value" in {
-      localhostString mustBe "localhost"
     }
   }
 

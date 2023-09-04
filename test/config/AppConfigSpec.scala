@@ -83,10 +83,6 @@ class AppConfigSpec extends SpecBase {
       appConfig.contactFrontEndServiceId mustBe "CDS Financials"
     }
 
-    "contain correct contactFrontEndUrl" in new Setup {
-      appConfig.contactFrontEndUrl mustBe "http://localhost:9250"
-    }
-
     "return correct value for deskProLinkUrlForServiceUnavailable" in new Setup {
       val path = "test_Path"
       implicit val reqHeaders: FakeRequest[AnyContentAsEmpty.type] = fakeRequest("GET", path)

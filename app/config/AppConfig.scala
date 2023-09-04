@@ -21,7 +21,7 @@ import play.api.Configuration
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.hmrcfrontend.views.Utils.urlEncode
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import utils.Utils.{doubleForwardSlash, emptyString, httpsProtocol, localhostString, referrerUrl, semiColon}
+import utils.Utils.{emptyString, referrerUrl}
 
 import javax.inject.{Inject, Singleton}
 
@@ -85,24 +85,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   lazy val contactFrontEndServiceId: String = config.get[String]("contact-frontend.serviceId")
 
-  private val defaultContactFrontEndPort = 443
-
-  /**
-   * Creates the complete Contact Frontend url by concatenating protocol, host and port
-   */
-  lazy val contactFrontEndUrl: String =
-    s"${
-      config.getOptional[String](
-        "microservice.services.contact-frontend.protocol").getOrElse(httpsProtocol)
-    }$semiColon$doubleForwardSlash" +
-      s"${
-        config.getOptional[String](
-          "microservice.services.contact-frontend.host").getOrElse(localhostString)
-      }$semiColon" +
-      s"${
-        config.getOptional[Int](
-          "microservice.services.contact-frontend.port").getOrElse(defaultContactFrontEndPort)
-      }"
+  private val contactFrontEndBaseUrl = servicesConfig.baseUrl("contact-frontend")
 
   private val platformHost: Option[String] = config.getOptional[String]("platform.frontend.host")
 
@@ -110,7 +93,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
    * Creates the deskPro url that is used exclusively as of now for service unavailable page
    */
   def deskProLinkUrlForServiceUnavailable(implicit request: RequestHeader): String =
-    s"$contactFrontEndUrl/contact/report-technical-problem?newTab=true&amp;service=${
+    s"$contactFrontEndBaseUrl/contact/report-technical-problem?newTab=true&amp;service=${
       urlEncode(contactFrontEndServiceId)
     }${
       if (referrerUrl(platformHost).nonEmpty) s"referrerUrl=${
