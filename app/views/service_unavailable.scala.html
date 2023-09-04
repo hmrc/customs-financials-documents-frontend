@@ -16,14 +16,16 @@
 
 @import views.html.components._
 @import views.html.Layout
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcNewTabLink
+@import uk.gov.hmrc.hmrcfrontend.views.Aliases.NewTabLink
 
 @this(
     layout: Layout,
     p: components.p,
     link: components.link,
-    h1: components.h1
+    h1: components.h1,
+    hmrcNewTabLink: HmrcNewTabLink
 )
-
 
 @(backlink: Option[String] = None)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
@@ -31,11 +33,20 @@
 
 @h1(msg = "cf.service-unavailable.heading", classes = "govuk-heading-xl  govuk-!-margin-bottom-6", id = Some("service-unavailable.heading"))
 
-@link(
-    linkMessage = "cf.service-unavailable.description.2",
-    location = appConfig.deskProLinkUrlForServiceUnavailable,
-    preLinkMessage = Some("cf.service-unavailable.description.1")
-)
+@p(
+    id = Some("older-statement-guidance-text"),
+    classes = "govuk-body govuk-!-margin-bottom-6",
+    message = "cf.service-unavailable.description.1",
+    tabLink = Some(hmrcNewTabLink(
+                        NewTabLink(
+                            language = Some(messages.lang.toString),
+                            classList = Some("govuk-link govuk-link--no-visited-state"),
+                            href=Some(appConfig.deskProLinkUrlForServiceUnavailable),
+                            text=messages("cf.service-unavailable.description.2")
+                            )
+                        )
+                    )
+    )
 
 @p(message="cf.service-unavailable.description.3", classes="govuk-body govuk-!-margin-bottom-7")
 }

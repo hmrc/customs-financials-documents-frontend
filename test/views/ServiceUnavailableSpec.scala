@@ -36,6 +36,13 @@ class ServiceUnavailableSpec extends SpecBase {
       view.getElementById("service-unavailable.heading").html() mustBe
         messages(app)("cf.service-unavailable.heading")
 
+      view.getElementById("older-statement-guidance-text").text() must not be empty
+      view.getElementById("older-statement-guidance-text").text() mustBe
+        s"${messages(app)("cf.service-unavailable.description.1")} ${
+          messages(app)(
+            "cf.service-unavailable.description.2")
+        }"
+
       view.html().contains(backLinkUrl)
       view.html().contains(messages(app)("cf.service-unavailable.description.3"))
       view.html().contains(deskProLink)
