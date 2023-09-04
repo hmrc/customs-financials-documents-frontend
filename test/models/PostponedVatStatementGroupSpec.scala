@@ -16,7 +16,6 @@
 
 package models
 
-import org.joda.time.LocalDateTime
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.{Application, inject}
 import services.DateTimeService
@@ -51,12 +50,16 @@ class PostponedVatStatementGroupSpec extends SpecBase {
     }
 
     "return true if statement date is not from the previous month and accessed " +
-      "before 15th day of current date " in new Setup {
+      "before 15th day of current date" in new Setup {
+      when(mockDateTimeService.systemDateTime())
+        .thenReturn(date.atStartOfDay())
+
       val dateOfCurrentMonthAndBefore15ThDay: LocalDate = date.withDayOfMonth(12)
+
       if (LocalDate.now.getDayOfMonth < 15) {
         PostponedVatStatementGroup(
           dateOfCurrentMonthAndBefore15ThDay,
-          Seq())(messages(app),mockDateTimeService).isPreviousMonthAndAfter14Th mustBe true
+          Seq())(messages(app), mockDateTimeService).isPreviousMonthAndAfter14Th mustBe true
       }
     }
   }

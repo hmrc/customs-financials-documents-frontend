@@ -150,7 +150,7 @@ class PostponedVatControllerSpec extends SpecBase {
               postponedVatStatementFilesWithImmediateUnavailable ++ historicPostponedVatStatementFiles)(
               messages(app), mockDateTimeService),
             hasRequestedStatements = false,
-            cdsOnly = false,
+            cdsOnly = true,
             Some("CDS"),
             Some(serviceUnavailableUrl))(request, messages(app), config).toString()
 
