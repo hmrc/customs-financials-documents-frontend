@@ -31,7 +31,6 @@ class ServiceUnavailableSpec extends SpecBase {
 
   "ServiceUnavailable view" should {
     "display correct title and guidance" in new Setup {
-
       view.title() mustBe
         s"${messages(app)("cf.service-unavailable.title")} - ${messages(app)("service.name")} - GOV.UK"
       view.getElementById("service-unavailable.heading").html() mustBe

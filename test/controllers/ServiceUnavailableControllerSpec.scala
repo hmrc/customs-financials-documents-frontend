@@ -68,5 +68,4 @@ class ServiceUnavailableControllerSpec extends SpecBase {
     val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
     val navigator: Navigator = app.injector.instanceOf[Navigator]
   }
-
 }
