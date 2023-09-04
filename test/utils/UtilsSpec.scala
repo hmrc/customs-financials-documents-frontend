@@ -46,6 +46,18 @@ class UtilsSpec extends SpecBase {
     }
   }
 
+  "httpsProtocol" should {
+    "return correct value" in {
+      httpsProtocol mustBe "https"
+    }
+  }
+
+  "localhostString" should {
+    "return correct value" in {
+      localhostString mustBe "localhost"
+    }
+  }
+
   "referrerUrl" should {
     "return correct value when platform host has some value" in {
       val path = "somePath"

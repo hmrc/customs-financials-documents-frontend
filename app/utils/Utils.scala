@@ -22,6 +22,8 @@ object Utils {
   private val questionMark = "?"
   val semiColon = ":"
   val doubleForwardSlash = "//"
+  val httpsProtocol = "https"
+  val localhostString = "localhost"
 
   def referrerUrl(platformHost: Option[String])(implicit request: RequestHeader): Option[String] =
     Some(s"${platformHost.getOrElse("")}${pathWithQueryString(request)}")
