@@ -85,7 +85,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   lazy val contactFrontEndServiceId: String = config.get[String]("contact-frontend.serviceId")
 
-  private val defaultContactFrontEndPort = 9250
+  private val defaultContactFrontEndPort = 443
 
   /**
    * Creates the complete Contact Frontend url by concatenating protocol, host and port
