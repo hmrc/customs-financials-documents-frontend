@@ -21,6 +21,7 @@ import config.{AppConfig, ErrorHandler}
 import connectors.{FinancialsApiConnector, SdesConnector}
 import models.FileRole.C79Certificate
 import models.{EoriHistory, VatCertificatesByMonth, VatCertificatesForEori}
+import navigation.Navigator
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.api.{Logger, LoggerLike}
@@ -30,7 +31,6 @@ import utils.DateUtils._
 import viewmodels.VatViewModel
 import views.html.import_vat.{import_vat, import_vat_not_available}
 
-import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -42,6 +42,7 @@ class VatController @Inject()(val authenticate: IdentifierAction,
                               checkEmailIsVerified: EmailAction,
                               importVatView: import_vat,
                               importVatNotAvailableView: import_vat_not_available,
+                              navigator: Navigator,
                               implicit val mcc: MessagesControllerComponents)
                              (implicit val appConfig: AppConfig, val errorHandler: ErrorHandler, ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
@@ -54,7 +55,9 @@ class VatController @Inject()(val authenticate: IdentifierAction,
     (for {
       allCertificates <- Future.sequence(req.allEoriHistory.map(getCertificates(_)))
       viewModel = VatViewModel(allCertificates.sorted)
-    } yield Ok(importVatView(viewModel))
+    } yield Ok(importVatView(
+      viewModel,
+      Some(routes.ServiceUnavailableController.onPageLoad(navigator.importVatPageId).url)))
       ).recover {
       case e =>
         log.error(s"Unable to retrieve VAT certificates :${e.getMessage}")
@@ -63,7 +66,8 @@ class VatController @Inject()(val authenticate: IdentifierAction,
   }
 
   def certificatesUnavailablePage(): Action[AnyContent] = authenticate andThen checkEmailIsVerified async { implicit req =>
-    Future.successful(Ok(importVatNotAvailableView()))
+    Future.successful(Ok(importVatNotAvailableView(
+      Some(routes.ServiceUnavailableController.onPageLoad(navigator.importVatNotAvailablePageId).url))))
   }
 
   private def getCertificates(historicEori: EoriHistory)(implicit req: AuthenticatedRequestWithSessionId[_]): Future[VatCertificatesForEori] = {

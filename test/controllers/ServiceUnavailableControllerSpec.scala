@@ -17,39 +17,43 @@
 package controllers
 
 import config.AppConfig
-import connectors.DataStoreConnector
+import navigation.Navigator
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import play.api.Application
 import play.api.http.Status.OK
 import play.api.test.Helpers.{GET, contentAsString, defaultAwaitTimeout, route, running, status, writeableOf_AnyContentAsEmpty}
-import play.api.{Application, inject}
-import uk.gov.hmrc.auth.core.retrieve.Email
 import utils.SpecBase
-import views.html.request_service_unavailable
+import views.html.service_unavailable
 
-import scala.concurrent.Future
-
-class RequestServiceUnavailableControllerSpec extends SpecBase {
-  "requestServiceUnavailablePage" should {
-    "render the historic request service unavailable page for PVAT" in new Setup {
-      when(mockDataStoreConnector.getEmail(any)(any))
-        .thenReturn(Future.successful(Right(Email("some@email.com"))))
-
+class ServiceUnavailableControllerSpec extends SpecBase {
+  "onPageLoad" should {
+    "render service unavailable page" in new Setup {
       running(app) {
-        val request = fakeRequest(GET, routes.RequestServiceUnavailableController.requestServiceUnavailablePage("pvat").url)
+        val request = fakeRequest(GET, routes.ServiceUnavailableController.onPageLoad("id-not-defined").url)
         val result = route(app, request).value
+
         status(result) mustBe OK
+        contentAsString(result) mustBe view()(request, messages(app), appConfig).toString()
+      }
+    }
+
+    "render service unavailable page for PVAT statements page" in new Setup {
+      running(app) {
+        val request = fakeRequest(GET, routes.ServiceUnavailableController.onPageLoad("postponed-vat").url)
+        val result = route(app, request).value
+
+        status(result) mustBe OK
+
         val backlink = Some(routes.PostponedVatController.show(Some("CDS")).url)
         contentAsString(result) mustBe view(backlink)(request, messages(app), appConfig).toString()
       }
     }
 
-    "render the historic request service unavailable page for C79" in new Setup {
-      when(mockDataStoreConnector.getEmail(any)(any))
-        .thenReturn(Future.successful(Right(Email("some@email.com"))))
-
+    "render service unavailable page for C79 (Import VAT) statements page" in new Setup {
       running(app) {
-        val request = fakeRequest(GET, routes.RequestServiceUnavailableController.requestServiceUnavailablePage("c79").url)
+        val request = fakeRequest(GET, routes.ServiceUnavailableController.onPageLoad("import-vat").url)
         val result = route(app, request).value
+
         status(result) mustBe OK
         val backlink = Some(routes.VatController.showVatAccount.url)
         contentAsString(result) mustBe view(backlink)(request, messages(app), appConfig).toString()
@@ -58,12 +62,10 @@ class RequestServiceUnavailableControllerSpec extends SpecBase {
   }
 
   trait Setup {
-    val mockDataStoreConnector: DataStoreConnector = mock[DataStoreConnector]
-    val app: Application = application().overrides(
-      inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
-    ).build()
-    val view: request_service_unavailable = app.injector.instanceOf[request_service_unavailable]
-    val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-  }
+    val app: Application = application().build()
 
+    val view: service_unavailable = app.injector.instanceOf[service_unavailable]
+    val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+    val navigator: Navigator = app.injector.instanceOf[Navigator]
+  }
 }

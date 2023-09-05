@@ -22,6 +22,7 @@
 @import models.FileFormat.Csv
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcNewTabLink
 @import uk.gov.hmrc.hmrcfrontend.views.Aliases.NewTabLink
+@import utils.Utils.emptyString
 
 @this(
     layout: Layout,
@@ -34,7 +35,10 @@
 )
 
 
-@(model: VatViewModel)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(
+    model: VatViewModel,
+    serviceUnavailableUrl: Option[String] = None
+)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @layout(pageTitle = Some(messages("cf.account.vat.title")), backLink = Some(appConfig.customsFinancialsFrontendHomepage)) {
 
@@ -95,7 +99,7 @@
 
     @link(
     "cf.account.pvat.older-statements.description.link",
-    location = appConfig.historicRequestUrl(C79Certificate),
+    location = serviceUnavailableUrl.getOrElse(emptyString),
     preLinkMessage = Some("cf.account.vat.older-certificates.description.1")
     )
 

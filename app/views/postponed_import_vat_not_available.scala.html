@@ -18,6 +18,7 @@
 @import models.FileRole.PostponedVATStatement
 @import views.html.Layout
 @import models.PostponedVatStatementGroup
+@import utils.Utils.emptyString
 
 @this(
 layout: Layout,
@@ -32,7 +33,10 @@ inset: components.inset
 )
 
 
-@(eori: String)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(
+    eori: String,
+    serviceUnavailableUrl: Option[String] = None
+)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @layout(pageTitle = Some(messages("cf.account.pvat.title")) , backLink = Some(appConfig.customsFinancialsFrontendHomepage)) {
 <h2 class="govuk-caption-xl" id="eori-heading">
@@ -56,7 +60,7 @@ inset: components.inset
 
     @link(
     "cf.account.pvat.older-statements.description.link",
-    location = appConfig.historicRequestUrl(PostponedVATStatement),
+    location = serviceUnavailableUrl.getOrElse(emptyString),
     preLinkMessage = Some("cf.account.pvat.older-statements.description.2")
     )
 
