@@ -34,6 +34,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val countdown: Int = config.get[Int]("timeout.countdown")
   lazy val helpMakeGovUkBetterUrl: String = config.get[String]("external-urls.helpMakeGovUkBetterUrl")
   lazy val customsFinancialsFrontendHomepage: String = config.get[String]("external-urls.customsFinancialsHomepage")
+  var historicStatementsEnabled: Boolean = config.get[Boolean]("features.historic-statements-enabled")
   lazy val customsDataStore: String = servicesConfig.baseUrl("customs-data-store") +
     config.get[String]("microservice.services.customs-data-store.context")
 

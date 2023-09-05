@@ -20,7 +20,7 @@ import config.AppConfig
 import connectors.{DataStoreConnector, FinancialsApiConnector, SdesConnector}
 import models.DutyPaymentMethod.CDS
 import models.FileFormat.{Csv, Pdf}
-import models.FileRole.{PostponedVATAmendedStatement, PostponedVATStatement}
+import models.FileRole.{C79Certificate, PostponedVATAmendedStatement, PostponedVATStatement}
 import models.metadata.PostponedVatStatementFileMetadata
 import models.{EoriHistory, PostponedVatStatementFile}
 import navigation.Navigator
@@ -42,6 +42,7 @@ class PostponedVatControllerSpec extends SpecBase {
 
   "show" should {
     "display the PostponedVat page" in new Setup {
+      config.historicStatementsEnabled = false
       val serviceUnavailableUrl: String =
         routes.ServiceUnavailableController.onPageLoad("postponed-vat").url
 
@@ -122,6 +123,7 @@ class PostponedVatControllerSpec extends SpecBase {
 
     "not display the immediate previous month statement on PostponedVat page when accessed " +
       "before 15th day of the month and statement is not available" in new Setup {
+      config.historicStatementsEnabled = false
       val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("postponed-vat").url
 
       when(mockDataStoreConnector.getEmail(any)(any))
@@ -159,6 +161,43 @@ class PostponedVatControllerSpec extends SpecBase {
             date.minusMonths(1))(messages(app)).replace(" ", "-").toLowerCase
 
           doc.getElementById(s"period-$periodElement") mustBe null
+        }
+      }
+    }
+
+    "display historic statements Url when feature is enabled" in new Setup {
+      config.historicStatementsEnabled = true
+      val historicRequestUrl: String = config.historicRequestUrl(PostponedVATStatement)
+
+      when(mockDataStoreConnector.getEmail(any)(any))
+        .thenReturn(Future.successful(Right(Email("some@email.com"))))
+
+      when(mockSdesConnector.getPostponedVatStatements(eqTo("testEori1"))(any))
+        .thenReturn(Future.successful(postponedVatStatementFilesWithImmediateUnavailable))
+
+      when(mockSdesConnector.getPostponedVatStatements(eqTo("testEori2"))(any))
+        .thenReturn(Future.successful(historicPostponedVatStatementFiles))
+
+      when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+        .thenReturn(Future.successful(true))
+
+      running(app) {
+        val request = fakeRequest(GET, routes.PostponedVatController.show(Some("CDS")).url)
+        val result = route(app, request).value
+        status(result) mustBe OK
+
+        if(LocalDate.now().getDayOfMonth < 15) {
+          when(mockDateTimeService.systemDateTime())
+            .thenReturn(date.atStartOfDay())
+
+          contentAsString(result) mustBe view("testEori1",
+            PostponedVatViewModel(
+              postponedVatStatementFilesWithImmediateUnavailable ++ historicPostponedVatStatementFiles)(
+              messages(app), mockDateTimeService),
+            hasRequestedStatements = false,
+            cdsOnly = true,
+            Some("CDS"),
+            Some(historicRequestUrl))(request, messages(app), config).toString()
         }
       }
     }

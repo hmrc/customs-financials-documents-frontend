@@ -55,9 +55,15 @@ class VatController @Inject()(val authenticate: IdentifierAction,
     (for {
       allCertificates <- Future.sequence(req.allEoriHistory.map(getCertificates(_)))
       viewModel = VatViewModel(allCertificates.sorted)
+
+      historicUrl = if(appConfig.historicStatementsEnabled) {
+      appConfig.historicRequestUrl(C79Certificate)
+    } else {
+        routes.ServiceUnavailableController.onPageLoad(navigator.importVatPageId).url
+      }
     } yield Ok(importVatView(
       viewModel,
-      Some(routes.ServiceUnavailableController.onPageLoad(navigator.importVatPageId).url)))
+      Some(historicUrl)))
       ).recover {
       case e =>
         log.error(s"Unable to retrieve VAT certificates :${e.getMessage}")
@@ -66,8 +72,15 @@ class VatController @Inject()(val authenticate: IdentifierAction,
   }
 
   def certificatesUnavailablePage(): Action[AnyContent] = authenticate andThen checkEmailIsVerified async { implicit req =>
+
+    val historicUrl = if(appConfig.historicStatementsEnabled) {
+      appConfig.historicRequestUrl(C79Certificate)
+    } else {
+      routes.ServiceUnavailableController.onPageLoad(navigator.importVatNotAvailablePageId).url
+    }
+
     Future.successful(Ok(importVatNotAvailableView(
-      Some(routes.ServiceUnavailableController.onPageLoad(navigator.importVatNotAvailablePageId).url))))
+      Some(historicUrl))))
   }
 
   private def getCertificates(historicEori: EoriHistory)(implicit req: AuthenticatedRequestWithSessionId[_]): Future[VatCertificatesForEori] = {
