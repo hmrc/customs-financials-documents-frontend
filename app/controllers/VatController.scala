@@ -57,17 +57,17 @@ class VatController @Inject()(val authenticate: IdentifierAction,
       viewModel = VatViewModel(allCertificates.sorted)
 
       historicUrl = if(appConfig.historicStatementsEnabled) {
-      appConfig.historicRequestUrl(C79Certificate)
-    } else {
+        appConfig.historicRequestUrl(C79Certificate)
+      } else {
         routes.ServiceUnavailableController.onPageLoad(navigator.importVatPageId).url
       }
     } yield Ok(importVatView(
       viewModel,
       Some(historicUrl)))
       ).recover {
-      case e =>
-        log.error(s"Unable to retrieve VAT certificates :${e.getMessage}")
-        Redirect(routes.VatController.certificatesUnavailablePage())
+        case e =>
+          log.error(s"Unable to retrieve VAT certificates :${e.getMessage}")
+          Redirect(routes.VatController.certificatesUnavailablePage())
     }
   }
 
