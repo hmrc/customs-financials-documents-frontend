@@ -20,7 +20,7 @@ import actions.{EmailAction, PvatIdentifierAction, SessionIdAction}
 import config.{AppConfig, ErrorHandler}
 import connectors.{FinancialsApiConnector, SdesConnector}
 import models.DutyPaymentMethod.CHIEF
-import models.FileRole.PostponedVATStatement
+import models.FileRole.{PostponedVATStatement}
 import models.PostponedVatStatementFile
 import navigation.Navigator
 import play.api.{Logger, LoggerLike}
@@ -64,13 +64,20 @@ class PostponedVatController @Inject()(val authenticate: PvatIdentifierAction,
       ).map(_.flatten)
     } yield {
       val allPostponedVatStatements: Seq[PostponedVatStatementFile] = postponedVatStatements ++ historicPostponedVatStatements
+
+      val historicUrl = if(appConfig.historicStatementsEnabled) {
+        appConfig.historicRequestUrl(PostponedVATStatement)
+      } else {
+        routes.ServiceUnavailableController.onPageLoad(navigator.postponedVatPageId).url
+      }
+
       Ok(postponedImportVatView(
         req.eori,
         PostponedVatViewModel(allPostponedVatStatements),
         allPostponedVatStatements.exists(statement => statement.metadata.statementRequestId.nonEmpty),
         allPostponedVatStatements.count(_.metadata.source != CHIEF) == allPostponedVatStatements.size,
         location,
-        Some(routes.ServiceUnavailableController.onPageLoad(navigator.postponedVatPageId).url))
+        Some(historicUrl))
       )
     }).recover { case _ => Redirect(routes.PostponedVatController.statementsUnavailablePage()) }
   }
