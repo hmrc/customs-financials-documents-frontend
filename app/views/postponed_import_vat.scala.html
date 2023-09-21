@@ -48,12 +48,7 @@
 )(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @layout(pageTitle = Some(messages("cf.account.pvat.title")) , backLink = location.map(_ => appConfig.customsFinancialsFrontendHomepage)) {
-    <h2 class="govuk-caption-xl" id="eori-heading">
-        @messages("cf.eori")
-        <span id="eori">@{
-            eori
-        }</span>
-    </h2>
+    
     @h1(msg = "cf.account.pvat.title", classes = "govuk-heading-xl  govuk-!-margin-bottom-6")
 
     @if(messages.isDefinedAt("cf.account.pvat.holding-message.1")) {
