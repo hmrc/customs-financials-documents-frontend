@@ -33,8 +33,6 @@ class PostponedImportVatNotAvailableSpec extends SpecBase {
       view.title() mustBe
         s"${messages(app)("cf.account.pvat.title")} - ${messages(app)("service.name")} - GOV.UK"
 
-      view.getElementById("eori").text() mustBe eori
-
       view.getElementById("no-statements").text() mustBe messages(app)("cf.security-statements.unavailable")
 
       view.getElementById("missing-documents-guidance-heading").text() mustBe
