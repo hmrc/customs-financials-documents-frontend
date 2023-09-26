@@ -204,5 +204,5 @@ cf.accounts.view-customs-account=fwrw golwg dros eich cyfrifon ariannol ar gyfer
 cf.service-unavailable.title=Mae’n ddrwg gennym, nid yw’r gwasanaeth hwn ar gael ar hyn o bryd
 cf.service-unavailable.heading=Mae’n ddrwg gennym, nid yw’r gwasanaeth hwn ar gael ar hyn o bryd
 cf.service-unavailable.description.1=I gael datganiadau hŷn neu dystysgrifau ar gyfer datganiadau a wnaed gan ddefnyddio’r Gwasanaeth Datganiadau Tollau,
-cf.service-unavailable.description.2= llenwch y ffurflen hon (yn agor tab newydd).
+cf.service-unavailable.description.2= llenwch y ffurflen 'Cael help gyda phroblem dechnegol'.
 cf.service-unavailable.description.3=Nodwch y math o ddatganiad neu dystysgrif sydd ei angen arnoch, ac ar gyfer pa gyfnod y mae ei angen arnoch.
