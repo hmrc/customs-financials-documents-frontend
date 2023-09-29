@@ -1,5 +1,4 @@
 import uk.gov.hmrc.DefaultBuildSettings.{integrationTestSettings, targetJvm}
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName = "customs-financials-documents-frontend"
 val silencerVersion = "1.17.13"
@@ -24,7 +23,6 @@ lazy val microservice = Project(appName, file("."))
     )
     // ***************
   )
-  .settings(publishingSettings: _*)
   .configs(IntegrationTest)
   .settings(integrationTestSettings(): _*)
   .settings(resolvers += Resolver.jcenterRepo)
