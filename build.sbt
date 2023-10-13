@@ -6,7 +6,7 @@ val silencerVersion = "1.17.13"
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
-  .settings(scoverageSettings: _*)
+  .settings(scoverageSettings *)
   .settings(PlayKeys.playDefaultPort := 9398)
   .settings(
     majorVersion                     := 0,
@@ -24,7 +24,7 @@ lazy val microservice = Project(appName, file("."))
     // ***************
   )
   .configs(IntegrationTest)
-  .settings(integrationTestSettings(): _*)
+  .settings(integrationTestSettings() *)
   .settings(resolvers += Resolver.jcenterRepo)
 
 lazy val scoverageSettings = {
