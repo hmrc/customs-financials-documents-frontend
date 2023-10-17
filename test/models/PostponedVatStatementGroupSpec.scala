@@ -49,7 +49,7 @@ class PostponedVatStatementGroupSpec extends SpecBase {
       PostponedVatStatementGroup(dateOfCurrentMonth, Seq())(messages(app), mockDateTimeService).isPreviousMonthAndAfter14Th mustBe true
     }
 
-    //TODO: To be fixed, has been ignored temporarily
+    //TODO: To be fixed, has been ignored temporarily as causing build failure
     "return true if statement date is not from the previous month and accessed " +
       "before 15th day of current date " ignore new Setup {
       when(mockDateTimeService.systemDateTime())
