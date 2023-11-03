@@ -84,42 +84,46 @@ class VatControllerSpec extends SpecBase {
         redirectLocation(result).value mustBe routes.VatController.certificatesUnavailablePage().url
       }
     }
-     //[TODO] - Need to revisit this section why its failing 
-    // "display the cert unavailable text for the relevant month when cert files are retrieved " +
-    //   "after 14th of the month and cert is not available" in new Setup {
 
-    //   val currentCertificates = Seq(
-    //     VatCertificatesByMonth(date.minusMonths(1), Seq())(messages(app)),
-    //     VatCertificatesByMonth(date.minusMonths(2), Seq())(messages(app)),
-    //     VatCertificatesByMonth(date.minusMonths(3), Seq())(messages(app)),
-    //     VatCertificatesByMonth(date.minusMonths(4), Seq())(messages(app)),
-    //     VatCertificatesByMonth(date.minusMonths(5), Seq())(messages(app)),
-    //     VatCertificatesByMonth(date.minusMonths(6), Seq())(messages(app)),
-    //   )
-    //   val vatCertificatesForEoris = Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
-    //   val viewModel: VatViewModel = VatViewModel(vatCertificatesForEoris)
+    "display the cert unavailable text for the relevant month when cert files are retrieved " +
+      "after 14th of the month and cert is not available" in new Setup {
 
-    //   when(mockSdesConnector.getVatCertificates(anyString)(any, any))
-    //     .thenReturn(Future.successful(Seq()))
+      val currentCertificates = Seq(
+        VatCertificatesByMonth(date.minusMonths(1), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(2), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(3), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(4), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(5), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(6), Seq())(messages(app)),
+      )
 
-    //   when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
-    //     .thenReturn(Future.successful(true))
+      val vatCertificatesForEoris = Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
+      val viewModel: VatViewModel = VatViewModel(vatCertificatesForEoris)
 
-    //   running(app) {
-    //     val request = fakeRequest(GET, routes.VatController.showVatAccount.url)
-    //     val result = route(app, request).value
-    //     status(result) mustBe OK
+      when(mockSdesConnector.getVatCertificates(anyString)(any, any))
+        .thenReturn(Future.successful(Seq()))
 
-    //     if (!DateUtils.isDayBefore15ThDayOfTheMonth(LocalDate.now())) {
-    //       contentAsString(result) mustBe view(viewModel)(request, messages(app), appConfig).toString()
-    //       val doc = Jsoup.parse(contentAsString(result))
+      when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+        .thenReturn(Future.successful(true))
 
-    //       doc.getElementById("statements-list-0-row-5") should not be null
-    //       doc.getElementById("statements-list-0-row-0").children().text() should include(messages(app)(
-    //         "cf.account.vat.statements.unavailable", Formatters.dateAsMonth(date.minusMonths(1))(messages(app))))
-    //     }
-    //   }
-    // }
+      running(app) {
+        val request = fakeRequest(GET, routes.VatController.showVatAccount.url)
+        val result = route(app, request).value
+        status(result) mustBe OK
+
+        if (!DateUtils.isDayBefore15ThDayOfTheMonth(LocalDate.now())) {
+          contentAsString(result) mustBe view(viewModel,
+            Some(appConfig.historicRequestUrl(C79Certificate)))(request, messages(app), appConfig).toString()
+
+          val doc = Jsoup.parse(contentAsString(result))
+
+          doc.getElementById("statements-list-0-row-5") should not be null
+          doc.getElementById("statements-list-0-row-0").children().text() should
+            include(messages(app)("cf.account.vat.statements.unavailable",
+              Formatters.dateAsMonth(date.minusMonths(1))(messages(app))))
+        }
+      }
+    }
 
     "not display the cert row for the immediate previous month when cert files are retrieved " +
       "before 15th of the month and cert is not available for immediate previous month" in new Setup {

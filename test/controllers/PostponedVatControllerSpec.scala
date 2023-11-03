@@ -20,7 +20,7 @@ import config.AppConfig
 import connectors.{DataStoreConnector, FinancialsApiConnector, SdesConnector}
 import models.DutyPaymentMethod.CDS
 import models.FileFormat.{Csv, Pdf}
-import models.FileRole.{C79Certificate, PostponedVATAmendedStatement, PostponedVATStatement}
+import models.FileRole.{PostponedVATAmendedStatement, PostponedVATStatement}
 import models.metadata.PostponedVatStatementFileMetadata
 import models.{EoriHistory, PostponedVatStatementFile}
 import navigation.Navigator
@@ -78,48 +78,50 @@ class PostponedVatControllerSpec extends SpecBase {
         contentAsString(result).contains(serviceUnavailableUrl)
       }
     }
-    //[TODO] - Need to revisit this section why its failing 
-    // "display the PostponedVat page with no statements text when statement is not available for the " +
-    //   "immediate previous month and accessed after 14th of the month" in new Setup {
 
-    //   when(mockDataStoreConnector.getEmail(any)(any))
-    //     .thenReturn(Future.successful(Right(Email("some@email.com"))))
+    "display the PostponedVat page with no statements text when statement is not available for the " +
+      "immediate previous month and accessed after 14th of the month" in new Setup {
 
-    //   when(mockSdesConnector.getPostponedVatStatements(eqTo("testEori1"))(any))
-    //     .thenReturn(Future.successful(postponedVatStatementFilesWithImmediateUnavailable))
+      when(mockDataStoreConnector.getEmail(any)(any))
+        .thenReturn(Future.successful(Right(Email("some@email.com"))))
 
-    //   when(mockSdesConnector.getPostponedVatStatements(eqTo("testEori2"))(any))
-    //     .thenReturn(Future.successful(historicPostponedVatStatementFiles))
+      when(mockSdesConnector.getPostponedVatStatements(eqTo("testEori1"))(any))
+        .thenReturn(Future.successful(postponedVatStatementFilesWithImmediateUnavailable))
 
-    //   when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
-    //     .thenReturn(Future.successful(true))
+      when(mockSdesConnector.getPostponedVatStatements(eqTo("testEori2"))(any))
+        .thenReturn(Future.successful(historicPostponedVatStatementFiles))
 
-    //   running(app) {
-    //     val request = fakeRequest(GET, routes.PostponedVatController.show(Some("CDS")).url)
-    //     val result = route(app, request).value
-    //     status(result) mustBe OK
+      when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+        .thenReturn(Future.successful(true))
 
-    //     if (LocalDate.now().getDayOfMonth > 14) {
-    //       when(mockDateTimeService.systemDateTime())
-    //         .thenReturn(date.atStartOfDay())
+      running(app) {
+        val request = fakeRequest(GET, routes.PostponedVatController.show(Some("CDS")).url)
+        val result = route(app, request).value
 
-    //       contentAsString(result) mustBe view("testEori1",
-    //         PostponedVatViewModel(postponedVatStatementFilesWithImmediateUnavailable ++ historicPostponedVatStatementFiles)(
-    //           messages(app), mockDateTimeService),
-    //         hasRequestedStatements = false,
-    //         cdsOnly = true,
-    //         Some("CDS"))(request, messages(app), config).toString()
+        status(result) mustBe OK
 
-    //       val doc = Jsoup.parse(contentAsString(result))
-    //       val periodElement = Formatters.dateAsMonthAndYear(
-    //         date.minusMonths(1))(messages(app)).replace(" ", "-").toLowerCase
+        if (LocalDate.now().getDayOfMonth > 14) {
+          when(mockDateTimeService.systemDateTime()).thenReturn(date.atStartOfDay())
 
-    //       doc.getElementById(s"period-$periodElement").children().text() should include(messages(app)(
-    //         "cf.common.not-available", Formatters.dateAsMonth(date.minusMonths(1))(messages(app))
-    //       ))
-    //     }
-    //   }
-    // }
+          contentAsString(result) mustBe view("testEori1",
+            PostponedVatViewModel(
+              postponedVatStatementFilesWithImmediateUnavailable ++ historicPostponedVatStatementFiles)(
+              messages(app), mockDateTimeService),
+            hasRequestedStatements = false,
+            cdsOnly = true,
+            Some("CDS"),
+            Some(config.historicRequestUrl(PostponedVATStatement)))(request, messages(app), config).toString()
+
+          val doc = Jsoup.parse(contentAsString(result))
+          val periodElement = Formatters.dateAsMonthAndYear(
+            date.minusMonths(1))(messages(app)).replace(" ", "-").toLowerCase
+
+          doc.getElementById(s"period-$periodElement").children().text() should include(messages(app)(
+            "cf.common.not-available", Formatters.dateAsMonth(date.minusMonths(1))(messages(app))
+          ))
+        }
+      }
+    }
 
     "not display the immediate previous month statement on PostponedVat page when accessed " +
       "before 15th day of the month and statement is not available" in new Setup {
