@@ -69,7 +69,8 @@ class VatControllerSpec extends SpecBase {
         val request = fakeRequest(GET, routes.VatController.showVatAccount.url)
         val result = route(app, request).value
         status(result) mustBe OK
-        contentAsString(result) mustBe view(viewModel, Some(serviceUnavailableUrl))(request, messages(app), appConfig).toString()
+        contentAsString(result) mustBe
+          view(viewModel, Some(serviceUnavailableUrl))(request, messages(app), appConfig).toString()
       }
     }
 
@@ -165,13 +166,15 @@ class VatControllerSpec extends SpecBase {
           doc.getElementById("statements-list-0-row-3") should not be null
           doc.getElementById("statements-list-0-row-4") should not be null
 
-          doc.getElementById("statements-list-0-row-0").children().text() should not include (messages(app)(
-            "cf.account.vat.statements.unavailable", Formatters.dateAsMonth(date.minusMonths(1))(messages(app))))
+          doc.getElementById("statements-list-0-row-0").children().text() should not include messages(app)(
+            "cf.account.vat.statements.unavailable",
+            Formatters.dateAsMonth(date.minusMonths(1))(messages(app)))
         }
       }
     }
 
-    "display all the certs' row when cert files are retrieved before 15th of the month and cert is available" in new Setup {
+    "display all the certs' row when cert files are retrieved before 15th of the month and " +
+      "cert is available" in new Setup {
       appConfig.historicStatementsEnabled = false
       val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("import-vat").url
       val vatCertificateFile: VatCertificateFile = VatCertificateFile("name_04",
@@ -220,8 +223,9 @@ class VatControllerSpec extends SpecBase {
           doc.getElementById("statements-list-0-row-4") should not be null
           doc.getElementById("statements-list-0-row-5") should not be null
 
-          doc.getElementById("statements-list-0-row-0").children().text() should not include (messages(app)(
-            "cf.account.vat.statements.unavailable", Formatters.dateAsMonth(date.minusMonths(1))(messages(app))))
+          doc.getElementById("statements-list-0-row-0").children().text() should not include messages(app)(
+            "cf.account.vat.statements.unavailable",
+            Formatters.dateAsMonth(date.minusMonths(1))(messages(app)))
         }
       }
     }
@@ -270,7 +274,6 @@ class VatControllerSpec extends SpecBase {
       }
     }
   }
-
 
   "certificatesUnavailablePage" should {
     "render correctly" in {
