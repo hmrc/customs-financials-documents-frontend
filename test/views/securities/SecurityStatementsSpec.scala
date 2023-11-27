@@ -72,10 +72,8 @@ class SecurityStatementsSpec extends SpecBase {
         view.getElementById("historic-statement-request-link").text() mustBe
           messages(app)("cf.security-statements.historic.request")
 
-        println("============ View is ====="+view.toString)
-
-        view.text() must include("PDF")
-        view.text() must include("CSV")
+        view.text().contains("PDF") mustBe true
+        view.text().contains("CSV") mustBe true
       }
 
       "statements are empty" in new Setup {
@@ -151,8 +149,8 @@ class SecurityStatementsSpec extends SpecBase {
       Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
 
 
-    val viewModelWithNoStatements: SecurityStatementsViewModel = SecurityStatementsViewModel(Seq(securityStatementsForEori))
-    val viewModelWithStatements: SecurityStatementsViewModel = SecurityStatementsViewModel(Seq())
+    val viewModelWithNoStatements: SecurityStatementsViewModel = SecurityStatementsViewModel(Seq())
+    val viewModelWithStatements: SecurityStatementsViewModel = SecurityStatementsViewModel(Seq(securityStatementsForEori))
 
   }
 }
