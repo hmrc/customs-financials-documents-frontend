@@ -56,7 +56,6 @@ class SecuritiesControllerSpec extends SpecBase {
 
       val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory("testEori1", None, None))
 
-
       val app: Application = application(eoriHistory).overrides(
         inject.bind[FinancialsApiConnector].toInstance(mockFinancialsApiConnector),
         inject.bind[SdesConnector].toInstance(mockSdesConnector)
@@ -68,7 +67,6 @@ class SecuritiesControllerSpec extends SpecBase {
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.SecuritiesController.statementsUnavailablePage.url
       }
-
     }
   }
 
