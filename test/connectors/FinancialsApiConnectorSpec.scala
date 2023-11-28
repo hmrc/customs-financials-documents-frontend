@@ -16,7 +16,7 @@
 
 package connectors
 
-import models.FileRole.C79Certificate
+import models.{FileRole, EmailUnverifiedResponse}
 import org.mockito.invocation.InvocationOnMock
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.test.Helpers._
@@ -39,8 +39,18 @@ class FinancialsApiConnectorSpec extends SpecBase {
       .thenReturn(Future.successful(HttpResponse(200, "")))
 
     running(app) {
-      val result = await(connector.deleteNotification("someEori", C79Certificate))
+      val result = await(connector.deleteNotification("someEori", FileRole.C79Certificate))
       result mustBe true
+    }
+  }
+
+  "return unverified email" in new Setup {
+    when[Future[EmailUnverifiedResponse]](mockHttpClient.GET(any, any, any)(any, any, any))
+      .thenReturn(Future.successful(EmailUnverifiedResponse(Some("unverified@email.com"))))
+
+    running(app) {
+      val result = await(connector.isEmailUnverified(hc))
+      result mustBe Some("unverified@email.com")
     }
   }
 

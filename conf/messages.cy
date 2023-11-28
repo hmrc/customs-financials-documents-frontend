@@ -206,3 +206,12 @@ cf.service-unavailable.heading=Mae’n ddrwg gennym, nid yw’r gwasanaeth hwn a
 cf.service-unavailable.description.1=I gael datganiadau hŷn neu dystysgrifau ar gyfer datganiadau a wnaed gan ddefnyddio’r Gwasanaeth Datganiadau Tollau,
 cf.service-unavailable.description.2= llenwch y ffurflen ''Cael help gyda phroblem dechnegol''.
 cf.service-unavailable.description.3=Nodwch y math o ddatganiad neu dystysgrif sydd ei angen arnoch, ac ar gyfer pa gyfnod y mae ei angen arnoch.
+
+# Verify Your Email Address
+# ----------------------------------------------------------------------------
+cf.verify.your.email.title=Cadarnhau’ch cyfeiriad e-bost ar gyfer y Gwasanaeth Datganiadau Tollau
+cf.verify.your.email.heading=Cadarnhau’ch cyfeiriad e-bost ar gyfer y Gwasanaeth Datganiadau Tollau
+cf.verify.your.email.p1=Mae angen i chi gadarnhau’r cyfeiriad e-bost rydych yn ei ddefnyddio ar gyfer y Gwasanaeth Datganiadau Tollau.
+cf.verify.your.email.p2=Eich e-bost cofrestredig yw <strong class="bold">{0}</strong>.
+cf.verify.your.email.p3=Os nad dyma’r cyfeiriad e-bost rydych chi am ei ddefnyddio, gallwch ei newid hefyd gan ddefnyddio’r gwasanaeth hwn.
+cf.verify.your.email.change.button=Dilysu neu newid y cyfeiriad e-bost
