@@ -39,9 +39,7 @@ class SdesConnectorSpec extends SpecBase {
     "getSecurityStatements" should {
       "make a GET request to sdesSecurityStatementsUrl" in new Setup {
         val url = sdesSecurityStatementsUrl
-        val app = application().overrides(
-          inject.bind[HttpClient].toInstance(mockHttp)
-        ).build()
+
         val sdesService = app.injector.instanceOf[SdesConnector]
         when[Future[HttpResponse]](mockHttp.GET(eqTo(url), any, any)(any, any, any))
           .thenReturn(Future.successful(HttpResponse(Status.OK, JsArray(Nil).toString())))
@@ -52,9 +50,7 @@ class SdesConnectorSpec extends SpecBase {
 
       "filter out unknown file types" in new Setup {
         val url = sdesSecurityStatementsUrl
-        val app = application().overrides(
-          inject.bind[HttpClient].toInstance(mockHttp)
-        ).build()
+
         val sdesService = app.injector.instanceOf[SdesConnector]
         when[Future[HttpResponse]](mockHttp.GET(eqTo(url), any, any)(any, any, any))
           .thenReturn(Future.successful(HttpResponse(Status.OK, Json.toJson(securityStatementFilesWithUnkownFileTypesSdesResponse).toString())))
@@ -72,7 +68,7 @@ class SdesConnectorSpec extends SpecBase {
 
         when(sdesGatekeeperServiceSpy.convertTo(any)).thenCallRealMethod()
 
-        val app = application().overrides(
+        override val app = application().overrides(
           inject.bind[HttpClient].toInstance(mockHttp),
           inject.bind[SdesGatekeeperService].toInstance(sdesGatekeeperServiceSpy)
         ).build()
@@ -87,9 +83,7 @@ class SdesConnectorSpec extends SpecBase {
     "getVatCertificates" should {
       "filter out unknown file types" in new Setup {
         val url = sdesVatCertificatesUrl
-        val app = application().overrides(
-          inject.bind[HttpClient].toInstance(mockHttp)
-        ).build()
+
         val sdesService = app.injector.instanceOf[SdesConnector]
         when[Future[HttpResponse]](mockHttp.GET(eqTo(url), any, any)(any, any, any))
           .thenReturn(Future.successful(HttpResponse(Status.OK, Json.toJson(vatCertificateFilesWithUnknownFileTypesSdesResponse).toString())))
@@ -107,7 +101,7 @@ class SdesConnectorSpec extends SpecBase {
 
         when(sdesGatekeeperServiceSpy.convertTo(any)).thenCallRealMethod()
 
-        val app = application().overrides(
+        override val app = application().overrides(
           inject.bind[HttpClient].toInstance(mockHttp),
           inject.bind[SdesGatekeeperService].toInstance(sdesGatekeeperServiceSpy)
         ).build()
@@ -122,9 +116,6 @@ class SdesConnectorSpec extends SpecBase {
     "getPostponedVatStatements" should {
       "filter out unknown file types" in new Setup {
         val url = sdesPostponedVatStatementsUrl
-        val app = application().overrides(
-          inject.bind[HttpClient].toInstance(mockHttp)
-        ).build()
         val sdesService = app.injector.instanceOf[SdesConnector]
 
         when[Future[HttpResponse]](mockHttp.GET(eqTo(url), any, any)(any, any, any))
@@ -143,7 +134,7 @@ class SdesConnectorSpec extends SpecBase {
 
         when(sdesGatekeeperServiceSpy.convertTo(any)).thenCallRealMethod()
 
-        val app = application().overrides(
+        override val app = application().overrides(
           inject.bind[HttpClient].toInstance(mockHttp),
           inject.bind[SdesGatekeeperService].toInstance(sdesGatekeeperServiceSpy)
         ).build()
@@ -256,5 +247,7 @@ class SdesConnectorSpec extends SpecBase {
     val mockAppConfig = mock[AppConfig]
     val mockMetricsReporterService = mock[MetricsReporterService]
     val mockAuditingService = mock[AuditingService]
+
+    val app = application().overrides(inject.bind[HttpClient].toInstance(mockHttp)).build()
   }
 }
