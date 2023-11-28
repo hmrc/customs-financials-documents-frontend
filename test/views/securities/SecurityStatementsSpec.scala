@@ -17,7 +17,7 @@
 package views.securities
 
 import config.AppConfig
-import models.FileFormat.Pdf
+import models.FileFormat.{Csv, Pdf}
 import models.FileRole.SecurityStatement
 import models.{EoriHistory, SecurityStatementFile, SecurityStatementsByPeriod, SecurityStatementsForEori, VatCertificatesByMonth, VatCertificatesForEori}
 import org.jsoup.Jsoup
@@ -74,6 +74,8 @@ class SecurityStatementsSpec extends SpecBase {
 
         view.text().contains("PDF") mustBe true
         view.text().contains("CSV") mustBe true
+
+        view.text().contains(messages(app)("cf.security-statements.eom")) mustBe true
       }
 
       "statements are empty" in new Setup {
@@ -109,6 +111,8 @@ class SecurityStatementsSpec extends SpecBase {
 
         view.getElementById("historic-statement-request-link").text() mustBe
           messages(app)("cf.security-statements.historic.request")
+
+        view.text().contains(messages(app)("cf.security-statements.eom")) mustBe false
       }
     }
   }
@@ -131,8 +135,16 @@ class SecurityStatementsSpec extends SpecBase {
           date.minusMonths(1).getMonthValue,
           28, date.getYear, date.getMonthValue, 28, Pdf, SecurityStatement, "testEori1", 500L, "0000000", None))
 
+    val securityStatementFileCsv: SecurityStatementFile =
+      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
+        SecurityStatementFileMetadata(
+          date.minusMonths(1).getYear,
+          date.minusMonths(1).getMonthValue,
+          28, date.getYear, date.getMonthValue, 28, Csv, SecurityStatement, "testEori1", 500L, "0000000", None))
+
     val statementsByPeriod: SecurityStatementsByPeriod =
-      SecurityStatementsByPeriod(date.minusMonths(1), date, Seq(securityStatementFile))
+      SecurityStatementsByPeriod(date.minusMonths(1), date, Seq(securityStatementFile, securityStatementFileCsv))
+
     val securityStatementsForEori: SecurityStatementsForEori =
       SecurityStatementsForEori(EoriHistory("testEori1", None, None), Seq(statementsByPeriod), Seq.empty)
 

@@ -98,6 +98,7 @@ cf.security-statements.screen-reader.unavailable=Nid yw {0} ar gyfer {1} i {2} a
 cf.security-statements.historic.description=Dim ond ar gyfer y 6 mis diwethaf y bydd y gwasanaeth hwn yn dangos datganiadau.
 cf.security-statements.historic.request=Gwneud cais am ddatganiad sy’n hŷn na 6 mis
 cf.security-statements.unavailable=Mae’n ddrwg gennym – nid yw’ch datganiadau ar gael ar hyn o bryd. Rhowch gynnig arall arni yn nes ymlaen.
+cf.security-statements.eom=Eich datganiadau diwedd y mis
 # ------------------------------------------------------------------------
 
 # Security Statements requested view

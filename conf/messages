@@ -97,6 +97,7 @@ cf.security-statements.screen-reader.unavailable={0} for {1} to {2} unavailable
 cf.security-statements.historic.description=This service will only show statements for the last 6 months.
 cf.security-statements.historic.request=Request a statement that’s older than 6 months
 cf.security-statements.unavailable= Sorry, your statements are not available at the moment. Please try again later.
+cf.security-statements.eom= Your end of month statements
 # ------------------------------------------------------------------------
 
 # Security Statements requested view
