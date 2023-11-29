@@ -26,7 +26,9 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import viewmodels.SecurityStatementsViewModel
 import views.html.securities.{security_statements, security_statements_not_available}
+import utils.DateUtils.isDateInLastSixMonths
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -57,12 +59,15 @@ class SecuritiesController @Inject()(authenticate: IdentifierAction,
 
   private def getStatements(historicEori: EoriHistory)(implicit req: AuthenticatedRequestWithSessionId[_]): Future[SecurityStatementsForEori] = {
     sdesConnector.getSecurityStatements(historicEori.eori)
-      .map(groupByMonthDescending)
+      .map(ssf => groupByMonthDescending(securityStatFilesInLastSixMonths(ssf)))
       .map(_.partition(_.files.exists(_.metadata.statementRequestId.isEmpty)))
       .map {
         case (current, requested) => SecurityStatementsForEori(historicEori, current, requested)
       }
   }
+
+  private def securityStatFilesInLastSixMonths(securityStatementFiles: Seq[SecurityStatementFile]): Seq[SecurityStatementFile] =
+    securityStatementFiles.filter(stf => isDateInLastSixMonths(stf.startDate, LocalDate.now()))
 
   private def groupByMonthDescending(securityStatementFiles: Seq[SecurityStatementFile]): Seq[SecurityStatementsByPeriod] = {
     securityStatementFiles.groupBy(file => (file.startDate, file.endDate)).map {
@@ -71,8 +76,3 @@ class SecuritiesController @Inject()(authenticate: IdentifierAction,
   }
 
 }
-
-
-
-
-

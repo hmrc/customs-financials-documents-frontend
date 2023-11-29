@@ -46,6 +46,26 @@ class SecuritiesControllerSpec extends SpecBase {
       }
     }
 
+    "display Pdf statements only for last 6 months" in new Setup {
+      running(app) {
+        val request = fakeRequest(GET, routes.SecuritiesController.showSecurityStatements.url)
+        val result = route(app, request).value
+        status(result) mustBe OK
+        contentAsString(result) mustBe
+          view(SecurityStatementsViewModel(Seq(securityStatementsPdfForEori)))(request, messages(app), appConfig).toString()
+      }
+    }
+
+    "display Csv statements only for last 6 months" in new Setup {
+      running(app) {
+        val request = fakeRequest(GET, routes.SecuritiesController.showSecurityStatements.url)
+        val result = route(app, request).value
+        status(result) mustBe OK
+        contentAsString(result) mustBe
+          view(SecurityStatementsViewModel(Seq(securityStatementsForEori)))(request, messages(app), appConfig).toString()
+      }
+    }
+
     "redirect to security statements unavailable if a problem occurs" in {
       val mockFinancialsApiConnector: FinancialsApiConnector = mock[FinancialsApiConnector]
       val mockSdesConnector: SdesConnector = mock[SdesConnector]
@@ -105,13 +125,126 @@ class SecuritiesControllerSpec extends SpecBase {
           "0000000",
           None))
 
+    val securityStatementFile1: SecurityStatementFile =
+      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
+        SecurityStatementFileMetadata(date.minusMonths(1).getYear,
+          date.minusMonths(1).getMonthValue,
+          28,
+          date.getYear,
+          date.getMonthValue,
+          28,
+          Pdf,
+          SecurityStatement,
+          "testEori1",
+          500L,
+          "0000000",
+          None))
+
+    val securityStatementFile2: SecurityStatementFile =
+      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
+        SecurityStatementFileMetadata(date.minusMonths(1).getYear,
+          date.minusMonths(2).getMonthValue,
+          28,
+          date.getYear,
+          date.getMonthValue,
+          28,
+          Pdf,
+          SecurityStatement,
+          "testEori1",
+          500L,
+          "0000000",
+          None))
+
+    val securityStatementFile3: SecurityStatementFile =
+      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
+        SecurityStatementFileMetadata(date.minusMonths(1).getYear,
+          date.minusMonths(3).getMonthValue,
+          28,
+          date.getYear,
+          date.getMonthValue,
+          28,
+          Pdf,
+          SecurityStatement,
+          "testEori1",
+          500L,
+          "0000000",
+          None))
+
+    val securityStatementFile4: SecurityStatementFile =
+      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
+        SecurityStatementFileMetadata(date.minusMonths(1).getYear,
+          date.minusMonths(4).getMonthValue,
+          28,
+          date.getYear,
+          date.getMonthValue,
+          28,
+          Pdf,
+          SecurityStatement,
+          "testEori1",
+          500L,
+          "0000000",
+          None))
+
+    val securityStatementFile5: SecurityStatementFile =
+      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
+        SecurityStatementFileMetadata(date.minusMonths(1).getYear,
+          date.minusMonths(5).getMonthValue,
+          28,
+          date.getYear,
+          date.getMonthValue,
+          28,
+          Pdf,
+          SecurityStatement,
+          "testEori1",
+          500L,
+          "0000000",
+          None))
+
+    val securityStatementFile6: SecurityStatementFile =
+      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
+        SecurityStatementFileMetadata(date.minusMonths(1).getYear,
+          date.minusMonths(6).getMonthValue,
+          28,
+          date.getYear,
+          date.getMonthValue,
+          28,
+          Pdf,
+          SecurityStatement,
+          "testEori1",
+          500L,
+          "0000000",
+          None))
+
     val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory("testEori1", None, None))
 
     val statementsByPeriod: SecurityStatementsByPeriod =
       SecurityStatementsByPeriod(date.minusMonths(1), date, Seq(securityStatementFile))
 
+    val statementsByPeriodPdfForMonth6: SecurityStatementsByPeriod =
+      SecurityStatementsByPeriod(date.minusMonths(6), date, Seq(securityStatementFile6))
+
+    val statementsByPeriodPdfForMonth5: SecurityStatementsByPeriod =
+      SecurityStatementsByPeriod(date.minusMonths(5), date, Seq(securityStatementFile5))
+
+    val statementsByPeriodPdfForMonth4: SecurityStatementsByPeriod =
+      SecurityStatementsByPeriod(date.minusMonths(4), date, Seq(securityStatementFile4))
+
+    val statementsByPeriodPdfForMonth3: SecurityStatementsByPeriod =
+      SecurityStatementsByPeriod(date.minusMonths(3), date, Seq(securityStatementFile3))
+
+    val statementsByPeriodPdfForMonth2: SecurityStatementsByPeriod =
+      SecurityStatementsByPeriod(date.minusMonths(2), date, Seq(securityStatementFile2))
+
+    val statementsByPeriodPdfForMonth1: SecurityStatementsByPeriod =
+      SecurityStatementsByPeriod(date.minusMonths(1), date, Seq(securityStatementFile1))
+
     val securityStatementsForEori: SecurityStatementsForEori =
       SecurityStatementsForEori(EoriHistory("testEori1", None, None),  Seq(statementsByPeriod), Seq.empty)
+
+    val securityStatementsPdfForEori: SecurityStatementsForEori =
+      SecurityStatementsForEori(EoriHistory("testEori1", None, None),  Seq(
+        statementsByPeriodPdfForMonth1, statementsByPeriodPdfForMonth2, statementsByPeriodPdfForMonth3,
+        statementsByPeriodPdfForMonth4, statementsByPeriodPdfForMonth5, statementsByPeriodPdfForMonth6), Seq.empty)
 
     when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
       .thenReturn(Future.successful(true))
