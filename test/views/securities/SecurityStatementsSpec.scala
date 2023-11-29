@@ -23,6 +23,7 @@ import models._
 import models.metadata.SecurityStatementFileMetadata
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.scalatest.Assertion
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.Application
 import play.api.i18n.Messages
@@ -43,35 +44,7 @@ class SecurityStatementsSpec extends SpecBase {
         val view: Document =
           Jsoup.parse(app.injector.instanceOf[security_statements].apply(viewModelWithStatements).body)
 
-        view.title() mustBe
-          s"${messages(app)("cf.security-statements.title")} - ${messages(app)("service.name")} - GOV.UK"
-        view.getElementsByTag("h1").text() mustBe messages(app)("cf.security-statements.title")
-
-        view.getElementById("missing-documents-guidance-heading").text mustBe
-          messages(app)("cf.common.missing-documents-guidance.heading",
-            messages(app)("cf.common.missing-documents-guidance.statement"))
-
-        view.getElementById("missing-documents-guidance-chiefHeading").text mustBe
-          messages(app)("cf.common.missing-documents-guidance.chiefHeading",
-            messages(app)("cf.common.missing-documents-guidance.statements"))
-
-        view.getElementById("missing-documents-guidance-text1").text mustBe
-          messages(app)("cf.common.missing-documents-guidance.text1",
-            messages(app)("cf.common.missing-documents-guidance.statements"))
-
-        view.getElementById("missing-documents-guidance-certificatesHeading").text mustBe
-          messages(app)("cf.common.missing-documents-guidance.subHeading",
-            messages(app)("cf.common.missing-documents-guidance.statements"))
-
-        view.getElementById("missing-documents-guidance-text2").text mustBe
-          messages(app)("cf.common.missing-documents-guidance.text2",
-            messages(app)("cf.common.missing-documents-guidance.statements"))
-
-        view.getElementById("historic-statement-request").text() mustBe
-          messages(app)("cf.security-statements.historic.description")
-
-        view.getElementById("historic-statement-request-link").text() mustBe
-          messages(app)("cf.security-statements.historic.request")
+        commonGuidanceText(view, app)
 
         view.text().contains("PDF") mustBe true
         view.text().contains("CSV") mustBe true
@@ -83,72 +56,28 @@ class SecurityStatementsSpec extends SpecBase {
         val view: Document =
           Jsoup.parse(app.injector.instanceOf[security_statements].apply(viewModelWithNoStatements).body)
 
-        view.title() mustBe
-          s"${messages(app)("cf.security-statements.title")} - ${messages(app)("service.name")} - GOV.UK"
-        view.getElementsByTag("h1").text() mustBe messages(app)("cf.security-statements.title")
-
-        view.getElementById("missing-documents-guidance-heading").text mustBe
-          messages(app)("cf.common.missing-documents-guidance.heading",
-            messages(app)("cf.common.missing-documents-guidance.statement"))
-
-        view.getElementById("missing-documents-guidance-chiefHeading").text mustBe
-          messages(app)("cf.common.missing-documents-guidance.chiefHeading",
-            messages(app)("cf.common.missing-documents-guidance.statements"))
-
-        view.getElementById("missing-documents-guidance-text1").text mustBe
-          messages(app)("cf.common.missing-documents-guidance.text1",
-            messages(app)("cf.common.missing-documents-guidance.statements"))
-
-        view.getElementById("missing-documents-guidance-certificatesHeading").text mustBe
-          messages(app)("cf.common.missing-documents-guidance.subHeading",
-            messages(app)("cf.common.missing-documents-guidance.statements"))
-
-        view.getElementById("missing-documents-guidance-text2").text mustBe
-          messages(app)("cf.common.missing-documents-guidance.text2",
-            messages(app)("cf.common.missing-documents-guidance.statements"))
-
-        view.getElementById("historic-statement-request").text() mustBe
-          messages(app)("cf.security-statements.historic.description")
-
-        view.getElementById("historic-statement-request-link").text() mustBe
-          messages(app)("cf.security-statements.historic.request")
+        commonGuidanceText(view, app)
 
         view.text().contains(messages(app)("cf.security-statements.eom")) mustBe false
+      }
+
+      "current statements are empty" in new Setup {
+        val view: Document =
+          Jsoup.parse(app.injector.instanceOf[security_statements].apply(viewModelWithNoCurrentStatements).body)
+
+        commonGuidanceText(view, app)
+
+        view.getElementById("no-statements").text() mustBe messages(app)("cf.security-statements.no-statements")
+        view.text().contains(messages(app)("cf.security-statements.eom")) mustBe false
+        view.text().contains("PDF") mustBe false
+        view.text().contains("CSV") mustBe false
       }
 
       "statements have Pdfs but not Csvs" in new Setup {
         val view: Document =
           Jsoup.parse(app.injector.instanceOf[security_statements].apply(viewModelWithPdfStatementsOnly).body)
 
-        view.title() mustBe
-          s"${messages(app)("cf.security-statements.title")} - ${messages(app)("service.name")} - GOV.UK"
-        view.getElementsByTag("h1").text() mustBe messages(app)("cf.security-statements.title")
-
-        view.getElementById("missing-documents-guidance-heading").text mustBe
-          messages(app)("cf.common.missing-documents-guidance.heading",
-            messages(app)("cf.common.missing-documents-guidance.statement"))
-
-        view.getElementById("missing-documents-guidance-chiefHeading").text mustBe
-          messages(app)("cf.common.missing-documents-guidance.chiefHeading",
-            messages(app)("cf.common.missing-documents-guidance.statements"))
-
-        view.getElementById("missing-documents-guidance-text1").text mustBe
-          messages(app)("cf.common.missing-documents-guidance.text1",
-            messages(app)("cf.common.missing-documents-guidance.statements"))
-
-        view.getElementById("missing-documents-guidance-certificatesHeading").text mustBe
-          messages(app)("cf.common.missing-documents-guidance.subHeading",
-            messages(app)("cf.common.missing-documents-guidance.statements"))
-
-        view.getElementById("missing-documents-guidance-text2").text mustBe
-          messages(app)("cf.common.missing-documents-guidance.text2",
-            messages(app)("cf.common.missing-documents-guidance.statements"))
-
-        view.getElementById("historic-statement-request").text() mustBe
-          messages(app)("cf.security-statements.historic.description")
-
-        view.getElementById("historic-statement-request-link").text() mustBe
-          messages(app)("cf.security-statements.historic.request")
+        commonGuidanceText(view, app)
 
         view.text().contains(messages(app)("cf.security-statements.eom")) mustBe false
 
@@ -164,35 +93,7 @@ class SecurityStatementsSpec extends SpecBase {
         val view: Document =
           Jsoup.parse(app.injector.instanceOf[security_statements].apply(viewModelWithCsvStatementsOnly).body)
 
-        view.title() mustBe
-          s"${messages(app)("cf.security-statements.title")} - ${messages(app)("service.name")} - GOV.UK"
-        view.getElementsByTag("h1").text() mustBe messages(app)("cf.security-statements.title")
-
-        view.getElementById("missing-documents-guidance-heading").text mustBe
-          messages(app)("cf.common.missing-documents-guidance.heading",
-            messages(app)("cf.common.missing-documents-guidance.statement"))
-
-        view.getElementById("missing-documents-guidance-chiefHeading").text mustBe
-          messages(app)("cf.common.missing-documents-guidance.chiefHeading",
-            messages(app)("cf.common.missing-documents-guidance.statements"))
-
-        view.getElementById("missing-documents-guidance-text1").text mustBe
-          messages(app)("cf.common.missing-documents-guidance.text1",
-            messages(app)("cf.common.missing-documents-guidance.statements"))
-
-        view.getElementById("missing-documents-guidance-certificatesHeading").text mustBe
-          messages(app)("cf.common.missing-documents-guidance.subHeading",
-            messages(app)("cf.common.missing-documents-guidance.statements"))
-
-        view.getElementById("missing-documents-guidance-text2").text mustBe
-          messages(app)("cf.common.missing-documents-guidance.text2",
-            messages(app)("cf.common.missing-documents-guidance.statements"))
-
-        view.getElementById("historic-statement-request").text() mustBe
-          messages(app)("cf.security-statements.historic.description")
-
-        view.getElementById("historic-statement-request-link").text() mustBe
-          messages(app)("cf.security-statements.historic.request")
+        commonGuidanceText(view, app)
 
         view.text().contains(messages(app)("cf.security-statements.eom")) mustBe true
 
@@ -202,6 +103,39 @@ class SecurityStatementsSpec extends SpecBase {
         view.text().contains(dateAsMonthAndYear(statementsByPeriodForCsv.startDate)) mustBe true
       }
     }
+  }
+
+  private def commonGuidanceText(view: Document,
+                                 app: Application): Assertion = {
+    view.title() mustBe
+      s"${messages(app)("cf.security-statements.title")} - ${messages(app)("service.name")} - GOV.UK"
+    view.getElementsByTag("h1").text() mustBe messages(app)("cf.security-statements.title")
+
+    view.getElementById("missing-documents-guidance-heading").text mustBe
+      messages(app)("cf.common.missing-documents-guidance.heading",
+        messages(app)("cf.common.missing-documents-guidance.statement"))
+
+    view.getElementById("missing-documents-guidance-chiefHeading").text mustBe
+      messages(app)("cf.common.missing-documents-guidance.chiefHeading",
+        messages(app)("cf.common.missing-documents-guidance.statements"))
+
+    view.getElementById("missing-documents-guidance-text1").text mustBe
+      messages(app)("cf.common.missing-documents-guidance.text1",
+        messages(app)("cf.common.missing-documents-guidance.statements"))
+
+    view.getElementById("missing-documents-guidance-certificatesHeading").text mustBe
+      messages(app)("cf.common.missing-documents-guidance.subHeading",
+        messages(app)("cf.common.missing-documents-guidance.statements"))
+
+    view.getElementById("missing-documents-guidance-text2").text mustBe
+      messages(app)("cf.common.missing-documents-guidance.text2",
+        messages(app)("cf.common.missing-documents-guidance.statements"))
+
+    view.getElementById("historic-statement-request").text() mustBe
+      messages(app)("cf.security-statements.historic.description")
+
+    view.getElementById("historic-statement-request-link").text() mustBe
+      messages(app)("cf.security-statements.historic.request")
   }
 
   trait Setup {
@@ -245,6 +179,9 @@ class SecurityStatementsSpec extends SpecBase {
       SecurityStatementsForEori(EoriHistory("testEori1", None, None), Seq(statementsByPeriodForCsv), Seq.empty)
 
     val viewModelWithNoStatements: SecurityStatementsViewModel = SecurityStatementsViewModel(Seq())
+    val viewModelWithNoCurrentStatements: SecurityStatementsViewModel =
+      SecurityStatementsViewModel(Seq(securityStatementsForEoriPdfsOnly.copy(currentStatements = Seq())))
+
     val viewModelWithPdfStatementsOnly: SecurityStatementsViewModel =
       SecurityStatementsViewModel(Seq(securityStatementsForEoriPdfsOnly))
 
