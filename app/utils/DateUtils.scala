@@ -27,4 +27,9 @@ object DateUtils {
    * @return Boolean
    */
   def isDayBefore15ThDayOfTheMonth(date: LocalDate): Boolean = date.getDayOfMonth < 15
+
+  /**
+   * Checks whether the month value of passed date is in last 6 months
+   */
+  def isMonthValueInLastSixMonths(date: LocalDate): Boolean = ???
 }

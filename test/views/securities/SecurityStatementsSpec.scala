@@ -170,7 +170,8 @@ class SecurityStatementsSpec extends SpecBase {
       SecurityStatementsByPeriod(date.minusMonths(1), date, Seq(securityStatementFileCsv))
 
     val securityStatementsForEori: SecurityStatementsForEori =
-      SecurityStatementsForEori(EoriHistory("testEori1", None, None), Seq(statementsByPeriodForPdf, statementsByPeriodForCsv), Seq.empty)
+      SecurityStatementsForEori(EoriHistory("testEori1", None, None),
+        Seq(statementsByPeriodForPdf, statementsByPeriodForCsv), Seq.empty)
 
     val securityStatementsForEoriPdfsOnly: SecurityStatementsForEori =
       SecurityStatementsForEori(EoriHistory("testEori1", None, None), Seq(statementsByPeriodForPdf), Seq.empty)

@@ -41,7 +41,8 @@ class SecuritiesControllerSpec extends SpecBase {
         val request = fakeRequest(GET, routes.SecuritiesController.showSecurityStatements.url)
         val result = route(app, request).value
         status(result) mustBe OK
-        contentAsString(result) mustBe view(SecurityStatementsViewModel(Seq(securityStatementsForEori)))(request, messages(app), appConfig).toString()
+        contentAsString(result) mustBe
+          view(SecurityStatementsViewModel(Seq(securityStatementsForEori)))(request, messages(app), appConfig).toString()
       }
     }
 
@@ -89,10 +90,28 @@ class SecuritiesControllerSpec extends SpecBase {
     val mockFinancialsApiConnector: FinancialsApiConnector = mock[FinancialsApiConnector]
     val mockSdesConnector: SdesConnector = mock[SdesConnector]
     val date: LocalDate = LocalDate.now().withDayOfMonth(28)
-    val securityStatementFile: SecurityStatementFile = SecurityStatementFile("statementfile_00", "download_url_00", 99L, SecurityStatementFileMetadata(date.minusMonths(1).getYear, date.minusMonths(1).getMonthValue, 28, date.getYear, date.getMonthValue, 28, Pdf, SecurityStatement, "testEori1", 500L, "0000000", None))
+    val securityStatementFile: SecurityStatementFile =
+      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
+        SecurityStatementFileMetadata(date.minusMonths(1).getYear,
+          date.minusMonths(1).getMonthValue,
+          28,
+          date.getYear,
+          date.getMonthValue,
+          28,
+          Pdf,
+          SecurityStatement,
+          "testEori1",
+          500L,
+          "0000000",
+          None))
+
     val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory("testEori1", None, None))
-    val statementsByPeriod: SecurityStatementsByPeriod = SecurityStatementsByPeriod(date.minusMonths(1), date, Seq(securityStatementFile))
-    val securityStatementsForEori: SecurityStatementsForEori = SecurityStatementsForEori(EoriHistory("testEori1", None, None),  Seq(statementsByPeriod), Seq.empty)
+
+    val statementsByPeriod: SecurityStatementsByPeriod =
+      SecurityStatementsByPeriod(date.minusMonths(1), date, Seq(securityStatementFile))
+
+    val securityStatementsForEori: SecurityStatementsForEori =
+      SecurityStatementsForEori(EoriHistory("testEori1", None, None),  Seq(statementsByPeriod), Seq.empty)
 
     when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
       .thenReturn(Future.successful(true))
