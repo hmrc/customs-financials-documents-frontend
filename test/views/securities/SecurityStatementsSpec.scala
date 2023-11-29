@@ -19,7 +19,8 @@ package views.securities
 import config.AppConfig
 import models.FileFormat.{Csv, Pdf}
 import models.FileRole.SecurityStatement
-import models.{EoriHistory, SecurityStatementFile, SecurityStatementsByPeriod, SecurityStatementsForEori, VatCertificatesByMonth, VatCertificatesForEori}
+import models._
+import models.metadata.SecurityStatementFileMetadata
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
@@ -29,8 +30,8 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.SpecBase
 import viewmodels.SecurityStatementsViewModel
+import views.helpers.Formatters.{dateAsDayMonthAndYear, dateAsMonthAndYear}
 import views.html.securities.security_statements
-import models.metadata.SecurityStatementFileMetadata
 
 import java.time.LocalDate
 
@@ -114,6 +115,92 @@ class SecurityStatementsSpec extends SpecBase {
 
         view.text().contains(messages(app)("cf.security-statements.eom")) mustBe false
       }
+
+      "statements have Pdfs but not Csvs" in new Setup {
+        val view: Document =
+          Jsoup.parse(app.injector.instanceOf[security_statements].apply(viewModelWithPdfStatementsOnly).body)
+
+        view.title() mustBe
+          s"${messages(app)("cf.security-statements.title")} - ${messages(app)("service.name")} - GOV.UK"
+        view.getElementsByTag("h1").text() mustBe messages(app)("cf.security-statements.title")
+
+        view.getElementById("missing-documents-guidance-heading").text mustBe
+          messages(app)("cf.common.missing-documents-guidance.heading",
+            messages(app)("cf.common.missing-documents-guidance.statement"))
+
+        view.getElementById("missing-documents-guidance-chiefHeading").text mustBe
+          messages(app)("cf.common.missing-documents-guidance.chiefHeading",
+            messages(app)("cf.common.missing-documents-guidance.statements"))
+
+        view.getElementById("missing-documents-guidance-text1").text mustBe
+          messages(app)("cf.common.missing-documents-guidance.text1",
+            messages(app)("cf.common.missing-documents-guidance.statements"))
+
+        view.getElementById("missing-documents-guidance-certificatesHeading").text mustBe
+          messages(app)("cf.common.missing-documents-guidance.subHeading",
+            messages(app)("cf.common.missing-documents-guidance.statements"))
+
+        view.getElementById("missing-documents-guidance-text2").text mustBe
+          messages(app)("cf.common.missing-documents-guidance.text2",
+            messages(app)("cf.common.missing-documents-guidance.statements"))
+
+        view.getElementById("historic-statement-request").text() mustBe
+          messages(app)("cf.security-statements.historic.description")
+
+        view.getElementById("historic-statement-request-link").text() mustBe
+          messages(app)("cf.security-statements.historic.request")
+
+        view.text().contains(messages(app)("cf.security-statements.eom")) mustBe false
+
+        view.text().contains("PDF") mustBe true
+        view.text().contains("CSV") mustBe false
+
+        view.text().contains(messages(app)("cf.security-statements.requested.period",
+          dateAsDayMonthAndYear(statementsByPeriodForPdf.startDate),
+          dateAsDayMonthAndYear(statementsByPeriodForPdf.endDate))) mustBe true
+      }
+
+      "statements have Csvs but not Pdfs" in new Setup {
+        val view: Document =
+          Jsoup.parse(app.injector.instanceOf[security_statements].apply(viewModelWithCsvStatementsOnly).body)
+
+        view.title() mustBe
+          s"${messages(app)("cf.security-statements.title")} - ${messages(app)("service.name")} - GOV.UK"
+        view.getElementsByTag("h1").text() mustBe messages(app)("cf.security-statements.title")
+
+        view.getElementById("missing-documents-guidance-heading").text mustBe
+          messages(app)("cf.common.missing-documents-guidance.heading",
+            messages(app)("cf.common.missing-documents-guidance.statement"))
+
+        view.getElementById("missing-documents-guidance-chiefHeading").text mustBe
+          messages(app)("cf.common.missing-documents-guidance.chiefHeading",
+            messages(app)("cf.common.missing-documents-guidance.statements"))
+
+        view.getElementById("missing-documents-guidance-text1").text mustBe
+          messages(app)("cf.common.missing-documents-guidance.text1",
+            messages(app)("cf.common.missing-documents-guidance.statements"))
+
+        view.getElementById("missing-documents-guidance-certificatesHeading").text mustBe
+          messages(app)("cf.common.missing-documents-guidance.subHeading",
+            messages(app)("cf.common.missing-documents-guidance.statements"))
+
+        view.getElementById("missing-documents-guidance-text2").text mustBe
+          messages(app)("cf.common.missing-documents-guidance.text2",
+            messages(app)("cf.common.missing-documents-guidance.statements"))
+
+        view.getElementById("historic-statement-request").text() mustBe
+          messages(app)("cf.security-statements.historic.description")
+
+        view.getElementById("historic-statement-request-link").text() mustBe
+          messages(app)("cf.security-statements.historic.request")
+
+        view.text().contains(messages(app)("cf.security-statements.eom")) mustBe true
+
+        view.text().contains("PDF") mustBe false
+        view.text().contains("CSV") mustBe true
+
+        view.text().contains(dateAsMonthAndYear(statementsByPeriodForCsv.startDate)) mustBe true
+      }
     }
   }
 
@@ -128,7 +215,7 @@ class SecurityStatementsSpec extends SpecBase {
     val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory("testEori1", None, None))
     val date: LocalDate = LocalDate.now().withDayOfMonth(28)
 
-    val securityStatementFile: SecurityStatementFile =
+    val securityStatementFilePdf: SecurityStatementFile =
       SecurityStatementFile("statementfile_00", "download_url_00", 99L,
         SecurityStatementFileMetadata(
           date.minusMonths(1).getYear,
@@ -142,27 +229,29 @@ class SecurityStatementsSpec extends SpecBase {
           date.minusMonths(1).getMonthValue,
           28, date.getYear, date.getMonthValue, 28, Csv, SecurityStatement, "testEori1", 500L, "0000000", None))
 
-    val statementsByPeriod: SecurityStatementsByPeriod =
-      SecurityStatementsByPeriod(date.minusMonths(1), date, Seq(securityStatementFile, securityStatementFileCsv))
+    val statementsByPeriodForPdf: SecurityStatementsByPeriod =
+      SecurityStatementsByPeriod(date.minusMonths(1), date, Seq(securityStatementFilePdf))
+
+    val statementsByPeriodForCsv: SecurityStatementsByPeriod =
+      SecurityStatementsByPeriod(date.minusMonths(1), date, Seq(securityStatementFileCsv))
 
     val securityStatementsForEori: SecurityStatementsForEori =
-      SecurityStatementsForEori(EoriHistory("testEori1", None, None), Seq(statementsByPeriod), Seq.empty)
+      SecurityStatementsForEori(EoriHistory("testEori1", None, None), Seq(statementsByPeriodForPdf, statementsByPeriodForCsv), Seq.empty)
 
+    val securityStatementsForEoriPdfsOnly: SecurityStatementsForEori =
+      SecurityStatementsForEori(EoriHistory("testEori1", None, None), Seq(statementsByPeriodForPdf), Seq.empty)
 
-    val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
-      VatCertificatesByMonth(date.minusMonths(1), Seq())(messages(app)),
-      VatCertificatesByMonth(date.minusMonths(2), Seq())(messages(app)),
-      VatCertificatesByMonth(date.minusMonths(3), Seq())(messages(app)),
-      VatCertificatesByMonth(date.minusMonths(4), Seq())(messages(app)),
-      VatCertificatesByMonth(date.minusMonths(5), Seq())(messages(app)),
-      VatCertificatesByMonth(date.minusMonths(6), Seq())(messages(app)),
-    )
-    val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
-      Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
-
+    val securityStatementsForEoriCsvsOnly: SecurityStatementsForEori =
+      SecurityStatementsForEori(EoriHistory("testEori1", None, None), Seq(statementsByPeriodForCsv), Seq.empty)
 
     val viewModelWithNoStatements: SecurityStatementsViewModel = SecurityStatementsViewModel(Seq())
-    val viewModelWithStatements: SecurityStatementsViewModel = SecurityStatementsViewModel(Seq(securityStatementsForEori))
+    val viewModelWithPdfStatementsOnly: SecurityStatementsViewModel =
+      SecurityStatementsViewModel(Seq(securityStatementsForEoriPdfsOnly))
 
+    val viewModelWithCsvStatementsOnly: SecurityStatementsViewModel =
+      SecurityStatementsViewModel(Seq(securityStatementsForEoriCsvsOnly))
+
+    val viewModelWithStatements: SecurityStatementsViewModel =
+      SecurityStatementsViewModel(Seq(securityStatementsForEori))
   }
 }

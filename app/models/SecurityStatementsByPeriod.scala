@@ -26,6 +26,7 @@ case class SecurityStatementsByPeriod(startDate: LocalDate,
   val pdf: Option[SecurityStatementFile] = files.find(_.fileFormat == Pdf)
   val csv: Option[SecurityStatementFile] = files.find(_.fileFormat == Csv)
   val hasCsv: Boolean = files.exists(_.fileFormat == Csv)
+  val hasPdf: Boolean = files.exists(_.fileFormat == Pdf)
 
   override def compare(that: SecurityStatementsByPeriod): Int = startDate.compareTo(that.startDate)
 }
