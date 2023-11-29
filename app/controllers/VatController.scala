@@ -49,7 +49,7 @@ class VatController @Inject()(val authenticate: IdentifierAction,
 
   val log: LoggerLike = Logger(this.getClass)
 
-  def showVatAccount(): Action[AnyContent] = (authenticate andThen checkEmailIsVerified andThen resolveSessionId) async { implicit req =>
+  def showVatAccount(): Action[AnyContent] = (authenticate andThen checkEmailIsVerified andThen resolveSessionId).async { implicit req =>
     financialsApiConnector.deleteNotification(req.eori, C79Certificate)
 
     (for {
