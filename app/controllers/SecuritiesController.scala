@@ -23,18 +23,19 @@ import models.FileRole.SecurityStatement
 import models.{EoriHistory, SecurityStatementFile, SecurityStatementsByPeriod, SecurityStatementsForEori}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.DateTimeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import utils.DateUtils.isDateInLastSixMonths
 import viewmodels.SecurityStatementsViewModel
 import views.html.securities.{security_statements, security_statements_not_available}
-import utils.DateUtils.isDateInLastSixMonths
 
-import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SecuritiesController @Inject()(authenticate: IdentifierAction,
                                      resolveSessionId: SessionIdAction,
                                      sdesConnector: SdesConnector,
+                                     dateTimeService: DateTimeService,
                                      checkEmailIsVerified: EmailAction,
                                      financialsApiConnector: FinancialsApiConnector,
                                      securityStatementsView: security_statements,
@@ -67,7 +68,9 @@ class SecuritiesController @Inject()(authenticate: IdentifierAction,
   }
 
   private def securityStatFilesInLastSixMonths(securityStatementFiles: Seq[SecurityStatementFile]): Seq[SecurityStatementFile] =
-    securityStatementFiles.filter(stf => isDateInLastSixMonths(stf.startDate, LocalDate.now()))
+    securityStatementFiles.filter(
+      stf => isDateInLastSixMonths(stf.startDate, dateTimeService.systemDateTime().toLocalDate)
+    )
 
   private def groupByMonthDescending(securityStatementFiles: Seq[SecurityStatementFile]): Seq[SecurityStatementsByPeriod] = {
     securityStatementFiles.groupBy(file => (file.startDate, file.endDate)).map {
