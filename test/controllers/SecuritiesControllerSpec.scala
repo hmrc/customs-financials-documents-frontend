@@ -57,7 +57,9 @@ class SecuritiesControllerSpec extends SpecBase {
       running(app) {
         val request = fakeRequest(GET, routes.SecuritiesController.showSecurityStatements.url)
         val result = route(app, request).value
+
         status(result) mustBe OK
+
         contentAsString(result) mustBe
           view(SecurityStatementsViewModel(Seq(securityStatementsPdfForEori)))(
             request, messages(app), appConfig).toString()
@@ -72,7 +74,9 @@ class SecuritiesControllerSpec extends SpecBase {
       running(app) {
         val request = fakeRequest(GET, routes.SecuritiesController.showSecurityStatements.url)
         val result = route(app, request).value
+
         status(result) mustBe OK
+
         contentAsString(result) mustBe
           view(SecurityStatementsViewModel(Seq(securityStatementsCsvForEori)))(
             request, messages(app), appConfig).toString()
