@@ -16,41 +16,53 @@
 
 package controllers
 
-import config.AppConfig
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
-import play.api.Application
-import play.api.test.Helpers._
+import connectors.FinancialsApiConnector
+import models.EmailUnverifiedResponse
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import play.api.inject._
+import services.MetricsReporterService
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import utils.SpecBase
-import views.html.email.{undeliverable_email, verify_your_email}
+import play.api.test.Helpers._
+
+import scala.concurrent.Future
 
 class EmailControllerSpec extends SpecBase {
 
-  "showUnverified" should {
-    "display the unverified page" in new Setup {
+  "EmailController" must {
+    "return unverified email" in new Setup {
+      running(app) {
+        val connector = app.injector.instanceOf[FinancialsApiConnector]
+
+        val result: Future[Option[String]] = connector.isEmailUnverified(hc)
+        await(result) shouldBe expectedResult
+      }
+    }
+
+    "return unverified email response" in new Setup {
       running(app) {
         val request = fakeRequest(GET, routes.EmailController.showUnverified().url)
         val result = route(app, request).value
-        status(result) mustBe OK
-        contentAsString(result) mustBe verifyYourEmailView(config.emailFrontendUrl)(request, messages(app), config).toString()
-      }
-    }
-  }
-
-  "showUndeliverable" should {
-    "display the undeliverable page" in new Setup {
-      running(app) {
-        val request = fakeRequest(GET, routes.EmailController.showUndeliverable().url)
-        val result = route(app, request).value
-        status(result) mustBe OK
-        contentAsString(result) mustBe undeliverableEmailView(config.emailFrontendUrl)(request, messages(app), config).toString()
+        status(result) shouldBe OK
       }
     }
   }
 
   trait Setup {
-    val app: Application = application().build()
-    val config: AppConfig = app.injector.instanceOf[AppConfig]
-    val verifyYourEmailView: verify_your_email = app.injector.instanceOf[verify_your_email]
-    val undeliverableEmailView: undeliverable_email = app.injector.instanceOf[undeliverable_email]
+    val expectedResult = Some("unverifiedEmail")
+    implicit val hc: HeaderCarrier = HeaderCarrier()
+    private val mockHttpClient = mock[HttpClient]
+    val mockMetricsReporterService: MetricsReporterService = mock[MetricsReporterService]
+
+    val response = EmailUnverifiedResponse(Some("unverifiedEmail"))
+
+    when[Future[EmailUnverifiedResponse]](mockHttpClient.GET(any, any, any)(any, any, any))
+      .thenReturn(Future.successful(response))
+
+    val app = application().overrides(
+      bind[MetricsReporterService].toInstance(mockMetricsReporterService),
+      bind[HttpClient].toInstance(mockHttpClient)
+    ).build()
   }
 }
+

@@ -22,6 +22,7 @@ import play.api.Logging
 import play.api.http.Status.NOT_FOUND
 import services.MetricsReporterService
 import uk.gov.hmrc.auth.core.retrieve.Email
+import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
 
 import javax.inject.Inject

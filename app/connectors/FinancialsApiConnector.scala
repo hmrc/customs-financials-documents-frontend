@@ -17,7 +17,7 @@
 package connectors
 
 import config.AppConfig
-import models.FileRole
+import models.{FileRole, EmailUnverifiedResponse}
 import play.mvc.Http.Status
 import services.MetricsReporterService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
@@ -35,5 +35,9 @@ class FinancialsApiConnector @Inject()(appConfig: AppConfig,
     metricsReporterService.withResponseTimeLogging("customs-financials-api.delete.notification") {
       httpClient.DELETE[HttpResponse](apiEndpoint).map(_.status == Status.OK)
     }
+  }
+
+  def isEmailUnverified(implicit hc: HeaderCarrier): Future[Option[String]] = {
+    httpClient.GET[EmailUnverifiedResponse](appConfig.customsFinancialsApi + "/subscriptions/unverified-email-display").map( res => res.unVerifiedEmail)
   }
 }

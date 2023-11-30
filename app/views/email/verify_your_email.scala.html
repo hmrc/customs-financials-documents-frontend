@@ -21,24 +21,26 @@
         layout: Layout,
         h1: components.h1,
         p: components.p,
-        ul: components.unordered_list,
         button: components.button
 )
 
-@(nextPage:String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(nextPage:String, email: Option[String])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages("cf.verify.your.email.title"))) {
+@layout(
+        pageTitle = Some(messages("cf.verify.your.email.title"))
+) {
 
- @h1(msg = "cf.verify.your.email.heading", classes = "govuk-heading-xl govuk-!-margin-bottom-4")
+        @h1(msg = "cf.verify.your.email.heading", classes = "govuk-heading-xl")
 
- @p(messages("cf.verify.your.email.p1"))
- @p(messages("cf.verify.your.email.need-to-verify"))
+        @p(messages("cf.verify.your.email.p1"))
 
- @ul(
-  "cf.verify.your.email.list.1",
-  "cf.verify.your.email.list.2",
-  "cf.verify.your.email.list.3"
- )
+        @if(email.isDefined){
+            @p(messages("cf.verify.your.email.p2", email.get))
+        }
 
- @button("cf.undeliverable.email.link-text", Some(nextPage))
+        @p(messages("cf.verify.your.email.p3"))
+
+        <p class="govuk-body">
+             @button("cf.verify.your.email.change.button", Some(nextPage))
+        </p>
 }
