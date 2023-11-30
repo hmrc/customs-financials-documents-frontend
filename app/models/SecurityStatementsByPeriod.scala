@@ -20,10 +20,14 @@ import models.FileFormat.{Pdf, Csv}
 
 import java.time.LocalDate
 
-case class SecurityStatementsByPeriod(startDate: LocalDate, endDate: LocalDate, files: Seq[SecurityStatementFile]) extends Ordered[SecurityStatementsByPeriod] {
+case class SecurityStatementsByPeriod(startDate: LocalDate,
+                                      endDate: LocalDate,
+                                      files: Seq[SecurityStatementFile]) extends Ordered[SecurityStatementsByPeriod] {
   val pdf: Option[SecurityStatementFile] = files.find(_.fileFormat == Pdf)
   val csv: Option[SecurityStatementFile] = files.find(_.fileFormat == Csv)
-  val hasCsv = files.exists(_.fileFormat == Csv)
+
+  val hasPdf: Boolean = files.exists(_.fileFormat == Pdf)
+  val hasCsv: Boolean = files.exists(_.fileFormat == Csv)
 
   override def compare(that: SecurityStatementsByPeriod): Int = startDate.compareTo(that.startDate)
 }

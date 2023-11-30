@@ -16,8 +16,10 @@
 
 package utils
 
+import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import utils.DateUtils.{isDateInLastSixMonths, isDayBefore15ThDayOfTheMonth}
+
 import java.time.LocalDate
-import utils.DateUtils.isDayBefore15ThDayOfTheMonth
 
 class DateUtilsSpec extends SpecBase {
 
@@ -38,6 +40,46 @@ class DateUtilsSpec extends SpecBase {
     "return false when input day is 15th day of the current month" in {
       val dateWith15ThDay: LocalDate = LocalDate.of(2023, 3, 15)
       isDayBefore15ThDayOfTheMonth(dateWith15ThDay) shouldBe false
+    }
+  }
+
+  "isDateInLastSixMonths" should {
+    "return true" when {
+      "date is in last 6 months" in {
+        val date1 = LocalDate.of(2023, 5, 20)
+        val date2 = LocalDate.of(2023, 6, 10)
+        val date3 = LocalDate.of(2023, 8, 2)
+        val date4 = LocalDate.of(2023, 9, 20)
+        val date5 = LocalDate.of(2023, 5, 21)
+        val date6 = LocalDate.of(2023, 5, 1)
+
+        val currentDate = LocalDate.of(2023, 11, 20)
+
+        isDateInLastSixMonths(date1, currentDate) mustBe true
+        isDateInLastSixMonths(date2, currentDate) mustBe true
+        isDateInLastSixMonths(date3, currentDate) mustBe true
+        isDateInLastSixMonths(date4, currentDate) mustBe true
+        isDateInLastSixMonths(date5, currentDate) mustBe true
+        isDateInLastSixMonths(date6, currentDate) mustBe true
+      }
+    }
+
+    "return false" when {
+      "date is not in last 6 months" in {
+        val date1 = LocalDate.of(2023, 4, 29)
+        val date2 = LocalDate.of(2023, 4, 10)
+        val date3 = LocalDate.of(2022, 12, 31)
+        val date4 = LocalDate.of(2023, 3, 20)
+        val date5 = LocalDate.of(2023, 4, 30)
+
+        val currentDate = LocalDate.of(2023, 11, 20)
+
+        isDateInLastSixMonths(date1, currentDate) mustBe false
+        isDateInLastSixMonths(date2, currentDate) mustBe false
+        isDateInLastSixMonths(date3, currentDate) mustBe false
+        isDateInLastSixMonths(date4, currentDate) mustBe false
+        isDateInLastSixMonths(date5, currentDate) mustBe false
+      }
     }
   }
 }
