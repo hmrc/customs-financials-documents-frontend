@@ -44,7 +44,9 @@ class EmailController @Inject()(authenticate: IdentifierAction,
     }
   }
 
-  def showUndeliverable(): Action[AnyContent] = authenticate { implicit request =>
-    Ok(undeliverableEmail(appConfig.emailFrontendUrl))
+  def showUndeliverable(): Action[AnyContent] = authenticate async { implicit request =>
+    financialsApiConnector.verifiedEmail.map {
+      verifiedEmailRes => Ok(undeliverableEmail(appConfig.emailFrontendUrl, verifiedEmailRes.verifiedEmail))
+    }
   }
 }

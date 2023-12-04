@@ -37,6 +37,8 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   var historicStatementsEnabled: Boolean = config.get[Boolean]("features.historic-statements-enabled")
   lazy val customsDataStore: String = servicesConfig.baseUrl("customs-data-store") +
     config.get[String]("microservice.services.customs-data-store.context")
+  lazy val emailFrontendService: String = servicesConfig.baseUrl("customs-email-frontend") +
+    config.get[String]("microservice.services.customs-email-frontend.context")
 
   lazy val viewVatAccountSupportLink: String = config.get[String]("external-urls.viewVatAccountSupportLink")
 
@@ -49,7 +51,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val signOutUrl: String = config.get[String]("external-urls.signOut")
   lazy val requestedStatements: String = config.get[String]("external-urls.requestedStatements")
   lazy val historicRequest: String = config.get[String]("external-urls.historicRequest")
-  lazy val emailFrontendUrl: String = config.get[String]("microservice.services.customs-email-frontend.url")
+  lazy val emailFrontendUrl: String = s"$emailFrontendService/service/customs-finance"
   lazy val pvEmailEmailAddress: String = config.get[String]("external-urls.pvEmailEmailAddress")
   lazy val pvEmailEmailAddressHref: String = config.get[String]("external-urls.pvEmailEmailAddressHref")
   lazy val cdsEmailEnquiries: String = config.get[String]("external-urls.cdsEmailEnquiries")

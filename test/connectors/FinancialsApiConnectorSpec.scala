@@ -16,7 +16,7 @@
 
 package connectors
 
-import models.{FileRole, EmailUnverifiedResponse}
+import models.{EmailUnverifiedResponse, EmailVerifiedResponse, FileRole}
 import org.mockito.invocation.InvocationOnMock
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.test.Helpers._
@@ -25,6 +25,7 @@ import services.MetricsReporterService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import utils.SpecBase
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class FinancialsApiConnectorSpec extends SpecBase {
@@ -54,9 +55,38 @@ class FinancialsApiConnectorSpec extends SpecBase {
     }
   }
 
+  "verifiedEmail" should {
+    "return correct email address" in new Setup {
+      when[Future[EmailVerifiedResponse]](mockHttpClient.GET(any, any, any)(any, any, any))
+        .thenReturn(Future.successful(EmailVerifiedResponse(Some(email))))
+
+      running(app) {
+        val result: Future[EmailVerifiedResponse] = connector.verifiedEmail
+
+        result.map {
+          res => res mustBe sampleEmailVerifiedResponse
+        }
+      }
+    }
+
+    "return None when there is no email address returned" in new Setup {
+      when[Future[EmailVerifiedResponse]](mockHttpClient.GET(any, any, any)(any, any, any))
+        .thenReturn(Future.successful(EmailVerifiedResponse(None)))
+
+      running(app) {
+        val result = connector.verifiedEmail
+
+        result.map {
+          res => res.verifiedEmail mustBe empty
+        }
+      }
+    }
+  }
+
   trait Setup {
     val mockMetricsReporterService: MetricsReporterService = mock[MetricsReporterService]
     val mockHttpClient: HttpClient = mock[HttpClient]
+
     val app: Application = application().overrides(
       inject.bind[MetricsReporterService].toInstance(mockMetricsReporterService),
       inject.bind[HttpClient].toInstance(mockHttpClient)
@@ -64,5 +94,8 @@ class FinancialsApiConnectorSpec extends SpecBase {
 
     implicit val hc: HeaderCarrier = HeaderCarrier()
     val connector: FinancialsApiConnector = app.injector.instanceOf[FinancialsApiConnector]
+
+    val email = "test@test.com"
+    val sampleEmailVerifiedResponse: EmailVerifiedResponse = EmailVerifiedResponse(Some(email))
   }
 }

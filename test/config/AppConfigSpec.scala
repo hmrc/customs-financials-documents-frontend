@@ -93,6 +93,18 @@ class AppConfigSpec extends SpecBase {
     }
   }
 
+  "emailFrontendService" should {
+    "return the correct service address with context" in new Setup {
+      appConfig.emailFrontendService mustBe "http://localhost:9898/manage-email-cds"
+    }
+  }
+
+  "emailFrontendUrl" should {
+    "return the correct url" in new Setup {
+      appConfig.emailFrontendUrl mustBe "http://localhost:9898/manage-email-cds/service/customs-finance"
+    }
+  }
+
   trait Setup {
     val app: Application = application(allEoriHistory = Seq.empty).build()
     val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
