@@ -60,14 +60,15 @@ class SecuritiesController @Inject()(authenticate: IdentifierAction,
 
   private def getStatements(historicEori: EoriHistory)(implicit req: AuthenticatedRequestWithSessionId[_]): Future[SecurityStatementsForEori] = {
     sdesConnector.getSecurityStatements(historicEori.eori)
-      .map(ssf => groupByMonthDescending(securityStatFilesInLastSixMonths(ssf)))
+      .map(groupByMonthDescending)
       .map(_.partition(_.files.exists(_.metadata.statementRequestId.isEmpty)))
       .map {
-        case (current, requested) => SecurityStatementsForEori(historicEori, current, requested)
+        case (current, requested) =>
+          SecurityStatementsForEori(historicEori, securityStatementsInLastSixMonths(current), requested)
       }
   }
 
-  private def securityStatFilesInLastSixMonths(securityStatementFiles: Seq[SecurityStatementFile]): Seq[SecurityStatementFile] =
+  private def securityStatementsInLastSixMonths(securityStatementFiles: Seq[SecurityStatementsByPeriod]): Seq[SecurityStatementsByPeriod] =
     securityStatementFiles.filter(
       stf => isDateInLastSixMonths(stf.startDate, dateTimeService.systemDateTime().toLocalDate)
     )

@@ -200,7 +200,7 @@ class SecuritiesControllerSpec extends SpecBase {
           "testEori1",
           500L,
           "0000000",
-          None))
+          Some("1abcdefg2-a2b1-abcd-abcd-0123456789")))
 
     val securityStatementFile5: SecurityStatementFile =
       SecurityStatementFile("statementfile_00", "download_url_00", 99L,
@@ -266,7 +266,8 @@ class SecuritiesControllerSpec extends SpecBase {
 
     val securityStatementsPdfForEori: SecurityStatementsForEori =
       SecurityStatementsForEori(EoriHistory("testEori1", None, None), Seq(
-        statementsByPeriodPdfForMonth1, statementsByPeriodPdfForMonth2, statementsByPeriodPdfForMonth3), Seq.empty)
+        statementsByPeriodPdfForMonth1, statementsByPeriodPdfForMonth2, statementsByPeriodPdfForMonth3),
+        Seq(statementsByPeriodPdfForMonth4))
 
     val securityStatementCsvFile1: SecurityStatementFile =
       SecurityStatementFile("statementfile_00", "download_url_00", 99L,
@@ -326,7 +327,7 @@ class SecuritiesControllerSpec extends SpecBase {
           "testEori1",
           500L,
           "0000000",
-          None))
+          Some("1abcdefg2-a2b1-abcd-abcd-0123456789")))
 
     val securityStatementCsvFile5: SecurityStatementFile =
       SecurityStatementFile("statementfile_00", "download_url_00", 99L,
@@ -385,7 +386,8 @@ class SecuritiesControllerSpec extends SpecBase {
 
     val securityStatementsCsvForEori: SecurityStatementsForEori =
       SecurityStatementsForEori(EoriHistory("testEori1", None, None), Seq(
-        statementsByPeriodCsvForMonth1, statementsByPeriodCsvForMonth2, statementsByPeriodCsvForMonth3), Seq.empty)
+        statementsByPeriodCsvForMonth1, statementsByPeriodCsvForMonth2, statementsByPeriodCsvForMonth3),
+        Seq(statementsByPeriodCsvForMonth4))
 
     when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
       .thenReturn(Future.successful(true))
