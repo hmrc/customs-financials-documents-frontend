@@ -68,8 +68,8 @@ class SecuritiesControllerSpec extends SpecBase {
 
     "display Csv statements only for last 6 months" in new Setup {
       when(mockSdesConnector.getSecurityStatements(any)(any))
-        .thenReturn(Future.successful(Seq(securityStatementCsvFile1, securityStatementCsvFile2, securityStatementCsvFile3,
-          securityStatementCsvFile4, securityStatementCsvFile5, securityStatementCsvFile6)))
+        .thenReturn(Future.successful(Seq(securityStatementCsvFile1, securityStatementCsvFile2,
+          securityStatementCsvFile3, securityStatementCsvFile4, securityStatementCsvFile5, securityStatementCsvFile6)))
 
       running(app) {
         val request = fakeRequest(GET, routes.SecuritiesController.showSecurityStatements.url)
@@ -265,9 +265,11 @@ class SecuritiesControllerSpec extends SpecBase {
       SecurityStatementsForEori(EoriHistory("testEori1", None, None), Seq(statementsByPeriod), Seq.empty)
 
     val securityStatementsPdfForEori: SecurityStatementsForEori =
-      SecurityStatementsForEori(EoriHistory("testEori1", None, None), Seq(
-        statementsByPeriodPdfForMonth1, statementsByPeriodPdfForMonth2, statementsByPeriodPdfForMonth3),
-        Seq(statementsByPeriodPdfForMonth4))
+      SecurityStatementsForEori(
+        EoriHistory("testEori1", None, None),
+        Seq(statementsByPeriodPdfForMonth1, statementsByPeriodPdfForMonth2, statementsByPeriodPdfForMonth3),
+        Seq(statementsByPeriodPdfForMonth4)
+      )
 
     val securityStatementCsvFile1: SecurityStatementFile =
       SecurityStatementFile("statementfile_00", "download_url_00", 99L,
@@ -385,9 +387,11 @@ class SecuritiesControllerSpec extends SpecBase {
 
 
     val securityStatementsCsvForEori: SecurityStatementsForEori =
-      SecurityStatementsForEori(EoriHistory("testEori1", None, None), Seq(
-        statementsByPeriodCsvForMonth1, statementsByPeriodCsvForMonth2, statementsByPeriodCsvForMonth3),
-        Seq(statementsByPeriodCsvForMonth4))
+      SecurityStatementsForEori(
+        EoriHistory("testEori1", None, None),
+        Seq(statementsByPeriodCsvForMonth1, statementsByPeriodCsvForMonth2, statementsByPeriodCsvForMonth3),
+        Seq(statementsByPeriodCsvForMonth4)
+      )
 
     when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
       .thenReturn(Future.successful(true))
