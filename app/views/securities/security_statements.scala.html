@@ -103,21 +103,22 @@
                             <dd class="govuk-summary-list__actions" id="statements-list-@{historyIndex}-row-@{index}-link-cell-csv">
                                 @statementsOfOneMonth.csv.fold{
                                 <div id="statements-list-@{historyIndex}-row-@{index}-unavailable-csv">
-                                                            <span class="govuk-visually-hidden">@messages("cf.security-statements.screen-reader.unavailable", Csv,
-                                                                dateAsDayMonthAndYear(statementsOfOneMonth.startDate),
-                                                                dateAsDayMonthAndYear(statementsOfOneMonth.endDate))</span>
+                                    <span class="govuk-visually-hidden">
+                                        @messages("cf.security-statements.screen-reader.unavailable.month.year",
+                                        Csv,
+                                        dateAsMonthAndYear(statementsOfOneMonth.startDate))
+                                    </span>
                                     <span aria-hidden="true">@messages("cf.unavailable")</span>
                                 </div>
                                 } { csv =>
                                     @link(linkMessage = s"CSV (${csv.formattedSize})",
-                                            linkClass = "file-link govuk-link",
-                                            location = csv.downloadURL,
-                                            pWrapped = false,
-                                            ariaLabel = Some(messages("cf.security-statements.requested.download-link.aria-text",
-                                            Csv,
-                                            dateAsDayMonthAndYear(statementsOfOneMonth.startDate),
-                                            dateAsDayMonthAndYear(statementsOfOneMonth.endDate),
-                                            csv.formattedSize)))
+                                        linkClass = "file-link govuk-link",
+                                        location = csv.downloadURL,
+                                        pWrapped = false,
+                                        ariaLabel = Some(messages("cf.security-statements.requested.download-link.aria-text.csv",
+                                        Csv,
+                                        dateAsMonthAndYear(statementsOfOneMonth.startDate),
+                                        csv.formattedSize)))
                                     }
                             </dd>
                         </div>
