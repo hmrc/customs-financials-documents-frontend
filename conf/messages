@@ -93,6 +93,7 @@ feedback.after = will help us to improve it.
 cf.security-statements.title=Notification of adjustment statements
 cf.security-statements.no-statements=There are no statements available to view.
 cf.security-statements.screen-reader.unavailable={0} for {1} to {2} unavailable
+cf.security-statements.screen-reader.unavailable.month.year={0} for {1} unavailable
 
 cf.security-statements.historic.description=This service will only show statements for the last 6 months.
 cf.security-statements.historic.request=Request a statement that’s older than 6 months
@@ -106,6 +107,7 @@ cf.security-statements.requested.title=Requested notification of adjustment stat
 cf.security-statements.requested.available.text=Requested statements are available to view for 10 days. We can only provide these in PDF format.
 cf.security-statements.requested.period={0} to {1}
 cf.security-statements.requested.download-link.aria-text=Download {1} to {2} {0} ({3})
+cf.security-statements.requested.download-link.aria-text.csv=Download {1} {0} ({2})
 # ------------------------------------------------------------------------
 
 # VAT Detail view
@@ -207,6 +209,7 @@ cf.service-unavailable.heading=Sorry, this service is currently unavailable
 cf.service-unavailable.description.1=To get older statements or certificates for declarations made using the Customs Declaration Service,
 cf.service-unavailable.description.2=complete the ''Get help with a technical problem'' form.
 cf.service-unavailable.description.3=Tell us the type of statement or certificate you need and the date range you need it for.
+cf.unavailable=Unavailable
 
 # Verify Your Email Address
 # ----------------------------------------------------------------------------

@@ -94,6 +94,7 @@ feedback.after =  yn ein helpu i’w wella.
 cf.security-statements.title=Hysbysiad o ddatganiadau addasu
 cf.security-statements.no-statements=Nid oes datganiadau ar gael i’w gweld.
 cf.security-statements.screen-reader.unavailable=Nid yw {0} ar gyfer {1} i {2} ar gael
+cf.security-statements.screen-reader.unavailable.month.year=Nid yw’r {0} ar gyfer {1} ar gael
 
 cf.security-statements.historic.description=Dim ond ar gyfer y 6 mis diwethaf y bydd y gwasanaeth hwn yn dangos datganiadau.
 cf.security-statements.historic.request=Gwneud cais am ddatganiad sy’n hŷn na 6 mis
@@ -107,6 +108,7 @@ cf.security-statements.requested.title=Hysbysiad o ddatganiadau addasu y gofynnw
 cf.security-statements.requested.available.text=Mae datganiadau y gofynnwyd amdanynt ar gael i’w gweld am 10 diwrnod. Gallwn ddarparu’r rhain ar ffurf PDF yn unig.
 cf.security-statements.requested.period={0} i {1}
 cf.security-statements.requested.download-link.aria-text=Lawrlwytho {0} ar gyfer {1} i {2} ({3})
+cf.security-statements.requested.download-link.aria-text.csv=Lawrlwytho {1} {0} ({2})
 # ------------------------------------------------------------------------
 
 # VAT Detail view
@@ -209,6 +211,7 @@ cf.service-unavailable.heading=Mae’n ddrwg gennym, nid yw’r gwasanaeth hwn a
 cf.service-unavailable.description.1=I gael datganiadau hŷn neu dystysgrifau ar gyfer datganiadau a wnaed gan ddefnyddio’r Gwasanaeth Datganiadau Tollau,
 cf.service-unavailable.description.2= llenwch y ffurflen ''Cael help gyda phroblem dechnegol''.
 cf.service-unavailable.description.3=Nodwch y math o ddatganiad neu dystysgrif sydd ei angen arnoch, ac ar gyfer pa gyfnod y mae ei angen arnoch.
+cf.unavailable=Unavailable
 
 # Verify Your Email Address
 # ----------------------------------------------------------------------------
