@@ -273,6 +273,82 @@ class VatControllerSpec extends SpecBase {
         }
       }
     }
+
+    "display requested statements Url when regular and " +
+      "requested statements are present in the same period" in new Setup {
+      appConfig.historicStatementsEnabled = true
+      val historicRequestUrl: String = appConfig.historicRequestUrl(C79Certificate)
+      val someRequestId = Some("statement-request-id")
+      val vatCertificateFile: VatCertificateFile = VatCertificateFile("name_04",
+        "download_url_06",
+        111L,
+        VatCertificateFileMetadata(date.minusMonths(1).getYear,
+          date.minusMonths(1).getMonthValue,
+          Pdf,
+          C79Certificate,
+          None),
+        "")(messages(app))
+
+      val vatCertificateFile_2: VatCertificateFile = VatCertificateFile("name_05",
+        "download_url_07",
+        111L,
+        VatCertificateFileMetadata(date.minusMonths(7).getYear,
+          date.minusMonths(7).getMonthValue,
+          Pdf,
+          C79Certificate,
+          None),
+        "")(messages(app))
+
+      val vatCertificateFile_3: VatCertificateFile = VatCertificateFile("name_05",
+        "download_url_07",
+        111L,
+        VatCertificateFileMetadata(date.minusMonths(7).getYear,
+          date.minusMonths(7).getMonthValue,
+          Pdf,
+          C79Certificate,
+          someRequestId),
+        "")(messages(app))
+
+      val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
+        VatCertificatesByMonth(date.minusMonths(1), Seq(vatCertificateFile))(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(2), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(3), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(4), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(5), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(6), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(7), Seq(vatCertificateFile_2))(messages(app)),
+      )
+
+      val requestedCertificates: Seq[VatCertificatesByMonth] = Seq(
+        VatCertificatesByMonth(date.minusMonths(7),
+          Seq(vatCertificateFile_3))(messages(app)),
+      )
+
+      val vatCertificatesForEoris: Seq[VatCertificatesForEori] = Seq(VatCertificatesForEori(eoriHistory.head,
+        currentCertificates, requestedCertificates))
+      val viewModel: VatViewModel = VatViewModel(vatCertificatesForEoris)
+
+      when(mockSdesConnector.getVatCertificates(anyString)(any, any))
+        .thenReturn(Future.successful(Seq(vatCertificateFile, vatCertificateFile_2, vatCertificateFile_3)))
+
+      when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+        .thenReturn(Future.successful(true))
+
+      running(app) {
+        val request = fakeRequest(GET, routes.VatController.showVatAccount.url)
+        val result = route(app, request).value
+        status(result) mustBe OK
+
+        if (DateUtils.isDayBefore15ThDayOfTheMonth(LocalDate.now())) {
+          contentAsString(result) mustBe
+            view(viewModel, Some(historicRequestUrl))(request, messages(app), appConfig).toString()
+        }
+
+        val doc = Jsoup.parse(contentAsString(result))
+
+        doc.getElementById("notification-panel") should not be null
+      }
+    }
   }
 
   "certificatesUnavailablePage" should {

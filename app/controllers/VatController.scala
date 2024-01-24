@@ -86,8 +86,8 @@ class VatController @Inject()(val authenticate: IdentifierAction,
   private def getCertificates(historicEori: EoriHistory)(implicit req: AuthenticatedRequestWithSessionId[_]): Future[VatCertificatesForEori] = {
     val certificates = sdesConnector.getVatCertificates(historicEori.eori)
       .map(_.groupBy(_.monthAndYear).map { case (month, filesForMonth) => VatCertificatesByMonth(month, filesForMonth) }.toList)
-      .map(_.partition(_.files.exists(_.metadata.statementRequestId.isEmpty)))
-      .map { case (current, requested) => VatCertificatesForEori(historicEori, current, requested) }
+      .map(_.partition(_.files.exists(_.metadata.statementRequestId.isDefined)))
+      .map { case (requested, current) => VatCertificatesForEori(historicEori, current, requested) }
     populateEmptyMonths(certificates)
   }
 

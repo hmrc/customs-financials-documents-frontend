@@ -61,9 +61,9 @@ class SecuritiesController @Inject()(authenticate: IdentifierAction,
   private def getStatements(historicEori: EoriHistory)(implicit req: AuthenticatedRequestWithSessionId[_]): Future[SecurityStatementsForEori] = {
     sdesConnector.getSecurityStatements(historicEori.eori)
       .map(groupByMonthDescending)
-      .map(_.partition(_.files.exists(_.metadata.statementRequestId.isEmpty)))
+      .map(_.partition(_.files.exists(_.metadata.statementRequestId.isDefined)))
       .map {
-        case (current, requested) =>
+        case (requested, current) =>
           SecurityStatementsForEori(historicEori, securityStatementsInLastSixMonths(current), requested)
       }
   }

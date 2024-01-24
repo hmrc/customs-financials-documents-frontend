@@ -22,6 +22,7 @@ import models.FileFormat.{Csv, Pdf}
 import models.FileRole.SecurityStatement
 import models.metadata.SecurityStatementFileMetadata
 import models.{EoriHistory, SecurityStatementFile, SecurityStatementsByPeriod, SecurityStatementsForEori}
+import org.jsoup.Jsoup
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.test.Helpers._
 import play.api.{Application, inject}
@@ -83,6 +84,28 @@ class SecuritiesControllerSpec extends SpecBase {
       }
     }
 
+    "display requested statements link when historic statements are available" in new Setup {
+      when(mockSdesConnector.getSecurityStatements(any)(any))
+        .thenReturn(Future.successful(Seq(securityStatementFile1, securityStatementFile2, securityStatementFile3,
+          securityStatementFile4, securityStatementFile5, securityStatementFile6, securityStatementFile7,
+          securityStatementFile8)))
+
+      running(app) {
+        val request = fakeRequest(GET, routes.SecuritiesController.showSecurityStatements.url)
+        val result = route(app, request).value
+
+        status(result) mustBe OK
+
+        contentAsString(result) mustBe
+          view(SecurityStatementsViewModel(Seq(securityStatementsPdfForEori)))(
+            request, messages(app), appConfig).toString()
+
+        val doc = Jsoup.parse(contentAsString(result))
+
+        doc.getElementById("request-statement-link") should not be null
+      }
+    }
+
     "redirect to security statements unavailable if a problem occurs" in {
       val mockFinancialsApiConnector: FinancialsApiConnector = mock[FinancialsApiConnector]
       val mockSdesConnector: SdesConnector = mock[SdesConnector]
@@ -127,6 +150,8 @@ class SecuritiesControllerSpec extends SpecBase {
     val mockFinancialsApiConnector: FinancialsApiConnector = mock[FinancialsApiConnector]
     val mockSdesConnector: SdesConnector = mock[SdesConnector]
     val date: LocalDate = LocalDate.now().withDayOfMonth(28)
+    val someRequestId = Some("statement-request-id")
+
     val securityStatementFile: SecurityStatementFile =
       SecurityStatementFile("statementfile_00", "download_url_00", 99L,
         SecurityStatementFileMetadata(date.minusMonths(1).getYear,
@@ -232,10 +257,44 @@ class SecuritiesControllerSpec extends SpecBase {
           "0000000",
           None))
 
+    val securityStatementFile7: SecurityStatementFile =
+      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
+        SecurityStatementFileMetadata(date.minusMonths(10).getYear,
+          date.minusMonths(10).getMonthValue,
+          15,
+          date.minusMonths(10).getYear,
+          date.minusMonths(10).getMonthValue,
+          17,
+          Pdf,
+          SecurityStatement,
+          "testEori1",
+          500L,
+          "0000000",
+          None))
+
+    val securityStatementFile8: SecurityStatementFile =
+      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
+        SecurityStatementFileMetadata(date.minusMonths(10).getYear,
+          date.minusMonths(10).getMonthValue,
+          15,
+          date.minusMonths(10).getYear,
+          date.minusMonths(10).getMonthValue,
+          17,
+          Pdf,
+          SecurityStatement,
+          "testEori1",
+          500L,
+          "0000000",
+          someRequestId))
+
     val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory("testEori1", None, None))
 
     val statementsByPeriod: SecurityStatementsByPeriod =
       SecurityStatementsByPeriod(date.minusMonths(1), date, Seq(securityStatementFile))
+
+    val statementsByPeriodPdfForMonth7: SecurityStatementsByPeriod =
+      SecurityStatementsByPeriod(
+        securityStatementFile7.startDate, securityStatementFile7.endDate, Seq(securityStatementFile7, securityStatementFile8))
 
     val statementsByPeriodPdfForMonth6: SecurityStatementsByPeriod =
       SecurityStatementsByPeriod(
@@ -268,7 +327,7 @@ class SecuritiesControllerSpec extends SpecBase {
       SecurityStatementsForEori(
         EoriHistory("testEori1", None, None),
         Seq(statementsByPeriodPdfForMonth1, statementsByPeriodPdfForMonth2, statementsByPeriodPdfForMonth3),
-        Seq(statementsByPeriodPdfForMonth4)
+        Seq(statementsByPeriodPdfForMonth4, statementsByPeriodPdfForMonth7)
       )
 
     val securityStatementCsvFile1: SecurityStatementFile =
