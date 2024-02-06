@@ -22,15 +22,18 @@ import models.metadata.PostponedVatStatementFileMetadata
 import play.api.i18n.Messages
 import views.helpers.Formatters
 import services.DateTimeService
+import utils.Utils.{hyphen, singleSpace}
 
 import java.time.LocalDate
 
-case class PostponedVatStatementGroup(startDate: LocalDate, files: Seq[PostponedVatStatementFile])(implicit messages: Messages, dateTimeService: DateTimeService)
+case class PostponedVatStatementGroup(startDate: LocalDate,
+                                      files: Seq[PostponedVatStatementFile])(implicit messages: Messages,
+                                                                             dateTimeService: DateTimeService)
   extends Ordered[PostponedVatStatementGroup] {
 
-  private val periodName = Formatters.dateAsMonthAndYear(startDate).replace(" ", "-").toLowerCase
+  private val periodName = Formatters.dateAsMonthAndYear(startDate).replace(singleSpace, hyphen).toLowerCase
   val periodId: String = s"""period-$periodName"""
-  val noStatements: Boolean = Seq(CDS, CHIEF).flatMap(source => collectFiles(amended = false,source)).isEmpty
+  val noStatements: Boolean = Seq(CDS, CHIEF).flatMap(source => collectFiles(amended = false, source)).isEmpty
 
   def collectFiles(amended: Boolean, source: String): Seq[PostponedVatStatementFile] = {
     val amendedPred: PostponedVatStatementFileMetadata => Boolean = if (amended) {
@@ -45,13 +48,13 @@ case class PostponedVatStatementGroup(startDate: LocalDate, files: Seq[Postponed
   }
 
   def isPreviousMonthAndAfter14Th: Boolean = {
+    val day14 = 14
     val currentDate = dateTimeService.systemDateTime().toLocalDate
     val previousMonth = currentDate.minusMonths(1).getMonthValue
     val pvatGroupMonth = startDate.getMonthValue
 
-    previousMonth == pvatGroupMonth && currentDate.getDayOfMonth > 14 || previousMonth != pvatGroupMonth
+    previousMonth == pvatGroupMonth && currentDate.getDayOfMonth > day14 || previousMonth != pvatGroupMonth
   }
 
   override def compare(that: PostponedVatStatementGroup): Int = startDate.compareTo(that.startDate)
-
 }

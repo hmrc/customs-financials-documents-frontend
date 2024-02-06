@@ -17,6 +17,7 @@
 package services
 
 import config.AppConfig
+import utils.Constants._
 
 import java.time._
 import javax.inject.{Inject, Singleton}
@@ -28,7 +29,10 @@ class DateTimeService @Inject()(appConfig: AppConfig) {
 
   def systemDateTime(): LocalDateTime = {
     if (appConfig.fixedDateTime) {
-      LocalDateTime.of(LocalDate.of(2027, 12, 20), LocalTime.of(12, 30))
+      LocalDateTime.of(
+        LocalDate.of(FIXED_DATE_TIME_YEAR, FIXED_DATE_TIME_MONTH_OF_YEAR, FIXED_DATE_TIME_DAY_OF_MONTH),
+        LocalTime.of(FIXED_DATE_TIME_HOUR_OF_DAY, FIXED_DATE_TIME_MINUTES_OF_HOUR)
+      )
     } else {
       LocalDateTime.now()
     }

@@ -20,23 +20,17 @@ import java.time.LocalDate
 
 object DateUtils {
 
-  /**
-   * Checks whether the input date's day of Month is before 15th day of the Month
-   *
-   * @param date: LocalDate
-   * @return Boolean
-   */
   def isDayBefore15ThDayOfTheMonth(date: LocalDate): Boolean = date.getDayOfMonth < 15
 
-  /**
-   * Checks whether the value of passed date is in last 6 months
-   */
   def isDateInLastSixMonths(date: LocalDate, currentDate: LocalDate): Boolean = {
+    val dayOne = 1
+    val sixMonths = 6
+
     val currentMonthValue = currentDate.getMonthValue
     val currentYearValue = currentDate.getYear
 
-    val currentDateWithFirstDay = LocalDate.of(currentYearValue, currentMonthValue, 1)
-    val dateBefore6Months = currentDateWithFirstDay.minusMonths(6)
+    val currentDateWithFirstDay = LocalDate.of(currentYearValue, currentMonthValue, dayOne)
+    val dateBefore6Months = currentDateWithFirstDay.minusMonths(sixMonths)
 
     !date.isBefore(dateBefore6Months)
   }

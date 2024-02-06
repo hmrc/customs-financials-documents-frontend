@@ -44,7 +44,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   lazy val loginUrl: String = config.get[String]("external-urls.login")
   lazy val loginContinueUrl: String = config.get[String]("external-urls.loginContinue")
-  lazy val registerCdsUrl: String = config.get[String]("external-urls.cdsRegisterUrl")
   lazy val subscribeCdsUrl: String = config.get[String]("external-urls.cdsSubscribeUrl")
   lazy val pvatLoginContinueUrl: String = config.get[String]("external-urls.pvatLoginContinue")
   lazy val feedbackService: String = config.get[String]("microservice.services.feedback.url") + config.get[String]("microservice.services.feedback.source")
@@ -54,8 +53,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val emailFrontendUrl: String = s"$emailFrontendService/service/customs-finance"
   lazy val pvEmailEmailAddress: String = config.get[String]("external-urls.pvEmailEmailAddress")
   lazy val pvEmailEmailAddressHref: String = config.get[String]("external-urls.pvEmailEmailAddressHref")
-  lazy val cdsEmailEnquiries: String = config.get[String]("external-urls.cdsEmailEnquiries")
-  lazy val cdsEmailEnquiriesHref: String = config.get[String]("external-urls.cdsEmailEnquiriesHref")
   lazy val c79EmailAddress: String = config.get[String]("external-urls.c79EmailAddress")
   lazy val c79EmailAddressHref: String = config.get[String]("external-urls.c79EmailAddressHref")
 
@@ -63,7 +60,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
     fileRole match {
       case FileRole.SecurityStatement => historicRequest + "adjustments"
       case FileRole.C79Certificate | FileRole.PostponedVATStatement => historicRequest + fileRole.featureName
-      case _ => ""
+      case _ => emptyString
     }
   }
 
@@ -71,7 +68,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
     fileRole match {
       case FileRole.SecurityStatement => requestedStatements + "adjustments"
       case FileRole.C79Certificate | FileRole.PostponedVATStatement => requestedStatements + fileRole.featureName
-      case _ => ""
+      case _ => emptyString
     }
   }
 
@@ -92,16 +89,15 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   private lazy val platformHost: Option[String] = config.getOptional[String]("platform.frontend.host")
 
-  /**
-   * Creates the deskPro url that is used exclusively as of now for service unavailable page
-   */
   def deskProLinkUrlForServiceUnavailable(implicit request: RequestHeader): String =
     s"$contactFrontEndBaseUrl/contact/report-technical-problem?newTab=true&amp;service=${
       urlEncode(contactFrontEndServiceId)
     }${
-      if (referrerUrl(platformHost).nonEmpty) s"referrerUrl=${
-        urlEncode(referrerUrl(platformHost).get)
-      }" else emptyString
+      if (referrerUrl(platformHost).nonEmpty) {
+        s"referrerUrl=${urlEncode(referrerUrl(platformHost).get)}"
+      } else {
+        emptyString
+      }
     }"
 
 }
