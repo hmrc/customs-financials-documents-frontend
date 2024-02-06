@@ -315,8 +315,7 @@ class VatControllerSpec extends SpecBase {
         VatCertificatesByMonth(date.minusMonths(3), Seq())(messages(app)),
         VatCertificatesByMonth(date.minusMonths(4), Seq())(messages(app)),
         VatCertificatesByMonth(date.minusMonths(5), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(6), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(7), Seq(vatCertificateFile_2))(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(6), Seq())(messages(app))
       )
 
       val requestedCertificates: Seq[VatCertificatesByMonth] = Seq(

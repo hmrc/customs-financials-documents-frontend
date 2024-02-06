@@ -20,17 +20,16 @@ import actions.{EmailAction, PvatIdentifierAction, SessionIdAction}
 import config.{AppConfig, ErrorHandler}
 import connectors.{FinancialsApiConnector, SdesConnector}
 import models.DutyPaymentMethod.CHIEF
-import models.FileRole.{PostponedVATStatement}
+import models.FileRole.PostponedVATStatement
 import models.PostponedVatStatementFile
 import navigation.Navigator
-import play.api.{Logger, LoggerLike}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.{Logger, LoggerLike}
 import services.DateTimeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import viewmodels.PostponedVatViewModel
-import views.html.postponed_import_vat
-import views.html.postponed_import_vat_not_available
+import views.html.{postponed_import_vat, postponed_import_vat_not_available}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,17 +37,17 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PostponedVatController @Inject()(val authenticate: PvatIdentifierAction,
-                                        val resolveSessionId: SessionIdAction,
-                                        implicit val dateTimeService: DateTimeService,
-                                        postponedImportVatView: postponed_import_vat,
-                                        postponedImportVatNotAvailableView: postponed_import_vat_not_available,
-                                        financialsApiConnector: FinancialsApiConnector,
-                                        checkEmailIsVerified: EmailAction,
-                                        sdesConnector: SdesConnector,
-                                        navigator: Navigator,
-                                        implicit val mcc: MessagesControllerComponents)(
+                                       val resolveSessionId: SessionIdAction,
+                                       implicit val dateTimeService: DateTimeService,
+                                       postponedImportVatView: postponed_import_vat,
+                                       postponedImportVatNotAvailableView: postponed_import_vat_not_available,
+                                       financialsApiConnector: FinancialsApiConnector,
+                                       checkEmailIsVerified: EmailAction,
+                                       sdesConnector: SdesConnector,
+                                       navigator: Navigator,
+                                       implicit val mcc: MessagesControllerComponents)(
                                         implicit val appConfig: AppConfig, val errorHandler: ErrorHandler, ec: ExecutionContext)
-                                        extends FrontendController(mcc) with I18nSupport {
+  extends FrontendController(mcc) with I18nSupport {
 
   val log: LoggerLike = Logger(this.getClass)
 
@@ -63,9 +62,13 @@ class PostponedVatController @Inject()(val authenticate: PvatIdentifierAction,
         }
       ).map(_.flatten)
     } yield {
-      val allPostponedVatStatements: Seq[PostponedVatStatementFile] = postponedVatStatements ++ historicPostponedVatStatements
 
-      val historicUrl = if(appConfig.historicStatementsEnabled) {
+      val allPostponedVatStatements: Seq[PostponedVatStatementFile] =
+        postponedVatStatements ++ historicPostponedVatStatements
+
+      val currentStatements: Seq[PostponedVatStatementFile] = filterLastSixMonthsStatements(postponedVatStatements)
+
+      val historicUrl = if (appConfig.historicStatementsEnabled) {
         appConfig.historicRequestUrl(PostponedVATStatement)
       } else {
         routes.ServiceUnavailableController.onPageLoad(navigator.postponedVatPageId).url
@@ -73,21 +76,30 @@ class PostponedVatController @Inject()(val authenticate: PvatIdentifierAction,
 
       Ok(postponedImportVatView(
         req.eori,
-        PostponedVatViewModel(allPostponedVatStatements),
+        PostponedVatViewModel(currentStatements),
         allPostponedVatStatements.exists(statement => statement.metadata.statementRequestId.nonEmpty),
-        allPostponedVatStatements.count(_.metadata.source != CHIEF) == allPostponedVatStatements.size,
+        postponedVatStatements.count(_.metadata.source != CHIEF) == postponedVatStatements.size,
         location,
         Some(historicUrl))
       )
     }).recover { case _ => Redirect(routes.PostponedVatController.statementsUnavailablePage()) }
   }
 
-  def statementsUnavailablePage(): Action[AnyContent] = authenticate andThen checkEmailIsVerified async { implicit req =>
-    Future.successful(Ok(postponedImportVatNotAvailableView(
-      req.eori,
-      Some(routes.ServiceUnavailableController.onPageLoad(navigator.postponedVatNotAvailablePageId).url))
-    ))
+  def statementsUnavailablePage(): Action[AnyContent] =
+    authenticate andThen checkEmailIsVerified async { implicit req =>
+      Future.successful(Ok(postponedImportVatNotAvailableView(
+        req.eori,
+        Some(routes.ServiceUnavailableController.onPageLoad(navigator.postponedVatNotAvailablePageId).url))
+      ))
+    }
+
+  private def filterLastSixMonthsStatements(files: Seq[PostponedVatStatementFile]): Seq[PostponedVatStatementFile] = {
+    val monthList = (1 to 6).map(n => dateTimeService.systemDateTime().toLocalDate.minusMonths(n))
+
+    monthList.flatMap {
+      date =>
+        files.find(file =>
+          file.monthAndYear.getYear == date.getYear && file.monthAndYear.getMonth == date.getMonth).toSeq
+    }
   }
 }
-
-
