@@ -50,7 +50,6 @@ lazy val microservice = Project(appName, file("."))
       "-Wunused:privates"),
     libraryDependencies              ++= AppDependencies.compile ++ AppDependencies.test,
     Assets / pipelineStages := Seq(gzip),
-    scalacOptions += "-P:silencer:pathFilters=routes",
     libraryDependencies ++= Seq(
       compilerPlugin("com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.full),
       "com.github.ghik" % "silencer-lib" % silencerVersion % Provided cross CrossVersion.full

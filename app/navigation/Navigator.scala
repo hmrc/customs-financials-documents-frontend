@@ -17,7 +17,6 @@
 package navigation
 
 import com.google.inject.Singleton
-import utils.Utils.{emptyString => emptyUrl}
 
 import javax.inject.Inject
 
@@ -31,12 +30,16 @@ class Navigator @Inject()() {
   def backLinkUrlForServiceUnavailablePage(id: String): Option[String] =
     id match {
       case pageId if pageId == importVatPageId => Some(controllers.routes.VatController.showVatAccount.url)
+
       case pageId if pageId == importVatNotAvailablePageId =>
         Some(controllers.routes.VatController.certificatesUnavailablePage().url)
+
       case pageId if pageId == postponedVatPageId =>
         Some(controllers.routes.PostponedVatController.show(Some("CDS")).url)
+
       case pageId if pageId == postponedVatNotAvailablePageId =>
         Some(controllers.routes.PostponedVatController.statementsUnavailablePage().url)
+
       case _ => None
     }
 }

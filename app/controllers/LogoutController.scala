@@ -23,19 +23,21 @@ import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
-class LogoutController @Inject()(override val authConnector: AuthConnector, mcc: MessagesControllerComponents)
-                                (implicit val appConfig: AppConfig, ec: ExecutionContext)
-  extends FrontendController(mcc) with AuthorisedFunctions {
-  val feedbackLink: String = appConfig.feedbackService
+class LogoutController @Inject()(override val authConnector: AuthConnector,
+                                 mcc: MessagesControllerComponents)
+                                (implicit val appConfig: AppConfig)
+  extends FrontendController(mcc)
+    with AuthorisedFunctions {
+
+  private val feedbackLink: String = appConfig.feedbackService
   val log: LoggerLike = Logger(this.getClass)
 
-  def logout: Action[AnyContent] = Action { implicit request =>
+  def logout: Action[AnyContent] = Action {
     Redirect(appConfig.signOutUrl, Map("continue" -> Seq(feedbackLink)))
   }
 
-  def logoutNoSurvey: Action[AnyContent] = Action { implicit request =>
+  def logoutNoSurvey: Action[AnyContent] = Action {
     Redirect(appConfig.signOutUrl, Map("continue" -> Seq(appConfig.loginContinueUrl)))
   }
 }

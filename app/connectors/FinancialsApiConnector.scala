@@ -21,6 +21,7 @@ import models.{EmailUnverifiedResponse, EmailVerifiedResponse, FileRole}
 import play.mvc.Http.Status
 import services.MetricsReporterService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,15 +31,18 @@ class FinancialsApiConnector @Inject()(appConfig: AppConfig,
                                        httpClient: HttpClient
                                       )(implicit executionContext: ExecutionContext) {
 
-  def deleteNotification(eori: String, fileRole: FileRole)(implicit hc: HeaderCarrier): Future[Boolean] = {
+  def deleteNotification(eori: String,
+                         fileRole: FileRole)(implicit hc: HeaderCarrier): Future[Boolean] = {
     val apiEndpoint = appConfig.customsFinancialsApi + s"/eori/$eori/notifications/$fileRole"
+
     metricsReporterService.withResponseTimeLogging("customs-financials-api.delete.notification") {
       httpClient.DELETE[HttpResponse](apiEndpoint).map(_.status == Status.OK)
     }
   }
 
   def isEmailUnverified(implicit hc: HeaderCarrier): Future[Option[String]] = {
-    httpClient.GET[EmailUnverifiedResponse](appConfig.customsFinancialsApi + "/subscriptions/unverified-email-display").map( res => res.unVerifiedEmail)
+    httpClient.GET[EmailUnverifiedResponse](
+      appConfig.customsFinancialsApi + "/subscriptions/unverified-email-display").map( res => res.unVerifiedEmail)
   }
 
   def verifiedEmail(implicit hc: HeaderCarrier): Future[EmailVerifiedResponse] =

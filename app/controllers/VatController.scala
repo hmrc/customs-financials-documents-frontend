@@ -31,6 +31,7 @@ import utils.DateUtils._
 import viewmodels.VatViewModel
 import views.html.import_vat.{import_vat, import_vat_not_available}
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -101,14 +102,20 @@ class VatController @Inject()(val authenticate: IdentifierAction,
     for {
       certs <- certificates
       monthList = (1 to 6).map(n => dateTimeService.systemDateTime().toLocalDate.minusMonths(n))
-      populatedEmptyMonth: Seq[VatCertificatesByMonth] = monthList.map {
-        date =>
-          certs.currentCertificates
-            .find(_.date.getMonth == date.getMonth).getOrElse(VatCertificatesByMonth(date, Seq.empty))
-      }
 
-      response = certs.copy(currentCertificates = dropImmediatePreviousMonthCertIfUnavailable(populatedEmptyMonth))
+      response = certs.copy(
+        currentCertificates = dropImmediatePreviousMonthCertIfUnavailable(populateEmptyMonth(monthList, certs)))
     } yield response
+  }
+
+  private def populateEmptyMonth(monthList: IndexedSeq[LocalDate],
+                                 certs: VatCertificatesForEori)
+                                (implicit messages: Messages): Seq[VatCertificatesByMonth] = {
+    monthList.map {
+      date =>
+        certs.currentCertificates
+          .find(_.date.getMonth == date.getMonth).getOrElse(VatCertificatesByMonth(date, Seq.empty))
+    }
   }
 
   private def dropImmediatePreviousMonthCertIfUnavailable(currentCerts: Seq[VatCertificatesByMonth]): Seq[VatCertificatesByMonth] =
