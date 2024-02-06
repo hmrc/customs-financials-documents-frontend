@@ -66,8 +66,7 @@ class PostponedVatController @Inject()(val authenticate: PvatIdentifierAction,
       val allPostponedVatStatements: Seq[PostponedVatStatementFile] =
         postponedVatStatements ++ historicPostponedVatStatements
 
-      val currentStatements: Seq[PostponedVatStatementFile] =
-        filterLastSixMonthsStatements(postponedVatStatements)
+      val currentStatements: Seq[PostponedVatStatementFile] = filterLastSixMonthsStatements(postponedVatStatements)
 
       val historicUrl = if (appConfig.historicStatementsEnabled) {
         appConfig.historicRequestUrl(PostponedVATStatement)
@@ -96,6 +95,7 @@ class PostponedVatController @Inject()(val authenticate: PvatIdentifierAction,
 
   private def filterLastSixMonthsStatements(files: Seq[PostponedVatStatementFile]): Seq[PostponedVatStatementFile] = {
     val monthList = (1 to 6).map(n => dateTimeService.systemDateTime().toLocalDate.minusMonths(n))
+
     monthList.flatMap {
       date =>
         files.find(file =>
