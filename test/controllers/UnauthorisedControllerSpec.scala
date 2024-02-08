@@ -25,6 +25,7 @@ import uk.gov.hmrc.auth.core.retrieve.EmptyRetrieval
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthProviders}
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
 import utils.SpecBase
+import utils.Utils.emptyString
 import views.html.not_subscribed_to_cds
 
 import java.net.URLEncoder
@@ -33,27 +34,32 @@ import scala.concurrent.{ExecutionContext, Future}
 class UnauthorisedControllerSpec extends SpecBase {
 
   "onPageLoad" should {
+
     "render the not subscribed to CDS page" in new Setup {
-      when(mockAuthConnector.authorise(eqTo(AuthProviders(GovernmentGateway)), eqTo(EmptyRetrieval))(any[HeaderCarrier], any[ExecutionContext]))
+      when(mockAuthConnector.authorise(
+        eqTo(AuthProviders(GovernmentGateway)), eqTo(EmptyRetrieval))(any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful({}))
 
       running(app) {
         val request = fakeRequest(GET, routes.UnauthorisedController.onPageLoad.url)
         val result = route(app, request).value
+
         status(result) mustBe OK
         contentAsString(result) mustBe view()(request, messages(app), appConfig).toString()
       }
     }
 
     "redirect to login if no auth session found" in new Setup {
-      when(mockAuthConnector.authorise(eqTo(AuthProviders(GovernmentGateway)), eqTo(EmptyRetrieval))(any[HeaderCarrier], any[ExecutionContext]))
-        .thenReturn(Future.failed(new UnauthorizedException("")))
-
+      when(mockAuthConnector.authorise(
+        eqTo(AuthProviders(GovernmentGateway)), eqTo(EmptyRetrieval))(any[HeaderCarrier], any[ExecutionContext]))
+        .thenReturn(Future.failed(new UnauthorizedException(emptyString)))
 
       running(app) {
         val request = fakeRequest(GET, routes.UnauthorisedController.onPageLoad.url)
+
         val result = route(app, request).value
-        redirectLocation(result).value mustBe s"${appConfig.loginUrl}?continue_url=${URLEncoder.encode(appConfig.loginContinueUrl, "UTF-8")}"
+        redirectLocation(result).value mustBe
+          s"${appConfig.loginUrl}?continue_url=${URLEncoder.encode(appConfig.loginContinueUrl, "UTF-8")}"
       }
     }
   }

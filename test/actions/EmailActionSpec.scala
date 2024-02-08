@@ -26,6 +26,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.retrieve.Email
 import uk.gov.hmrc.http.ServiceUnavailableException
 import utils.SpecBase
+import utils.Utils.emptyString
 
 import scala.concurrent.Future
 
@@ -54,7 +55,7 @@ class EmailActionSpec extends SpecBase {
     "Let request through, when getEmail throws service unavailable exception" in new Setup {
       running(app) {
         when(mockDataStoreConnector.getEmail(any)(any))
-          .thenReturn(Future.failed(new ServiceUnavailableException("")))
+          .thenReturn(Future.failed(new ServiceUnavailableException(emptyString)))
 
         val response = await(emailAction.filter(authenticatedRequest))
         response mustBe None
