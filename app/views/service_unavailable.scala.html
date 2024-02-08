@@ -29,9 +29,12 @@
 
 @(backlink: Option[String] = None)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@layout(pageTitle = Some(messages("cf.service-unavailable.title")) , backLink = backlink, deskpro = false) {
+@layout(pageTitle = Some(messages("cf.service-unavailable.title")), backLink = backlink, deskpro = false) {
 
-@h1(msg = "cf.service-unavailable.heading", classes = "govuk-heading-xl  govuk-!-margin-bottom-6", id = Some("service-unavailable.heading"))
+@h1(
+    msg = "cf.service-unavailable.heading",
+    classes = "govuk-heading-xl  govuk-!-margin-bottom-6",
+    id = Some("service-unavailable.heading"))
 
 @p(
     id = Some("older-statement-guidance-text"),
@@ -49,4 +52,5 @@
     )
 
 @p(message="cf.service-unavailable.description.3", classes="govuk-body govuk-!-margin-bottom-7")
+
 }

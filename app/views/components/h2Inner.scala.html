@@ -14,8 +14,15 @@
  * limitations under the License.
  *@
 
+@import utils.Utils.emptyString
+
 @this()
 
-@(msg: String, innerMsg: String,  id: Option[String] = None, classes: String = "govuk-heading-m")(implicit messages: Messages)
+@(
+ msg: String,
+ innerMsg: String,
+ id: Option[String] = None,
+ classes: String = "govuk-heading-m"
+)(implicit messages: Messages)
 
-<h2 @{id.fold("")(id => s"id=$id")} class="@classes">@messages(msg, messages(innerMsg))</h2>
+<h2 @{id.fold(emptyString)(id => s"id=$id")} class="@classes">@messages(msg, messages(innerMsg))</h2>

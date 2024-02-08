@@ -29,8 +29,8 @@
 
 @()(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-
-@layout(pageTitle = Some(messages("cf.security-statements.title")), backLink = Some(appConfig.customsFinancialsFrontendHomepage)) {
+@layout(pageTitle = Some(messages("cf.security-statements.title")),
+        backLink = Some(appConfig.customsFinancialsFrontendHomepage)) {
 
     @h1("cf.security-statements.title", id=Some("security-statements-heading"), classes = "govuk-heading-xl")
 
@@ -41,5 +41,8 @@
     @p(id = Some("historic-statement-request"), message = "cf.security-statements.historic.description")
 
     @p2(Some("historic-statement-request-link"),
-        anchor = link(linkMessage = "cf.security-statements.historic.request", location = appConfig.historicRequestUrl(SecurityStatement)))
+        anchor = link(
+                        linkMessage = "cf.security-statements.historic.request",
+                        location = appConfig.historicRequestUrl(SecurityStatement))
+                    )
 }

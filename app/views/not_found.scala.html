@@ -28,8 +28,11 @@
     @layout(pageTitle = Some(messages("cf.error.not-found.title"))) {
 
         @h1("cf.error.not-found.heading", id = None, classes = "govuk-heading-xl")
+
         @p(messages("cf.error.not-found.message.address-typed-wrong"))
+
         @p(messages("cf.error.not-found.message.address-pasted-wrong"))
+
         @link(
             linkMessage = "cf.accounts.view-customs-account",
             location = appConfig.customsFinancialsFrontendHomepage,
@@ -37,10 +40,4 @@
             preLinkMessage = Some("cf.error.not-found.message.go-to-home-page-text1"),
             linkSentence = true
         )
-
-
-
-
-
-
 }

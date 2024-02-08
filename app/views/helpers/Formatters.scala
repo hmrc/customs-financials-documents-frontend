@@ -20,7 +20,6 @@ import play.api.i18n.Messages
 
 import java.time.LocalDate
 
-
 trait DateFormatters {
   def dateAsMonth(date: LocalDate)(implicit messages: Messages): String = messages(s"month.${date.getMonthValue}")
 
@@ -37,6 +36,5 @@ trait FileFormatters {
     case _ => "1KB"
   }
 }
-
 
 object Formatters extends DateFormatters with FileFormatters

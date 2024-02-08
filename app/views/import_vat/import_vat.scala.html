@@ -34,7 +34,6 @@
     missing_guidance: components.missing_documents_guidance
 )
 
-
 @(
     model: VatViewModel,
     serviceUnavailableUrl: Option[String] = None
@@ -44,7 +43,8 @@
     appConfig: config.AppConfig
 )
 
-@layout(pageTitle = Some(messages("cf.account.vat.title")), backLink = Some(appConfig.customsFinancialsFrontendHomepage)) {
+@layout(pageTitle = Some(messages("cf.account.vat.title")),
+        backLink = Some(appConfig.customsFinancialsFrontendHomepage)) {
 
     @h1("cf.account.vat.title", id = Some("import-vat-certificates-heading"), classes = "govuk-heading-xl")
 
@@ -54,10 +54,13 @@
 
     @if(model.hasRequestedCertificates) {
         <div id="notification-panel" class="notifications-panel">
-            <p class="govuk-body govuk-!-margin-bottom-1">@messages("cf.account.detail.requested-certificates-available-text.pre") <a href="@{
-                appConfig.requestedStatements(C79Certificate)
-            }" class="govuk-link">@messages("cf.import-vat.requested-certificates-available-link-text")</a>
-                @messages("cf.account.detail.requested-certificates-available-text.post")</p>
+            <p class="govuk-body govuk-!-margin-bottom-1">
+                @messages("cf.account.detail.requested-certificates-available-text.pre")
+                <a href="@{appConfig.requestedStatements(C79Certificate)}"
+                   class="govuk-link">@messages("cf.import-vat.requested-certificates-available-link-text")
+                </a>
+                @messages("cf.account.detail.requested-certificates-available-text.post")
+            </p>
         </div>
     }
 
@@ -69,12 +72,17 @@
 
                 @if(historyIndex > 0) {
                     <h2 class="govuk-heading-s" id="historic-eori-@{historyIndex}">
-                        @messages("cf.account.details.previous-eori", model.certificatesForAllEoris(historyIndex).eoriHistory.eori)
+                        @messages(
+                        "cf.account.details.previous-eori",
+                        model.certificatesForAllEoris(historyIndex).eoriHistory.eori)
                     </h2>
                 }
 
                 <dl class="govuk-summary-list statement-list c79-statements" id="statements-list-@{historyIndex}">
-                @for((statementsOfOneMonth, index) <- model.certificatesForAllEoris(historyIndex).currentCertificates.sorted.reverse.zipWithIndex) {
+
+                @for((statementsOfOneMonth, index) <- model.certificatesForAllEoris(historyIndex)
+                    .currentCertificates.sorted.reverse.zipWithIndex) {
+
                     <div class="govuk-summary-list__row" id="statements-list-@{historyIndex}-row-@{index}">
 
                         <dt id="statements-list-@{historyIndex}-row-@{index}-date-cell" class="govuk-summary-list__value">
@@ -159,4 +167,5 @@
         )
     )
 </div>
+
 }

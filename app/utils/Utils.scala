@@ -22,6 +22,7 @@ object Utils {
   val rangeOneToSix: Seq[Int] = 1 to 6
   val hyphen = "-"
   val singleSpace = " "
+  val period = "."
 
   private val questionMark = "?"
 

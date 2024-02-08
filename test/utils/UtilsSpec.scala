@@ -28,6 +28,24 @@ class UtilsSpec extends SpecBase {
     }
   }
 
+  "hyphen" should {
+    "return correct value" in {
+      hyphen mustBe "-"
+    }
+  }
+
+  "singleSpace" should {
+    "return correct value" in {
+      singleSpace mustBe " "
+    }
+  }
+
+  "period" should {
+    "return correct value" in {
+      period mustBe "."
+    }
+  }
+
   "pathWithQueryString" should {
     "return correct value" in {
       val path = "somePath"

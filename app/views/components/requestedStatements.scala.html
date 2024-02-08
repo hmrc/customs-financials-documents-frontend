@@ -19,6 +19,7 @@
 )
 
 @(url: String)(implicit messages: Messages)
+
   <div id="request-statement-link" class="notifications-panel">
     <p class="govuk-body govuk-!-margin-bottom-1">
      @link("cf.security-statements.requested-link",
@@ -27,4 +28,3 @@
        postLinkMessage = Some("cf.account.detail.requested-certificates-available-text.post"))
     </p>
  </div>
-
