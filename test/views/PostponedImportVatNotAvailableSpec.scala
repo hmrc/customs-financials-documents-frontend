@@ -28,7 +28,9 @@ import utils.SpecBase
 import views.html.postponed_import_vat_not_available
 
 class PostponedImportVatNotAvailableSpec extends SpecBase {
+
   "PostponedImportVatNotAvailable view" should {
+
     "display correct title and guidance" in new Setup {
       view.title() mustBe
         s"${messages(app)("cf.account.pvat.title")} - ${messages(app)("service.name")} - GOV.UK"

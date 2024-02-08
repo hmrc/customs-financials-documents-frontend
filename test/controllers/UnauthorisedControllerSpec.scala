@@ -69,6 +69,7 @@ class UnauthorisedControllerSpec extends SpecBase {
     val app: Application = application().overrides(
       inject.bind[AuthConnector].toInstance(mockAuthConnector)
     ).build()
+
     val view: not_subscribed_to_cds = app.injector.instanceOf[not_subscribed_to_cds]
     val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
   }

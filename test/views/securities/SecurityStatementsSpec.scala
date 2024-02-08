@@ -43,6 +43,7 @@ class SecurityStatementsSpec extends SpecBase {
   "view" should {
 
     "display correct title and guidance" when {
+
       "statements are available" in new Setup {
         val view: Document =
           Jsoup.parse(app.injector.instanceOf[security_statements].apply(viewModelWithStatements).body)

@@ -21,12 +21,17 @@ import navigation.Navigator
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.Application
 import play.api.http.Status.OK
-import play.api.test.Helpers.{GET, contentAsString, defaultAwaitTimeout, route, running, status, writeableOf_AnyContentAsEmpty}
+import play.api.test.Helpers.{
+  GET, contentAsString, defaultAwaitTimeout, route, running, status,
+  writeableOf_AnyContentAsEmpty
+}
 import utils.SpecBase
 import views.html.service_unavailable
 
 class ServiceUnavailableControllerSpec extends SpecBase {
+
   "onPageLoad" should {
+
     "render service unavailable page" in new Setup {
       running(app) {
         val request = fakeRequest(GET, routes.ServiceUnavailableController.onPageLoad("id-not-defined").url)
@@ -54,8 +59,9 @@ class ServiceUnavailableControllerSpec extends SpecBase {
         val request = fakeRequest(GET, routes.ServiceUnavailableController.onPageLoad("import-vat").url)
         val result = route(app, request).value
 
-        status(result) mustBe OK
         val backlink = Some(routes.VatController.showVatAccount.url)
+
+        status(result) mustBe OK
         contentAsString(result) mustBe view(backlink)(request, messages(app), appConfig).toString()
       }
     }

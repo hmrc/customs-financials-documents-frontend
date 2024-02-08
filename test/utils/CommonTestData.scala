@@ -23,6 +23,8 @@ object CommonTestData {
   val year2023 = 2023
   val year2027 = 2027
 
+  val oneYear = 1
+
   val month1 = 1
   val month2 = 2
   val month3 = 3
@@ -72,6 +74,8 @@ object CommonTestData {
   val size111L = 111L
   val size99L = 99L
   val size500L = 500L
+  val  size4096L = 4096L
+  val size1300000L = 1300000L
 
   val eoriNumber = "testEori1"
   val checkSumValue000000 = "0000000"

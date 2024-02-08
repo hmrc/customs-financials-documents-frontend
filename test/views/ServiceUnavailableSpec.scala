@@ -30,6 +30,7 @@ import views.html.service_unavailable
 class ServiceUnavailableSpec extends SpecBase {
 
   "ServiceUnavailable view" should {
+
     "display correct title and guidance" in new Setup {
       view.title() mustBe
         s"${messages(app)("cf.service-unavailable.title")} - ${messages(app)("service.name")} - GOV.UK"
@@ -50,14 +51,15 @@ class ServiceUnavailableSpec extends SpecBase {
   }
 
   trait Setup {
+    val backLinkUrl = "test_url"
+    val deskProLink: String = "http://localhost:9250" +
+      "/contact/report-technical-problem?newTab=true&amp;service=CDS%20FinancialsreferrerUrl=test_Path"
+
     val app: Application = application().build()
 
     implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
     implicit val msg: Messages = messages(app)
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
-    val backLinkUrl = "test_url"
-    val deskProLink: String = "http://localhost:9250" +
-      "/contact/report-technical-problem?newTab=true&amp;service=CDS%20FinancialsreferrerUrl=test_Path"
 
     val view: Document = Jsoup.parse(
       app.injector.instanceOf[service_unavailable].apply(Option(backLinkUrl)).body)

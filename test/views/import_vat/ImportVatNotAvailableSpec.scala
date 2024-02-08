@@ -28,7 +28,9 @@ import utils.SpecBase
 import views.html.import_vat.import_vat_not_available
 
 class ImportVatNotAvailableSpec extends SpecBase {
+
   "ImportVatNotAvailable view" should {
+
     "display correct title and guidance" in new Setup {
       view.title() mustBe
         s"${messages(app)("cf.account.vat.title")} - ${messages(app)("service.name")} - GOV.UK"

@@ -39,6 +39,7 @@ import views.html.postponed_import_vat
 import java.time.{LocalDate, LocalDateTime}
 
 class PostponedImportVatSpec extends SpecBase {
+
   "PostponedImportVatView" should {
 
     "display the correct title and guidance" in new Setup {

@@ -34,24 +34,27 @@ class PostponedVatStatementGroupSpec extends SpecBase {
       val currentDate: LocalDate = LocalDate.of(year2023, month10, day16)
 
       when(mockDateTimeService.systemDateTime()).thenReturn(currentDate.atStartOfDay())
+
       PostponedVatStatementGroup(dateOfPreviousMonth, Seq())(
         messages(app), mockDateTimeService).isPreviousMonthAndAfter14Th mustBe true
     }
 
     "return false if statement date is of previous month and is accessed on or before " +
       "14th day of the current month" in new Setup {
+      val dateOfPreviousMonth: LocalDate = date.minusMonths(oneMonth).withDayOfMonth(day10)
+
       when(mockDateTimeService.systemDateTime())
         .thenReturn(date.atStartOfDay())
-      val dateOfPreviousMonth: LocalDate = date.minusMonths(oneMonth).withDayOfMonth(day10)
 
       PostponedVatStatementGroup(dateOfPreviousMonth, Seq())(
         messages(app), mockDateTimeService).isPreviousMonthAndAfter14Th mustBe false
     }
 
     "return true if statement date is not from the previous month" in new Setup {
+      val dateOfCurrentMonth: LocalDate = date.withDayOfMonth(day16)
+
       when(mockDateTimeService.systemDateTime())
         .thenReturn(date.atStartOfDay())
-      val dateOfCurrentMonth: LocalDate = date.withDayOfMonth(day16)
 
       PostponedVatStatementGroup(dateOfCurrentMonth, Seq())(
         messages(app), mockDateTimeService).isPreviousMonthAndAfter14Th mustBe true
