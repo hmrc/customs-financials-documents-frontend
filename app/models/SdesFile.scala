@@ -24,6 +24,7 @@ import java.time.LocalDate
 
 trait SdesFile {
   def metadata: SdesFileMetadata
+
   def downloadURL: String
 
   val fileFormat: FileFormat = metadata.fileFormat

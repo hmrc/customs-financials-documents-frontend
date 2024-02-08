@@ -48,7 +48,7 @@ class DataStoreConnector @Inject()(http: HttpClient,
   def getEmail(eori: String)(implicit hc: HeaderCarrier): Future[Either[EmailResponses, Email]] = {
     val dataStoreEndpoint = appConfig.customsDataStore + s"/eori/$eori/verified-email"
 
-    metricsReporter.withResponseTimeLogging("customs-data-store.get.email") {
+    metricsReporter.withResponseTimeLogging(resourceName = "customs-data-store.get.email") {
       http.GET[EmailResponse](dataStoreEndpoint).map {
         case EmailResponse(Some(address), _, None) => Right(Email(address))
         case EmailResponse(Some(email), _, Some(_)) => Left(UndeliverableEmail(email))

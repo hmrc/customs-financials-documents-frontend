@@ -22,6 +22,7 @@ import javax.inject.Inject
 
 @Singleton
 class Navigator @Inject()() {
+
   val importVatPageId = "import-vat"
   val importVatNotAvailablePageId = "import-vat-not-available"
   val postponedVatPageId = "postponed-vat"

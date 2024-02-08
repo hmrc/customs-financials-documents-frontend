@@ -28,22 +28,20 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class FinancialsApiConnector @Inject()(appConfig: AppConfig,
                                        metricsReporterService: MetricsReporterService,
-                                       httpClient: HttpClient
-                                      )(implicit executionContext: ExecutionContext) {
+                                       httpClient: HttpClient)(implicit executionContext: ExecutionContext) {
 
   def deleteNotification(eori: String,
                          fileRole: FileRole)(implicit hc: HeaderCarrier): Future[Boolean] = {
     val apiEndpoint = appConfig.customsFinancialsApi + s"/eori/$eori/notifications/$fileRole"
 
-    metricsReporterService.withResponseTimeLogging("customs-financials-api.delete.notification") {
+    metricsReporterService.withResponseTimeLogging(resourceName = "customs-financials-api.delete.notification") {
       httpClient.DELETE[HttpResponse](apiEndpoint).map(_.status == Status.OK)
     }
   }
 
-  def isEmailUnverified(implicit hc: HeaderCarrier): Future[Option[String]] = {
+  def isEmailUnverified(implicit hc: HeaderCarrier): Future[Option[String]] =
     httpClient.GET[EmailUnverifiedResponse](
-      appConfig.customsFinancialsApi + "/subscriptions/unverified-email-display").map( res => res.unVerifiedEmail)
-  }
+      appConfig.customsFinancialsApi + "/subscriptions/unverified-email-display").map(res => res.unVerifiedEmail)
 
   def verifiedEmail(implicit hc: HeaderCarrier): Future[EmailVerifiedResponse] =
     httpClient.GET[EmailVerifiedResponse](appConfig.customsFinancialsApi + "/subscriptions/email-display")

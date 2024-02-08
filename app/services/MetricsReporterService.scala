@@ -26,7 +26,6 @@ import javax.inject.Singleton
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-
 @Singleton
 class MetricsReporterService @Inject()(val metrics: Metrics, dateTimeService: DateTimeService) {
 

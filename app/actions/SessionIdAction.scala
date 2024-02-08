@@ -26,23 +26,25 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class AuthenticatedRequestWithSessionId[A](request: Request[A], eori: String, allEoriHistory: Seq[EoriHistory], sessionId: SessionId)
-  extends WrappedRequest[A](request)
-
+case class AuthenticatedRequestWithSessionId[A](request: Request[A],
+                                                eori: String,
+                                                allEoriHistory: Seq[EoriHistory],
+                                                sessionId: SessionId) extends WrappedRequest[A](request)
 
 class SessionIdAction @Inject()()(implicit val executionContext: ExecutionContext, errorHandler: ErrorHandler)
   extends ActionRefiner[AuthenticatedRequest, AuthenticatedRequestWithSessionId] {
 
   override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, AuthenticatedRequestWithSessionId[A]]] = {
+
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     hc.sessionId match {
       case None => Future.successful(Left(Unauthorized(errorHandler.unauthorized()(request))))
-      case Some(sessionId) => Future.successful(
-        Right(
-          AuthenticatedRequestWithSessionId(request, request.eori, request.allEoriHistory, sessionId)
-        )
-      )
+      case Some(sessionId) =>
+        Future.successful(
+          Right(
+            AuthenticatedRequestWithSessionId(request, request.eori, request.allEoriHistory, sessionId)
+          ))
     }
   }
 

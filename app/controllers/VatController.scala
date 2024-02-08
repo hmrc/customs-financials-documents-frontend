@@ -46,7 +46,8 @@ class VatController @Inject()(val authenticate: IdentifierAction,
                               navigator: Navigator,
                               implicit val mcc: MessagesControllerComponents)
                              (implicit val appConfig: AppConfig, val errorHandler: ErrorHandler, ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport {
+  extends FrontendController(mcc)
+    with I18nSupport {
 
   val log: LoggerLike = Logger(this.getClass)
 
@@ -73,16 +74,17 @@ class VatController @Inject()(val authenticate: IdentifierAction,
       }
     }
 
-  def certificatesUnavailablePage(): Action[AnyContent] = authenticate andThen checkEmailIsVerified async { implicit req =>
+  def certificatesUnavailablePage(): Action[AnyContent] =
+    authenticate andThen checkEmailIsVerified async { implicit req =>
 
-    val historicUrl = if(appConfig.historicStatementsEnabled) {
-      appConfig.historicRequestUrl(C79Certificate)
-    } else {
-      routes.ServiceUnavailableController.onPageLoad(navigator.importVatNotAvailablePageId).url
+      val historicUrl = if (appConfig.historicStatementsEnabled) {
+        appConfig.historicRequestUrl(C79Certificate)
+      } else {
+        routes.ServiceUnavailableController.onPageLoad(navigator.importVatNotAvailablePageId).url
+      }
+
+      Future.successful(Ok(importVatNotAvailableView(Some(historicUrl))))
     }
-
-    Future.successful(Ok(importVatNotAvailableView(Some(historicUrl))))
-  }
 
   private def getCertificates(historicEori: EoriHistory)
                              (implicit req: AuthenticatedRequestWithSessionId[_]): Future[VatCertificatesForEori] = {

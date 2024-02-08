@@ -31,6 +31,7 @@ case object UnverifiedEmail extends EmailResponses
 case class UndeliverableEmail(email: String) extends EmailResponses
 
 case class EmailUnverifiedResponse(unVerifiedEmail: Option[String])
+
 object EmailUnverifiedResponse {
   implicit val format: OFormat[EmailUnverifiedResponse] = Json.format[EmailUnverifiedResponse]
 }

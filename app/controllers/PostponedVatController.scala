@@ -34,7 +34,6 @@ import views.html.{postponed_import_vat, postponed_import_vat_not_available}
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
-
 @Singleton
 class PostponedVatController @Inject()(val authenticate: PvatIdentifierAction,
                                        val resolveSessionId: SessionIdAction,
@@ -45,45 +44,54 @@ class PostponedVatController @Inject()(val authenticate: PvatIdentifierAction,
                                        checkEmailIsVerified: EmailAction,
                                        sdesConnector: SdesConnector,
                                        navigator: Navigator,
-                                       implicit val mcc: MessagesControllerComponents)(
-                                        implicit val appConfig: AppConfig, val errorHandler: ErrorHandler, ec: ExecutionContext)
+                                       implicit val mcc: MessagesControllerComponents)
+                                      (implicit val appConfig: AppConfig,
+                                       val errorHandler: ErrorHandler,
+                                       ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
   val log: LoggerLike = Logger(this.getClass)
 
-  def show(location: Option[String]): Action[AnyContent] = (authenticate andThen checkEmailIsVerified andThen resolveSessionId) async { implicit req =>
-    financialsApiConnector.deleteNotification(req.eori, PostponedVATStatement)
-    (for {
-      postponedVatStatements <- sdesConnector.getPostponedVatStatements(req.eori)
-      filteredHistoricEoris = req.allEoriHistory.filterNot(_.eori == req.eori)
-      historicPostponedVatStatements <- Future.sequence(
-        filteredHistoricEoris.map { eoriHistory =>
-          sdesConnector.getPostponedVatStatements(eoriHistory.eori)
+  def show(location: Option[String]): Action[AnyContent] =
+    (authenticate andThen checkEmailIsVerified andThen resolveSessionId) async { implicit req =>
+
+      financialsApiConnector.deleteNotification(req.eori, PostponedVATStatement)
+
+      (
+        for {
+          postponedVatStatements <- sdesConnector.getPostponedVatStatements(req.eori)
+          filteredHistoricEoris = req.allEoriHistory.filterNot(_.eori == req.eori)
+          historicPostponedVatStatements <- Future.sequence(
+            filteredHistoricEoris.map { eoriHistory =>
+              sdesConnector.getPostponedVatStatements(eoriHistory.eori)
+            }
+          ).map(_.flatten)
+        } yield {
+
+          val allPostponedVatStatements: Seq[PostponedVatStatementFile] =
+            postponedVatStatements ++ historicPostponedVatStatements
+
+          val currentStatements: Seq[PostponedVatStatementFile] = filterLastSixMonthsStatements(postponedVatStatements)
+
+          val historicUrl = if (appConfig.historicStatementsEnabled) {
+            appConfig.historicRequestUrl(PostponedVATStatement)
+          } else {
+            routes.ServiceUnavailableController.onPageLoad(navigator.postponedVatPageId).url
+          }
+
+          Ok(postponedImportVatView(
+            req.eori,
+            PostponedVatViewModel(currentStatements),
+            allPostponedVatStatements.exists(statement => statement.metadata.statementRequestId.nonEmpty),
+            postponedVatStatements.count(_.metadata.source != CHIEF) == postponedVatStatements.size,
+            location,
+            Some(historicUrl))
+          )
         }
-      ).map(_.flatten)
-    } yield {
-
-      val allPostponedVatStatements: Seq[PostponedVatStatementFile] =
-        postponedVatStatements ++ historicPostponedVatStatements
-
-      val currentStatements: Seq[PostponedVatStatementFile] = filterLastSixMonthsStatements(postponedVatStatements)
-
-      val historicUrl = if (appConfig.historicStatementsEnabled) {
-        appConfig.historicRequestUrl(PostponedVATStatement)
-      } else {
-        routes.ServiceUnavailableController.onPageLoad(navigator.postponedVatPageId).url
+        ).recover {
+        case _ => Redirect(routes.PostponedVatController.statementsUnavailablePage())
       }
-
-      Ok(postponedImportVatView(
-        req.eori,
-        PostponedVatViewModel(currentStatements),
-        allPostponedVatStatements.exists(statement => statement.metadata.statementRequestId.nonEmpty),
-        postponedVatStatements.count(_.metadata.source != CHIEF) == postponedVatStatements.size,
-        location,
-        Some(historicUrl))
-      )
-    }).recover { case _ => Redirect(routes.PostponedVatController.statementsUnavailablePage()) }
-  }
+    }
 
   def statementsUnavailablePage(): Action[AnyContent] =
     authenticate andThen checkEmailIsVerified async { implicit req =>

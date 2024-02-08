@@ -27,8 +27,7 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class ErrorHandler @Inject()(errorTemplate: ErrorTemplate,
                              notFound: not_found,
-                             val messagesApi: MessagesApi)(implicit appConfig: AppConfig)
-  extends FrontendErrorHandler {
+                             val messagesApi: MessagesApi)(implicit appConfig: AppConfig) extends FrontendErrorHandler {
 
   override def standardErrorTemplate(pageTitle: String,
                                      heading: String,
@@ -39,7 +38,10 @@ class ErrorHandler @Inject()(errorTemplate: ErrorTemplate,
     notFound()
 
   def unauthorized()(implicit request: Request[_]): Html = {
-    errorTemplate(Messages("cf.error.unauthorized.title"), Messages("cf.error.unauthorized.heading"),
-      Messages("cf.error.unauthorized.message"))
+    errorTemplate(
+      Messages("cf.error.unauthorized.title"),
+      Messages("cf.error.unauthorized.heading"),
+      Messages("cf.error.unauthorized.message")
+    )
   }
 }

@@ -49,8 +49,10 @@ case class PostponedVatStatementGroup(startDate: LocalDate,
 
   def isPreviousMonthAndAfter14Th: Boolean = {
     val day14 = 14
+    val oneMonth = 1
+
     val currentDate = dateTimeService.systemDateTime().toLocalDate
-    val previousMonth = currentDate.minusMonths(1).getMonthValue
+    val previousMonth = currentDate.minusMonths(oneMonth).getMonthValue
     val pvatGroupMonth = startDate.getMonthValue
 
     previousMonth == pvatGroupMonth && currentDate.getDayOfMonth > day14 || previousMonth != pvatGroupMonth

@@ -68,6 +68,7 @@ object FileRole {
 
   implicit val fileRoleFormat: Format[FileRole] = new Format[FileRole] {
     def reads(json: JsValue): JsSuccess[FileRole] = JsSuccess(apply(json.as[String]))
+
     def writes(obj: FileRole): JsString = JsString(obj.name)
   }
 }

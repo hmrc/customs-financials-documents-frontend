@@ -28,9 +28,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class AuthActionHelper @Inject()(dataStoreConnector: DataStoreConnector,
                                  auditingService: AuditingService)(implicit executionContext: ExecutionContext) {
 
-
-
-  def authenticatedRequest[A](eori: String)(request: Request[A])(implicit hc: HeaderCarrier): Future[AuthenticatedRequest[A]] =
+  def authenticatedRequest[A](eori: String)(request: Request[A])
+                             (implicit hc: HeaderCarrier): Future[AuthenticatedRequest[A]] =
     for {
       allEoriHistory <- dataStoreConnector.getAllEoriHistory(eori)
       _ = auditingService.auditHistoricEoris(eori, allEoriHistory)
