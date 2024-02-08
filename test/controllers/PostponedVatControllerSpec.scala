@@ -301,7 +301,7 @@ class PostponedVatControllerSpec extends SpecBase {
           monthValueOfCurrentDate(TWO_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori)
     )
 
-    val currentStatements = Seq(
+    val currentStatements: Seq[PostponedVatStatementFile] = Seq(
       PostponedVatStatementFile(fileName, fileUrl, size,
         PostponedVatStatementFileMetadata(yearValueOfCurrentDate(ONE_MONTH),
           monthValueOfCurrentDate(ONE_MONTH), Pdf, PostponedVATStatement, CDS, None), eori),

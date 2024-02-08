@@ -57,7 +57,7 @@ class PostponedImportVatSpec extends SpecBase {
       running(app) {
         view.title() mustBe s"${messages(app)("cf.account.pvat.title")} - ${messages(app)("service.name")} - GOV.UK"
         view.getElementById("notification-panel").html() must not be empty
-        view.getElementById("main-content").html() must not contain ("h2")
+        view.getElementById("main-content").html() must not contain "h2"
         view.getElementsByTag("dl").size() must be > 0
         view.getElementsByTag("dt").size() must be > 0
         view.getElementsByTag("dd").size() must be > 0
@@ -82,7 +82,7 @@ class PostponedImportVatSpec extends SpecBase {
 
       running(app) {
         view.html().contains(messages(app)("cf.account.pvat.download-link", "CDS", "PDF", "111KB"))
-        view.html() must not contain ((messages(app)("cf.account.pvat.download-link", "CHIEF", "PDF", "111KB")))
+        view.html() must not contain messages(app)("cf.account.pvat.download-link", "CHIEF", "PDF", "111KB")
         view.getElementsByTag("dd").size() must be(expectedSize)
       }
     }

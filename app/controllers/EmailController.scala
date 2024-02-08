@@ -39,9 +39,7 @@ class EmailController @Inject()(authenticate: IdentifierAction,
   val log: LoggerLike = Logger(this.getClass)
 
   def showUnverified():Action[AnyContent] = authenticate async { implicit request =>
-    financialsApiConnector.isEmailUnverified.map {
-      case email => Ok(verifyEmailView(appConfig.emailFrontendUrl, email))
-    }
+    financialsApiConnector.isEmailUnverified.map(email => Ok(verifyEmailView(appConfig.emailFrontendUrl, email)))
   }
 
   def showUndeliverable(): Action[AnyContent] = authenticate async { implicit request =>

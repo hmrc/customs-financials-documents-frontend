@@ -66,7 +66,7 @@ class SdesConnectorSpec extends SpecBase {
         val result: Seq[SecurityStatementFile] =
           await(sdesService.getSecurityStatements(someEoriWithUnknownFileTypes)(hc))
 
-        result mustBe (securityStatementFiles)
+        result mustBe securityStatementFiles
         verify(mockHttp).GET(eqTo(url), any, any)(any, any, any)
       }
 
@@ -111,7 +111,7 @@ class SdesConnectorSpec extends SpecBase {
         val result: Seq[VatCertificateFile] =
           await(sdesService.getVatCertificates(someEoriWithUnknownFileTypes)(hc, messages))
 
-        result mustBe (vatCertificateFiles)
+        result mustBe vatCertificateFiles
         verify(mockHttp).GET(eqTo(url), any, any)(any, any, any)
       }
 
@@ -160,7 +160,7 @@ class SdesConnectorSpec extends SpecBase {
         val result: Seq[PostponedVatStatementFile] =
           await(sdesService.getPostponedVatStatements(someEoriWithUnknownFileTypes)(hc))
 
-        result mustBe (filteredPostponedVatCertificateFiles)
+        result mustBe filteredPostponedVatCertificateFiles
         verify(mockHttp).GET(eqTo(url), any, any)(any, any, any)
       }
 

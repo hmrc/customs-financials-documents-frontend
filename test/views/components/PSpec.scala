@@ -16,16 +16,17 @@
 
 package views.components
 
-import play.api.Application
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import play.api.Application
 import play.api.test.Helpers._
-import play.twirl.api.{HtmlFormat, Html}
+import play.twirl.api.{Html, HtmlFormat}
 import utils.SpecBase
 import views.html.components.p
 
 class PSpec extends SpecBase {
+
   "P component" should {
 
     "render the default class name when classes is not defined" in new SetUp {

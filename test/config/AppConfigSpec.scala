@@ -49,7 +49,7 @@ class AppConfigSpec extends SpecBase {
 
       "return empty string for invalid filerole" in new Setup {
         running(app) {
-          appConfig.historicRequestUrl(FileRole.PostponedVATAmendedStatement) mustBe ("")
+          appConfig.historicRequestUrl(FileRole.PostponedVATAmendedStatement) mustBe empty
         }
       }
     }
@@ -69,7 +69,7 @@ class AppConfigSpec extends SpecBase {
 
       "return empty string for invalid filerole" in new Setup {
         running(app) {
-          appConfig.requestedStatements(FileRole.PostponedVATAmendedStatement) mustBe ("")
+          appConfig.requestedStatements(FileRole.PostponedVATAmendedStatement) mustBe empty
         }
       }
     }

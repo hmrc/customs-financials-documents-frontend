@@ -32,11 +32,15 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   lazy val timeout: Int = config.get[Int]("timeout.timeout")
   lazy val countdown: Int = config.get[Int]("timeout.countdown")
+
   lazy val helpMakeGovUkBetterUrl: String = config.get[String]("external-urls.helpMakeGovUkBetterUrl")
   lazy val customsFinancialsFrontendHomepage: String = config.get[String]("external-urls.customsFinancialsHomepage")
+
   var historicStatementsEnabled: Boolean = config.get[Boolean]("features.historic-statements-enabled")
+
   lazy val customsDataStore: String = servicesConfig.baseUrl("customs-data-store") +
     config.get[String]("microservice.services.customs-data-store.context")
+
   lazy val emailFrontendService: String = servicesConfig.baseUrl("customs-email-frontend") +
     config.get[String]("microservice.services.customs-email-frontend.context")
 
@@ -46,16 +50,20 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val loginContinueUrl: String = config.get[String]("external-urls.loginContinue")
   lazy val subscribeCdsUrl: String = config.get[String]("external-urls.cdsSubscribeUrl")
   lazy val pvatLoginContinueUrl: String = config.get[String]("external-urls.pvatLoginContinue")
-  lazy val feedbackService: String = config.get[String]("microservice.services.feedback.url") + config.get[String]("microservice.services.feedback.source")
+
+  lazy val feedbackService: String = config.get[String]("microservice.services.feedback.url") +
+    config.get[String]("microservice.services.feedback.source")
+
   lazy val signOutUrl: String = config.get[String]("external-urls.signOut")
   lazy val requestedStatements: String = config.get[String]("external-urls.requestedStatements")
-  lazy val historicRequest: String = config.get[String]("external-urls.historicRequest")
+
   lazy val emailFrontendUrl: String = s"$emailFrontendService/service/customs-finance"
   lazy val pvEmailEmailAddress: String = config.get[String]("external-urls.pvEmailEmailAddress")
   lazy val pvEmailEmailAddressHref: String = config.get[String]("external-urls.pvEmailEmailAddressHref")
   lazy val c79EmailAddress: String = config.get[String]("external-urls.c79EmailAddress")
   lazy val c79EmailAddressHref: String = config.get[String]("external-urls.c79EmailAddressHref")
 
+  private lazy val historicRequest: String = config.get[String]("external-urls.historicRequest")
   def historicRequestUrl(fileRole: FileRole): String = {
     fileRole match {
       case FileRole.SecurityStatement => historicRequest + "adjustments"
@@ -72,18 +80,18 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
     }
   }
 
-  lazy val sdesApi: String = servicesConfig.baseUrl("sdes") +
+  private lazy val sdesApi: String = servicesConfig.baseUrl("sdes") +
     config.get[String]("microservice.services.sdes.context")
 
-  lazy val xClientIdHeader: String = config.get[String]("microservice.services.sdes.x-client-id")
-  lazy val fixedDateTime: Boolean = config.get[Boolean]("features.fixed-system-time")
+  lazy val xClientIdHeader: String = config.get[String](path = "microservice.services.sdes.x-client-id")
+  lazy val fixedDateTime: Boolean = config.get[Boolean](path = "features.fixed-system-time")
 
   lazy val customsFinancialsApi: String = servicesConfig.baseUrl("customs-financials-api") +
-    config.get[String]("microservice.services.customs-financials-api.context")
+    config.get[String](path = "microservice.services.customs-financials-api.context")
 
   def filesUrl(fileRole: FileRole): String = s"$sdesApi/files-available/list/${fileRole.name}"
 
-  lazy val contactFrontEndServiceId: String = config.get[String]("contact-frontend.serviceId")
+  lazy val contactFrontEndServiceId: String = config.get[String](path = "contact-frontend.serviceId")
 
   private lazy val contactFrontEndBaseUrl = servicesConfig.baseUrl("contact-frontend")
 
