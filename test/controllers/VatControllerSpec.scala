@@ -28,6 +28,11 @@ import org.mockito.ArgumentMatchers.anyString
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.test.Helpers._
 import play.api.{Application, inject}
+import utils.CommonTestData.{
+  day28, eoriNumber, fiveMonths, fourMonths, oneMonth, sevenMonths, sixMonths, size111L,
+  threeMonths, twoMonths
+}
+import utils.Utils.emptyString
 import utils.{DateUtils, SpecBase}
 import viewmodels.VatViewModel
 import views.helpers.Formatters
@@ -40,26 +45,31 @@ class VatControllerSpec extends SpecBase {
 
   "showVatAccount" should {
     "redirect to certificates unavailable page if getting files fails" in new Setup {
+
       appConfig.historicStatementsEnabled = false
       val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad(navigator.importVatPageId).url
+
       val vatCertificateFile: VatCertificateFile = VatCertificateFile(
         "name_04",
         "download_url_06",
-        111L,
+        size111L,
         VatCertificateFileMetadata(
-          date.minusMonths(1).getYear,
-          date.minusMonths(1).getMonthValue,
-          Pdf, C79Certificate, None), "")(messages(app))
+          date.minusMonths(oneMonth).getYear,
+          date.minusMonths(oneMonth).getMonthValue,
+          Pdf, C79Certificate, None), emptyString)(messages(app))
 
-      val currentCertificates = Seq(
-        VatCertificatesByMonth(date.minusMonths(1), Seq(vatCertificateFile))(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(2), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(3), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(4), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(5), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(6), Seq())(messages(app)),
+      val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
+        VatCertificatesByMonth(date.minusMonths(oneMonth), Seq(vatCertificateFile))(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(twoMonths), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(threeMonths), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(fourMonths), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(fiveMonths), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(sixMonths), Seq())(messages(app))
       )
-      val vatCertificatesForEoris = Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
+
+      val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
+        Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
+
       val viewModel: VatViewModel = VatViewModel(vatCertificatesForEoris)
 
       when(mockSdesConnector.getVatCertificates(any)(any, any))
@@ -68,6 +78,7 @@ class VatControllerSpec extends SpecBase {
       running(app) {
         val request = fakeRequest(GET, routes.VatController.showVatAccount.url)
         val result = route(app, request).value
+
         status(result) mustBe OK
         contentAsString(result) mustBe
           view(viewModel, Some(serviceUnavailableUrl))(request, messages(app), appConfig).toString()
@@ -81,6 +92,7 @@ class VatControllerSpec extends SpecBase {
       running(app) {
         val request = fakeRequest(GET, routes.VatController.showVatAccount.url)
         val result = route(app, request).value
+
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.VatController.certificatesUnavailablePage().url
       }
@@ -89,16 +101,18 @@ class VatControllerSpec extends SpecBase {
     "display the cert unavailable text for the relevant month when cert files are retrieved " +
       "after 14th of the month and cert is not available" in new Setup {
 
-      val currentCertificates = Seq(
-        VatCertificatesByMonth(date.minusMonths(1), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(2), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(3), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(4), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(5), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(6), Seq())(messages(app)),
+      val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
+        VatCertificatesByMonth(date.minusMonths(oneMonth), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(twoMonths), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(threeMonths), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(fourMonths), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(fiveMonths), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(sixMonths), Seq())(messages(app))
       )
 
-      val vatCertificatesForEoris = Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
+      val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
+        Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
+
       val viewModel: VatViewModel = VatViewModel(vatCertificatesForEoris)
 
       when(mockSdesConnector.getVatCertificates(anyString)(any, any))
@@ -110,6 +124,7 @@ class VatControllerSpec extends SpecBase {
       running(app) {
         val request = fakeRequest(GET, routes.VatController.showVatAccount.url)
         val result = route(app, request).value
+
         status(result) mustBe OK
 
         if (!DateUtils.isDayBefore15ThDayOfTheMonth(LocalDate.now())) {
@@ -118,10 +133,11 @@ class VatControllerSpec extends SpecBase {
 
           val doc = Jsoup.parse(contentAsString(result))
 
-          doc.getElementById("statements-list-0-row-5") should not be null
+          Option(doc.getElementById("statements-list-0-row-5")) should not be empty
+
           doc.getElementById("statements-list-0-row-0").children().text() should
             include(messages(app)("cf.account.vat.statements.unavailable",
-              Formatters.dateAsMonth(date.minusMonths(1))(messages(app))))
+              Formatters.dateAsMonth(date.minusMonths(oneMonth))(messages(app))))
         }
       }
     }
@@ -131,13 +147,15 @@ class VatControllerSpec extends SpecBase {
 
       appConfig.historicStatementsEnabled = false
       val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("import-vat").url
+
       val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
-        VatCertificatesByMonth(date.minusMonths(2), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(3), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(4), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(5), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(6), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(twoMonths), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(threeMonths), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(fourMonths), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(fiveMonths), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(sixMonths), Seq())(messages(app))
       )
+
       val vatCertificatesForEoris: Seq[VatCertificatesForEori] = Seq(VatCertificatesForEori(eoriHistory.head,
         currentCertificates, Seq.empty))
       val viewModel: VatViewModel = VatViewModel(vatCertificatesForEoris)
@@ -159,44 +177,49 @@ class VatControllerSpec extends SpecBase {
 
           val doc = Jsoup.parse(contentAsString(result))
 
-          doc.getElementById("statements-list-0-row-5") mustBe null
-          doc.getElementById("statements-list-0-row-0") should not be null
-          doc.getElementById("statements-list-0-row-1") should not be null
-          doc.getElementById("statements-list-0-row-2") should not be null
-          doc.getElementById("statements-list-0-row-3") should not be null
-          doc.getElementById("statements-list-0-row-4") should not be null
+          Option(doc.getElementById("statements-list-0-row-5")) mustBe empty
+          Option(doc.getElementById("statements-list-0-row-0")) should not be empty
+          Option(doc.getElementById("statements-list-0-row-1")) should not be empty
+          Option(doc.getElementById("statements-list-0-row-2")) should not be empty
+          Option(doc.getElementById("statements-list-0-row-3")) should not be empty
+          Option(doc.getElementById("statements-list-0-row-4")) should not be empty
 
           doc.getElementById("statements-list-0-row-0").children().text() should not include messages(app)(
             "cf.account.vat.statements.unavailable",
-            Formatters.dateAsMonth(date.minusMonths(1))(messages(app)))
+            Formatters.dateAsMonth(date.minusMonths(oneMonth))(messages(app)))
         }
       }
     }
 
     "display all the certs' row when cert files are retrieved before 15th of the month and " +
       "cert is available" in new Setup {
+
       appConfig.historicStatementsEnabled = false
       val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("import-vat").url
+
       val vatCertificateFile: VatCertificateFile = VatCertificateFile("name_04",
         "download_url_06",
-        111L,
-        VatCertificateFileMetadata(date.minusMonths(1).getYear,
-          date.minusMonths(1).getMonthValue,
+        size111L,
+        VatCertificateFileMetadata(
+          date.minusMonths(oneMonth).getYear,
+          date.minusMonths(oneMonth).getMonthValue,
           Pdf,
           C79Certificate,
           None),
-        "")(messages(app))
+        emptyString)(messages(app))
 
       val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
-        VatCertificatesByMonth(date.minusMonths(1), Seq(vatCertificateFile))(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(2), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(3), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(4), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(5), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(6), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(oneMonth), Seq(vatCertificateFile))(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(twoMonths), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(threeMonths), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(fourMonths), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(fiveMonths), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(sixMonths), Seq())(messages(app))
       )
+
       val vatCertificatesForEoris: Seq[VatCertificatesForEori] = Seq(VatCertificatesForEori(eoriHistory.head,
         currentCertificates, Seq.empty))
+
       val viewModel: VatViewModel = VatViewModel(vatCertificatesForEoris)
 
       when(mockSdesConnector.getVatCertificates(anyString)(any, any))
@@ -208,6 +231,7 @@ class VatControllerSpec extends SpecBase {
       running(app) {
         val request = fakeRequest(GET, routes.VatController.showVatAccount.url)
         val result = route(app, request).value
+
         status(result) mustBe OK
 
         if (DateUtils.isDayBefore15ThDayOfTheMonth(LocalDate.now())) {
@@ -216,41 +240,45 @@ class VatControllerSpec extends SpecBase {
 
           val doc = Jsoup.parse(contentAsString(result))
 
-          doc.getElementById("statements-list-0-row-0") should not be null
-          doc.getElementById("statements-list-0-row-1") should not be null
-          doc.getElementById("statements-list-0-row-2") should not be null
-          doc.getElementById("statements-list-0-row-3") should not be null
-          doc.getElementById("statements-list-0-row-4") should not be null
-          doc.getElementById("statements-list-0-row-5") should not be null
+          Option(doc.getElementById("statements-list-0-row-0")) should not be empty
+          Option(doc.getElementById("statements-list-0-row-1")) should not be empty
+          Option(doc.getElementById("statements-list-0-row-2")) should not be empty
+          Option(doc.getElementById("statements-list-0-row-3")) should not be empty
+          Option(doc.getElementById("statements-list-0-row-4")) should not be empty
+          Option(doc.getElementById("statements-list-0-row-5")) should not be empty
 
           doc.getElementById("statements-list-0-row-0").children().text() should not include messages(app)(
             "cf.account.vat.statements.unavailable",
-            Formatters.dateAsMonth(date.minusMonths(1))(messages(app)))
+            Formatters.dateAsMonth(date.minusMonths(oneMonth))(messages(app)))
         }
       }
     }
 
     "display historic statements Url when feature is enabled" in new Setup {
+
       appConfig.historicStatementsEnabled = true
       val historicRequestUrl: String = appConfig.historicRequestUrl(C79Certificate)
+
       val vatCertificateFile: VatCertificateFile = VatCertificateFile("name_04",
         "download_url_06",
-        111L,
-        VatCertificateFileMetadata(date.minusMonths(1).getYear,
-          date.minusMonths(1).getMonthValue,
+        size111L,
+        VatCertificateFileMetadata(
+          date.minusMonths(oneMonth).getYear,
+          date.minusMonths(oneMonth).getMonthValue,
           Pdf,
           C79Certificate,
           None),
-        "")(messages(app))
+        emptyString)(messages(app))
 
       val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
-        VatCertificatesByMonth(date.minusMonths(1), Seq(vatCertificateFile))(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(2), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(3), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(4), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(5), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(6), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(oneMonth), Seq(vatCertificateFile))(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(twoMonths), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(threeMonths), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(fourMonths), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(fiveMonths), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(sixMonths), Seq())(messages(app))
       )
+
       val vatCertificatesForEoris: Seq[VatCertificatesForEori] = Seq(VatCertificatesForEori(eoriHistory.head,
         currentCertificates, Seq.empty))
       val viewModel: VatViewModel = VatViewModel(vatCertificatesForEoris)
@@ -264,63 +292,67 @@ class VatControllerSpec extends SpecBase {
       running(app) {
         val request = fakeRequest(GET, routes.VatController.showVatAccount.url)
         val result = route(app, request).value
+
         status(result) mustBe OK
 
         if (DateUtils.isDayBefore15ThDayOfTheMonth(LocalDate.now())) {
           contentAsString(result) mustBe
             view(viewModel, Some(historicRequestUrl))(request, messages(app), appConfig).toString()
-
         }
       }
     }
 
     "display requested statements Url when regular and " +
       "requested statements are present in the same period" in new Setup {
+
       appConfig.historicStatementsEnabled = true
       val historicRequestUrl: String = appConfig.historicRequestUrl(C79Certificate)
-      val someRequestId = Some("statement-request-id")
+      val someRequestId: Option[String] = Some("statement-request-id")
+
       val vatCertificateFile: VatCertificateFile = VatCertificateFile("name_04",
         "download_url_06",
-        111L,
-        VatCertificateFileMetadata(date.minusMonths(1).getYear,
-          date.minusMonths(1).getMonthValue,
+        size111L,
+        VatCertificateFileMetadata(
+          date.minusMonths(oneMonth).getYear,
+          date.minusMonths(oneMonth).getMonthValue,
           Pdf,
           C79Certificate,
           None),
-        "")(messages(app))
+        emptyString)(messages(app))
 
       val vatCertificateFile_2: VatCertificateFile = VatCertificateFile("name_05",
         "download_url_07",
-        111L,
-        VatCertificateFileMetadata(date.minusMonths(7).getYear,
-          date.minusMonths(7).getMonthValue,
+        size111L,
+        VatCertificateFileMetadata(
+          date.minusMonths(sevenMonths).getYear,
+          date.minusMonths(sevenMonths).getMonthValue,
           Pdf,
           C79Certificate,
           None),
-        "")(messages(app))
+        emptyString)(messages(app))
 
       val vatCertificateFile_3: VatCertificateFile = VatCertificateFile("name_05",
         "download_url_07",
-        111L,
-        VatCertificateFileMetadata(date.minusMonths(7).getYear,
-          date.minusMonths(7).getMonthValue,
+        size111L,
+        VatCertificateFileMetadata(
+          date.minusMonths(sevenMonths).getYear,
+          date.minusMonths(sevenMonths).getMonthValue,
           Pdf,
           C79Certificate,
           someRequestId),
-        "")(messages(app))
+        emptyString)(messages(app))
 
       val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
-        VatCertificatesByMonth(date.minusMonths(1), Seq(vatCertificateFile))(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(2), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(3), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(4), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(5), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(6), Seq())(messages(app))
+        VatCertificatesByMonth(date.minusMonths(oneMonth), Seq(vatCertificateFile))(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(twoMonths), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(threeMonths), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(fourMonths), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(fiveMonths), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(sixMonths), Seq())(messages(app))
       )
 
       val requestedCertificates: Seq[VatCertificatesByMonth] = Seq(
-        VatCertificatesByMonth(date.minusMonths(7),
-          Seq(vatCertificateFile_3))(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(sevenMonths), Seq(vatCertificateFile_3))(messages(app))
       )
 
       val vatCertificatesForEoris: Seq[VatCertificatesForEori] = Seq(VatCertificatesForEori(eoriHistory.head,
@@ -336,6 +368,7 @@ class VatControllerSpec extends SpecBase {
       running(app) {
         val request = fakeRequest(GET, routes.VatController.showVatAccount.url)
         val result = route(app, request).value
+
         status(result) mustBe OK
 
         if (DateUtils.isDayBefore15ThDayOfTheMonth(LocalDate.now())) {
@@ -345,16 +378,18 @@ class VatControllerSpec extends SpecBase {
 
         val doc = Jsoup.parse(contentAsString(result))
 
-        doc.getElementById("notification-panel") should not be null
+        Option(doc.getElementById("notification-panel")) should not be empty
       }
     }
   }
 
   "certificatesUnavailablePage" should {
+
     "render correctly" in {
       val app = application().build()
       val view = app.injector.instanceOf[import_vat_not_available]
-      var appConfig = app.injector.instanceOf[AppConfig]
+      val appConfig = app.injector.instanceOf[AppConfig]
+
       appConfig.historicStatementsEnabled = false
 
       val navigator = app.injector.instanceOf[Navigator]
@@ -365,6 +400,7 @@ class VatControllerSpec extends SpecBase {
       running(app) {
         val request = fakeRequest(GET, routes.VatController.certificatesUnavailablePage().url)
         val result = route(app, request).value
+
         status(result) mustBe OK
         contentAsString(result) mustBe
           view(Some(serviceUnavailableUrl))(request, messages(app), appConfig).toString()
@@ -374,16 +410,16 @@ class VatControllerSpec extends SpecBase {
     "display historic request url when feature is enabled" in {
       val app = application().build()
       val view = app.injector.instanceOf[import_vat_not_available]
-      var appConfig = app.injector.instanceOf[AppConfig]
-      appConfig.historicStatementsEnabled = true
+      val appConfig = app.injector.instanceOf[AppConfig]
 
-      val navigator = app.injector.instanceOf[Navigator]
+      appConfig.historicStatementsEnabled = true
 
       val historicRequestUrl: String = appConfig.historicRequestUrl(C79Certificate)
 
       running(app) {
         val request = fakeRequest(GET, routes.VatController.certificatesUnavailablePage().url)
         val result = route(app, request).value
+
         status(result) mustBe OK
         contentAsString(result) mustBe
           view(Some(historicRequestUrl))(request, messages(app), appConfig).toString()
@@ -394,13 +430,12 @@ class VatControllerSpec extends SpecBase {
   trait Setup {
     val mockFinancialsApiConnector: FinancialsApiConnector = mock[FinancialsApiConnector]
     val mockSdesConnector: SdesConnector = mock[SdesConnector]
-    val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory("testEori1", None, None))
-    val date: LocalDate = LocalDate.now().withDayOfMonth(28)
+    val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory(eoriNumber, None, None))
+    val date: LocalDate = LocalDate.now().withDayOfMonth(day28)
     val navigator = new Navigator()
 
     when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
       .thenReturn(Future.successful(true))
-
 
     val app: Application = application(eoriHistory).overrides(
       inject.bind[FinancialsApiConnector].toInstance(mockFinancialsApiConnector),

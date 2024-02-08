@@ -18,6 +18,7 @@ package services
 
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.test.Helpers._
+import utils.CommonTestData.{day20, hour12, minutes30, month12, year2027}
 import utils.SpecBase
 
 import java.time.{LocalDate, LocalDateTime, LocalTime}
@@ -25,10 +26,16 @@ import java.time.{LocalDate, LocalDateTime, LocalTime}
 class DateTimeServiceSpec extends SpecBase {
 
   "return the fixed date if fixedDateTime is enabled" in {
+
     val app = application().configure("features.fixed-system-time" -> true).build()
     val service = app.injector.instanceOf[DateTimeService]
+
     running(app) {
-      service.systemDateTime() mustBe LocalDateTime.of(LocalDate.of(2027, 12, 20), LocalTime.of(12, 30))
+      service.systemDateTime() mustBe
+        LocalDateTime.of(
+          LocalDate.of(year2027, month12, day20),
+          LocalTime.of(hour12, minutes30)
+        )
     }
   }
 }

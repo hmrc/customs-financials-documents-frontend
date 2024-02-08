@@ -21,7 +21,7 @@ import config.AppConfig
 import connectors.DataStoreConnector
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.inject
-import play.api.mvc.{BodyParsers, Results}
+import play.api.mvc.{Action, AnyContent, BodyParsers, Results}
 import play.api.test.Helpers._
 import services.AuditingService
 import uk.gov.hmrc.auth.core._
@@ -36,11 +36,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class AuthActionSpec extends SpecBase {
 
   class Harness(authAction: IdentifierAction) {
-    def onPageLoad() = authAction { _ => Results.Ok }
+    def onPageLoad(): Action[AnyContent] = authAction { _ => Results.Ok }
   }
 
   implicit class Ops[A](a: A) {
-    def ~[B](b: B): A ~ B = new ~(a, b)
+    def ~[B](b: B): A ~ B = new~(a, b)
   }
 
   "the action" should {
@@ -53,11 +53,14 @@ class AuthActionSpec extends SpecBase {
         inject.bind[AuditingService].toInstance(mockAuditingService),
         inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
       ).build()
+
       val config = app.injector.instanceOf[AppConfig]
-      val bodyParsers = application().injector.instanceOf[BodyParsers.Default]
+      val bodyParsers = app.injector.instanceOf[BodyParsers.Default]
       val authActionHelper = app.injector.instanceOf[AuthActionHelper]
 
-      val authAction = new AuthAction(new FakeFailingAuthConnector(new MissingBearerToken), config, bodyParsers, authActionHelper)
+      val authAction =
+        new AuthAction(new FakeFailingAuthConnector(new MissingBearerToken), config, bodyParsers, authActionHelper)
+
       val controller = new Harness(authAction)
 
       running(app) {
@@ -75,15 +78,19 @@ class AuthActionSpec extends SpecBase {
         inject.bind[AuditingService].toInstance(mockAuditingService),
         inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
       ).build()
+
       val config = app.injector.instanceOf[AppConfig]
-      val bodyParsers = application().injector.instanceOf[BodyParsers.Default]
+      val bodyParsers = app.injector.instanceOf[BodyParsers.Default]
       val authActionHelper = app.injector.instanceOf[AuthActionHelper]
 
-      val authAction = new AuthAction(new FakeFailingAuthConnector(new BearerTokenExpired), config, bodyParsers, authActionHelper)
+      val authAction =
+        new AuthAction(new FakeFailingAuthConnector(new BearerTokenExpired), config, bodyParsers, authActionHelper)
+
       val controller = new Harness(authAction)
 
       running(app) {
         val result = controller.onPageLoad()(fakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
+
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get must startWith(config.loginUrl)
       }
@@ -97,15 +104,19 @@ class AuthActionSpec extends SpecBase {
         inject.bind[AuditingService].toInstance(mockAuditingService),
         inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
       ).build()
+
       val config = app.injector.instanceOf[AppConfig]
-      val bodyParsers = application().injector.instanceOf[BodyParsers.Default]
+      val bodyParsers = app.injector.instanceOf[BodyParsers.Default]
       val authActionHelper = app.injector.instanceOf[AuthActionHelper]
 
-      val authAction = new AuthAction(new FakeFailingAuthConnector(new UnsupportedAuthProvider), config, bodyParsers, authActionHelper)
+      val authAction =
+        new AuthAction(new FakeFailingAuthConnector(new UnsupportedAuthProvider), config, bodyParsers, authActionHelper)
+
       val controller = new Harness(authAction)
 
       running(app) {
         val result = controller.onPageLoad()(fakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
+
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get must startWith("/customs/documents/not-subscribed-for-cds")
       }
@@ -116,7 +127,8 @@ class AuthActionSpec extends SpecBase {
       val mockDataStoreConnector = mock[DataStoreConnector]
       val mockAuthConnector = mock[AuthConnector]
 
-      when(mockAuthConnector.authorise[Option[Credentials] ~ Option[Name] ~ Option[Email] ~ Option[AffinityGroup] ~ Option[String] ~ Enrolments](any, any)(any, any))
+      when(mockAuthConnector.authorise[Option[Credentials]
+        ~ Option[Name] ~ Option[Email] ~ Option[AffinityGroup] ~ Option[String] ~ Enrolments](any, any)(any, any))
         .thenReturn(Future.successful(
           Some(Credentials("someProviderId", "someProviderType")) ~
             Some(Name(Some("someName"), Some("someLastName"))) ~
@@ -129,8 +141,9 @@ class AuthActionSpec extends SpecBase {
         inject.bind[AuditingService].toInstance(mockAuditingService),
         inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
       ).build()
+
       val config = app.injector.instanceOf[AppConfig]
-      val bodyParsers = application().injector.instanceOf[BodyParsers.Default]
+      val bodyParsers = app.injector.instanceOf[BodyParsers.Default]
       val authActionHelper = app.injector.instanceOf[AuthActionHelper]
 
       val authAction = new AuthAction(mockAuthConnector, config, bodyParsers, authActionHelper)
@@ -138,6 +151,7 @@ class AuthActionSpec extends SpecBase {
 
       running(app) {
         val result = controller.onPageLoad()(fakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
+
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get must startWith("/customs/documents/not-subscribed-for-cds")
       }
@@ -148,6 +162,7 @@ class AuthActionSpec extends SpecBase {
 class FakeFailingAuthConnector @Inject()(exceptionToReturn: Throwable) extends AuthConnector {
   val serviceUrl: String = ""
 
-  override def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[A] =
+  override def authorise[A](predicate: Predicate,
+                            retrieval: Retrieval[A])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[A] =
     Future.failed(exceptionToReturn)
 }

@@ -26,6 +26,10 @@ import org.jsoup.Jsoup
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.test.Helpers._
 import play.api.{Application, inject}
+import utils.CommonTestData.{
+  checkSumValue000000, day10, day12, day15, day17, day28, day9, downloadUrl00, eightMonths,
+  eoriNumber, nineMonths, oneMonth, sevenMonths, size500L, size99L, statFileName00, tenMonths, threeMonths, twoMonths
+}
 import utils.SpecBase
 import viewmodels.SecurityStatementsViewModel
 import views.html.securities.{security_statements, security_statements_not_available}
@@ -38,12 +42,13 @@ class SecuritiesControllerSpec extends SpecBase {
   "showSecurityStatements" should {
 
     "render the page correctly on successful responses" in new Setup {
-      when(mockSdesConnector.getSecurityStatements(eqTo("testEori1"))(any))
+      when(mockSdesConnector.getSecurityStatements(eqTo(eoriNumber))(any))
         .thenReturn(Future.successful(Seq(securityStatementFile)))
 
       running(app) {
         val request = fakeRequest(GET, routes.SecuritiesController.showSecurityStatements.url)
         val result = route(app, request).value
+
         status(result) mustBe OK
         contentAsString(result) mustBe
           view(SecurityStatementsViewModel(Seq(securityStatementsForEori)))(request, messages(app), appConfig).toString()
@@ -62,8 +67,8 @@ class SecuritiesControllerSpec extends SpecBase {
         status(result) mustBe OK
 
         contentAsString(result) mustBe
-          view(SecurityStatementsViewModel(Seq(securityStatementsPdfForEori)))(
-            request, messages(app), appConfig).toString()
+          view(SecurityStatementsViewModel(
+            Seq(securityStatementsPdfForEori)))(request, messages(app), appConfig).toString()
       }
     }
 
@@ -102,7 +107,7 @@ class SecuritiesControllerSpec extends SpecBase {
 
         val doc = Jsoup.parse(contentAsString(result))
 
-        doc.getElementById("request-statement-link") should not be null
+        Option(doc.getElementById("request-statement-link")) should not be empty
       }
     }
 
@@ -112,10 +117,10 @@ class SecuritiesControllerSpec extends SpecBase {
 
       when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
         .thenReturn(Future.successful(true))
-      when(mockSdesConnector.getSecurityStatements(eqTo("testEori1"))(any))
+      when(mockSdesConnector.getSecurityStatements(eqTo(eoriNumber))(any))
         .thenReturn(Future.failed(new RuntimeException("Something went wrong")))
 
-      val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory("testEori1", None, None))
+      val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory(eoriNumber, None, None))
 
       val app: Application = application(eoriHistory).overrides(
         inject.bind[FinancialsApiConnector].toInstance(mockFinancialsApiConnector),
@@ -125,6 +130,7 @@ class SecuritiesControllerSpec extends SpecBase {
       running(app) {
         val request = fakeRequest(GET, routes.SecuritiesController.showSecurityStatements.url)
         val result = route(app, request).value
+
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.SecuritiesController.statementsUnavailablePage().url
       }
@@ -132,6 +138,7 @@ class SecuritiesControllerSpec extends SpecBase {
   }
 
   "statementsUnavailablePage" should {
+
     "render correctly" in {
       val app: Application = application().build()
       val appConfig = app.injector.instanceOf[AppConfig]
@@ -140,6 +147,7 @@ class SecuritiesControllerSpec extends SpecBase {
       running(app) {
         val request = fakeRequest(GET, routes.SecuritiesController.statementsUnavailablePage().url)
         val result = route(app, request).value
+
         status(result) mustBe OK
         contentAsString(result) mustBe unavailableView()(request, messages(app), appConfig).toString()
       }
@@ -147,154 +155,163 @@ class SecuritiesControllerSpec extends SpecBase {
   }
 
   trait Setup {
-    val mockFinancialsApiConnector: FinancialsApiConnector = mock[FinancialsApiConnector]
-    val mockSdesConnector: SdesConnector = mock[SdesConnector]
-    val date: LocalDate = LocalDate.now().withDayOfMonth(28)
-    val someRequestId = Some("statement-request-id")
+
+    val date: LocalDate = LocalDate.now().withDayOfMonth(day28)
+    val someRequestId: Option[String] = Some("statement-request-id")
 
     val securityStatementFile: SecurityStatementFile =
-      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
-        SecurityStatementFileMetadata(date.minusMonths(1).getYear,
-          date.minusMonths(1).getMonthValue,
-          28,
+      SecurityStatementFile(statFileName00, downloadUrl00, size99L,
+        SecurityStatementFileMetadata(
+          date.minusMonths(oneMonth).getYear,
+          date.minusMonths(oneMonth).getMonthValue,
+          day28,
           date.getYear,
           date.getMonthValue,
-          28,
+          day28,
           Pdf,
           SecurityStatement,
-          "testEori1",
-          500L,
-          "0000000",
+          eoriNumber,
+          size500L,
+          checkSumValue000000,
           None))
 
     val securityStatementFile1: SecurityStatementFile =
-      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
-        SecurityStatementFileMetadata(date.minusMonths(1).getYear,
-          date.minusMonths(1).getMonthValue,
-          10,
-          date.minusMonths(1).getYear,
-          date.minusMonths(1).getMonthValue,
-          28,
+      SecurityStatementFile(statFileName00, downloadUrl00, size99L,
+        SecurityStatementFileMetadata(
+          date.minusMonths(oneMonth).getYear,
+          date.minusMonths(oneMonth).getMonthValue,
+          day10,
+          date.minusMonths(oneMonth).getYear,
+          date.minusMonths(oneMonth).getMonthValue,
+          day28,
           Pdf,
           SecurityStatement,
-          "testEori1",
-          500L,
-          "0000000",
+          eoriNumber,
+          size500L,
+          checkSumValue000000,
           None))
 
     val securityStatementFile2: SecurityStatementFile =
-      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
-        SecurityStatementFileMetadata(date.minusMonths(2).getYear,
-          date.minusMonths(2).getMonthValue,
-          15,
-          date.minusMonths(2).getYear,
-          date.minusMonths(2).getMonthValue,
-          28,
+      SecurityStatementFile(statFileName00, downloadUrl00, size99L,
+        SecurityStatementFileMetadata(
+          date.minusMonths(twoMonths).getYear,
+          date.minusMonths(twoMonths).getMonthValue,
+          day15,
+          date.minusMonths(twoMonths).getYear,
+          date.minusMonths(twoMonths).getMonthValue,
+          day28,
           Pdf,
           SecurityStatement,
-          "testEori1",
-          500L,
-          "0000000",
+          eoriNumber,
+          size500L,
+          checkSumValue000000,
           None))
 
     val securityStatementFile3: SecurityStatementFile =
-      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
-        SecurityStatementFileMetadata(date.minusMonths(3).getYear,
-          date.minusMonths(3).getMonthValue,
-          12,
-          date.minusMonths(3).getYear,
-          date.minusMonths(3).getMonthValue,
-          15,
+      SecurityStatementFile(statFileName00, downloadUrl00, size99L,
+        SecurityStatementFileMetadata(
+          date.minusMonths(threeMonths).getYear,
+          date.minusMonths(threeMonths).getMonthValue,
+          day12,
+          date.minusMonths(threeMonths).getYear,
+          date.minusMonths(threeMonths).getMonthValue,
+          day15,
           Pdf,
           SecurityStatement,
-          "testEori1",
-          500L,
-          "0000000",
+          eoriNumber,
+          size500L,
+          checkSumValue000000,
           None))
 
     val securityStatementFile4: SecurityStatementFile =
-      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
-        SecurityStatementFileMetadata(date.minusMonths(7).getYear,
-          date.minusMonths(7).getMonthValue,
-          10,
-          date.minusMonths(7).getYear,
-          date.minusMonths(7).getMonthValue,
-          28,
+      SecurityStatementFile(statFileName00, downloadUrl00, size99L,
+        SecurityStatementFileMetadata(date.minusMonths(sevenMonths).getYear,
+          date.minusMonths(sevenMonths).getMonthValue,
+          day10,
+          date.minusMonths(sevenMonths).getYear,
+          date.minusMonths(sevenMonths).getMonthValue,
+          day28,
           Pdf,
           SecurityStatement,
-          "testEori1",
-          500L,
-          "0000000",
-          Some("1abcdefg2-a2b1-abcd-abcd-0123456789")))
+          eoriNumber,
+          size500L,
+          checkSumValue000000,
+          Some("1abcdefg2-a2b1-abcd-abcd-0123456789"))
+      )
 
     val securityStatementFile5: SecurityStatementFile =
-      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
-        SecurityStatementFileMetadata(date.minusMonths(8).getYear,
-          date.minusMonths(8).getMonthValue,
-          9,
-          date.minusMonths(8).getYear,
-          date.minusMonths(8).getMonthValue,
-          12,
+      SecurityStatementFile(statFileName00, downloadUrl00, size99L,
+        SecurityStatementFileMetadata(
+          date.minusMonths(eightMonths).getYear,
+          date.minusMonths(eightMonths).getMonthValue,
+          day9,
+          date.minusMonths(eightMonths).getYear,
+          date.minusMonths(eightMonths).getMonthValue,
+          day12,
           Pdf,
           SecurityStatement,
-          "testEori1",
-          500L,
-          "0000000",
+          eoriNumber,
+          size500L,
+          checkSumValue000000,
           None))
 
     val securityStatementFile6: SecurityStatementFile =
-      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
-        SecurityStatementFileMetadata(date.minusMonths(9).getYear,
-          date.minusMonths(9).getMonthValue,
-          15,
-          date.minusMonths(9).getYear,
-          date.minusMonths(9).getMonthValue,
-          17,
+      SecurityStatementFile(statFileName00, downloadUrl00, size99L,
+        SecurityStatementFileMetadata(
+          date.minusMonths(nineMonths).getYear,
+          date.minusMonths(nineMonths).getMonthValue,
+          day15,
+          date.minusMonths(nineMonths).getYear,
+          date.minusMonths(nineMonths).getMonthValue,
+          day17,
           Pdf,
           SecurityStatement,
-          "testEori1",
-          500L,
-          "0000000",
+          eoriNumber,
+          size500L,
+          checkSumValue000000,
           None))
 
     val securityStatementFile7: SecurityStatementFile =
-      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
-        SecurityStatementFileMetadata(date.minusMonths(10).getYear,
-          date.minusMonths(10).getMonthValue,
-          15,
-          date.minusMonths(10).getYear,
-          date.minusMonths(10).getMonthValue,
-          17,
+      SecurityStatementFile(statFileName00, downloadUrl00, size99L,
+        SecurityStatementFileMetadata(date.minusMonths(tenMonths).getYear,
+          date.minusMonths(tenMonths).getMonthValue,
+          day15,
+          date.minusMonths(tenMonths).getYear,
+          date.minusMonths(tenMonths).getMonthValue,
+          day17,
           Pdf,
           SecurityStatement,
-          "testEori1",
-          500L,
-          "0000000",
+          eoriNumber,
+          size500L,
+          checkSumValue000000,
           None))
 
     val securityStatementFile8: SecurityStatementFile =
-      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
-        SecurityStatementFileMetadata(date.minusMonths(10).getYear,
-          date.minusMonths(10).getMonthValue,
-          15,
-          date.minusMonths(10).getYear,
-          date.minusMonths(10).getMonthValue,
-          17,
+      SecurityStatementFile(statFileName00, downloadUrl00, size99L,
+        SecurityStatementFileMetadata(date.minusMonths(tenMonths).getYear,
+          date.minusMonths(tenMonths).getMonthValue,
+          day15,
+          date.minusMonths(tenMonths).getYear,
+          date.minusMonths(tenMonths).getMonthValue,
+          day17,
           Pdf,
           SecurityStatement,
-          "testEori1",
-          500L,
-          "0000000",
+          eoriNumber,
+          size500L,
+          checkSumValue000000,
           someRequestId))
 
-    val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory("testEori1", None, None))
+    val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory(eoriNumber, None, None))
 
     val statementsByPeriod: SecurityStatementsByPeriod =
-      SecurityStatementsByPeriod(date.minusMonths(1), date, Seq(securityStatementFile))
+      SecurityStatementsByPeriod(date.minusMonths(oneMonth), date, Seq(securityStatementFile))
 
     val statementsByPeriodPdfForMonth7: SecurityStatementsByPeriod =
       SecurityStatementsByPeriod(
-        securityStatementFile7.startDate, securityStatementFile7.endDate, Seq(securityStatementFile7, securityStatementFile8))
+        securityStatementFile7.startDate,
+        securityStatementFile7.endDate,
+        Seq(securityStatementFile7, securityStatementFile8)
+      )
 
     val statementsByPeriodPdfForMonth6: SecurityStatementsByPeriod =
       SecurityStatementsByPeriod(
@@ -321,103 +338,108 @@ class SecuritiesControllerSpec extends SpecBase {
         securityStatementFile1.startDate, securityStatementFile1.endDate, Seq(securityStatementFile1))
 
     val securityStatementsForEori: SecurityStatementsForEori =
-      SecurityStatementsForEori(EoriHistory("testEori1", None, None), Seq(statementsByPeriod), Seq.empty)
+      SecurityStatementsForEori(EoriHistory(eoriNumber, None, None), Seq(statementsByPeriod), Seq.empty)
 
     val securityStatementsPdfForEori: SecurityStatementsForEori =
       SecurityStatementsForEori(
-        EoriHistory("testEori1", None, None),
+        EoriHistory(eoriNumber, None, None),
         Seq(statementsByPeriodPdfForMonth1, statementsByPeriodPdfForMonth2, statementsByPeriodPdfForMonth3),
         Seq(statementsByPeriodPdfForMonth4, statementsByPeriodPdfForMonth7)
       )
 
     val securityStatementCsvFile1: SecurityStatementFile =
-      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
-        SecurityStatementFileMetadata(date.minusMonths(1).getYear,
-          date.minusMonths(1).getMonthValue,
-          10,
-          date.minusMonths(1).getYear,
-          date.minusMonths(1).getMonthValue,
-          28,
+      SecurityStatementFile(statFileName00, downloadUrl00, size99L,
+        SecurityStatementFileMetadata(
+          date.minusMonths(oneMonth).getYear,
+          date.minusMonths(oneMonth).getMonthValue,
+          day10,
+          date.minusMonths(oneMonth).getYear,
+          date.minusMonths(oneMonth).getMonthValue,
+          day28,
           Csv,
           SecurityStatement,
-          "testEori1",
-          500L,
-          "0000000",
+          eoriNumber,
+          size500L,
+          checkSumValue000000,
           None))
 
     val securityStatementCsvFile2: SecurityStatementFile =
-      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
-        SecurityStatementFileMetadata(date.minusMonths(2).getYear,
-          date.minusMonths(2).getMonthValue,
-          15,
-          date.minusMonths(2).getYear,
-          date.minusMonths(2).getMonthValue,
-          28,
+      SecurityStatementFile(statFileName00, downloadUrl00, size99L,
+        SecurityStatementFileMetadata(
+          date.minusMonths(twoMonths).getYear,
+          date.minusMonths(twoMonths).getMonthValue,
+          day15,
+          date.minusMonths(twoMonths).getYear,
+          date.minusMonths(twoMonths).getMonthValue,
+          day28,
           Csv,
           SecurityStatement,
-          "testEori1",
-          500L,
-          "0000000",
+          eoriNumber,
+          size500L,
+          checkSumValue000000,
           None))
 
     val securityStatementCsvFile3: SecurityStatementFile =
-      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
-        SecurityStatementFileMetadata(date.minusMonths(3).getYear,
-          date.minusMonths(3).getMonthValue,
-          12,
-          date.minusMonths(3).getYear,
-          date.minusMonths(3).getMonthValue,
-          15,
+      SecurityStatementFile(statFileName00, downloadUrl00, size99L,
+        SecurityStatementFileMetadata(date.minusMonths(threeMonths).getYear,
+          date.minusMonths(threeMonths).getMonthValue,
+          day12,
+          date.minusMonths(threeMonths).getYear,
+          date.minusMonths(threeMonths).getMonthValue,
+          day15,
           Csv,
           SecurityStatement,
-          "testEori1",
-          500L,
-          "0000000",
+          eoriNumber,
+          size500L,
+          checkSumValue000000,
           None))
 
     val securityStatementCsvFile4: SecurityStatementFile =
-      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
-        SecurityStatementFileMetadata(date.minusMonths(7).getYear,
-          date.minusMonths(7).getMonthValue,
-          10,
-          date.minusMonths(7).getYear,
-          date.minusMonths(7).getMonthValue,
-          28,
+      SecurityStatementFile(statFileName00, downloadUrl00, size99L,
+        SecurityStatementFileMetadata(
+          date.minusMonths(sevenMonths).getYear,
+          date.minusMonths(sevenMonths).getMonthValue,
+          day10,
+          date.minusMonths(sevenMonths).getYear,
+          date.minusMonths(sevenMonths).getMonthValue,
+          day28,
           Csv,
           SecurityStatement,
-          "testEori1",
-          500L,
-          "0000000",
+          eoriNumber,
+          size500L,
+          checkSumValue000000,
           Some("1abcdefg2-a2b1-abcd-abcd-0123456789")))
 
     val securityStatementCsvFile5: SecurityStatementFile =
-      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
-        SecurityStatementFileMetadata(date.minusMonths(8).getYear,
-          date.minusMonths(8).getMonthValue,
-          9,
-          date.minusMonths(8).getYear,
-          date.minusMonths(8).getMonthValue,
-          12,
+      SecurityStatementFile(statFileName00, downloadUrl00, size99L,
+        SecurityStatementFileMetadata(
+          date.minusMonths(eightMonths).getYear,
+          date.minusMonths(eightMonths).getMonthValue,
+          day9,
+          date.minusMonths(eightMonths).getYear,
+          date.minusMonths(eightMonths).getMonthValue,
+          day12,
           Csv,
           SecurityStatement,
-          "testEori1",
-          500L,
-          "0000000",
+          eoriNumber,
+          size500L,
+          checkSumValue000000,
           None))
 
     val securityStatementCsvFile6: SecurityStatementFile =
-      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
-        SecurityStatementFileMetadata(date.minusMonths(9).getYear,
-          date.minusMonths(9).getMonthValue,
-          15,
-          date.minusMonths(9).getYear,
-          date.minusMonths(9).getMonthValue,
-          17,
+      SecurityStatementFile(statFileName00, downloadUrl00, size99L,
+        SecurityStatementFileMetadata(
+          date.minusMonths(nineMonths).getYear,
+          date.minusMonths(nineMonths).getMonthValue,
+          day15,
+          date.minusMonths(nineMonths).getYear,
+          date.minusMonths(nineMonths).getMonthValue,
+          day17,
           Csv,
           SecurityStatement,
-          "testEori1",
-          500L,
-          "0000000",
+          eoriNumber,
+          size500L,
+          checkSumValue000000,
           None))
 
     val statementsByPeriodCsvForMonth6: SecurityStatementsByPeriod =
@@ -444,17 +466,18 @@ class SecuritiesControllerSpec extends SpecBase {
       SecurityStatementsByPeriod(
         securityStatementCsvFile1.startDate, securityStatementCsvFile1.endDate, Seq(securityStatementCsvFile1))
 
-
     val securityStatementsCsvForEori: SecurityStatementsForEori =
       SecurityStatementsForEori(
-        EoriHistory("testEori1", None, None),
+        EoriHistory(eoriNumber, None, None),
         Seq(statementsByPeriodCsvForMonth1, statementsByPeriodCsvForMonth2, statementsByPeriodCsvForMonth3),
         Seq(statementsByPeriodCsvForMonth4)
       )
 
+    val mockFinancialsApiConnector: FinancialsApiConnector = mock[FinancialsApiConnector]
+    val mockSdesConnector: SdesConnector = mock[SdesConnector]
+
     when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
       .thenReturn(Future.successful(true))
-
 
     val app: Application = application(eoriHistory).overrides(
       inject.bind[FinancialsApiConnector].toInstance(mockFinancialsApiConnector),

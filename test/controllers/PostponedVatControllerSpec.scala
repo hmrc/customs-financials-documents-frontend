@@ -41,6 +41,7 @@ import scala.concurrent.Future
 class PostponedVatControllerSpec extends SpecBase {
 
   "show" should {
+
     "display the PostponedVat page" in new Setup {
       config.historicStatementsEnabled = false
       val serviceUnavailableUrl: String =
@@ -159,7 +160,7 @@ class PostponedVatControllerSpec extends SpecBase {
         val periodElement = Formatters.dateAsMonthAndYear(
           date.minusMonths(ONE_MONTH))(messages(app)).replace(" ", "-").toLowerCase
 
-        doc.getElementById(s"period-$periodElement") mustBe null
+        Option(doc.getElementById(s"period-$periodElement")) mustBe empty
       }
     }
 

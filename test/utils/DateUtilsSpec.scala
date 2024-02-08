@@ -17,6 +17,7 @@
 package utils
 
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import utils.CommonTestData._
 import utils.DateUtils.{isDateInLastSixMonths, isDayBefore15ThDayOfTheMonth}
 
 import java.time.LocalDate
@@ -24,36 +25,40 @@ import java.time.LocalDate
 class DateUtilsSpec extends SpecBase {
 
   "isBefore15ThDayOfTheMonth" should {
+
     "return true when input day is before 15th day of the current month" in {
-      val dateBefore15ThDay: LocalDate = LocalDate.of(2023, 5, 12)
-      val dateOf14ThDayOfTheMonth: LocalDate = LocalDate.of(2023, 5, 14)
+      val dateBefore15ThDay: LocalDate = LocalDate.of(year2023, month5, day12)
+      val dateOf14ThDayOfTheMonth: LocalDate = LocalDate.of(year2023, month5, day14)
 
       isDayBefore15ThDayOfTheMonth(dateBefore15ThDay) shouldBe true
       isDayBefore15ThDayOfTheMonth(dateOf14ThDayOfTheMonth) shouldBe true
     }
 
     "return false when input day is after 15th day of the current month" in {
-      val dateAfter15ThDay: LocalDate = LocalDate.of(2023, 4, 20)
+      val dateAfter15ThDay: LocalDate = LocalDate.of(year2023, month4, day20)
+
       isDayBefore15ThDayOfTheMonth(dateAfter15ThDay) shouldBe false
     }
 
     "return false when input day is 15th day of the current month" in {
-      val dateWith15ThDay: LocalDate = LocalDate.of(2023, 3, 15)
+      val dateWith15ThDay: LocalDate = LocalDate.of(year2023, month3, day15)
+
       isDayBefore15ThDayOfTheMonth(dateWith15ThDay) shouldBe false
     }
   }
 
   "isDateInLastSixMonths" should {
+
     "return true" when {
       "date is in last 6 months" in {
-        val date1 = LocalDate.of(2023, 5, 20)
-        val date2 = LocalDate.of(2023, 6, 10)
-        val date3 = LocalDate.of(2023, 8, 2)
-        val date4 = LocalDate.of(2023, 9, 20)
-        val date5 = LocalDate.of(2023, 5, 21)
-        val date6 = LocalDate.of(2023, 5, 1)
+        val date1 = LocalDate.of(year2023, month5, day20)
+        val date2 = LocalDate.of(year2023, month6, day10)
+        val date3 = LocalDate.of(year2023, month8, day2)
+        val date4 = LocalDate.of(year2023, month9, day20)
+        val date5 = LocalDate.of(year2023, month5, day21)
+        val date6 = LocalDate.of(year2023, month5, day1)
 
-        val currentDate = LocalDate.of(2023, 11, 20)
+        val currentDate = LocalDate.of(year2023, month11, day20)
 
         isDateInLastSixMonths(date1, currentDate) mustBe true
         isDateInLastSixMonths(date2, currentDate) mustBe true
@@ -66,13 +71,13 @@ class DateUtilsSpec extends SpecBase {
 
     "return false" when {
       "date is not in last 6 months" in {
-        val date1 = LocalDate.of(2023, 4, 29)
-        val date2 = LocalDate.of(2023, 4, 10)
-        val date3 = LocalDate.of(2022, 12, 31)
-        val date4 = LocalDate.of(2023, 3, 20)
-        val date5 = LocalDate.of(2023, 4, 30)
+        val date1 = LocalDate.of(year2023, month4, day29)
+        val date2 = LocalDate.of(year2023, month4, day10)
+        val date3 = LocalDate.of(year2022, month12, day31)
+        val date4 = LocalDate.of(year2023, month3, day20)
+        val date5 = LocalDate.of(year2023, month4, day30)
 
-        val currentDate = LocalDate.of(2023, 11, 20)
+        val currentDate = LocalDate.of(year2023, month11, day20)
 
         isDateInLastSixMonths(date1, currentDate) mustBe false
         isDateInLastSixMonths(date2, currentDate) mustBe false
