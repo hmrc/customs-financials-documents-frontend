@@ -31,15 +31,15 @@ sealed abstract class FileFormat(val name: String) extends Ordered[FileFormat] {
 
 object FileFormat {
 
-  case object Pdf extends FileFormat("PDF") {
+  case object Pdf extends FileFormat(name = "PDF") {
     val order = 1
   }
 
-  case object Csv extends FileFormat("CSV") {
+  case object Csv extends FileFormat(name = "CSV") {
     val order = 2
   }
 
-  case object UnknownFileFormat extends FileFormat("UNKNOWN FILE FORMAT") {
+  case object UnknownFileFormat extends FileFormat(name = "UNKNOWN FILE FORMAT") {
     val order = 99
   }
 
@@ -48,7 +48,8 @@ object FileFormat {
   val SdesFileFormats: SortedSet[FileFormat] = SortedSet(Pdf, Csv)
   val PvatFileFormats: Set[FileFormat] = SortedSet(Pdf)
 
-  def filterFileFormats[T <: SdesFile](allowedFileFormats: SortedSet[FileFormat])(files: Seq[T]): Seq[T] = files.filter(file => allowedFileFormats(file.metadata.fileFormat))
+  def filterFileFormats[T <: SdesFile](allowedFileFormats: SortedSet[FileFormat])(files: Seq[T]): Seq[T] =
+    files.filter(file => allowedFileFormats(file.metadata.fileFormat))
 
   def apply(name: String): FileFormat = name.toUpperCase match {
     case Pdf.name => Pdf
@@ -60,11 +61,9 @@ object FileFormat {
 
   def unapply(arg: FileFormat): Option[String] = Some(arg.name)
 
-  implicit val fileFormatFormat = new Format[FileFormat] {
-    def reads(json: JsValue) = JsSuccess(apply(json.as[String]))
+  implicit val fileFormatFormat: Format[FileFormat] = new Format[FileFormat] {
+    def reads(json: JsValue): JsSuccess[FileFormat] = JsSuccess(apply(json.as[String]))
 
-    def writes(obj: FileFormat) = JsString(obj.name)
+    def writes(obj: FileFormat): JsString = JsString(obj.name)
   }
 }
-
-

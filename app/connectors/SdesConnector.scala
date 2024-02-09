@@ -26,21 +26,22 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.HttpReads.Implicits._
 
 class SdesConnector @Inject()(httpClient: HttpClient,
                               appConfig: AppConfig,
                               metricsReporterService: MetricsReporterService,
                               sdesGatekeeperService: SdesGatekeeperService,
-                              auditingService: AuditingService
-                             )(implicit executionContext: ExecutionContext) {
-
-
+                              auditingService: AuditingService)(implicit executionContext: ExecutionContext) {
 
   import sdesGatekeeperService._
 
-  def getVatCertificates(eori: String)(implicit hc: HeaderCarrier, messages: Messages): Future[Seq[VatCertificateFile]] = {
+  def getVatCertificates(eori: String)(implicit hc: HeaderCarrier,
+                                       messages: Messages): Future[Seq[VatCertificateFile]] = {
     val transform = convertTo[VatCertificateFile] andThen filterFileFormats(SdesFileFormats)
+
     auditingService.auditVatCertificates(eori)
+
     getSdesFiles[FileInformation, VatCertificateFile](
       appConfig.filesUrl(C79Certificate),
       eori,
@@ -51,7 +52,9 @@ class SdesConnector @Inject()(httpClient: HttpClient,
 
   def getPostponedVatStatements(eori: String)(implicit hc: HeaderCarrier): Future[Seq[PostponedVatStatementFile]] = {
     val transform = convertTo[PostponedVatStatementFile] andThen filterFileFormats(SdesFileFormats)
+
     auditingService.auditPostponedVatStatements(eori)
+
     getSdesFiles[FileInformation, PostponedVatStatementFile](
       appConfig.filesUrl(PostponedVATStatement),
       eori,
@@ -61,7 +64,9 @@ class SdesConnector @Inject()(httpClient: HttpClient,
 
   def getSecurityStatements(eori: String)(implicit hc: HeaderCarrier): Future[Seq[SecurityStatementFile]] = {
     val transform = convertTo[SecurityStatementFile] andThen filterFileFormats(SdesFileFormats)
+
     auditingService.auditSecurityStatements(eori)
+
     getSdesFiles[FileInformation, SecurityStatementFile](
       appConfig.filesUrl(SecurityStatement),
       eori,
@@ -70,10 +75,17 @@ class SdesConnector @Inject()(httpClient: HttpClient,
     )
   }
 
-  def getSdesFiles[A, B <: SdesFile](url: String, key: String, metricsName: String, transform: Seq[A] => Seq[B])
-                                    (implicit reads: HttpReads[HttpResponse], readSeq: HttpReads[Seq[A]], hc: HeaderCarrier): Future[Seq[B]] = {
+  private def getSdesFiles[A, B <: SdesFile](url: String,
+                                             key: String,
+                                             metricsName: String,
+                                             transform: Seq[A] => Seq[B])
+                                            (implicit reads: HttpReads[HttpResponse],
+                                             readSeq: HttpReads[Seq[A]]): Future[Seq[B]] = {
     metricsReporterService.withResponseTimeLogging(metricsName) {
-      httpClient.GET[HttpResponse](url, headers = Seq("x-client-id" -> appConfig.xClientIdHeader, "X-SDES-Key" -> key))(reads, HeaderCarrier(), implicitly)
+      httpClient.GET[HttpResponse](
+        url,
+        headers = Seq("x-client-id" -> appConfig.xClientIdHeader, "X-SDES-Key" -> key)
+      )(reads, HeaderCarrier(), implicitly)
         .map(readSeq.read("GET", url, _))
         .map(transform)
     }

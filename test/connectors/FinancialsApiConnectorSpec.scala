@@ -24,6 +24,7 @@ import play.api.{Application, inject}
 import services.MetricsReporterService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import utils.SpecBase
+import utils.Utils.emptyString
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -37,7 +38,7 @@ class FinancialsApiConnectorSpec extends SpecBase {
       })
 
     when[Future[HttpResponse]](mockHttpClient.DELETE(any, any)(any, any, any))
-      .thenReturn(Future.successful(HttpResponse(200, "")))
+      .thenReturn(Future.successful(HttpResponse(OK, emptyString)))
 
     running(app) {
       val result = await(connector.deleteNotification("someEori", FileRole.C79Certificate))

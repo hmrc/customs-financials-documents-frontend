@@ -19,14 +19,16 @@ package utils
 import actions.{IdentifierAction, PvatIdentifierAction}
 import models.{AuthenticatedRequest, EoriHistory}
 import play.api.mvc._
+import utils.CommonTestData.EORI_NUMBER
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeIdentifierAction @Inject()(bodyParsers: PlayBodyParsers)(eoriHistory: Seq[EoriHistory]) extends IdentifierAction {
+class FakeIdentifierAction @Inject()(bodyParsers: PlayBodyParsers)(eoriHistory: Seq[EoriHistory])
+  extends IdentifierAction {
 
   override def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] =
-    Future.successful(Right(AuthenticatedRequest(request, "testEori1", eoriHistory)))
+    Future.successful(Right(AuthenticatedRequest(request, EORI_NUMBER, eoriHistory)))
 
   override def parser: BodyParser[AnyContent] =
     bodyParsers.default
@@ -35,10 +37,11 @@ class FakeIdentifierAction @Inject()(bodyParsers: PlayBodyParsers)(eoriHistory: 
     scala.concurrent.ExecutionContext.Implicits.global
 }
 
-class PvatFakeIdentifierAction @Inject()(bodyParsers: PlayBodyParsers)(eoriHistory: Seq[EoriHistory]) extends PvatIdentifierAction {
+class PvatFakeIdentifierAction @Inject()(bodyParsers: PlayBodyParsers)(eoriHistory: Seq[EoriHistory])
+  extends PvatIdentifierAction {
 
   override def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] =
-    Future.successful(Right(AuthenticatedRequest(request, "testEori1", eoriHistory)))
+    Future.successful(Right(AuthenticatedRequest(request, EORI_NUMBER, eoriHistory)))
 
   override def parser: BodyParser[AnyContent] =
     bodyParsers.default

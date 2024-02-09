@@ -29,6 +29,10 @@ import viewmodels.VatViewModel
 import views.html.import_vat.import_vat
 import models.{VatCertificatesByMonth, VatCertificatesForEori}
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import utils.CommonTestData.{
+  DAY_28, EORI_NUMBER, FIVE_MONTHS, FOUR_MONTHS, ONE_MONTH, SIX_MONTHS, THREE_MONTHS,
+  TWO_MONTHS
+}
 import utils.Utils.emptyString
 
 import java.time.LocalDate
@@ -36,6 +40,7 @@ import java.time.LocalDate
 class ImportVatSpec extends SpecBase {
 
   "ImportVat view" should {
+
     "display the correct title and guidance" in new Setup {
       view.title() mustBe
         s"${messages(app)("cf.account.vat.title")} - ${messages(app)("service.name")} - GOV.UK"
@@ -66,19 +71,21 @@ class ImportVatSpec extends SpecBase {
     implicit val msg: Messages = messages(app)
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
-    val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory("testEori1", None, None))
-    val date: LocalDate = LocalDate.now().withDayOfMonth(28)
+    val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory(EORI_NUMBER, None, None))
+    val date: LocalDate = LocalDate.now().withDayOfMonth(DAY_28)
 
     val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
-      VatCertificatesByMonth(date.minusMonths(1), Seq())(messages(app)),
-      VatCertificatesByMonth(date.minusMonths(2), Seq())(messages(app)),
-      VatCertificatesByMonth(date.minusMonths(3), Seq())(messages(app)),
-      VatCertificatesByMonth(date.minusMonths(4), Seq())(messages(app)),
-      VatCertificatesByMonth(date.minusMonths(5), Seq())(messages(app)),
-      VatCertificatesByMonth(date.minusMonths(6), Seq())(messages(app)),
+      VatCertificatesByMonth(date.minusMonths(ONE_MONTH), Seq())(messages(app)),
+      VatCertificatesByMonth(date.minusMonths(TWO_MONTHS), Seq())(messages(app)),
+      VatCertificatesByMonth(date.minusMonths(THREE_MONTHS), Seq())(messages(app)),
+      VatCertificatesByMonth(date.minusMonths(FOUR_MONTHS), Seq())(messages(app)),
+      VatCertificatesByMonth(date.minusMonths(FIVE_MONTHS), Seq())(messages(app)),
+      VatCertificatesByMonth(date.minusMonths(SIX_MONTHS), Seq())(messages(app))
     )
+
     val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
       Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
+
     val viewModel: VatViewModel = VatViewModel(vatCertificatesForEoris)
 
     val view: Document = Jsoup.parse(

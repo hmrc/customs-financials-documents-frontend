@@ -20,27 +20,32 @@ import config.AppConfig
 import models.DutyPaymentMethod.CDS
 import models.FileFormat.{Csv, Pdf}
 import models.FileRole.{C79Certificate, PostponedVATStatement, SecurityStatement}
+import models._
 import models.metadata._
-import models.{FileInformation, PostponedVatStatementFile, SecurityStatementFile, VatCertificateFile}
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.http.Status
 import play.api.i18n.Messages
-import play.api.inject
 import play.api.libs.json.{JsArray, Json}
 import play.api.test.Helpers._
+import play.api.{Application, inject}
 import services.{AuditingService, MetricsReporterService, SdesGatekeeperService}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import utils.CommonTestData._
 import utils.SpecBase
+import utils.Utils.emptyString
 
 import scala.concurrent.Future
 
 class SdesConnectorSpec extends SpecBase {
-  "HttpSdesConnector" should {
-    "getSecurityStatements" should {
-      "make a GET request to sdesSecurityStatementsUrl" in new Setup {
-        val url = sdesSecurityStatementsUrl
 
-        val sdesService = app.injector.instanceOf[SdesConnector]
+  "HttpSdesConnector" should {
+
+    "getSecurityStatements" should {
+
+      "make a GET request to sdesSecurityStatementsUrl" in new Setup {
+        val url: String = sdesSecurityStatementsUrl
+        val sdesService: SdesConnector = app.injector.instanceOf[SdesConnector]
+
         when[Future[HttpResponse]](mockHttp.GET(eqTo(url), any, any)(any, any, any))
           .thenReturn(Future.successful(HttpResponse(Status.OK, JsArray(Nil).toString())))
 
@@ -49,99 +54,139 @@ class SdesConnectorSpec extends SpecBase {
       }
 
       "filter out unknown file types" in new Setup {
-        val url = sdesSecurityStatementsUrl
+        val url: String = sdesSecurityStatementsUrl
+        val sdesService: SdesConnector = app.injector.instanceOf[SdesConnector]
 
-        val sdesService = app.injector.instanceOf[SdesConnector]
         when[Future[HttpResponse]](mockHttp.GET(eqTo(url), any, any)(any, any, any))
-          .thenReturn(Future.successful(HttpResponse(Status.OK, Json.toJson(securityStatementFilesWithUnkownFileTypesSdesResponse).toString())))
+          .thenReturn(
+            Future.successful(
+              HttpResponse(Status.OK, Json.toJson(securityStatementFilesWithUnkownFileTypesSdesResponse).toString())
+            )
+          )
 
-        val result = await(sdesService.getSecurityStatements(someEoriWithUnknownFileTypes)(hc))
-        result mustBe (securityStatementFiles)
+        val result: Seq[SecurityStatementFile] =
+          await(sdesService.getSecurityStatements(someEoriWithUnknownFileTypes)(hc))
+
+        result mustBe securityStatementFiles
         verify(mockHttp).GET(eqTo(url), any, any)(any, any, any)
       }
 
       "converts Sdes response to List[SecurityStatementFile]" in new Setup {
-        val url = sdesSecurityStatementsUrl
-        val numberOfStatements = securityStatementFilesSdesResponse.length
+        val url: String = sdesSecurityStatementsUrl
+        val numberOfStatements: Int = securityStatementFilesSdesResponse.length
+
         when[Future[HttpResponse]](mockHttp.GET(eqTo(url), any, any)(any, any, any))
-          .thenReturn(Future.successful(HttpResponse(Status.OK, Json.toJson(securityStatementFilesSdesResponse).toString())))
+          .thenReturn(
+            Future.successful(HttpResponse(Status.OK, Json.toJson(securityStatementFilesSdesResponse).toString()))
+          )
 
         when(sdesGatekeeperServiceSpy.convertTo(any)).thenCallRealMethod()
 
-        override val app = application().overrides(
+        override val app: Application = application().overrides(
           inject.bind[HttpClient].toInstance(mockHttp),
           inject.bind[SdesGatekeeperService].toInstance(sdesGatekeeperServiceSpy)
         ).build()
-        val sdesService = app.injector.instanceOf[SdesConnector]
+
+        val sdesService: SdesConnector = app.injector.instanceOf[SdesConnector]
 
         await(sdesService.getSecurityStatements(someEori)(hc))
+
         verify(mockHttp).GET(eqTo(url), any, any)(any, any, any)
         verify(sdesGatekeeperServiceSpy, times(numberOfStatements)).convertToSecurityStatementFile(any)
       }
     }
 
     "getVatCertificates" should {
+
       "filter out unknown file types" in new Setup {
-        val url = sdesVatCertificatesUrl
+        val url: String = sdesVatCertificatesUrl
+        val sdesService: SdesConnector = app.injector.instanceOf[SdesConnector]
 
-        val sdesService = app.injector.instanceOf[SdesConnector]
         when[Future[HttpResponse]](mockHttp.GET(eqTo(url), any, any)(any, any, any))
-          .thenReturn(Future.successful(HttpResponse(Status.OK, Json.toJson(vatCertificateFilesWithUnknownFileTypesSdesResponse).toString())))
+          .thenReturn(
+            Future.successful(
+              HttpResponse(Status.OK, Json.toJson(vatCertificateFilesWithUnknownFileTypesSdesResponse).toString())
+            )
+          )
 
-        val result = await(sdesService.getVatCertificates(someEoriWithUnknownFileTypes)(hc, messages))
-        result mustBe (vatCertificateFiles)
+        val result: Seq[VatCertificateFile] =
+          await(sdesService.getVatCertificates(someEoriWithUnknownFileTypes)(hc, messages))
+
+        result mustBe vatCertificateFiles
         verify(mockHttp).GET(eqTo(url), any, any)(any, any, any)
       }
 
       "converts Sdes response to List[VatCertificateFile]" in new Setup {
-        val url = sdesVatCertificatesUrl
-        val numberOfStatements = vatCertificateFilesSdesResponse.length
+        val url: String = sdesVatCertificatesUrl
+        val numberOfStatements: Int = vatCertificateFilesSdesResponse.length
+
         when[Future[HttpResponse]](mockHttp.GET(eqTo(url), any, any)(any, any, any))
-          .thenReturn(Future.successful(HttpResponse(Status.OK, Json.toJson(vatCertificateFilesSdesResponse).toString())))
+          .thenReturn(
+            Future.successful(
+              HttpResponse(Status.OK, Json.toJson(vatCertificateFilesSdesResponse).toString())
+            )
+          )
 
         when(sdesGatekeeperServiceSpy.convertTo(any)).thenCallRealMethod()
 
-        override val app = application().overrides(
+        override val app: Application = application().overrides(
           inject.bind[HttpClient].toInstance(mockHttp),
           inject.bind[SdesGatekeeperService].toInstance(sdesGatekeeperServiceSpy)
         ).build()
-        val sdesService = app.injector.instanceOf[SdesConnector]
+
+        val sdesService: SdesConnector = app.injector.instanceOf[SdesConnector]
 
         await(sdesService.getVatCertificates(someEori)(hc, messages))
+
         verify(sdesGatekeeperServiceSpy, times(numberOfStatements)).convertToVatCertificateFile(any)(any)
         verify(mockHttp).GET(eqTo(url), any, any)(any, any, any)
       }
     }
 
     "getPostponedVatStatements" should {
+
       "filter out unknown file types" in new Setup {
-        val url = sdesPostponedVatStatementsUrl
-        val sdesService = app.injector.instanceOf[SdesConnector]
+        val url: String = sdesPostponedVatStatementsUrl
+        val sdesService: SdesConnector = app.injector.instanceOf[SdesConnector]
 
         when[Future[HttpResponse]](mockHttp.GET(eqTo(url), any, any)(any, any, any))
-          .thenReturn(Future.successful(HttpResponse(Status.OK, Json.toJson(postponedVatCertificateFilesWithUnknownFileTypesSdesResponse).toString())))
+          .thenReturn(
+            Future.successful(
+              HttpResponse(
+                Status.OK,
+                Json.toJson(postponedVatCertificateFilesWithUnknownFileTypesSdesResponse).toString())
+            )
+          )
 
-        val result = await(sdesService.getPostponedVatStatements(someEoriWithUnknownFileTypes)(hc))
-        result mustBe (filteredPostponedVatCertificateFiles)
+        val result: Seq[PostponedVatStatementFile] =
+          await(sdesService.getPostponedVatStatements(someEoriWithUnknownFileTypes)(hc))
+
+        result mustBe filteredPostponedVatCertificateFiles
         verify(mockHttp).GET(eqTo(url), any, any)(any, any, any)
       }
 
       "converts Sdes response to List[PostponedVatCertificateFile]" in new Setup {
-        val url = sdesPostponedVatStatementsUrl
-        val numberOfStatements = postponedVatCertificateFilesSdesResponse.length
+        val url: String = sdesPostponedVatStatementsUrl
+        val numberOfStatements: Int = postponedVatCertificateFilesSdesResponse.length
+
         when[Future[HttpResponse]](mockHttp.GET(eqTo(url), any, any)(any, any, any))
-          .thenReturn(Future.successful(HttpResponse(Status.OK, Json.toJson(postponedVatCertificateFilesSdesResponse).toString())))
+          .thenReturn(
+            Future.successful(
+              HttpResponse(Status.OK, Json.toJson(postponedVatCertificateFilesSdesResponse).toString())
+            )
+          )
 
         when(sdesGatekeeperServiceSpy.convertTo(any)).thenCallRealMethod()
 
-        override val app = application().overrides(
+        override val app: Application = application().overrides(
           inject.bind[HttpClient].toInstance(mockHttp),
           inject.bind[SdesGatekeeperService].toInstance(sdesGatekeeperServiceSpy)
         ).build()
 
-        val sdesService = app.injector.instanceOf[SdesConnector]
+        val sdesService: SdesConnector = app.injector.instanceOf[SdesConnector]
 
         await(sdesService.getPostponedVatStatements(someEori)(hc))
+
         verify(sdesGatekeeperServiceSpy, times(numberOfStatements)).convertToPostponedVatCertificateFile(any)
         verify(mockHttp).GET(eqTo(url), any, any)(any, any, any)
       }
@@ -151,103 +196,339 @@ class SdesConnectorSpec extends SpecBase {
   trait Setup {
     val hc: HeaderCarrier = HeaderCarrier()
     implicit val messages: Messages = stubMessages()
+
     val someEori = "12345678"
     val someEoriWithUnknownFileTypes = "EoriFooBar"
     val someDan = "87654321"
     val xClientId = "TheClientId"
     val xClientIdHeader = "x-client-id"
     val xSDESKey = "X-SDES-Key"
+
     val sdesVatCertificatesUrl = "http://localhost:9754/customs-financials-sdes-stub/files-available/list/C79Certificate"
-    val sdesPostponedVatStatementsUrl = "http://localhost:9754/customs-financials-sdes-stub/files-available/list/PostponedVATStatement"
-    val sdesSecurityStatementsUrl = "http://localhost:9754/customs-financials-sdes-stub/files-available/list/SecurityStatement"
+    val sdesPostponedVatStatementsUrl =
+      "http://localhost:9754/customs-financials-sdes-stub/files-available/list/PostponedVATStatement"
 
-    val vatCertificateFiles = List(
-      VatCertificateFile("name_04", "download_url_06", 111L, VatCertificateFileMetadata(2018, 3, Pdf, C79Certificate, None), ""),
-      VatCertificateFile("name_04", "download_url_05", 111L, VatCertificateFileMetadata(2018, 4, Csv, C79Certificate, None), ""),
-      VatCertificateFile("name_04", "download_url_04", 111L, VatCertificateFileMetadata(2018, 4, Pdf, C79Certificate, None), ""),
-      VatCertificateFile("name_03", "download_url_03", 111L, VatCertificateFileMetadata(2018, 5, Pdf, C79Certificate, None), ""),
-      VatCertificateFile("name_02", "download_url_02", 111L, VatCertificateFileMetadata(2018, 6, Csv, C79Certificate, None), ""),
-      VatCertificateFile("name_01", "download_url_01", 1300000L, VatCertificateFileMetadata(2018, 6, Pdf, C79Certificate, None), "")
+    val sdesSecurityStatementsUrl =
+      "http://localhost:9754/customs-financials-sdes-stub/files-available/list/SecurityStatement"
+
+    val periodStartYear: MetadataItem = MetadataItem("PeriodStartYear", "2018")
+    val periodStartMonth: MetadataItem = MetadataItem("PeriodStartMonth", "3")
+    val periodStartMonth4: MetadataItem = MetadataItem("PeriodStartMonth", "4")
+    val periodStartMonth5: MetadataItem = MetadataItem("PeriodStartMonth", "5")
+    val periodStartMonth6: MetadataItem = MetadataItem("PeriodStartMonth", "6")
+    val periodStartDay: MetadataItem = MetadataItem("PeriodStartDay", "14")
+    val periodEndYear: MetadataItem = MetadataItem("PeriodEndYear", "2018")
+    val periodEndMonth: MetadataItem = MetadataItem("PeriodEndMonth", "3")
+    val periodEndDay: MetadataItem = MetadataItem("PeriodEndDay", "23")
+    val fileType: MetadataItem = MetadataItem("FileType", "bar")
+    val fileTypePdf: MetadataItem = MetadataItem("FileType", "pdf")
+    val fileTypeCsv: MetadataItem = MetadataItem("FileType", "CSV")
+    val fileTypeFoo: MetadataItem = MetadataItem("FileType", "foo")
+    val fileRole: MetadataItem = MetadataItem("FileRole", "SecurityStatement")
+    val fileRolePVATStatement: MetadataItem = MetadataItem("FileRole", "PostponedVATStatement")
+    val fileRoleC79Cert: MetadataItem = MetadataItem("FileRole", "C79Certificate")
+    val eoriNumber: MetadataItem = MetadataItem("eoriNumber", someEori)
+    val fileSize: MetadataItem = MetadataItem("fileSize", "111")
+    val checksum: MetadataItem = MetadataItem("checksum", CHECK_SUM_01)
+    val issueDate: MetadataItem = MetadataItem("issueDate", "3/4/2018")
+    val dutyPaymentMethod: MetadataItem = MetadataItem("DutyPaymentMethod", "Immediate")
+
+    val vatCertificateFiles: List[VatCertificateFile] = List(
+      VatCertificateFile(
+        STAT_FILE_NAME_04,
+        DOWNLOAD_URL_06,
+        SIZE_111L,
+        getVatCertificateFileMetadata(), emptyString),
+      VatCertificateFile(
+        STAT_FILE_NAME_04,
+        DOWNLOAD_URL_05,
+        SIZE_111L,
+        getVatCertificateFileMetadata(periodStartMonth = MONTH_4, fileFormat = Csv),
+        emptyString),
+      VatCertificateFile(
+        STAT_FILE_NAME_04,
+        DOWNLOAD_URL_04,
+        SIZE_111L,
+        VatCertificateFileMetadata(YEAR_2018, MONTH_4, Pdf, C79Certificate, None),
+        emptyString),
+      VatCertificateFile(
+        STAT_FILE_NAME_03,
+        DOWNLOAD_URL_03,
+        SIZE_111L,
+        VatCertificateFileMetadata(YEAR_2018, MONTH_5, Pdf, C79Certificate, None),
+        emptyString),
+      VatCertificateFile(
+        STAT_FILE_NAME_02,
+        DOWNLOAD_URL_02,
+        SIZE_111L,
+        VatCertificateFileMetadata(YEAR_2018, MONTH_6, Csv, C79Certificate, None),
+        emptyString),
+      VatCertificateFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_01,
+        SIZE_1300000L,
+        VatCertificateFileMetadata(YEAR_2018, MONTH_6, Pdf, C79Certificate, None),
+        emptyString)
     )
 
-    val postponedVatCertificateFiles = List(
-      PostponedVatStatementFile("name_04", "download_url_06", 111L, PostponedVatStatementFileMetadata(2018, 3, Pdf, PostponedVATStatement, CDS, None), ""),
-      PostponedVatStatementFile("name_04", "download_url_05", 111L, PostponedVatStatementFileMetadata(2018, 4, Csv, PostponedVATStatement, CDS, None), ""),
-      PostponedVatStatementFile("name_04", "download_url_04", 111L, PostponedVatStatementFileMetadata(2018, 4, Pdf, PostponedVATStatement, CDS, None), ""),
-      PostponedVatStatementFile("name_03", "download_url_03", 111L, PostponedVatStatementFileMetadata(2018, 5, Pdf, PostponedVATStatement, CDS, None), ""),
-      PostponedVatStatementFile("name_02", "download_url_02", 111L, PostponedVatStatementFileMetadata(2018, 6, Csv, PostponedVATStatement, CDS, None), ""),
-      PostponedVatStatementFile("name_01", "download_url_01", 1300000L, PostponedVatStatementFileMetadata(2018, 6, Pdf, PostponedVATStatement, CDS, None), "")
+    val postponedVatCertificateFiles: List[PostponedVatStatementFile] = List(
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_04,
+        DOWNLOAD_URL_06,
+        SIZE_111L,
+        PostponedVatStatementFileMetadata(YEAR_2018, MONTH_3, Pdf, PostponedVATStatement, CDS, None),
+        emptyString),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_04,
+        DOWNLOAD_URL_05,
+        SIZE_111L,
+        PostponedVatStatementFileMetadata(YEAR_2018, MONTH_4, Csv, PostponedVATStatement, CDS, None),
+        emptyString),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_04,
+        DOWNLOAD_URL_04,
+        SIZE_111L,
+        PostponedVatStatementFileMetadata(YEAR_2018, MONTH_4, Pdf, PostponedVATStatement, CDS, None),
+        emptyString),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_03,
+        DOWNLOAD_URL_03,
+        SIZE_111L,
+        PostponedVatStatementFileMetadata(YEAR_2018, MONTH_5, Pdf, PostponedVATStatement, CDS, None),
+        emptyString),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_02,
+        DOWNLOAD_URL_02,
+        SIZE_111L,
+        PostponedVatStatementFileMetadata(YEAR_2018, MONTH_6, Csv, PostponedVATStatement, CDS, None),
+        emptyString),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_01,
+        SIZE_1300000L,
+        PostponedVatStatementFileMetadata(YEAR_2018, MONTH_6, Pdf, PostponedVATStatement, CDS, None),
+        emptyString)
     )
 
-    val filteredPostponedVatCertificateFiles = List(
-      PostponedVatStatementFile("name_04", "download_url_06", 111L, PostponedVatStatementFileMetadata(2018, 3, Pdf, PostponedVATStatement, CDS, None), ""),
-      PostponedVatStatementFile("name_04", "download_url_04", 111L, PostponedVatStatementFileMetadata(2018, 4, Pdf, PostponedVATStatement, CDS, None), ""),
-      PostponedVatStatementFile("name_03", "download_url_03", 111L, PostponedVatStatementFileMetadata(2018, 5, Pdf, PostponedVATStatement, CDS, None), ""),
-      PostponedVatStatementFile("name_01", "download_url_01", 1300000L, PostponedVatStatementFileMetadata(2018, 6, Pdf, PostponedVATStatement, CDS, None), "")
+    val filteredPostponedVatCertificateFiles: List[PostponedVatStatementFile] = List(
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_04,
+        DOWNLOAD_URL_06,
+        SIZE_111L,
+        PostponedVatStatementFileMetadata(YEAR_2018, MONTH_3, Pdf, PostponedVATStatement, CDS, None),
+        emptyString),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_04,
+        DOWNLOAD_URL_04,
+        SIZE_111L,
+        PostponedVatStatementFileMetadata(YEAR_2018, MONTH_4, Pdf, PostponedVATStatement, CDS, None),
+        emptyString),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_03,
+        DOWNLOAD_URL_03,
+        SIZE_111L,
+        PostponedVatStatementFileMetadata(YEAR_2018, MONTH_5, Pdf, PostponedVATStatement, CDS, None),
+        emptyString),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_01,
+        SIZE_1300000L,
+        PostponedVatStatementFileMetadata(YEAR_2018, MONTH_6, Pdf, PostponedVATStatement, CDS, None),
+        emptyString)
     )
 
-    val vatCertificateFilesSdesResponse = List(
-      FileInformation("name_04", "download_url_06", 111L, Metadata(List(MetadataItem("PeriodStartYear", "2018"), MetadataItem("PeriodStartMonth", "3"), MetadataItem("FileType", "pdf"), MetadataItem("FileRole", "C79Certificate")))),
-      FileInformation("name_04", "download_url_05", 111L, Metadata(List(MetadataItem("PeriodStartYear", "2018"), MetadataItem("PeriodStartMonth", "4"), MetadataItem("FileType", "CSV"), MetadataItem("FileRole", "C79Certificate")))),
-      FileInformation("name_04", "download_url_04", 111L, Metadata(List(MetadataItem("PeriodStartYear", "2018"), MetadataItem("PeriodStartMonth", "4"), MetadataItem("FileType", "pdf"), MetadataItem("FileRole", "C79Certificate")))),
-      FileInformation("name_03", "download_url_03", 111L, Metadata(List(MetadataItem("PeriodStartYear", "2018"), MetadataItem("PeriodStartMonth", "5"), MetadataItem("FileType", "pdf"), MetadataItem("FileRole", "C79Certificate")))),
-      FileInformation("name_02", "download_url_02", 111L, Metadata(List(MetadataItem("PeriodStartYear", "2018"), MetadataItem("PeriodStartMonth", "6"), MetadataItem("FileType", "csv"), MetadataItem("FileRole", "C79Certificate")))),
-      FileInformation("name_01", "download_url_01", 1300000L, Metadata(List(MetadataItem("PeriodStartYear", "2018"), MetadataItem("PeriodStartMonth", "6"), MetadataItem("FileType", "PDF"), MetadataItem("FileRole", "C79Certificate"))))
+    val vatCertificateFilesSdesResponse: List[FileInformation] = List(
+      FileInformation(
+        STAT_FILE_NAME_04,
+        DOWNLOAD_URL_06,
+        SIZE_111L,
+        Metadata(List(periodStartYear, periodStartMonth, fileTypePdf, fileRoleC79Cert))
+      ),
+      FileInformation(
+        STAT_FILE_NAME_04,
+        DOWNLOAD_URL_05,
+        SIZE_111L,
+        Metadata(List(periodStartYear, periodStartMonth4, fileTypeCsv, fileRoleC79Cert))
+      ),
+      FileInformation(
+        STAT_FILE_NAME_04,
+        DOWNLOAD_URL_04,
+        SIZE_111L,
+        Metadata(List(periodStartYear, periodStartMonth4, fileTypePdf, fileRoleC79Cert))
+      ),
+      FileInformation(
+        STAT_FILE_NAME_03,
+        DOWNLOAD_URL_03,
+        SIZE_111L,
+        Metadata(List(periodStartYear, periodStartMonth5, fileTypePdf, fileRoleC79Cert))
+      ),
+      FileInformation(
+        STAT_FILE_NAME_02,
+        DOWNLOAD_URL_02,
+        SIZE_111L,
+        Metadata(List(periodStartYear, periodStartMonth6, fileTypeCsv, fileRoleC79Cert))
+      ),
+      FileInformation(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_01,
+        SIZE_1300000L,
+        Metadata(List(periodStartYear, periodStartMonth6, fileTypePdf, fileRoleC79Cert))
+      )
     )
 
-
-    val postponedVatCertificateFilesSdesResponse = List(
-      FileInformation("name_04", "download_url_06", 111L, Metadata(List(MetadataItem("PeriodStartYear", "2018"), MetadataItem("PeriodStartMonth", "3"), MetadataItem("FileType", "pdf"), MetadataItem("FileRole", "PostponedVATStatement"), MetadataItem("DutyPaymentMethod", "Immediate")))),
-      FileInformation("name_04", "download_url_05", 111L, Metadata(List(MetadataItem("PeriodStartYear", "2018"), MetadataItem("PeriodStartMonth", "4"), MetadataItem("FileType", "CSV"), MetadataItem("FileRole", "PostponedVATStatement"), MetadataItem("DutyPaymentMethod", "Immediate")))),
-      FileInformation("name_04", "download_url_04", 111L, Metadata(List(MetadataItem("PeriodStartYear", "2018"), MetadataItem("PeriodStartMonth", "4"), MetadataItem("FileType", "pdf"), MetadataItem("FileRole", "PostponedVATStatement"), MetadataItem("DutyPaymentMethod", "Immediate")))),
-      FileInformation("name_03", "download_url_03", 111L, Metadata(List(MetadataItem("PeriodStartYear", "2018"), MetadataItem("PeriodStartMonth", "5"), MetadataItem("FileType", "pdf"), MetadataItem("FileRole", "PostponedVATStatement"), MetadataItem("DutyPaymentMethod", "Immediate")))),
-      FileInformation("name_02", "download_url_02", 111L, Metadata(List(MetadataItem("PeriodStartYear", "2018"), MetadataItem("PeriodStartMonth", "6"), MetadataItem("FileType", "csv"), MetadataItem("FileRole", "PostponedVATStatement"), MetadataItem("DutyPaymentMethod", "Immediate")))),
-      FileInformation("name_01", "download_url_01", 1300000L, Metadata(List(MetadataItem("PeriodStartYear", "2018"), MetadataItem("PeriodStartMonth", "6"), MetadataItem("FileType", "PDF"), MetadataItem("FileRole", "PostponedVATStatement"), MetadataItem("DutyPaymentMethod", "Immediate"))))
+    val postponedVatCertificateFilesSdesResponse: List[FileInformation] = List(
+      FileInformation(
+        STAT_FILE_NAME_04,
+        DOWNLOAD_URL_06,
+        SIZE_111L,
+        Metadata(List(periodStartYear, periodStartMonth, fileTypePdf, fileRolePVATStatement, dutyPaymentMethod))
+      ),
+      FileInformation(
+        STAT_FILE_NAME_04,
+        DOWNLOAD_URL_05,
+        SIZE_111L,
+        Metadata(List(periodStartYear, periodStartMonth4, fileTypeCsv, fileRolePVATStatement, dutyPaymentMethod))
+      ),
+      FileInformation(
+        STAT_FILE_NAME_04,
+        DOWNLOAD_URL_04,
+        SIZE_111L,
+        Metadata(List(periodStartYear, periodStartMonth4, fileTypePdf, fileRolePVATStatement, dutyPaymentMethod))
+      ),
+      FileInformation(
+        STAT_FILE_NAME_03,
+        DOWNLOAD_URL_03,
+        SIZE_111L,
+        Metadata(List(periodStartYear, periodStartMonth5, fileTypePdf, fileRolePVATStatement, dutyPaymentMethod))
+      ),
+      FileInformation(
+        STAT_FILE_NAME_02,
+        DOWNLOAD_URL_02,
+        SIZE_111L,
+        Metadata(List(periodStartYear, periodStartMonth6, fileTypeCsv, fileRolePVATStatement, dutyPaymentMethod))
+      ),
+      FileInformation(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_01,
+        SIZE_1300000L,
+        Metadata(List(periodStartYear, periodStartMonth6, fileTypePdf, fileRolePVATStatement, dutyPaymentMethod))
+      )
     )
 
-    val vatCertificateFilesWithUnknownFileTypesSdesResponse = List(
-      FileInformation("name_04", "download_url_06", 111L, Metadata(List(MetadataItem("PeriodStartYear", "2018"), MetadataItem("PeriodStartMonth", "3"), MetadataItem("FileType", "foo"), MetadataItem("FileRole", "C79Certificate"))))) ++
-      vatCertificateFilesSdesResponse ++
-      List(FileInformation("name_01", "download_url_01", 1300000L, Metadata(List(MetadataItem("PeriodStartYear", "2018"), MetadataItem("PeriodStartMonth", "6"), MetadataItem("FileType", "bar"), MetadataItem("FileRole", "C79Certificate")))))
+    val vatCertificateFilesWithUnknownFileTypesSdesResponse: List[FileInformation] =
+      List(FileInformation(
+        STAT_FILE_NAME_04,
+        DOWNLOAD_URL_06,
+        SIZE_111L,
+        Metadata(List(periodStartYear, periodStartMonth, fileTypeFoo, fileRoleC79Cert))
+      )) ++ vatCertificateFilesSdesResponse ++
+      List(FileInformation(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_01,
+        SIZE_1300000L,
+        Metadata(List(periodStartYear, periodStartMonth6, fileType, fileRoleC79Cert)))
+      )
 
-    val postponedVatCertificateFilesWithUnknownFileTypesSdesResponse = List(
-      FileInformation("name_04", "download_url_06", 111L, Metadata(List(MetadataItem("PeriodStartYear", "2018"), MetadataItem("PeriodStartMonth", "3"), MetadataItem("FileType", "foo"), MetadataItem("FileRole", "PostponedVATStatement"), MetadataItem("DutyPaymentMethod", "Immediate"))))) ++
-      postponedVatCertificateFilesSdesResponse ++
-      List(FileInformation("name_01", "download_url_01", 1300000L, Metadata(List(MetadataItem("PeriodStartYear", "2018"), MetadataItem("PeriodStartMonth", "6"), MetadataItem("FileType", "bar"), MetadataItem("FileRole", "PostponedVATStatement"), MetadataItem("DutyPaymentMethod", "Immediate")))))
+    val postponedVatCertificateFilesWithUnknownFileTypesSdesResponse: List[FileInformation] =
+      List(
+        FileInformation(
+          STAT_FILE_NAME_04,
+          DOWNLOAD_URL_06,
+          SIZE_111L,
+          Metadata(List(periodStartYear, periodStartMonth, fileTypeFoo, fileRolePVATStatement, dutyPaymentMethod))
+        )
+      ) ++ postponedVatCertificateFilesSdesResponse ++
+        List(
+          FileInformation(
+            STAT_FILE_NAME_01,
+            DOWNLOAD_URL_01,
+            SIZE_1300000L,
+            Metadata(List(periodStartYear, periodStartMonth6, fileType, fileRolePVATStatement, dutyPaymentMethod)))
+        )
 
-    val securityStatementFiles = List(
-      SecurityStatementFile("name_01", "download_url_01", 111L, SecurityStatementFileMetadata(2018, 3, 14, 2018, 3, 23, Csv, SecurityStatement, someEori, 111L, "checksum_01", None)),
-      SecurityStatementFile("name_01", "download_url_01", 111L, SecurityStatementFileMetadata(2018, 3, 14, 2018, 3, 23, Pdf, SecurityStatement, someEori, 111L, "checksum_01", None))
-    )
+    val securityStatementFiles: List[SecurityStatementFile] =
+      List(
+        SecurityStatementFile(
+          STAT_FILE_NAME_01,
+          DOWNLOAD_URL_01,
+          SIZE_111L,
+          SecurityStatementFileMetadata(
+            YEAR_2018,
+            MONTH_3,
+            DAY_14,
+            YEAR_2018,
+            MONTH_3,
+            DAY_23,
+            Csv,
+            SecurityStatement, someEori, SIZE_111L, CHECK_SUM_01, None)
+        ),
+        SecurityStatementFile(
+          STAT_FILE_NAME_01,
+          DOWNLOAD_URL_01,
+          SIZE_111L,
+          SecurityStatementFileMetadata(
+            YEAR_2018,
+            MONTH_3,
+            DAY_14,
+            YEAR_2018,
+            MONTH_3,
+            DAY_23,
+            Pdf,
+            SecurityStatement, someEori, SIZE_111L, CHECK_SUM_01, None)
+        )
+      )
 
-    val securityStatementFilesSdesResponse = List(
-      FileInformation("name_01", "download_url_01", 111L, Metadata(List(
-        MetadataItem("PeriodStartYear", "2018"), MetadataItem("PeriodStartMonth", "3"), MetadataItem("PeriodStartDay", "14"), MetadataItem("PeriodEndYear", "2018"),
-        MetadataItem("PeriodEndMonth", "3"), MetadataItem("PeriodEndDay", "23"), MetadataItem("FileType", "CSV"), MetadataItem("FileRole", "SecurityStatement"),
-        MetadataItem("eoriNumber", someEori), MetadataItem("fileSize", "111"), MetadataItem("checksum", "checksum_01"), MetadataItem("issueDate", "3/4/2018")))),
-      FileInformation("name_01", "download_url_01", 111L, Metadata(List(
-        MetadataItem("PeriodStartYear", "2018"), MetadataItem("PeriodStartMonth", "3"), MetadataItem("PeriodStartDay", "14"), MetadataItem("PeriodEndYear", "2018"),
-        MetadataItem("PeriodEndMonth", "3"), MetadataItem("PeriodEndDay", "23"), MetadataItem("FileType", "pdf"), MetadataItem("FileRole", "SecurityStatement"),
-        MetadataItem("eoriNumber", someEori), MetadataItem("fileSize", "111"), MetadataItem("checksum", "checksum_01"), MetadataItem("issueDate", "3/4/2018"))))
-    )
+    val securityStatementFilesSdesResponse: List[FileInformation] =
+      List(
+        FileInformation(
+          STAT_FILE_NAME_01,
+          DOWNLOAD_URL_01,
+          SIZE_111L,
+          Metadata(List(periodStartYear, periodStartMonth, periodStartDay, periodEndYear, periodEndMonth, periodEndDay,
+            fileTypeCsv, fileRole, eoriNumber, fileSize, checksum, issueDate))
+        ),
+        FileInformation(
+          STAT_FILE_NAME_01,
+          DOWNLOAD_URL_01,
+          SIZE_111L,
+          Metadata(List(periodStartYear, periodStartMonth, periodStartDay, periodEndYear, periodEndMonth, periodEndDay,
+            fileTypePdf, fileRole, eoriNumber, fileSize, checksum, issueDate))
+        )
+      )
 
-    val securityStatementFilesWithUnkownFileTypesSdesResponse =
-      List(FileInformation("name_01", "download_url_01", 111L, Metadata(List(
-        MetadataItem("PeriodStartYear", "2018"), MetadataItem("PeriodStartMonth", "3"), MetadataItem("PeriodStartDay", "14"), MetadataItem("PeriodEndYear", "2018"),
-        MetadataItem("PeriodEndMonth", "3"), MetadataItem("PeriodEndDay", "23"), MetadataItem("FileType", "foo"), MetadataItem("FileRole", "SecurityStatement"),
-        MetadataItem("eoriNumber", someEori), MetadataItem("fileSize", "111"), MetadataItem("checksum", "checksum_01"), MetadataItem("issueDate", "3/4/2018"))))) ++
-        securityStatementFilesSdesResponse ++
-        List(FileInformation("name_01", "download_url_01", 111L, Metadata(List(
-          MetadataItem("PeriodStartYear", "2018"), MetadataItem("PeriodStartMonth", "3"), MetadataItem("PeriodStartDay", "14"), MetadataItem("PeriodEndYear", "2018"),
-          MetadataItem("PeriodEndMonth", "3"), MetadataItem("PeriodEndDay", "23"), MetadataItem("FileType", "bar"), MetadataItem("FileRole", "SecurityStatement"),
-          MetadataItem("eoriNumber", someEori), MetadataItem("fileSize", "111"), MetadataItem("checksum", "checksum_01"), MetadataItem("issueDate", "3/4/2018")))))
+    val securityStatementFilesWithUnkownFileTypesSdesResponse: List[FileInformation] =
+      List(
+        FileInformation(
+          STAT_FILE_NAME_01,
+          DOWNLOAD_URL_01,
+          SIZE_111L,
+          Metadata(List(periodStartYear, periodStartMonth, periodStartDay, periodEndYear, periodEndMonth, periodEndDay,
+            fileTypeFoo, fileRole, eoriNumber, fileSize, checksum, issueDate))
+        )
+      ) ++ securityStatementFilesSdesResponse ++
+        List(
+          FileInformation(
+            STAT_FILE_NAME_01,
+            DOWNLOAD_URL_01,
+            SIZE_111L,
+            Metadata(List(periodStartYear, periodStartMonth, periodStartDay, periodEndYear, periodEndMonth, periodEndDay,
+              fileType, fileRole, eoriNumber, fileSize, checksum, issueDate))
+          )
+        )
 
-    val sdesGatekeeperServiceSpy = spy(new SdesGatekeeperService())
-    val mockHttp = mock[HttpClient]
-    val mockAppConfig = mock[AppConfig]
-    val mockMetricsReporterService = mock[MetricsReporterService]
-    val mockAuditingService = mock[AuditingService]
+    val sdesGatekeeperServiceSpy: SdesGatekeeperService = spy(new SdesGatekeeperService())
+    val mockHttp: HttpClient = mock[HttpClient]
+    val mockAppConfig: AppConfig = mock[AppConfig]
+    val mockMetricsReporterService: MetricsReporterService = mock[MetricsReporterService]
+    val mockAuditingService: AuditingService = mock[AuditingService]
 
-    val app = application().overrides(inject.bind[HttpClient].toInstance(mockHttp)).build()
+    val app: Application = application().overrides(inject.bind[HttpClient].toInstance(mockHttp)).build()
+
+    private def getVatCertificateFileMetadata(periodStartYear: Int = YEAR_2018,
+                                              periodStartMonth: Int = MONTH_3,
+                                              fileFormat: FileFormat = Pdf,
+                                              fileRole: FileRole = C79Certificate,
+                                              statementRequestId: Option[String] = None) =
+      VatCertificateFileMetadata(periodStartYear, periodStartMonth, fileFormat, fileRole, statementRequestId)
   }
 }

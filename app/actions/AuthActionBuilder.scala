@@ -28,18 +28,25 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait AuthActionBuilder extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest] with AuthorisedFunctions {
-  override val authConnector: AuthConnector
+trait AuthActionBuilder
+  extends ActionBuilder[AuthenticatedRequest, AnyContent]
+    with ActionRefiner[Request, AuthenticatedRequest]
+    with AuthorisedFunctions {
+
   val appConfig: AppConfig
   val parser: BodyParsers.Default
   val authActionHelper: AuthActionHelper
   val continueUrl: String
+
+  override val authConnector: AuthConnector
+
   override implicit val executionContext: ExecutionContext
 
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    authorised().retrieve(Retrievals.allEnrolments) { allEnrolments =>
+    authorised().retrieve(Retrievals.allEnrolments) {
+      allEnrolments =>
         allEnrolments.getEnrolment("HMRC-CUS-ORG").flatMap(_.getIdentifier("EORINumber")) match {
           case Some(eori) => authActionHelper.authenticatedRequest(eori.value)(request).map(Right(_))
           case None => Future.successful(Left(Redirect(routes.UnauthorisedController.onPageLoad)))
@@ -48,13 +55,10 @@ trait AuthActionBuilder extends ActionBuilder[AuthenticatedRequest, AnyContent] 
   } recover {
     case _: NoActiveSession =>
       Left(Redirect(appConfig.loginUrl, Map("continue_url" -> Seq(continueUrl))))
+
     case _: InsufficientEnrolments =>
       Left(Redirect(routes.UnauthorisedController.onPageLoad))
-    case _ =>
-      Left(Redirect(routes.UnauthorisedController.onPageLoad))
+
+    case _ => Left(Redirect(routes.UnauthorisedController.onPageLoad))
   }
 }
-
-
-
-

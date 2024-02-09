@@ -24,6 +24,7 @@ import java.time.LocalDate
 
 trait SdesFile {
   def metadata: SdesFileMetadata
+
   def downloadURL: String
 
   val fileFormat: FileFormat = metadata.fileFormat
@@ -43,8 +44,12 @@ case class SecurityStatementFile(filename: String,
   def compare(that: SecurityStatementFile): Int = startDate.compareTo(that.startDate)
 }
 
-case class VatCertificateFile(filename: String, downloadURL: String, size: Long, metadata: VatCertificateFileMetadata, eori: String)(implicit messages: Messages)
-  extends Ordered[VatCertificateFile] with SdesFile {
+case class VatCertificateFile(filename: String,
+                              downloadURL: String,
+                              size: Long,
+                              metadata: VatCertificateFileMetadata,
+                              eori: String)
+                             (implicit messages: Messages) extends Ordered[VatCertificateFile] with SdesFile {
 
   val formattedSize: String = Formatters.fileSize(size)
   val formattedMonth: String = Formatters.dateAsMonth(monthAndYear)
@@ -52,8 +57,11 @@ case class VatCertificateFile(filename: String, downloadURL: String, size: Long,
   def compare(that: VatCertificateFile): Int = that.metadata.fileFormat.compare(metadata.fileFormat)
 }
 
-case class PostponedVatStatementFile(filename: String, downloadURL: String, size: Long, metadata: PostponedVatStatementFileMetadata, eori: String)
-  extends Ordered[PostponedVatStatementFile] with SdesFile {
+case class PostponedVatStatementFile(filename: String,
+                                     downloadURL: String,
+                                     size: Long,
+                                     metadata: PostponedVatStatementFileMetadata,
+                                     eori: String) extends Ordered[PostponedVatStatementFile] with SdesFile {
 
   def compare(that: PostponedVatStatementFile): Int = that.metadata.fileFormat.compare(metadata.fileFormat)
 }

@@ -24,40 +24,43 @@
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.timeoutdialog.TimeoutDialog
 @import views.html.helper.CSPNonce
 
-@this(appConfig: AppConfig,
-        hmrcLayout: HmrcLayout,
-        govukBackLink: GovukBackLink,
-        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
-        hmrcTimeoutDialog: HmrcTimeoutDialog,
-        h2: components.h2,
-        p: components.p
-
+@this(
+    appConfig: AppConfig,
+    hmrcLayout: HmrcLayout,
+    govukBackLink: GovukBackLink,
+    hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
+    hmrcTimeoutDialog: HmrcTimeoutDialog,
+    h2: components.h2,
+    p: components.p
 )
 
-@(pageTitle: Option[String] = None,
-        backLink: Option[String] = None,
-        help: Boolean = true,
-        deskpro: Boolean = true,
-        welshToggle: Boolean = true,
+@(
+    pageTitle: Option[String] = None,
+    backLink: Option[String] = None,
+    help: Boolean = true,
+    deskpro: Boolean = true,
+    welshToggle: Boolean = true,
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
-
-
  @phaseBannerContent = {
- @messages("feedback.before")
-  <a class='govuk-link' href='/contact/beta-feedback-unauthenticated?service=CDS-FIN'>@messages("feedback.link")</a>
- @messages("feedback.after")
+     @messages("feedback.before")
+      <a class='govuk-link' href='/contact/beta-feedback-unauthenticated?service=CDS-FIN'>
+          @messages("feedback.link")
+      </a>
+     @messages("feedback.after")
  }
 
  @fullPageTitle = @{
-  pageTitle match {
-   case Some(text) => Some(s"$text - ${messages("service.name")} - GOV.UK")
-   case _ => Some(s"${messages("service.name")} - GOV.UK")
-  }
+      pageTitle match {
+       case Some(text) => Some(s"$text - ${messages("service.name")} - GOV.UK")
+       case _ => Some(s"${messages("service.name")} - GOV.UK")
+      }
  }
 
  @additionalHead = {
-        <link href='@controllers.routes.Assets.versioned("stylesheets/application.css")' media="screen" rel="stylesheet" type="text/css"/>
+        <link href='@controllers.routes.Assets.versioned("stylesheets/application.css")'
+              media="screen" rel="stylesheet" type="text/css"/>
+
         @hmrcTimeoutDialog(TimeoutDialog(
                 title = Some(messages("timeout.title")),
                 timeout = Some(appConfig.timeout),
@@ -69,11 +72,11 @@
  }
 
  @mainContent = {
- @contentBlock
+     @contentBlock
 
- @if(deskpro) {
-   @hmrcReportTechnicalIssueHelper()
-  }
+     @if(deskpro) {
+        @hmrcReportTechnicalIssueHelper()
+      }
  }
 
 @hmrcLayout(

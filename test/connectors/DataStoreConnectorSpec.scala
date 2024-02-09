@@ -24,6 +24,7 @@ import play.api.{Application, inject}
 import services.MetricsReporterService
 import uk.gov.hmrc.auth.core.retrieve.Email
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
+import utils.CommonTestData.{DAY_1, DAY_28, MONTH_1, MONTH_2, MONTH_3, YEAR_2018, YEAR_2019}
 import utils.SpecBase
 
 import java.time.LocalDate
@@ -32,15 +33,16 @@ import scala.concurrent.Future
 class DataStoreConnectorSpec extends SpecBase {
 
   "getAllEoriHistory" should {
+
     "return EoriHistory if any historic EORI's present" in new Setup {
       when(mockMetricsReporterService.withResponseTimeLogging[Seq[EoriHistory]](any)(any)(any))
         .thenAnswer((i: InvocationOnMock) => {
           i.getArgument[Future[Seq[EoriHistory]]](1)
         })
 
-      val historyDate1: LocalDate = LocalDate.of(2019, 3, 1)
-      val historyDate2: LocalDate = LocalDate.of(2018, 1, 1)
-      val historyDate3: LocalDate = LocalDate.of(2019, 2, 28)
+      val historyDate1: LocalDate = LocalDate.of(YEAR_2019, MONTH_3, DAY_1)
+      val historyDate2: LocalDate = LocalDate.of(YEAR_2018, MONTH_1, DAY_1)
+      val historyDate3: LocalDate = LocalDate.of(YEAR_2019, MONTH_2, DAY_28)
 
       val expectedEoriHistory: Seq[EoriHistory] = List(
         EoriHistory("GB11111", Some(historyDate1), None),
@@ -48,7 +50,9 @@ class DataStoreConnectorSpec extends SpecBase {
       )
 
       val eoriHistory1: EoriHistory = EoriHistory("GB11111", validFrom = Some(historyDate1), None)
-      val eoriHistory2: EoriHistory = EoriHistory("GB22222", validFrom = Some(historyDate2), validUntil = Some(historyDate3))
+      val eoriHistory2: EoriHistory =
+        EoriHistory("GB22222", validFrom = Some(historyDate2), validUntil = Some(historyDate3))
+
       val eoriHistoryResponse: EoriHistoryResponse = EoriHistoryResponse(Seq(eoriHistory1, eoriHistory2))
 
       when[Future[EoriHistoryResponse]](mockHttpClient.GET(any, any, any)(any, any, any))
@@ -85,7 +89,9 @@ class DataStoreConnectorSpec extends SpecBase {
         })
 
       when[Future[EmailResponse]](mockHttpClient.GET(any, any, any)(any, any, any))
-        .thenReturn(Future.successful(EmailResponse(Some("some@email.com"), None, Some(UndeliverableInformation("subject", "eventId", "groupId")))))
+        .thenReturn(Future.successful(
+          EmailResponse(Some("some@email.com"), None, Some(UndeliverableInformation("subject", "eventId", "groupId")))
+        ))
 
       running(app) {
         val result = await(connector.getEmail("someEori"))
@@ -130,7 +136,7 @@ class DataStoreConnectorSpec extends SpecBase {
         })
 
       when[Future[EmailResponse]](mockHttpClient.GET(any, any, any)(any, any, any))
-        .thenReturn(Future.failed(UpstreamErrorResponse("NoData", 404, 404)))
+        .thenReturn(Future.failed(UpstreamErrorResponse("NoData", NOT_FOUND, NOT_FOUND)))
 
       running(app) {
         val result = await(connector.getEmail("someEori"))

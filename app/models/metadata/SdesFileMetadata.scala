@@ -30,8 +30,9 @@ trait SdesFileMetadata {
   def periodStartMonth: Int
 
   def toMap[T <: SdesFileMetadata with Product]: Map[String, String] = {
-    val fieldNames: Seq[String] = getClass.getDeclaredFields.map(_.getName)
+    val fieldNames: Seq[String] = getClass.getDeclaredFields.toIndexedSeq.map(_.getName)
     val fieldValues: Seq[String] = productIterator.toSeq.map(_.toString)
+
     fieldNames.zip(fieldValues).toMap
   }
 }
@@ -54,12 +55,10 @@ case class PostponedVatStatementFileMetadata(periodStartYear: Int,
                                              fileFormat: FileFormat,
                                              fileRole: FileRole,
                                              source: String,
-                                             statementRequestId: Option[String]) extends SdesFileMetadata {
-}
+                                             statementRequestId: Option[String]) extends SdesFileMetadata
 
 case class VatCertificateFileMetadata(periodStartYear: Int,
                                       periodStartMonth: Int,
                                       fileFormat: FileFormat,
                                       fileRole: FileRole,
-                                      statementRequestId: Option[String]) extends SdesFileMetadata {
-}
+                                      statementRequestId: Option[String]) extends SdesFileMetadata

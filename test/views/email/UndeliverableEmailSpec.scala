@@ -30,6 +30,7 @@ import views.html.email.undeliverable_email
 class UndeliverableEmailSpec extends SpecBase {
 
   "view" should {
+
     "display correct guidance and text" in new Setup {
 
       view.title() mustBe
@@ -72,6 +73,5 @@ class UndeliverableEmailSpec extends SpecBase {
 
     val viewWithNoEmail: Document = Jsoup.parse(
       app.injector.instanceOf[undeliverable_email].apply(nextPageUrl).body)
-
   }
 }

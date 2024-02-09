@@ -14,8 +14,16 @@
  * limitations under the License.
  *@
 
+@import utils.Utils.emptyString
+
 @this()
 
-@(message: String, classes: String = "govuk-body", id: Option[String] = None, link: Option[Html] = None, tabLink: Option[Html] = None)(implicit messages: Messages)
+@(
+  message: String,
+  classes: String = "govuk-body",
+  id: Option[String] = None,
+  link: Option[Html] = None,
+  tabLink: Option[Html] = None
+)(implicit messages: Messages)
 
-<p @{id.fold("")(id => s"id=$id")} class="@{classes}">@{Html(messages(message))} @link @tabLink</p>
+<p @{id.fold(emptyString)(id => s"id=$id")} class="@{classes}">@{Html(messages(message))} @link @tabLink</p>

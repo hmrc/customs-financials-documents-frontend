@@ -20,6 +20,7 @@ import models.DutyPaymentMethod.{CDS, CHIEF}
 import models._
 import models.metadata.{PostponedVatStatementFileMetadata, SecurityStatementFileMetadata, VatCertificateFileMetadata}
 import play.api.i18n.Messages
+import utils.Utils.emptyString
 
 import javax.inject.Singleton
 
@@ -27,7 +28,8 @@ import javax.inject.Singleton
 @Singleton
 class SdesGatekeeperService() {
 
-  implicit def convertToVatCertificateFile(sdesResponseFile: FileInformation)(implicit messages: Messages): VatCertificateFile = {
+  implicit def convertToVatCertificateFile(sdesResponseFile: FileInformation)
+                                          (implicit messages: Messages): VatCertificateFile = {
     val metadata = sdesResponseFile.metadata.asMap
 
     VatCertificateFile(
@@ -40,7 +42,7 @@ class SdesGatekeeperService() {
         FileFormat(metadata("FileType")),
         FileRole(metadata("FileRole")),
         metadata.get("statementRequestID")),
-      ""
+      emptyString
     )
   }
 
@@ -59,7 +61,7 @@ class SdesGatekeeperService() {
         mapDutyPaymentMethod(metadata("DutyPaymentMethod")),
         metadata.get("statementRequestID")
       ),
-      ""
+      emptyString
     )
   }
 
@@ -86,7 +88,8 @@ class SdesGatekeeperService() {
     )
   }
 
-  def convertTo[T <: SdesFile](implicit converter: FileInformation => T): Seq[FileInformation] => Seq[T] = _.map(converter)
+  def convertTo[T <: SdesFile](implicit converter: FileInformation => T): Seq[FileInformation] => Seq[T] =
+    _.map(converter)
 
   private def mapDutyPaymentMethod(dutyPaymentMethod: String): String = {
     dutyPaymentMethod match {

@@ -16,5 +16,7 @@
 
 package models
 
-case class SecurityStatementsForEori(eoriHistory: EoriHistory, currentStatements: Seq[SecurityStatementsByPeriod], requestedStatements: Seq[SecurityStatementsByPeriod])
+case class SecurityStatementsForEori(eoriHistory: EoriHistory,
+                                     currentStatements: Seq[SecurityStatementsByPeriod],
+                                     requestedStatements: Seq[SecurityStatementsByPeriod])
   extends OrderedByEoriHistory[SecurityStatementsForEori]

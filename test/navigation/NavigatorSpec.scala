@@ -20,8 +20,12 @@ import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import utils.SpecBase
 
 class NavigatorSpec extends SpecBase {
+
   "backLinkUrlForServiceUnavailablePage" should {
-    "return correct url for ids " in new Setup {
+
+    "return correct url for ids " in {
+      val navigatorOb = new Navigator()
+
       navigatorOb.backLinkUrlForServiceUnavailablePage(navigatorOb.importVatPageId) mustBe
         Some(controllers.routes.VatController.showVatAccount.url)
 
@@ -36,9 +40,5 @@ class NavigatorSpec extends SpecBase {
 
       navigatorOb.backLinkUrlForServiceUnavailablePage("Some_Id") mustBe empty
     }
-  }
-
-  trait Setup {
-    val navigatorOb = new Navigator()
   }
 }

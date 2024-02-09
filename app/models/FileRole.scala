@@ -19,14 +19,40 @@ package models
 import play.api.libs.json.{Format, JsString, JsSuccess, JsValue}
 import play.api.{Logger, LoggerLike}
 
-sealed abstract class FileRole(val name: String, val featureName: String, val transactionName: String, val messageKey: String)
+sealed abstract class FileRole(val name: String,
+                               val featureName: String,
+                               val transactionName: String,
+                               val messageKey: String)
 
 object FileRole {
 
-  case object C79Certificate extends FileRole("C79Certificate", "import-vat", "Download import VAT statement", "c79")
-  case object PostponedVATStatement extends FileRole("PostponedVATStatement", "postponed-vat", "Download postponed VAT statement", "postponed-vat")
-  case object SecurityStatement extends FileRole("SecurityStatement", "adjustments", "Download adjustments statement", "adjustments")
-  case object PostponedVATAmendedStatement extends FileRole("PostponedVATAmendedStatement", "postponed-vat", "Download postponed VAT amend statement", "postponed-vat")
+  case object C79Certificate
+    extends FileRole(
+      name = "C79Certificate",
+      featureName = "import-vat",
+      transactionName = "Download import VAT statement",
+      messageKey = "c79")
+
+  case object PostponedVATStatement
+    extends FileRole(
+      name = "PostponedVATStatement",
+      featureName = "postponed-vat",
+      transactionName = "Download postponed VAT statement",
+      messageKey = "postponed-vat")
+
+  case object SecurityStatement
+    extends FileRole(
+      name = "SecurityStatement",
+      featureName = "adjustments",
+      transactionName = "Download adjustments statement",
+      messageKey = "adjustments")
+
+  case object PostponedVATAmendedStatement
+    extends FileRole(
+      name = "PostponedVATAmendedStatement",
+      featureName = "postponed-vat",
+      transactionName = "Download postponed VAT amend statement",
+      messageKey = "postponed-vat")
 
   val log: LoggerLike = Logger(this.getClass)
 
@@ -40,8 +66,9 @@ object FileRole {
 
   def unapply(fileRole: FileRole): Option[String] = Some(fileRole.name)
 
-  implicit val fileRoleFormat = new Format[FileRole] {
-    def reads(json: JsValue) = JsSuccess(apply(json.as[String]))
-    def writes(obj: FileRole) = JsString(obj.name)
+  implicit val fileRoleFormat: Format[FileRole] = new Format[FileRole] {
+    def reads(json: JsValue): JsSuccess[FileRole] = JsSuccess(apply(json.as[String]))
+
+    def writes(obj: FileRole): JsString = JsString(obj.name)
   }
 }

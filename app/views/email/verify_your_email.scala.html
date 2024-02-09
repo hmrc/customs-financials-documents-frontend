@@ -24,12 +24,18 @@
         button: components.button
 )
 
-@(nextPage:String, email: Option[String])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(
+    nextPage:String,
+    email: Option[String]
+)(
+    implicit request: Request[_],
+    messages: Messages,
+    appConfig: AppConfig
+)
 
 @layout(
         pageTitle = Some(messages("cf.verify.your.email.title"))
 ) {
-
         @h1(msg = "cf.verify.your.email.heading", classes = "govuk-heading-xl")
 
         @p(messages("cf.verify.your.email.p1"))

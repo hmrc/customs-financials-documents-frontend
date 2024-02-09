@@ -19,12 +19,20 @@ package viewmodels
 import models.{PostponedVatStatementFile, PostponedVatStatementGroup}
 import play.api.i18n.Messages
 import services.DateTimeService
+import utils.Constants.MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE
 
 object PostponedVatViewModel {
-  def apply(files: Seq[PostponedVatStatementFile])(implicit messages: Messages, dateTimeService: DateTimeService): Seq[PostponedVatStatementGroup] = {
-    val response: Seq[PostponedVatStatementGroup] = files.groupBy(_.monthAndYear).map { case (month, filesForMonth) => PostponedVatStatementGroup(month, filesForMonth) }.toList
-    val monthList = (1 to 6).map(n => dateTimeService.systemDateTime().toLocalDate.minusMonths(n))
-    monthList.map{
+  def apply(files: Seq[PostponedVatStatementFile])(implicit messages: Messages,
+                                                   dateTimeService: DateTimeService): Seq[PostponedVatStatementGroup] = {
+    val response: Seq[PostponedVatStatementGroup] =
+      files.groupBy(_.monthAndYear).map {
+        case (month, filesForMonth) => PostponedVatStatementGroup(month, filesForMonth)
+      }.toList
+
+    val monthList =
+      MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE.map(n => dateTimeService.systemDateTime().toLocalDate.minusMonths(n))
+
+    monthList.map {
       date => response.find(_.startDate.getMonth == date.getMonth).getOrElse(PostponedVatStatementGroup(date, Seq.empty))
     }.toList.sorted.reverse
   }

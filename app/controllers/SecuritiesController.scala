@@ -41,22 +41,27 @@ class SecuritiesController @Inject()(authenticate: IdentifierAction,
                                      securityStatementsView: security_statements,
                                      securityStatementsNotAvailableView: security_statements_not_available,
                                      mcc: MessagesControllerComponents
-                                    )(implicit val appConfig: AppConfig, val errorHandler: ErrorHandler, ec: ExecutionContext)
+                                    )(implicit val appConfig: AppConfig,
+                                      val errorHandler: ErrorHandler,
+                                      ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
+  def showSecurityStatements(): Action[AnyContent] =
+    (authenticate andThen checkEmailIsVerified andThen resolveSessionId) async { implicit req =>
+      financialsApiConnector.deleteNotification(req.eori, SecurityStatement)
 
-  def showSecurityStatements(): Action[AnyContent] = (authenticate andThen checkEmailIsVerified andThen resolveSessionId) async { implicit req =>
-    financialsApiConnector.deleteNotification(req.eori, SecurityStatement)
-    (for {
-      allStatements <- Future.sequence(req.allEoriHistory.map(getStatements))
-      securityStatementsModel = SecurityStatementsViewModel(allStatements.sorted)
-    } yield Ok(securityStatementsView(securityStatementsModel))
-      ).recover { case _ => Redirect(routes.SecuritiesController.statementsUnavailablePage()) }
-  }
+      (for {
+        allStatements <- Future.sequence(req.allEoriHistory.map(getStatements))
+        securityStatementsModel = SecurityStatementsViewModel(allStatements.sorted)
+      } yield Ok(securityStatementsView(securityStatementsModel))
+        ).recover { case _ => Redirect(routes.SecuritiesController.statementsUnavailablePage()) }
+    }
 
-  def statementsUnavailablePage(): Action[AnyContent] = authenticate andThen checkEmailIsVerified async { implicit req =>
-    Future.successful(Ok(securityStatementsNotAvailableView()))
-  }
+  def statementsUnavailablePage(): Action[AnyContent] =
+    authenticate andThen checkEmailIsVerified async {
+      implicit req =>
+        Future.successful(Ok(securityStatementsNotAvailableView()))
+    }
 
   private def getStatements(historicEori: EoriHistory)(implicit req: AuthenticatedRequestWithSessionId[_]): Future[SecurityStatementsForEori] = {
     sdesConnector.getSecurityStatements(historicEori.eori)
@@ -78,5 +83,4 @@ class SecuritiesController @Inject()(authenticate: IdentifierAction,
       case ((startDate, endDate), filesForMonth) => SecurityStatementsByPeriod(startDate, endDate, filesForMonth)
     }.toList.sorted.reverse
   }
-
 }

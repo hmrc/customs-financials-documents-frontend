@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package models
+package utils
 
-import models.metadata.Metadata
-import play.api.libs.json.{Format, Json}
+object Constants {
 
-case class FileInformation(filename: String,
-                           downloadURL: String,
-                           fileSize: Long,
-                           metadata: Metadata)
+  val FIXED_DATE_TIME_YEAR = 2027
+  val FIXED_DATE_TIME_MONTH_OF_YEAR = 12
+  val FIXED_DATE_TIME_DAY_OF_MONTH = 20
+  val FIXED_DATE_TIME_HOUR_OF_DAY = 12
+  val FIXED_DATE_TIME_MINUTES_OF_HOUR = 30
 
-object FileInformation {
-  implicit val fileInformationFormats: Format[FileInformation] = Json.format[FileInformation]
+  val MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE: Range.Inclusive = 1 to 6
 }

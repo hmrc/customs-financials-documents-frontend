@@ -30,6 +30,10 @@ import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
+import utils.CommonTestData.{
+  CHECK_SUM_000000, DAY_28, DOWNLOAD_URL_00, EORI_NUMBER, ONE_MONTH, SIZE_500L, SIZE_99L,
+  STAT_FILE_NAME_00
+}
 import utils.SpecBase
 import viewmodels.SecurityStatementsViewModel
 import views.helpers.Formatters.{dateAsDayMonthAndYear, dateAsMonthAndYear, fileSize}
@@ -40,7 +44,9 @@ import java.time.LocalDate
 class SecurityStatementsSpec extends SpecBase {
 
   "view" should {
+
     "display correct title and guidance" when {
+
       "statements are available" in new Setup {
         val view: Document =
           Jsoup.parse(app.injector.instanceOf[security_statements].apply(viewModelWithStatements).body)
@@ -166,61 +172,80 @@ class SecurityStatementsSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = application().build()
-    val serviceUnavailableUrl: Option[String] = Option("service_unavailable_url")
-
-    implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-    implicit val msg: Messages = messages(app)
-    implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
-
-    val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory("testEori1", None, None))
-    val date: LocalDate = LocalDate.now().withDayOfMonth(28)
+    val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory(EORI_NUMBER, None, None))
+    val date: LocalDate = LocalDate.now().withDayOfMonth(DAY_28)
 
     val securityStatementFilePdf: SecurityStatementFile =
-      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
+      SecurityStatementFile(STAT_FILE_NAME_00, DOWNLOAD_URL_00, SIZE_99L,
         SecurityStatementFileMetadata(
-          date.minusMonths(1).getYear,
-          date.minusMonths(1).getMonthValue,
-          28, date.getYear, date.getMonthValue, 28, Pdf, SecurityStatement, "testEori1", 500L, "0000000", None))
+          date.minusMonths(ONE_MONTH).getYear,
+          date.minusMonths(ONE_MONTH).getMonthValue,
+          DAY_28,
+          date.getYear,
+          date.getMonthValue,
+          DAY_28,
+          Pdf,
+          SecurityStatement,
+          EORI_NUMBER,
+          SIZE_500L,
+          CHECK_SUM_000000,
+          None))
 
     val securityStatementFileCsv: SecurityStatementFile =
-      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
+      SecurityStatementFile(STAT_FILE_NAME_00, DOWNLOAD_URL_00, SIZE_99L,
         SecurityStatementFileMetadata(
-          date.minusMonths(1).getYear,
-          date.minusMonths(1).getMonthValue,
-          28, date.getYear, date.getMonthValue, 28, Csv, SecurityStatement, "testEori1", 500L, "0000000", None))
+          date.minusMonths(ONE_MONTH).getYear,
+          date.minusMonths(ONE_MONTH).getMonthValue,
+          DAY_28,
+          date.getYear,
+          date.getMonthValue,
+          DAY_28,
+          Csv,
+          SecurityStatement,
+          EORI_NUMBER,
+          SIZE_500L,
+          CHECK_SUM_000000,
+          None))
 
     val securityStatementFileCsvWithUnknownFileType: SecurityStatementFile =
-      SecurityStatementFile("statementfile_00", "download_url_00", 99L,
+      SecurityStatementFile(STAT_FILE_NAME_00, DOWNLOAD_URL_00, SIZE_99L,
         SecurityStatementFileMetadata(
-          date.minusMonths(1).getYear,
-          date.minusMonths(1).getMonthValue,
-          28, date.getYear, date.getMonthValue, 28, UnknownFileFormat,
-          SecurityStatement, "testEori1", 500L, "0000000", None))
+          date.minusMonths(ONE_MONTH).getYear,
+          date.minusMonths(ONE_MONTH).getMonthValue,
+          DAY_28,
+          date.getYear,
+          date.getMonthValue,
+          DAY_28,
+          UnknownFileFormat,
+          SecurityStatement,
+          EORI_NUMBER,
+          SIZE_500L,
+          CHECK_SUM_000000,
+          None))
 
     val statementsByPeriodForPdf: SecurityStatementsByPeriod =
-      SecurityStatementsByPeriod(date.minusMonths(1), date, Seq(securityStatementFilePdf))
+      SecurityStatementsByPeriod(date.minusMonths(ONE_MONTH), date, Seq(securityStatementFilePdf))
 
     val statementsByPeriodForCsv: SecurityStatementsByPeriod =
-      SecurityStatementsByPeriod(date.minusMonths(1), date, Seq(securityStatementFileCsv))
+      SecurityStatementsByPeriod(date.minusMonths(ONE_MONTH), date, Seq(securityStatementFileCsv))
 
     val statementsByPeriodForCsvWithUnknownFileType: SecurityStatementsByPeriod =
-      SecurityStatementsByPeriod(date.minusMonths(1),
+      SecurityStatementsByPeriod(date.minusMonths(ONE_MONTH),
         date,
         Seq(securityStatementFileCsvWithUnknownFileType))
 
     val securityStatementsForEori: SecurityStatementsForEori =
-      SecurityStatementsForEori(EoriHistory("testEori1", None, None),
+      SecurityStatementsForEori(EoriHistory(EORI_NUMBER, None, None),
         Seq(statementsByPeriodForPdf, statementsByPeriodForCsv), Seq.empty)
 
     val securityStatementsForEoriPdfsOnly: SecurityStatementsForEori =
-      SecurityStatementsForEori(EoriHistory("testEori1", None, None), Seq(statementsByPeriodForPdf), Seq.empty)
+      SecurityStatementsForEori(EoriHistory(EORI_NUMBER, None, None), Seq(statementsByPeriodForPdf), Seq.empty)
 
     val securityStatementsForEoriCsvsOnly: SecurityStatementsForEori =
-      SecurityStatementsForEori(EoriHistory("testEori1", None, None), Seq(statementsByPeriodForCsv), Seq.empty)
+      SecurityStatementsForEori(EoriHistory(EORI_NUMBER, None, None), Seq(statementsByPeriodForCsv), Seq.empty)
 
     val securityStatementsForEoriCsvsOnlyWithUnknownFileType: SecurityStatementsForEori =
-      SecurityStatementsForEori(EoriHistory("testEori1", None, None),
+      SecurityStatementsForEori(EoriHistory(EORI_NUMBER, None, None),
         Seq(statementsByPeriodForCsvWithUnknownFileType), Seq.empty)
 
     val viewModelWithNoStatements: SecurityStatementsViewModel = SecurityStatementsViewModel(Seq())
@@ -238,5 +263,12 @@ class SecurityStatementsSpec extends SpecBase {
 
     val viewModelWithStatements: SecurityStatementsViewModel =
       SecurityStatementsViewModel(Seq(securityStatementsForEori))
+
+    val app: Application = application().build()
+    val serviceUnavailableUrl: Option[String] = Option("service_unavailable_url")
+
+    implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+    implicit val msg: Messages = messages(app)
+    implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
   }
 }

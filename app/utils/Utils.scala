@@ -17,12 +17,17 @@
 package utils
 
 import play.api.mvc.RequestHeader
+
 object Utils {
   val emptyString = ""
+  val hyphen = "-"
+  val singleSpace = " "
+  val period = "."
+
   private val questionMark = "?"
 
   def referrerUrl(platformHost: Option[String])(implicit request: RequestHeader): Option[String] =
-    Some(s"${platformHost.getOrElse("")}${pathWithQueryString(request)}")
+    Some(s"${platformHost.getOrElse(emptyString)}${pathWithQueryString(request)}")
 
   def pathWithQueryString(request: RequestHeader): String = {
     import request._
