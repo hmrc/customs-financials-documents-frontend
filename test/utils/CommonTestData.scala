@@ -95,5 +95,4 @@ object CommonTestData {
   val DOWNLOAD_URL_05 = "download_url_05"
   val DOWNLOAD_URL_06 = "download_url_06"
   val DOWNLOAD_URL_07 = "download_url_07"
-
 }

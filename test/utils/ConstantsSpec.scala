@@ -56,5 +56,5 @@ class ConstantsSpec extends SpecBase {
       MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE mustBe (1 to 6)
     }
   }
-  
+
 }

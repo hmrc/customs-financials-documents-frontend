@@ -41,5 +41,4 @@ class NavigatorSpec extends SpecBase {
       navigatorOb.backLinkUrlForServiceUnavailablePage("Some_Id") mustBe empty
     }
   }
-
 }
