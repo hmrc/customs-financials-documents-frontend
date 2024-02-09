@@ -29,7 +29,10 @@ import viewmodels.VatViewModel
 import views.html.import_vat.import_vat
 import models.{VatCertificatesByMonth, VatCertificatesForEori}
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
-import utils.CommonTestData.{day28, eoriNumber, fiveMonths, fourMonths, oneMonth, sixMonths, threeMonths, twoMonths}
+import utils.CommonTestData.{
+  DAY_28, EORI_NUMBER, FIVE_MONTHS, FOUR_MONTHS, ONE_MONTH, SIX_MONTHS, THREE_MONTHS,
+  TWO_MONTHS
+}
 import utils.Utils.emptyString
 
 import java.time.LocalDate
@@ -68,16 +71,16 @@ class ImportVatSpec extends SpecBase {
     implicit val msg: Messages = messages(app)
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
-    val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory(eoriNumber, None, None))
-    val date: LocalDate = LocalDate.now().withDayOfMonth(day28)
+    val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory(EORI_NUMBER, None, None))
+    val date: LocalDate = LocalDate.now().withDayOfMonth(DAY_28)
 
     val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
-      VatCertificatesByMonth(date.minusMonths(oneMonth), Seq())(messages(app)),
-      VatCertificatesByMonth(date.minusMonths(twoMonths), Seq())(messages(app)),
-      VatCertificatesByMonth(date.minusMonths(threeMonths), Seq())(messages(app)),
-      VatCertificatesByMonth(date.minusMonths(fourMonths), Seq())(messages(app)),
-      VatCertificatesByMonth(date.minusMonths(fiveMonths), Seq())(messages(app)),
-      VatCertificatesByMonth(date.minusMonths(sixMonths), Seq())(messages(app))
+      VatCertificatesByMonth(date.minusMonths(ONE_MONTH), Seq())(messages(app)),
+      VatCertificatesByMonth(date.minusMonths(TWO_MONTHS), Seq())(messages(app)),
+      VatCertificatesByMonth(date.minusMonths(THREE_MONTHS), Seq())(messages(app)),
+      VatCertificatesByMonth(date.minusMonths(FOUR_MONTHS), Seq())(messages(app)),
+      VatCertificatesByMonth(date.minusMonths(FIVE_MONTHS), Seq())(messages(app)),
+      VatCertificatesByMonth(date.minusMonths(SIX_MONTHS), Seq())(messages(app))
     )
 
     val vatCertificatesForEoris: Seq[VatCertificatesForEori] =

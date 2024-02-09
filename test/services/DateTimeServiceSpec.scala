@@ -18,7 +18,7 @@ package services
 
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.test.Helpers._
-import utils.CommonTestData.{day20, hour12, minutes30, month12, year2027}
+import utils.CommonTestData.{DAY_20, HOUR_12, MINUTES_30, MONTH_12, YEAR_2027}
 import utils.SpecBase
 
 import java.time.{LocalDate, LocalDateTime, LocalTime}
@@ -33,8 +33,8 @@ class DateTimeServiceSpec extends SpecBase {
     running(app) {
       service.systemDateTime() mustBe
         LocalDateTime.of(
-          LocalDate.of(year2027, month12, day20),
-          LocalTime.of(hour12, minutes30)
+          LocalDate.of(YEAR_2027, MONTH_12, DAY_20),
+          LocalTime.of(HOUR_12, MINUTES_30)
         )
     }
   }

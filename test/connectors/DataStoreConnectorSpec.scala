@@ -24,7 +24,7 @@ import play.api.{Application, inject}
 import services.MetricsReporterService
 import uk.gov.hmrc.auth.core.retrieve.Email
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
-import utils.CommonTestData.{day1, day28, month1, month2, month3, year2018, year2019}
+import utils.CommonTestData.{DAY_1, DAY_28, MONTH_1, MONTH_2, MONTH_3, YEAR_2018, YEAR_2019}
 import utils.SpecBase
 
 import java.time.LocalDate
@@ -40,9 +40,9 @@ class DataStoreConnectorSpec extends SpecBase {
           i.getArgument[Future[Seq[EoriHistory]]](1)
         })
 
-      val historyDate1: LocalDate = LocalDate.of(year2019, month3, day1)
-      val historyDate2: LocalDate = LocalDate.of(year2018, month1, day1)
-      val historyDate3: LocalDate = LocalDate.of(year2019, month2, day28)
+      val historyDate1: LocalDate = LocalDate.of(YEAR_2019, MONTH_3, DAY_1)
+      val historyDate2: LocalDate = LocalDate.of(YEAR_2018, MONTH_1, DAY_1)
+      val historyDate3: LocalDate = LocalDate.of(YEAR_2019, MONTH_2, DAY_28)
 
       val expectedEoriHistory: Seq[EoriHistory] = List(
         EoriHistory("GB11111", Some(historyDate1), None),

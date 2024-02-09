@@ -30,7 +30,10 @@ import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import utils.CommonTestData.{checkSumValue000000, day28, downloadUrl00, eoriNumber, oneMonth, size500L, size99L, statFileName00}
+import utils.CommonTestData.{
+  CHECK_SUM_000000, DAY_28, DOWNLOAD_URL_00, EORI_NUMBER, ONE_MONTH, SIZE_500L, SIZE_99L,
+  STAT_FILE_NAME_00
+}
 import utils.SpecBase
 import viewmodels.SecurityStatementsViewModel
 import views.helpers.Formatters.{dateAsDayMonthAndYear, dateAsMonthAndYear, fileSize}
@@ -169,80 +172,80 @@ class SecurityStatementsSpec extends SpecBase {
   }
 
   trait Setup {
-    val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory(eoriNumber, None, None))
-    val date: LocalDate = LocalDate.now().withDayOfMonth(day28)
+    val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory(EORI_NUMBER, None, None))
+    val date: LocalDate = LocalDate.now().withDayOfMonth(DAY_28)
 
     val securityStatementFilePdf: SecurityStatementFile =
-      SecurityStatementFile(statFileName00, downloadUrl00, size99L,
+      SecurityStatementFile(STAT_FILE_NAME_00, DOWNLOAD_URL_00, SIZE_99L,
         SecurityStatementFileMetadata(
-          date.minusMonths(oneMonth).getYear,
-          date.minusMonths(oneMonth).getMonthValue,
-          day28,
+          date.minusMonths(ONE_MONTH).getYear,
+          date.minusMonths(ONE_MONTH).getMonthValue,
+          DAY_28,
           date.getYear,
           date.getMonthValue,
-          day28,
+          DAY_28,
           Pdf,
           SecurityStatement,
-          eoriNumber,
-          size500L,
-          checkSumValue000000,
+          EORI_NUMBER,
+          SIZE_500L,
+          CHECK_SUM_000000,
           None))
 
     val securityStatementFileCsv: SecurityStatementFile =
-      SecurityStatementFile(statFileName00, downloadUrl00, size99L,
+      SecurityStatementFile(STAT_FILE_NAME_00, DOWNLOAD_URL_00, SIZE_99L,
         SecurityStatementFileMetadata(
-          date.minusMonths(oneMonth).getYear,
-          date.minusMonths(oneMonth).getMonthValue,
-          day28,
+          date.minusMonths(ONE_MONTH).getYear,
+          date.minusMonths(ONE_MONTH).getMonthValue,
+          DAY_28,
           date.getYear,
           date.getMonthValue,
-          day28,
+          DAY_28,
           Csv,
           SecurityStatement,
-          eoriNumber,
-          size500L,
-          checkSumValue000000,
+          EORI_NUMBER,
+          SIZE_500L,
+          CHECK_SUM_000000,
           None))
 
     val securityStatementFileCsvWithUnknownFileType: SecurityStatementFile =
-      SecurityStatementFile(statFileName00, downloadUrl00, size99L,
+      SecurityStatementFile(STAT_FILE_NAME_00, DOWNLOAD_URL_00, SIZE_99L,
         SecurityStatementFileMetadata(
-          date.minusMonths(oneMonth).getYear,
-          date.minusMonths(oneMonth).getMonthValue,
-          day28,
+          date.minusMonths(ONE_MONTH).getYear,
+          date.minusMonths(ONE_MONTH).getMonthValue,
+          DAY_28,
           date.getYear,
           date.getMonthValue,
-          day28,
+          DAY_28,
           UnknownFileFormat,
           SecurityStatement,
-          eoriNumber,
-          size500L,
-          checkSumValue000000,
+          EORI_NUMBER,
+          SIZE_500L,
+          CHECK_SUM_000000,
           None))
 
     val statementsByPeriodForPdf: SecurityStatementsByPeriod =
-      SecurityStatementsByPeriod(date.minusMonths(oneMonth), date, Seq(securityStatementFilePdf))
+      SecurityStatementsByPeriod(date.minusMonths(ONE_MONTH), date, Seq(securityStatementFilePdf))
 
     val statementsByPeriodForCsv: SecurityStatementsByPeriod =
-      SecurityStatementsByPeriod(date.minusMonths(oneMonth), date, Seq(securityStatementFileCsv))
+      SecurityStatementsByPeriod(date.minusMonths(ONE_MONTH), date, Seq(securityStatementFileCsv))
 
     val statementsByPeriodForCsvWithUnknownFileType: SecurityStatementsByPeriod =
-      SecurityStatementsByPeriod(date.minusMonths(oneMonth),
+      SecurityStatementsByPeriod(date.minusMonths(ONE_MONTH),
         date,
         Seq(securityStatementFileCsvWithUnknownFileType))
 
     val securityStatementsForEori: SecurityStatementsForEori =
-      SecurityStatementsForEori(EoriHistory(eoriNumber, None, None),
+      SecurityStatementsForEori(EoriHistory(EORI_NUMBER, None, None),
         Seq(statementsByPeriodForPdf, statementsByPeriodForCsv), Seq.empty)
 
     val securityStatementsForEoriPdfsOnly: SecurityStatementsForEori =
-      SecurityStatementsForEori(EoriHistory(eoriNumber, None, None), Seq(statementsByPeriodForPdf), Seq.empty)
+      SecurityStatementsForEori(EoriHistory(EORI_NUMBER, None, None), Seq(statementsByPeriodForPdf), Seq.empty)
 
     val securityStatementsForEoriCsvsOnly: SecurityStatementsForEori =
-      SecurityStatementsForEori(EoriHistory(eoriNumber, None, None), Seq(statementsByPeriodForCsv), Seq.empty)
+      SecurityStatementsForEori(EoriHistory(EORI_NUMBER, None, None), Seq(statementsByPeriodForCsv), Seq.empty)
 
     val securityStatementsForEoriCsvsOnlyWithUnknownFileType: SecurityStatementsForEori =
-      SecurityStatementsForEori(EoriHistory(eoriNumber, None, None),
+      SecurityStatementsForEori(EoriHistory(EORI_NUMBER, None, None),
         Seq(statementsByPeriodForCsvWithUnknownFileType), Seq.empty)
 
     val viewModelWithNoStatements: SecurityStatementsViewModel = SecurityStatementsViewModel(Seq())

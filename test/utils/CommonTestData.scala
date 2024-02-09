@@ -17,66 +17,66 @@
 package utils
 
 object CommonTestData {
-  val year2018 = 2018
-  val year2019 = 2019
-  val year2022 = 2022
-  val year2023 = 2023
-  val year2027 = 2027
+  val YEAR_2018 = 2018
+  val YEAR_2019 = 2019
+  val YEAR_2022 = 2022
+  val YEAR_2023 = 2023
+  val YEAR_2027 = 2027
 
-  val oneYear = 1
+  val ONE_YEAR = 1
 
-  val month1 = 1
-  val month2 = 2
-  val month3 = 3
-  val month4 = 4
-  val month5 = 5
-  val month6 = 6
-  val month7 = 7
-  val month8 = 8
-  val month9 = 9
-  val month10 = 10
-  val month11 = 11
-  val month12 = 12
+  val MONTH_1 = 1
+  val MONTH_2 = 2
+  val MONTH_3 = 3
+  val MONTH_4 = 4
+  val MONTH_5 = 5
+  val MONTH_6 = 6
+  val MONTH_7 = 7
+  val MONTH_8 = 8
+  val MONTH_9 = 9
+  val MONTH_10 = 10
+  val MONTH_11 = 11
+  val MONTH_12 = 12
 
-  val oneMonth = 1
-  val twoMonths = 2
-  val threeMonths = 3
-  val fourMonths = 4
-  val fiveMonths = 5
-  val sixMonths = 6
-  val sevenMonths = 7
-  val eightMonths = 8
-  val nineMonths = 9
-  val tenMonths = 10
+  val ONE_MONTH = 1
+  val TWO_MONTHS = 2
+  val THREE_MONTHS = 3
+  val FOUR_MONTHS = 4
+  val FIVE_MONTHS = 5
+  val SIX_MONTHS = 6
+  val SEVEN_MONTHS = 7
+  val EIGHT_MONTHS = 8
+  val NINE_MONTHS = 9
+  val TEN_MONTHS = 10
 
-  val day1 = 1
-  val day2 = 2
-  val day9 = 9
-  val day10 = 10
-  val day12 = 12
-  val day14 = 14
-  val day15 = 15
-  val day16 = 16
-  val day17 = 17
-  val day20 = 20
-  val day21 = 21
-  val day28 = 28
-  val day29 = 29
-  val day30 = 30
-  val day31 = 31
+  val DAY_1 = 1
+  val DAY_2 = 2
+  val DAY_9 = 9
+  val DAY_10 = 10
+  val DAY_12 = 12
+  val DAY_14 = 14
+  val DAY_15 = 15
+  val DAY_16 = 16
+  val DAY_17 = 17
+  val DAY_20 = 20
+  val DAY_21 = 21
+  val DAY_28 = 28
+  val DAY_29 = 29
+  val DAY_30 = 30
+  val DAY_31 = 31
 
-  val hour12 = 12
-  val minutes30 = 30
+  val HOUR_12 = 12
+  val MINUTES_30 = 30
 
-  val statFileName00 = "statementfile_00"
-  val downloadUrl00 = "download_url_00"
+  val STAT_FILE_NAME_00 = "statementfile_00"
+  val DOWNLOAD_URL_00 = "download_url_00"
 
-  val size111L = 111L
-  val size99L = 99L
-  val size500L = 500L
-  val  size4096L = 4096L
-  val size1300000L = 1300000L
+  val SIZE_99L = 99L
+  val SIZE_111L = 111L
+  val SIZE_500L = 500L
+  val  SIZE_4096L = 4096L
+  val SIZE_1300000L = 1300000L
 
-  val eoriNumber = "testEori1"
-  val checkSumValue000000 = "0000000"
+  val EORI_NUMBER = "testEori1"
+  val CHECK_SUM_000000 = "0000000"
 }

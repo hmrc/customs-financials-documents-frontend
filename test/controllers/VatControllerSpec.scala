@@ -29,8 +29,8 @@ import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.test.Helpers._
 import play.api.{Application, inject}
 import utils.CommonTestData.{
-  day28, eoriNumber, fiveMonths, fourMonths, oneMonth, sevenMonths, sixMonths, size111L,
-  threeMonths, twoMonths
+  DAY_28, EORI_NUMBER, FIVE_MONTHS, FOUR_MONTHS, ONE_MONTH, SEVEN_MONTHS, SIX_MONTHS, SIZE_111L,
+  THREE_MONTHS, TWO_MONTHS
 }
 import utils.Utils.emptyString
 import utils.{DateUtils, SpecBase}
@@ -52,19 +52,19 @@ class VatControllerSpec extends SpecBase {
       val vatCertificateFile: VatCertificateFile = VatCertificateFile(
         "name_04",
         "download_url_06",
-        size111L,
+        SIZE_111L,
         VatCertificateFileMetadata(
-          date.minusMonths(oneMonth).getYear,
-          date.minusMonths(oneMonth).getMonthValue,
+          date.minusMonths(ONE_MONTH).getYear,
+          date.minusMonths(ONE_MONTH).getMonthValue,
           Pdf, C79Certificate, None), emptyString)(messages(app))
 
       val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
-        VatCertificatesByMonth(date.minusMonths(oneMonth), Seq(vatCertificateFile))(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(twoMonths), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(threeMonths), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(fourMonths), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(fiveMonths), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(sixMonths), Seq())(messages(app))
+        VatCertificatesByMonth(date.minusMonths(ONE_MONTH), Seq(vatCertificateFile))(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(TWO_MONTHS), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(THREE_MONTHS), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(FOUR_MONTHS), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(FIVE_MONTHS), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(SIX_MONTHS), Seq())(messages(app))
       )
 
       val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
@@ -102,12 +102,12 @@ class VatControllerSpec extends SpecBase {
       "after 14th of the month and cert is not available" in new Setup {
 
       val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
-        VatCertificatesByMonth(date.minusMonths(oneMonth), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(twoMonths), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(threeMonths), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(fourMonths), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(fiveMonths), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(sixMonths), Seq())(messages(app))
+        VatCertificatesByMonth(date.minusMonths(ONE_MONTH), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(TWO_MONTHS), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(THREE_MONTHS), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(FOUR_MONTHS), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(FIVE_MONTHS), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(SIX_MONTHS), Seq())(messages(app))
       )
 
       val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
@@ -137,7 +137,7 @@ class VatControllerSpec extends SpecBase {
 
           doc.getElementById("statements-list-0-row-0").children().text() should
             include(messages(app)("cf.account.vat.statements.unavailable",
-              Formatters.dateAsMonth(date.minusMonths(oneMonth))(messages(app))))
+              Formatters.dateAsMonth(date.minusMonths(ONE_MONTH))(messages(app))))
         }
       }
     }
@@ -149,11 +149,11 @@ class VatControllerSpec extends SpecBase {
       val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("import-vat").url
 
       val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
-        VatCertificatesByMonth(date.minusMonths(twoMonths), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(threeMonths), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(fourMonths), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(fiveMonths), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(sixMonths), Seq())(messages(app))
+        VatCertificatesByMonth(date.minusMonths(TWO_MONTHS), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(THREE_MONTHS), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(FOUR_MONTHS), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(FIVE_MONTHS), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(SIX_MONTHS), Seq())(messages(app))
       )
 
       val vatCertificatesForEoris: Seq[VatCertificatesForEori] = Seq(VatCertificatesForEori(eoriHistory.head,
@@ -186,7 +186,7 @@ class VatControllerSpec extends SpecBase {
 
           doc.getElementById("statements-list-0-row-0").children().text() should not include messages(app)(
             "cf.account.vat.statements.unavailable",
-            Formatters.dateAsMonth(date.minusMonths(oneMonth))(messages(app)))
+            Formatters.dateAsMonth(date.minusMonths(ONE_MONTH))(messages(app)))
         }
       }
     }
@@ -199,22 +199,22 @@ class VatControllerSpec extends SpecBase {
 
       val vatCertificateFile: VatCertificateFile = VatCertificateFile("name_04",
         "download_url_06",
-        size111L,
+        SIZE_111L,
         VatCertificateFileMetadata(
-          date.minusMonths(oneMonth).getYear,
-          date.minusMonths(oneMonth).getMonthValue,
+          date.minusMonths(ONE_MONTH).getYear,
+          date.minusMonths(ONE_MONTH).getMonthValue,
           Pdf,
           C79Certificate,
           None),
         emptyString)(messages(app))
 
       val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
-        VatCertificatesByMonth(date.minusMonths(oneMonth), Seq(vatCertificateFile))(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(twoMonths), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(threeMonths), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(fourMonths), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(fiveMonths), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(sixMonths), Seq())(messages(app))
+        VatCertificatesByMonth(date.minusMonths(ONE_MONTH), Seq(vatCertificateFile))(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(TWO_MONTHS), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(THREE_MONTHS), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(FOUR_MONTHS), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(FIVE_MONTHS), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(SIX_MONTHS), Seq())(messages(app))
       )
 
       val vatCertificatesForEoris: Seq[VatCertificatesForEori] = Seq(VatCertificatesForEori(eoriHistory.head,
@@ -249,7 +249,7 @@ class VatControllerSpec extends SpecBase {
 
           doc.getElementById("statements-list-0-row-0").children().text() should not include messages(app)(
             "cf.account.vat.statements.unavailable",
-            Formatters.dateAsMonth(date.minusMonths(oneMonth))(messages(app)))
+            Formatters.dateAsMonth(date.minusMonths(ONE_MONTH))(messages(app)))
         }
       }
     }
@@ -261,22 +261,22 @@ class VatControllerSpec extends SpecBase {
 
       val vatCertificateFile: VatCertificateFile = VatCertificateFile("name_04",
         "download_url_06",
-        size111L,
+        SIZE_111L,
         VatCertificateFileMetadata(
-          date.minusMonths(oneMonth).getYear,
-          date.minusMonths(oneMonth).getMonthValue,
+          date.minusMonths(ONE_MONTH).getYear,
+          date.minusMonths(ONE_MONTH).getMonthValue,
           Pdf,
           C79Certificate,
           None),
         emptyString)(messages(app))
 
       val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
-        VatCertificatesByMonth(date.minusMonths(oneMonth), Seq(vatCertificateFile))(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(twoMonths), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(threeMonths), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(fourMonths), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(fiveMonths), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(sixMonths), Seq())(messages(app))
+        VatCertificatesByMonth(date.minusMonths(ONE_MONTH), Seq(vatCertificateFile))(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(TWO_MONTHS), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(THREE_MONTHS), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(FOUR_MONTHS), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(FIVE_MONTHS), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(SIX_MONTHS), Seq())(messages(app))
       )
 
       val vatCertificatesForEoris: Seq[VatCertificatesForEori] = Seq(VatCertificatesForEori(eoriHistory.head,
@@ -311,10 +311,10 @@ class VatControllerSpec extends SpecBase {
 
       val vatCertificateFile: VatCertificateFile = VatCertificateFile("name_04",
         "download_url_06",
-        size111L,
+        SIZE_111L,
         VatCertificateFileMetadata(
-          date.minusMonths(oneMonth).getYear,
-          date.minusMonths(oneMonth).getMonthValue,
+          date.minusMonths(ONE_MONTH).getYear,
+          date.minusMonths(ONE_MONTH).getMonthValue,
           Pdf,
           C79Certificate,
           None),
@@ -322,10 +322,10 @@ class VatControllerSpec extends SpecBase {
 
       val vatCertificateFile_2: VatCertificateFile = VatCertificateFile("name_05",
         "download_url_07",
-        size111L,
+        SIZE_111L,
         VatCertificateFileMetadata(
-          date.minusMonths(sevenMonths).getYear,
-          date.minusMonths(sevenMonths).getMonthValue,
+          date.minusMonths(SEVEN_MONTHS).getYear,
+          date.minusMonths(SEVEN_MONTHS).getMonthValue,
           Pdf,
           C79Certificate,
           None),
@@ -333,26 +333,26 @@ class VatControllerSpec extends SpecBase {
 
       val vatCertificateFile_3: VatCertificateFile = VatCertificateFile("name_05",
         "download_url_07",
-        size111L,
+        SIZE_111L,
         VatCertificateFileMetadata(
-          date.minusMonths(sevenMonths).getYear,
-          date.minusMonths(sevenMonths).getMonthValue,
+          date.minusMonths(SEVEN_MONTHS).getYear,
+          date.minusMonths(SEVEN_MONTHS).getMonthValue,
           Pdf,
           C79Certificate,
           someRequestId),
         emptyString)(messages(app))
 
       val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
-        VatCertificatesByMonth(date.minusMonths(oneMonth), Seq(vatCertificateFile))(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(twoMonths), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(threeMonths), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(fourMonths), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(fiveMonths), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(sixMonths), Seq())(messages(app))
+        VatCertificatesByMonth(date.minusMonths(ONE_MONTH), Seq(vatCertificateFile))(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(TWO_MONTHS), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(THREE_MONTHS), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(FOUR_MONTHS), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(FIVE_MONTHS), Seq())(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(SIX_MONTHS), Seq())(messages(app))
       )
 
       val requestedCertificates: Seq[VatCertificatesByMonth] = Seq(
-        VatCertificatesByMonth(date.minusMonths(sevenMonths), Seq(vatCertificateFile_3))(messages(app))
+        VatCertificatesByMonth(date.minusMonths(SEVEN_MONTHS), Seq(vatCertificateFile_3))(messages(app))
       )
 
       val vatCertificatesForEoris: Seq[VatCertificatesForEori] = Seq(VatCertificatesForEori(eoriHistory.head,
@@ -430,8 +430,8 @@ class VatControllerSpec extends SpecBase {
   trait Setup {
     val mockFinancialsApiConnector: FinancialsApiConnector = mock[FinancialsApiConnector]
     val mockSdesConnector: SdesConnector = mock[SdesConnector]
-    val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory(eoriNumber, None, None))
-    val date: LocalDate = LocalDate.now().withDayOfMonth(day28)
+    val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory(EORI_NUMBER, None, None))
+    val date: LocalDate = LocalDate.now().withDayOfMonth(DAY_28)
     val navigator = new Navigator()
 
     when(mockFinancialsApiConnector.deleteNotification(any, any)(any))

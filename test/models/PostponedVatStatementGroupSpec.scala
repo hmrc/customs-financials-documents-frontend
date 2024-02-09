@@ -19,7 +19,7 @@ package models
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.{Application, inject}
 import services.DateTimeService
-import utils.CommonTestData.{day1, day10, day12, day15, day16, month10, oneMonth, year2023}
+import utils.CommonTestData.{DAY_1, DAY_10, DAY_12, DAY_15, DAY_16, MONTH_10, ONE_MONTH, YEAR_2023}
 import utils.SpecBase
 
 import java.time._
@@ -30,8 +30,8 @@ class PostponedVatStatementGroupSpec extends SpecBase {
 
     "return true if statement date is of previous month and is accessed on or after " +
       "15th day of the current month" in new Setup {
-      val dateOfPreviousMonth: LocalDate = date.minusMonths(oneMonth).withDayOfMonth(day16)
-      val currentDate: LocalDate = LocalDate.of(year2023, month10, day16)
+      val dateOfPreviousMonth: LocalDate = date.minusMonths(ONE_MONTH).withDayOfMonth(DAY_16)
+      val currentDate: LocalDate = LocalDate.of(YEAR_2023, MONTH_10, DAY_16)
 
       when(mockDateTimeService.systemDateTime()).thenReturn(currentDate.atStartOfDay())
 
@@ -41,7 +41,7 @@ class PostponedVatStatementGroupSpec extends SpecBase {
 
     "return false if statement date is of previous month and is accessed on or before " +
       "14th day of the current month" in new Setup {
-      val dateOfPreviousMonth: LocalDate = date.minusMonths(oneMonth).withDayOfMonth(day10)
+      val dateOfPreviousMonth: LocalDate = date.minusMonths(ONE_MONTH).withDayOfMonth(DAY_10)
 
       when(mockDateTimeService.systemDateTime())
         .thenReturn(date.atStartOfDay())
@@ -51,7 +51,7 @@ class PostponedVatStatementGroupSpec extends SpecBase {
     }
 
     "return true if statement date is not from the previous month" in new Setup {
-      val dateOfCurrentMonth: LocalDate = date.withDayOfMonth(day16)
+      val dateOfCurrentMonth: LocalDate = date.withDayOfMonth(DAY_16)
 
       when(mockDateTimeService.systemDateTime())
         .thenReturn(date.atStartOfDay())
@@ -63,11 +63,11 @@ class PostponedVatStatementGroupSpec extends SpecBase {
     "return true if statement date is not from the previous month and accessed " +
       "before 15th day of current date " in new Setup {
 
-      private val isCurrentDayBefore15 = LocalDate.now.getDayOfMonth < day15
+      private val isCurrentDayBefore15 = LocalDate.now.getDayOfMonth < DAY_15
 
       if (isCurrentDayBefore15) when(mockDateTimeService.systemDateTime()).thenReturn(date.atStartOfDay())
 
-      val dateOfCurrentMonthAndBefore15ThDay: LocalDate = date.withDayOfMonth(day12)
+      val dateOfCurrentMonthAndBefore15ThDay: LocalDate = date.withDayOfMonth(DAY_12)
 
       if (isCurrentDayBefore15) {
         PostponedVatStatementGroup(
@@ -79,7 +79,7 @@ class PostponedVatStatementGroupSpec extends SpecBase {
 
   trait Setup {
     val mockDateTimeService: DateTimeService = mock[DateTimeService]
-    val date: LocalDate = LocalDate.of(year2023, month10, day1)
+    val date: LocalDate = LocalDate.of(YEAR_2023, MONTH_10, DAY_1)
 
     val app: Application = application().overrides(
       inject.bind[DateTimeService].toInstance(mockDateTimeService)

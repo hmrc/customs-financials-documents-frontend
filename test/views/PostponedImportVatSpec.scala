@@ -31,7 +31,10 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.running
 import play.api.{Application, inject}
 import services.DateTimeService
-import utils.CommonTestData.{eoriNumber, fiveMonths, fourMonths, month7, oneMonth, size111L, threeMonths, twoMonths}
+import utils.CommonTestData.{
+  EORI_NUMBER, FIVE_MONTHS, FOUR_MONTHS, MONTH_7, ONE_MONTH, SIZE_111L, THREE_MONTHS,
+  TWO_MONTHS
+}
 import utils.SpecBase
 import viewmodels.PostponedVatViewModel
 import views.html.postponed_import_vat
@@ -48,7 +51,7 @@ class PostponedImportVatSpec extends SpecBase {
       val serviceUnavailbleUrl: Option[String] = Option("service_unavailable_url")
       val view: Document = Jsoup.parse(
         app.injector.instanceOf[postponed_import_vat].apply(
-          eoriNumber,
+          EORI_NUMBER,
           PostponedVatViewModel(postponedVatStatementFiles),
           hasRequestedStatements = true,
           cdsOnly = true,
@@ -73,7 +76,7 @@ class PostponedImportVatSpec extends SpecBase {
 
       val view: Document = Jsoup.parse(
         app.injector.instanceOf[postponed_import_vat].apply(
-          eoriNumber,
+          EORI_NUMBER,
           PostponedVatViewModel(postponedVatStatementFiles),
           hasRequestedStatements = true,
           cdsOnly = true,
@@ -93,54 +96,54 @@ class PostponedImportVatSpec extends SpecBase {
     val date: LocalDate = LocalDate.now()
 
     val postVatStatMetaData1: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(date.getYear,
-      date.minusMonths(month7).getMonthValue, Csv, PostponedVATStatement, CDS, None)
+      date.minusMonths(MONTH_7).getMonthValue, Csv, PostponedVATStatement, CDS, None)
 
     val postVatStatMetaData2: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(date.getYear,
-      date.minusMonths(month7).getMonthValue, Pdf, PostponedVATStatement, CDS, None)
+      date.minusMonths(MONTH_7).getMonthValue, Pdf, PostponedVATStatement, CDS, None)
 
     val postVatStatMetaData3: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(date.getYear,
-      date.minusMonths(fourMonths).getMonthValue, Pdf, PostponedVATStatement, CDS, None)
+      date.minusMonths(FOUR_MONTHS).getMonthValue, Pdf, PostponedVATStatement, CDS, None)
 
     val postVatStatMetaData4: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(date.getYear,
-      date.minusMonths(fiveMonths).getMonthValue, Csv, PostponedVATStatement, CDS, None)
+      date.minusMonths(FIVE_MONTHS).getMonthValue, Csv, PostponedVATStatement, CDS, None)
 
     val postVatStatMetaData5: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(date.getYear,
-      date.minusMonths(fiveMonths).getMonthValue, Pdf, PostponedVATStatement, CDS, None)
+      date.minusMonths(FIVE_MONTHS).getMonthValue, Pdf, PostponedVATStatement, CDS, None)
 
     val postVatStatMetaData6: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(date.getYear,
-      date.minusMonths(twoMonths).getMonthValue, Pdf, PostponedVATAmendedStatement, CDS, None)
+      date.minusMonths(TWO_MONTHS).getMonthValue, Pdf, PostponedVATAmendedStatement, CDS, None)
 
     val postVatStatMetaData7: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(date.getYear,
-      date.minusMonths(twoMonths).getMonthValue, Csv, PostponedVATAmendedStatement, CDS, None)
+      date.minusMonths(TWO_MONTHS).getMonthValue, Csv, PostponedVATAmendedStatement, CDS, None)
 
     val postVatStatMetaData8: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(date.getYear,
-      date.minusMonths(threeMonths).getMonthValue, Pdf, PostponedVATStatement, CDS, None)
+      date.minusMonths(THREE_MONTHS).getMonthValue, Pdf, PostponedVATStatement, CDS, None)
 
     val postVatStatMetaData9: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(date.getYear,
-      date.minusMonths(twoMonths).getMonthValue, Pdf, PostponedVATStatement, CDS, None)
+      date.minusMonths(TWO_MONTHS).getMonthValue, Pdf, PostponedVATStatement, CDS, None)
 
     val postVatStatMetaData10: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(date.getYear,
-      date.minusMonths(oneMonth).getMonthValue, Csv, PostponedVATStatement, CDS, None)
+      date.minusMonths(ONE_MONTH).getMonthValue, Csv, PostponedVATStatement, CDS, None)
 
     val postVatStatMetaData11: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(date.getYear,
-      date.minusMonths(oneMonth).getMonthValue, Pdf, PostponedVATStatement, CDS, None)
+      date.minusMonths(ONE_MONTH).getMonthValue, Pdf, PostponedVATStatement, CDS, None)
 
     val postVatStatMetaData12: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(date.getYear,
-      date.minusMonths(twoMonths).getMonthValue, Csv, PostponedVATStatement, CDS, None)
+      date.minusMonths(TWO_MONTHS).getMonthValue, Csv, PostponedVATStatement, CDS, None)
 
     val postponedVatStatementFiles: Seq[PostponedVatStatementFile] = List(
-      PostponedVatStatementFile("name_04", "/some-url", size111L, postVatStatMetaData1, eoriNumber),
-      PostponedVatStatementFile("name_04", "/some-url", size111L, postVatStatMetaData2, eoriNumber),
-      PostponedVatStatementFile("name_03", "/some-url", size111L, postVatStatMetaData3, eoriNumber),
-      PostponedVatStatementFile("name_02", "/some-url", size111L, postVatStatMetaData4, eoriNumber),
-      PostponedVatStatementFile("name_01", "/some-url", size111L, postVatStatMetaData5, eoriNumber),
-      PostponedVatStatementFile("name_04", "/some-url", size111L, postVatStatMetaData6, eoriNumber),
-      PostponedVatStatementFile("name_02", "/some-url", size111L, postVatStatMetaData7, eoriNumber),
-      PostponedVatStatementFile("name_04", "/some-url", size111L, postVatStatMetaData8, eoriNumber),
-      PostponedVatStatementFile("name_03", "/some-url", size111L, postVatStatMetaData9, eoriNumber),
-      PostponedVatStatementFile("name_03", "/some-url", size111L, postVatStatMetaData10, eoriNumber),
-      PostponedVatStatementFile("name_03", "/some-url", size111L, postVatStatMetaData11, eoriNumber),
-      PostponedVatStatementFile("name_02", "/some-url", size111L, postVatStatMetaData12, eoriNumber)
+      PostponedVatStatementFile("name_04", "/some-url", SIZE_111L, postVatStatMetaData1, EORI_NUMBER),
+      PostponedVatStatementFile("name_04", "/some-url", SIZE_111L, postVatStatMetaData2, EORI_NUMBER),
+      PostponedVatStatementFile("name_03", "/some-url", SIZE_111L, postVatStatMetaData3, EORI_NUMBER),
+      PostponedVatStatementFile("name_02", "/some-url", SIZE_111L, postVatStatMetaData4, EORI_NUMBER),
+      PostponedVatStatementFile("name_01", "/some-url", SIZE_111L, postVatStatMetaData5, EORI_NUMBER),
+      PostponedVatStatementFile("name_04", "/some-url", SIZE_111L, postVatStatMetaData6, EORI_NUMBER),
+      PostponedVatStatementFile("name_02", "/some-url", SIZE_111L, postVatStatMetaData7, EORI_NUMBER),
+      PostponedVatStatementFile("name_04", "/some-url", SIZE_111L, postVatStatMetaData8, EORI_NUMBER),
+      PostponedVatStatementFile("name_03", "/some-url", SIZE_111L, postVatStatMetaData9, EORI_NUMBER),
+      PostponedVatStatementFile("name_03", "/some-url", SIZE_111L, postVatStatMetaData10, EORI_NUMBER),
+      PostponedVatStatementFile("name_03", "/some-url", SIZE_111L, postVatStatMetaData11, EORI_NUMBER),
+      PostponedVatStatementFile("name_02", "/some-url", SIZE_111L, postVatStatMetaData12, EORI_NUMBER)
     )
 
     implicit val mockDateTimeService: DateTimeService = mock[DateTimeService]
