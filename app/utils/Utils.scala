@@ -17,9 +17,9 @@
 package utils
 
 import play.api.mvc.RequestHeader
+
 object Utils {
   val emptyString = ""
-  val rangeOneToSix: Seq[Int] = 1 to 6
   val hyphen = "-"
   val singleSpace = " "
   val period = "."
