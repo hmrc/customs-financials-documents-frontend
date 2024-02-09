@@ -77,15 +77,15 @@ object CommonTestData {
 
   val EORI_NUMBER = "testEori1"
 
-  val CHECK_SUM_000000 = "0000000"
+  val CHECK_SUM_000000 = "checksum_0000000"
   val CHECK_SUM_01 = "checksum_01"
 
   val STAT_FILE_NAME_00 = "statementFile_00"
-  val STAT_FILE_NAME_01 = "name_01"
-  val STAT_FILE_NAME_02 = "name_02"
-  val STAT_FILE_NAME_03 = "name_03"
-  val STAT_FILE_NAME_04 = "name_04"
-  val STAT_FILE_NAME_05 = "name_05"
+  val STAT_FILE_NAME_01 = "statementFile_01"
+  val STAT_FILE_NAME_02 = "statementFile_02"
+  val STAT_FILE_NAME_03 = "statementFile_03"
+  val STAT_FILE_NAME_04 = "statementFile_04"
+  val STAT_FILE_NAME_05 = "statementFile_05"
 
   val DOWNLOAD_URL_00 = "download_url_00"
   val DOWNLOAD_URL_01 = "download_url_01"
@@ -95,4 +95,5 @@ object CommonTestData {
   val DOWNLOAD_URL_05 = "download_url_05"
   val DOWNLOAD_URL_06 = "download_url_06"
   val DOWNLOAD_URL_07 = "download_url_07"
+
 }
