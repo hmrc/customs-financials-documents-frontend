@@ -46,7 +46,6 @@ class SecuritiesController @Inject()(authenticate: IdentifierAction,
                                       ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
-
   def showSecurityStatements(): Action[AnyContent] =
     (authenticate andThen checkEmailIsVerified andThen resolveSessionId) async { implicit req =>
       financialsApiConnector.deleteNotification(req.eori, SecurityStatement)
@@ -84,5 +83,4 @@ class SecuritiesController @Inject()(authenticate: IdentifierAction,
       case ((startDate, endDate), filesForMonth) => SecurityStatementsByPeriod(startDate, endDate, filesForMonth)
     }.toList.sorted.reverse
   }
-
 }
