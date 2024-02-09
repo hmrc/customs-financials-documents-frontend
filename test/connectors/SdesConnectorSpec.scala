@@ -30,6 +30,7 @@ import play.api.test.Helpers._
 import play.api.{Application, inject}
 import services.{AuditingService, MetricsReporterService, SdesGatekeeperService}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import utils.CommonTestData._
 import utils.SpecBase
 import utils.Utils.emptyString
 
@@ -210,33 +211,12 @@ class SdesConnectorSpec extends SpecBase {
     val sdesSecurityStatementsUrl =
       "http://localhost:9754/customs-financials-sdes-stub/files-available/list/SecurityStatement"
 
-    val year2018 = 2018
-    val month3 = 3
-    val month4 = 4
-    val month5 = 5
-    val month6 = 6
-
-    val startMonth3 = 3
-    val startMonth4 = 4
-    val startMonth5 = 5
-    val startMonth6 = 6
-
-    val day14 = 14
-    val day23 = 23
-
-    val fileName1 = "name_01"
-    val fileName2 = "name_02"
-    val fileName3 = "name_03"
-    val fileName4 = "name_04"
-
     val downloadUrl1 = "download_url_01"
     val downloadUrl2 = "download_url_02"
     val downloadUrl3 = "download_url_03"
     val downloadUrl4 = "download_url_04"
     val downloadUrl5 = "download_url_05"
     val downloadUrl6 = "download_url_06"
-
-    val checkSum01Str: String = "checksum_01"
 
     val periodStartYear: MetadataItem = MetadataItem("PeriodStartYear", "2018")
     val periodStartMonth: MetadataItem = MetadataItem("PeriodStartMonth", "3")
@@ -256,271 +236,268 @@ class SdesConnectorSpec extends SpecBase {
     val fileRoleC79Cert: MetadataItem = MetadataItem("FileRole", "C79Certificate")
     val eoriNumber: MetadataItem = MetadataItem("eoriNumber", someEori)
     val fileSize: MetadataItem = MetadataItem("fileSize", "111")
-    val checksum: MetadataItem = MetadataItem("checksum", checkSum01Str)
+    val checksum: MetadataItem = MetadataItem("checksum", CHECK_SUM_01)
     val issueDate: MetadataItem = MetadataItem("issueDate", "3/4/2018")
     val dutyPaymentMethod: MetadataItem = MetadataItem("DutyPaymentMethod", "Immediate")
 
-    val size = 111L
-    val size1300000 = 1300000L
-
     val vatCertificateFiles: List[VatCertificateFile] = List(
       VatCertificateFile(
-        fileName4,
+        STAT_FILE_NAME_04,
         downloadUrl6,
-        size,
+        SIZE_111L,
         getVatCertificateFileMetadata(), emptyString),
       VatCertificateFile(
-        fileName4,
+        STAT_FILE_NAME_04,
         downloadUrl5,
-        size,
-        getVatCertificateFileMetadata(periodStartMonth = month4, fileFormat = Csv),
+        SIZE_111L,
+        getVatCertificateFileMetadata(periodStartMonth = MONTH_4, fileFormat = Csv),
         emptyString),
       VatCertificateFile(
-        fileName4,
+        STAT_FILE_NAME_04,
         downloadUrl4,
-        size,
-        VatCertificateFileMetadata(year2018, startMonth4, Pdf, C79Certificate, None),
+        SIZE_111L,
+        VatCertificateFileMetadata(YEAR_2018, MONTH_4, Pdf, C79Certificate, None),
         emptyString),
       VatCertificateFile(
-        fileName3,
+        STAT_FILE_NAME_03,
         downloadUrl3,
-        size,
-        VatCertificateFileMetadata(year2018, startMonth5, Pdf, C79Certificate, None),
+        SIZE_111L,
+        VatCertificateFileMetadata(YEAR_2018, MONTH_5, Pdf, C79Certificate, None),
         emptyString),
       VatCertificateFile(
-        fileName2,
+        STAT_FILE_NAME_02,
         downloadUrl2,
-        size,
-        VatCertificateFileMetadata(year2018, startMonth6, Csv, C79Certificate, None),
+        SIZE_111L,
+        VatCertificateFileMetadata(YEAR_2018, MONTH_6, Csv, C79Certificate, None),
         emptyString),
       VatCertificateFile(
-        fileName1,
+        STAT_FILE_NAME_01,
         downloadUrl1,
-        size1300000,
-        VatCertificateFileMetadata(year2018, startMonth6, Pdf, C79Certificate, None),
+        SIZE_1300000L,
+        VatCertificateFileMetadata(YEAR_2018, MONTH_6, Pdf, C79Certificate, None),
         emptyString)
     )
 
     val postponedVatCertificateFiles: List[PostponedVatStatementFile] = List(
       PostponedVatStatementFile(
-        fileName4,
+        STAT_FILE_NAME_04,
         downloadUrl6,
-        size,
-        PostponedVatStatementFileMetadata(year2018, startMonth3, Pdf, PostponedVATStatement, CDS, None),
+        SIZE_111L,
+        PostponedVatStatementFileMetadata(YEAR_2018, MONTH_3, Pdf, PostponedVATStatement, CDS, None),
         emptyString),
       PostponedVatStatementFile(
-        fileName4,
+        STAT_FILE_NAME_04,
         downloadUrl5,
-        size,
-        PostponedVatStatementFileMetadata(year2018, startMonth4, Csv, PostponedVATStatement, CDS, None),
+        SIZE_111L,
+        PostponedVatStatementFileMetadata(YEAR_2018, MONTH_4, Csv, PostponedVATStatement, CDS, None),
         emptyString),
       PostponedVatStatementFile(
-        fileName4,
+        STAT_FILE_NAME_04,
         downloadUrl4,
-        size,
-        PostponedVatStatementFileMetadata(year2018, startMonth4, Pdf, PostponedVATStatement, CDS, None),
+        SIZE_111L,
+        PostponedVatStatementFileMetadata(YEAR_2018, MONTH_4, Pdf, PostponedVATStatement, CDS, None),
         emptyString),
       PostponedVatStatementFile(
-        fileName3,
+        STAT_FILE_NAME_03,
         downloadUrl3,
-        size,
-        PostponedVatStatementFileMetadata(year2018, startMonth5, Pdf, PostponedVATStatement, CDS, None),
+        SIZE_111L,
+        PostponedVatStatementFileMetadata(YEAR_2018, MONTH_5, Pdf, PostponedVATStatement, CDS, None),
         emptyString),
       PostponedVatStatementFile(
-        fileName2,
+        STAT_FILE_NAME_02,
         downloadUrl2,
-        size,
-        PostponedVatStatementFileMetadata(year2018, startMonth6, Csv, PostponedVATStatement, CDS, None),
+        SIZE_111L,
+        PostponedVatStatementFileMetadata(YEAR_2018, MONTH_6, Csv, PostponedVATStatement, CDS, None),
         emptyString),
       PostponedVatStatementFile(
-        fileName1,
+        STAT_FILE_NAME_01,
         downloadUrl1,
-        size1300000,
-        PostponedVatStatementFileMetadata(year2018, startMonth6, Pdf, PostponedVATStatement, CDS, None),
+        SIZE_1300000L,
+        PostponedVatStatementFileMetadata(YEAR_2018, MONTH_6, Pdf, PostponedVATStatement, CDS, None),
         emptyString)
     )
 
     val filteredPostponedVatCertificateFiles: List[PostponedVatStatementFile] = List(
       PostponedVatStatementFile(
-        fileName4,
+        STAT_FILE_NAME_04,
         downloadUrl6,
-        size,
-        PostponedVatStatementFileMetadata(year2018, startMonth3, Pdf, PostponedVATStatement, CDS, None),
+        SIZE_111L,
+        PostponedVatStatementFileMetadata(YEAR_2018, MONTH_3, Pdf, PostponedVATStatement, CDS, None),
         emptyString),
       PostponedVatStatementFile(
-        fileName4,
+        STAT_FILE_NAME_04,
         downloadUrl4,
-        size,
-        PostponedVatStatementFileMetadata(year2018, startMonth4, Pdf, PostponedVATStatement, CDS, None),
+        SIZE_111L,
+        PostponedVatStatementFileMetadata(YEAR_2018, MONTH_4, Pdf, PostponedVATStatement, CDS, None),
         emptyString),
       PostponedVatStatementFile(
-        fileName3,
+        STAT_FILE_NAME_03,
         downloadUrl3,
-        size,
-        PostponedVatStatementFileMetadata(year2018, startMonth5, Pdf, PostponedVATStatement, CDS, None),
+        SIZE_111L,
+        PostponedVatStatementFileMetadata(YEAR_2018, MONTH_5, Pdf, PostponedVATStatement, CDS, None),
         emptyString),
       PostponedVatStatementFile(
-        fileName1,
+        STAT_FILE_NAME_01,
         downloadUrl1,
-        size1300000,
-        PostponedVatStatementFileMetadata(year2018, startMonth6, Pdf, PostponedVATStatement, CDS, None),
+        SIZE_1300000L,
+        PostponedVatStatementFileMetadata(YEAR_2018, MONTH_6, Pdf, PostponedVATStatement, CDS, None),
         emptyString)
     )
 
     val vatCertificateFilesSdesResponse: List[FileInformation] = List(
       FileInformation(
-        fileName4,
+        STAT_FILE_NAME_04,
         downloadUrl6,
-        size,
+        SIZE_111L,
         Metadata(List(periodStartYear, periodStartMonth, fileTypePdf, fileRoleC79Cert))
       ),
       FileInformation(
-        fileName4,
+        STAT_FILE_NAME_04,
         downloadUrl5,
-        size,
+        SIZE_111L,
         Metadata(List(periodStartYear, periodStartMonth4, fileTypeCsv, fileRoleC79Cert))
       ),
       FileInformation(
-        fileName4,
+        STAT_FILE_NAME_04,
         downloadUrl4,
-        size,
+        SIZE_111L,
         Metadata(List(periodStartYear, periodStartMonth4, fileTypePdf, fileRoleC79Cert))
       ),
       FileInformation(
-        fileName3,
+        STAT_FILE_NAME_03,
         downloadUrl3,
-        size,
+        SIZE_111L,
         Metadata(List(periodStartYear, periodStartMonth5, fileTypePdf, fileRoleC79Cert))
       ),
       FileInformation(
-        fileName2,
+        STAT_FILE_NAME_02,
         downloadUrl2,
-        size,
+        SIZE_111L,
         Metadata(List(periodStartYear, periodStartMonth6, fileTypeCsv, fileRoleC79Cert))
       ),
       FileInformation(
-        fileName1,
+        STAT_FILE_NAME_01,
         downloadUrl1,
-        size1300000,
+        SIZE_1300000L,
         Metadata(List(periodStartYear, periodStartMonth6, fileTypePdf, fileRoleC79Cert))
       )
     )
 
     val postponedVatCertificateFilesSdesResponse: List[FileInformation] = List(
       FileInformation(
-        fileName4,
+        STAT_FILE_NAME_04,
         downloadUrl6,
-        size,
+        SIZE_111L,
         Metadata(List(periodStartYear, periodStartMonth, fileTypePdf, fileRolePVATStatement, dutyPaymentMethod))
       ),
       FileInformation(
-        fileName4,
+        STAT_FILE_NAME_04,
         downloadUrl5,
-        size,
+        SIZE_111L,
         Metadata(List(periodStartYear, periodStartMonth4, fileTypeCsv, fileRolePVATStatement, dutyPaymentMethod))
       ),
       FileInformation(
-        fileName4,
+        STAT_FILE_NAME_04,
         downloadUrl4,
-        size,
+        SIZE_111L,
         Metadata(List(periodStartYear, periodStartMonth4, fileTypePdf, fileRolePVATStatement, dutyPaymentMethod))
       ),
       FileInformation(
-        fileName3,
+        STAT_FILE_NAME_03,
         downloadUrl3,
-        size,
+        SIZE_111L,
         Metadata(List(periodStartYear, periodStartMonth5, fileTypePdf, fileRolePVATStatement, dutyPaymentMethod))
       ),
       FileInformation(
-        fileName2,
+        STAT_FILE_NAME_02,
         downloadUrl2,
-        size,
+        SIZE_111L,
         Metadata(List(periodStartYear, periodStartMonth6, fileTypeCsv, fileRolePVATStatement, dutyPaymentMethod))
       ),
       FileInformation(
-        fileName1,
+        STAT_FILE_NAME_01,
         downloadUrl1,
-        size1300000,
+        SIZE_1300000L,
         Metadata(List(periodStartYear, periodStartMonth6, fileTypePdf, fileRolePVATStatement, dutyPaymentMethod))
       )
     )
 
     val vatCertificateFilesWithUnknownFileTypesSdesResponse: List[FileInformation] =
       List(FileInformation(
-        fileName4,
+        STAT_FILE_NAME_04,
         downloadUrl6,
-        size,
+        SIZE_111L,
         Metadata(List(periodStartYear, periodStartMonth, fileTypeFoo, fileRoleC79Cert))
       )) ++ vatCertificateFilesSdesResponse ++
       List(FileInformation(
-        fileName1,
+        STAT_FILE_NAME_01,
         downloadUrl1,
-        size1300000,
+        SIZE_1300000L,
         Metadata(List(periodStartYear, periodStartMonth6, fileType, fileRoleC79Cert)))
       )
 
     val postponedVatCertificateFilesWithUnknownFileTypesSdesResponse: List[FileInformation] =
       List(
         FileInformation(
-          fileName4,
+          STAT_FILE_NAME_04,
           downloadUrl6,
-          size,
+          SIZE_111L,
           Metadata(List(periodStartYear, periodStartMonth, fileTypeFoo, fileRolePVATStatement, dutyPaymentMethod))
         )
       ) ++ postponedVatCertificateFilesSdesResponse ++
         List(
           FileInformation(
-            fileName1,
+            STAT_FILE_NAME_01,
             downloadUrl1,
-            size1300000,
+            SIZE_1300000L,
             Metadata(List(periodStartYear, periodStartMonth6, fileType, fileRolePVATStatement, dutyPaymentMethod)))
         )
 
     val securityStatementFiles: List[SecurityStatementFile] =
       List(
         SecurityStatementFile(
-          fileName1,
+          STAT_FILE_NAME_01,
           downloadUrl1,
-          size,
+          SIZE_111L,
           SecurityStatementFileMetadata(
-            year2018,
-            startMonth3,
-            day14,
-            year2018,
-            startMonth3,
-            day23,
+            YEAR_2018,
+            MONTH_3,
+            DAY_14,
+            YEAR_2018,
+            MONTH_3,
+            DAY_23,
             Csv,
-            SecurityStatement, someEori, size, checkSum01Str, None)
+            SecurityStatement, someEori, SIZE_111L, CHECK_SUM_01, None)
         ),
         SecurityStatementFile(
-          fileName1,
+          STAT_FILE_NAME_01,
           downloadUrl1,
-          size,
+          SIZE_111L,
           SecurityStatementFileMetadata(
-            year2018,
-            startMonth3,
-            day14,
-            year2018,
-            startMonth3,
-            day23,
+            YEAR_2018,
+            MONTH_3,
+            DAY_14,
+            YEAR_2018,
+            MONTH_3,
+            DAY_23,
             Pdf,
-            SecurityStatement, someEori, size, checkSum01Str, None)
+            SecurityStatement, someEori, SIZE_111L, CHECK_SUM_01, None)
         )
       )
 
     val securityStatementFilesSdesResponse: List[FileInformation] =
       List(
         FileInformation(
-          fileName1,
+          STAT_FILE_NAME_01,
           downloadUrl1,
-          size,
+          SIZE_111L,
           Metadata(List(periodStartYear, periodStartMonth, periodStartDay, periodEndYear, periodEndMonth, periodEndDay,
             fileTypeCsv, fileRole, eoriNumber, fileSize, checksum, issueDate))
         ),
         FileInformation(
-          fileName1,
+          STAT_FILE_NAME_01,
           downloadUrl1,
-          size,
+          SIZE_111L,
           Metadata(List(periodStartYear, periodStartMonth, periodStartDay, periodEndYear, periodEndMonth, periodEndDay,
             fileTypePdf, fileRole, eoriNumber, fileSize, checksum, issueDate))
         )
@@ -529,18 +506,18 @@ class SdesConnectorSpec extends SpecBase {
     val securityStatementFilesWithUnkownFileTypesSdesResponse: List[FileInformation] =
       List(
         FileInformation(
-          fileName1,
+          STAT_FILE_NAME_01,
           downloadUrl1,
-          size,
+          SIZE_111L,
           Metadata(List(periodStartYear, periodStartMonth, periodStartDay, periodEndYear, periodEndMonth, periodEndDay,
             fileTypeFoo, fileRole, eoriNumber, fileSize, checksum, issueDate))
         )
       ) ++ securityStatementFilesSdesResponse ++
         List(
           FileInformation(
-            fileName1,
+            STAT_FILE_NAME_01,
             downloadUrl1,
-            size,
+            SIZE_111L,
             Metadata(List(periodStartYear, periodStartMonth, periodStartDay, periodEndYear, periodEndMonth, periodEndDay,
               fileType, fileRole, eoriNumber, fileSize, checksum, issueDate))
           )
@@ -554,8 +531,8 @@ class SdesConnectorSpec extends SpecBase {
 
     val app: Application = application().overrides(inject.bind[HttpClient].toInstance(mockHttp)).build()
 
-    private def getVatCertificateFileMetadata(periodStartYear: Int = year2018,
-                                              periodStartMonth: Int = month3,
+    private def getVatCertificateFileMetadata(periodStartYear: Int = YEAR_2018,
+                                              periodStartMonth: Int = MONTH_3,
                                               fileFormat: FileFormat = Pdf,
                                               fileRole: FileRole = C79Certificate,
                                               statementRequestId: Option[String] = None) =

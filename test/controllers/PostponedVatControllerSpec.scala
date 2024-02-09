@@ -232,8 +232,6 @@ class PostponedVatControllerSpec extends SpecBase {
     val emailValue: String = "some@email.com"
     val cdsLocation = "CDS"
     val statementRequestId: String = "statement-request-id"
-    val fileName: String = "name_01"
-    val fileUrl: String = "/some-url"
 
     val mockFinancialsApiConnector: FinancialsApiConnector = mock[FinancialsApiConnector]
     val mockSdesConnector: SdesConnector = mock[SdesConnector]
@@ -243,76 +241,76 @@ class PostponedVatControllerSpec extends SpecBase {
     val date: LocalDate = LocalDate.now()
 
     val postponedVatStatementFiles: Seq[PostponedVatStatementFile] = List(
-      PostponedVatStatementFile(fileName, fileUrl, SIZE_4096L,
+      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
         PostponedVatStatementFileMetadata(yearValueOfCurrentDate(SEVEN_MONTHS),
           monthValueOfCurrentDate(SEVEN_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
 
-      PostponedVatStatementFile(fileName, fileUrl, SIZE_4096L,
+      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
         PostponedVatStatementFileMetadata(yearValueOfCurrentDate(FOUR_MONTHS),
           monthValueOfCurrentDate(FOUR_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
 
-      PostponedVatStatementFile(fileName, fileUrl, SIZE_1300000L,
+      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_1300000L,
         PostponedVatStatementFileMetadata(yearValueOfCurrentDate(FIVE_MONTHS),
           monthValueOfCurrentDate(FIVE_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
 
-      PostponedVatStatementFile(fileName, fileUrl, SIZE_4096L,
+      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
         PostponedVatStatementFileMetadata(yearValueOfCurrentDate(THREE_MONTHS),
           monthValueOfCurrentDate(THREE_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
 
-      PostponedVatStatementFile(fileName, fileUrl, SIZE_4096L,
+      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
         PostponedVatStatementFileMetadata(yearValueOfCurrentDate(TWO_MONTHS),
           monthValueOfCurrentDate(TWO_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
 
-      PostponedVatStatementFile(fileName, fileUrl, SIZE_4096L,
+      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
         PostponedVatStatementFileMetadata(yearValueOfCurrentDate(ONE_MONTH),
           monthValueOfCurrentDate(ONE_MONTH), Pdf, PostponedVATStatement, CDS, None), eori)
     )
 
     val postponedVatStatementFilesWithImmediateUnavailable: Seq[PostponedVatStatementFile] = List(
-      PostponedVatStatementFile(fileName, fileUrl, SIZE_4096L,
+      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
         PostponedVatStatementFileMetadata(yearValueOfCurrentDate(SEVEN_MONTHS),
           monthValueOfCurrentDate(SEVEN_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
 
-      PostponedVatStatementFile(fileName, fileUrl, SIZE_4096L,
+      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
         PostponedVatStatementFileMetadata(yearValueOfCurrentDate(FOUR_MONTHS),
           monthValueOfCurrentDate(FOUR_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
 
-      PostponedVatStatementFile(fileName, fileUrl, SIZE_1300000L,
+      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_1300000L,
         PostponedVatStatementFileMetadata(yearValueOfCurrentDate(FIVE_MONTHS),
           monthValueOfCurrentDate(FIVE_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
 
-      PostponedVatStatementFile(fileName, fileUrl, SIZE_4096L,
+      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
         PostponedVatStatementFileMetadata(yearValueOfCurrentDate(THREE_MONTHS),
           monthValueOfCurrentDate(THREE_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
 
-      PostponedVatStatementFile(fileName, fileUrl, SIZE_4096L,
+      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
         PostponedVatStatementFileMetadata(yearValueOfCurrentDate(TWO_MONTHS),
           monthValueOfCurrentDate(TWO_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori)
     )
 
     val currentStatements: Seq[PostponedVatStatementFile] = Seq(
-      PostponedVatStatementFile(fileName, fileUrl, SIZE_4096L,
+      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
         PostponedVatStatementFileMetadata(yearValueOfCurrentDate(ONE_MONTH),
           monthValueOfCurrentDate(ONE_MONTH), Pdf, PostponedVATStatement, CDS, None), eori),
 
-      PostponedVatStatementFile(fileName, fileUrl, SIZE_4096L,
+      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
         PostponedVatStatementFileMetadata(yearValueOfCurrentDate(TWO_MONTHS),
           monthValueOfCurrentDate(TWO_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
 
-      PostponedVatStatementFile(fileName, fileUrl, SIZE_4096L,
+      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
         PostponedVatStatementFileMetadata(yearValueOfCurrentDate(THREE_MONTHS),
           monthValueOfCurrentDate(THREE_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
 
-      PostponedVatStatementFile(fileName, fileUrl, SIZE_4096L,
+      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
         PostponedVatStatementFileMetadata(yearValueOfCurrentDate(FOUR_MONTHS),
           monthValueOfCurrentDate(FOUR_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
 
-      PostponedVatStatementFile(fileName, fileUrl, SIZE_1300000L,
+      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_1300000L,
         PostponedVatStatementFileMetadata(yearValueOfCurrentDate(FIVE_MONTHS),
           monthValueOfCurrentDate(FIVE_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori))
 
     val historicPostponedVatStatementFiles: Seq[PostponedVatStatementFile] = List(
-      PostponedVatStatementFile(fileName, fileUrl, SIZE_4096L,
+      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
         PostponedVatStatementFileMetadata(yearValueOfCurrentDate(EIGHT_MONTHS),
           monthValueOfCurrentDate(EIGHT_MONTHS), Pdf, PostponedVATStatement, CDS,
           Some(statementRequestId)), historicEori)

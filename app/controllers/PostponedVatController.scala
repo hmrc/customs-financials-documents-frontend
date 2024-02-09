@@ -28,6 +28,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.api.{Logger, LoggerLike}
 import services.DateTimeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import utils.Constants.MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE
 import viewmodels.PostponedVatViewModel
 import views.html.{postponed_import_vat, postponed_import_vat_not_available}
 
@@ -102,7 +103,7 @@ class PostponedVatController @Inject()(val authenticate: PvatIdentifierAction,
     }
 
   private def filterLastSixMonthsStatements(files: Seq[PostponedVatStatementFile]): Seq[PostponedVatStatementFile] = {
-    val monthList = (1 to 6).map(n => dateTimeService.systemDateTime().toLocalDate.minusMonths(n))
+    val monthList = MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE.map(n => dateTimeService.systemDateTime().toLocalDate.minusMonths(n))
 
     monthList.flatMap {
       date =>

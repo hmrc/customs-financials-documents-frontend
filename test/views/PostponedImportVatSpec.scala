@@ -32,8 +32,8 @@ import play.api.test.Helpers.running
 import play.api.{Application, inject}
 import services.DateTimeService
 import utils.CommonTestData.{
-  EORI_NUMBER, FIVE_MONTHS, FOUR_MONTHS, MONTH_7, ONE_MONTH, SIZE_111L, THREE_MONTHS,
-  TWO_MONTHS
+  DOWNLOAD_URL_00, EORI_NUMBER, FIVE_MONTHS, FOUR_MONTHS, MONTH_7, ONE_MONTH, SIZE_111L,
+  STAT_FILE_NAME_01, STAT_FILE_NAME_02, STAT_FILE_NAME_03, STAT_FILE_NAME_04, THREE_MONTHS, TWO_MONTHS
 }
 import utils.SpecBase
 import viewmodels.PostponedVatViewModel
@@ -132,18 +132,18 @@ class PostponedImportVatSpec extends SpecBase {
       date.minusMonths(TWO_MONTHS).getMonthValue, Csv, PostponedVATStatement, CDS, None)
 
     val postponedVatStatementFiles: Seq[PostponedVatStatementFile] = List(
-      PostponedVatStatementFile("name_04", "/some-url", SIZE_111L, postVatStatMetaData1, EORI_NUMBER),
-      PostponedVatStatementFile("name_04", "/some-url", SIZE_111L, postVatStatMetaData2, EORI_NUMBER),
-      PostponedVatStatementFile("name_03", "/some-url", SIZE_111L, postVatStatMetaData3, EORI_NUMBER),
-      PostponedVatStatementFile("name_02", "/some-url", SIZE_111L, postVatStatMetaData4, EORI_NUMBER),
-      PostponedVatStatementFile("name_01", "/some-url", SIZE_111L, postVatStatMetaData5, EORI_NUMBER),
-      PostponedVatStatementFile("name_04", "/some-url", SIZE_111L, postVatStatMetaData6, EORI_NUMBER),
-      PostponedVatStatementFile("name_02", "/some-url", SIZE_111L, postVatStatMetaData7, EORI_NUMBER),
-      PostponedVatStatementFile("name_04", "/some-url", SIZE_111L, postVatStatMetaData8, EORI_NUMBER),
-      PostponedVatStatementFile("name_03", "/some-url", SIZE_111L, postVatStatMetaData9, EORI_NUMBER),
-      PostponedVatStatementFile("name_03", "/some-url", SIZE_111L, postVatStatMetaData10, EORI_NUMBER),
-      PostponedVatStatementFile("name_03", "/some-url", SIZE_111L, postVatStatMetaData11, EORI_NUMBER),
-      PostponedVatStatementFile("name_02", "/some-url", SIZE_111L, postVatStatMetaData12, EORI_NUMBER)
+      PostponedVatStatementFile(STAT_FILE_NAME_04, DOWNLOAD_URL_00, SIZE_111L, postVatStatMetaData1, EORI_NUMBER),
+      PostponedVatStatementFile(STAT_FILE_NAME_04, DOWNLOAD_URL_00, SIZE_111L, postVatStatMetaData2, EORI_NUMBER),
+      PostponedVatStatementFile(STAT_FILE_NAME_03, DOWNLOAD_URL_00, SIZE_111L, postVatStatMetaData3, EORI_NUMBER),
+      PostponedVatStatementFile(STAT_FILE_NAME_02, DOWNLOAD_URL_00, SIZE_111L, postVatStatMetaData4, EORI_NUMBER),
+      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_111L, postVatStatMetaData5, EORI_NUMBER),
+      PostponedVatStatementFile(STAT_FILE_NAME_04, DOWNLOAD_URL_00, SIZE_111L, postVatStatMetaData6, EORI_NUMBER),
+      PostponedVatStatementFile(STAT_FILE_NAME_02, DOWNLOAD_URL_00, SIZE_111L, postVatStatMetaData7, EORI_NUMBER),
+      PostponedVatStatementFile(STAT_FILE_NAME_04, DOWNLOAD_URL_00, SIZE_111L, postVatStatMetaData8, EORI_NUMBER),
+      PostponedVatStatementFile(STAT_FILE_NAME_03, DOWNLOAD_URL_00, SIZE_111L, postVatStatMetaData9, EORI_NUMBER),
+      PostponedVatStatementFile(STAT_FILE_NAME_03, DOWNLOAD_URL_00, SIZE_111L, postVatStatMetaData10, EORI_NUMBER),
+      PostponedVatStatementFile(STAT_FILE_NAME_03, DOWNLOAD_URL_00, SIZE_111L, postVatStatMetaData11, EORI_NUMBER),
+      PostponedVatStatementFile(STAT_FILE_NAME_02, DOWNLOAD_URL_00, SIZE_111L, postVatStatMetaData12, EORI_NUMBER)
     )
 
     implicit val mockDateTimeService: DateTimeService = mock[DateTimeService]

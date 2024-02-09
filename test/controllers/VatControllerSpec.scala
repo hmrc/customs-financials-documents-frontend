@@ -28,10 +28,7 @@ import org.mockito.ArgumentMatchers.anyString
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.test.Helpers._
 import play.api.{Application, inject}
-import utils.CommonTestData.{
-  DAY_28, EORI_NUMBER, FIVE_MONTHS, FOUR_MONTHS, ONE_MONTH, SEVEN_MONTHS, SIX_MONTHS, SIZE_111L,
-  THREE_MONTHS, TWO_MONTHS
-}
+import utils.CommonTestData.{DAY_28, EORI_NUMBER, FIVE_MONTHS, FOUR_MONTHS, ONE_MONTH, SEVEN_MONTHS, SIX_MONTHS, SIZE_111L, STAT_FILE_NAME_04, THREE_MONTHS, TWO_MONTHS}
 import utils.Utils.emptyString
 import utils.{DateUtils, SpecBase}
 import viewmodels.VatViewModel
@@ -197,7 +194,7 @@ class VatControllerSpec extends SpecBase {
       appConfig.historicStatementsEnabled = false
       val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("import-vat").url
 
-      val vatCertificateFile: VatCertificateFile = VatCertificateFile("name_04",
+      val vatCertificateFile: VatCertificateFile = VatCertificateFile(STAT_FILE_NAME_04,
         "download_url_06",
         SIZE_111L,
         VatCertificateFileMetadata(
@@ -259,7 +256,7 @@ class VatControllerSpec extends SpecBase {
       appConfig.historicStatementsEnabled = true
       val historicRequestUrl: String = appConfig.historicRequestUrl(C79Certificate)
 
-      val vatCertificateFile: VatCertificateFile = VatCertificateFile("name_04",
+      val vatCertificateFile: VatCertificateFile = VatCertificateFile(STAT_FILE_NAME_04,
         "download_url_06",
         SIZE_111L,
         VatCertificateFileMetadata(

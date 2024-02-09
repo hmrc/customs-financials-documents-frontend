@@ -24,21 +24,22 @@
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.timeoutdialog.TimeoutDialog
 @import views.html.helper.CSPNonce
 
-@this(appConfig: AppConfig,
-        hmrcLayout: HmrcLayout,
-        govukBackLink: GovukBackLink,
-        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
-        hmrcTimeoutDialog: HmrcTimeoutDialog,
-        h2: components.h2,
-        p: components.p
+@this(
+    appConfig: AppConfig,
+    hmrcLayout: HmrcLayout,
+    govukBackLink: GovukBackLink,
+    hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
+    hmrcTimeoutDialog: HmrcTimeoutDialog,
+    h2: components.h2,
+    p: components.p
 )
 
 @(
-        pageTitle: Option[String] = None,
-        backLink: Option[String] = None,
-        help: Boolean = true,
-        deskpro: Boolean = true,
-        welshToggle: Boolean = true,
+    pageTitle: Option[String] = None,
+    backLink: Option[String] = None,
+    help: Boolean = true,
+    deskpro: Boolean = true,
+    welshToggle: Boolean = true,
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
  @phaseBannerContent = {

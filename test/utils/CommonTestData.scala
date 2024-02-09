@@ -60,6 +60,7 @@ object CommonTestData {
   val DAY_17 = 17
   val DAY_20 = 20
   val DAY_21 = 21
+  val DAY_23 = 23
   val DAY_28 = 28
   val DAY_29 = 29
   val DAY_30 = 30
@@ -68,15 +69,22 @@ object CommonTestData {
   val HOUR_12 = 12
   val MINUTES_30 = 30
 
-  val STAT_FILE_NAME_00 = "statementfile_00"
-  val DOWNLOAD_URL_00 = "download_url_00"
-
   val SIZE_99L = 99L
   val SIZE_111L = 111L
   val SIZE_500L = 500L
-  val  SIZE_4096L = 4096L
+  val SIZE_4096L = 4096L
   val SIZE_1300000L = 1300000L
 
   val EORI_NUMBER = "testEori1"
+
   val CHECK_SUM_000000 = "0000000"
+  val CHECK_SUM_01 = "checksum_01"
+
+  val STAT_FILE_NAME_00 = "statementfile_00"
+  val STAT_FILE_NAME_01 = "name_01"
+  val STAT_FILE_NAME_02 = "name_02"
+  val STAT_FILE_NAME_03 = "name_03"
+  val STAT_FILE_NAME_04 = "name_04"
+  
+  val DOWNLOAD_URL_00 = "download_url_00"
 }

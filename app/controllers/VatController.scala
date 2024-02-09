@@ -27,6 +27,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.api.{Logger, LoggerLike}
 import services.DateTimeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import utils.Constants.MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE
 import utils.DateUtils._
 import viewmodels.VatViewModel
 import views.html.import_vat.{import_vat, import_vat_not_available}
@@ -103,7 +104,7 @@ class VatController @Inject()(val authenticate: IdentifierAction,
                                  (implicit messages: Messages): Future[VatCertificatesForEori] = {
     for {
       certs <- certificates
-      monthList = (1 to 6).map(n => dateTimeService.systemDateTime().toLocalDate.minusMonths(n))
+      monthList = MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE.map(n => dateTimeService.systemDateTime().toLocalDate.minusMonths(n))
 
       response = certs.copy(
         currentCertificates = dropImmediatePreviousMonthCertIfUnavailable(populateEmptyMonth(monthList, certs)))
