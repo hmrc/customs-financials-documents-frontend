@@ -28,7 +28,10 @@ import org.mockito.ArgumentMatchers.anyString
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.test.Helpers._
 import play.api.{Application, inject}
-import utils.CommonTestData.{DAY_28, EORI_NUMBER, FIVE_MONTHS, FOUR_MONTHS, ONE_MONTH, SEVEN_MONTHS, SIX_MONTHS, SIZE_111L, STAT_FILE_NAME_04, THREE_MONTHS, TWO_MONTHS}
+import utils.CommonTestData.{
+  DAY_28, DOWNLOAD_URL_06, DOWNLOAD_URL_07, EORI_NUMBER, FIVE_MONTHS, FOUR_MONTHS, ONE_MONTH,
+  SEVEN_MONTHS, SIX_MONTHS, SIZE_111L, STAT_FILE_NAME_04, STAT_FILE_NAME_05, THREE_MONTHS, TWO_MONTHS
+}
 import utils.Utils.emptyString
 import utils.{DateUtils, SpecBase}
 import viewmodels.VatViewModel
@@ -47,8 +50,8 @@ class VatControllerSpec extends SpecBase {
       val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad(navigator.importVatPageId).url
 
       val vatCertificateFile: VatCertificateFile = VatCertificateFile(
-        "name_04",
-        "download_url_06",
+        STAT_FILE_NAME_04,
+        DOWNLOAD_URL_06,
         SIZE_111L,
         VatCertificateFileMetadata(
           date.minusMonths(ONE_MONTH).getYear,
@@ -166,6 +169,7 @@ class VatControllerSpec extends SpecBase {
       running(app) {
         val request = fakeRequest(GET, routes.VatController.showVatAccount.url)
         val result = route(app, request).value
+
         status(result) mustBe OK
 
         if (DateUtils.isDayBefore15ThDayOfTheMonth(LocalDate.now())) {
@@ -256,8 +260,9 @@ class VatControllerSpec extends SpecBase {
       appConfig.historicStatementsEnabled = true
       val historicRequestUrl: String = appConfig.historicRequestUrl(C79Certificate)
 
-      val vatCertificateFile: VatCertificateFile = VatCertificateFile(STAT_FILE_NAME_04,
-        "download_url_06",
+      val vatCertificateFile: VatCertificateFile = VatCertificateFile(
+        STAT_FILE_NAME_04,
+        DOWNLOAD_URL_06,
         SIZE_111L,
         VatCertificateFileMetadata(
           date.minusMonths(ONE_MONTH).getYear,
@@ -306,8 +311,9 @@ class VatControllerSpec extends SpecBase {
       val historicRequestUrl: String = appConfig.historicRequestUrl(C79Certificate)
       val someRequestId: Option[String] = Some("statement-request-id")
 
-      val vatCertificateFile: VatCertificateFile = VatCertificateFile("name_04",
-        "download_url_06",
+      val vatCertificateFile: VatCertificateFile = VatCertificateFile(
+        STAT_FILE_NAME_04,
+        DOWNLOAD_URL_06,
         SIZE_111L,
         VatCertificateFileMetadata(
           date.minusMonths(ONE_MONTH).getYear,
@@ -317,8 +323,9 @@ class VatControllerSpec extends SpecBase {
           None),
         emptyString)(messages(app))
 
-      val vatCertificateFile_2: VatCertificateFile = VatCertificateFile("name_05",
-        "download_url_07",
+      val vatCertificateFile_2: VatCertificateFile = VatCertificateFile(
+        STAT_FILE_NAME_05,
+        DOWNLOAD_URL_07,
         SIZE_111L,
         VatCertificateFileMetadata(
           date.minusMonths(SEVEN_MONTHS).getYear,
@@ -328,8 +335,9 @@ class VatControllerSpec extends SpecBase {
           None),
         emptyString)(messages(app))
 
-      val vatCertificateFile_3: VatCertificateFile = VatCertificateFile("name_05",
-        "download_url_07",
+      val vatCertificateFile_3: VatCertificateFile = VatCertificateFile(
+        STAT_FILE_NAME_05,
+        DOWNLOAD_URL_07,
         SIZE_111L,
         VatCertificateFileMetadata(
           date.minusMonths(SEVEN_MONTHS).getYear,

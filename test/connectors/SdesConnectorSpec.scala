@@ -211,13 +211,6 @@ class SdesConnectorSpec extends SpecBase {
     val sdesSecurityStatementsUrl =
       "http://localhost:9754/customs-financials-sdes-stub/files-available/list/SecurityStatement"
 
-    val downloadUrl1 = "download_url_01"
-    val downloadUrl2 = "download_url_02"
-    val downloadUrl3 = "download_url_03"
-    val downloadUrl4 = "download_url_04"
-    val downloadUrl5 = "download_url_05"
-    val downloadUrl6 = "download_url_06"
-
     val periodStartYear: MetadataItem = MetadataItem("PeriodStartYear", "2018")
     val periodStartMonth: MetadataItem = MetadataItem("PeriodStartMonth", "3")
     val periodStartMonth4: MetadataItem = MetadataItem("PeriodStartMonth", "4")
@@ -243,36 +236,36 @@ class SdesConnectorSpec extends SpecBase {
     val vatCertificateFiles: List[VatCertificateFile] = List(
       VatCertificateFile(
         STAT_FILE_NAME_04,
-        downloadUrl6,
+        DOWNLOAD_URL_06,
         SIZE_111L,
         getVatCertificateFileMetadata(), emptyString),
       VatCertificateFile(
         STAT_FILE_NAME_04,
-        downloadUrl5,
+        DOWNLOAD_URL_05,
         SIZE_111L,
         getVatCertificateFileMetadata(periodStartMonth = MONTH_4, fileFormat = Csv),
         emptyString),
       VatCertificateFile(
         STAT_FILE_NAME_04,
-        downloadUrl4,
+        DOWNLOAD_URL_04,
         SIZE_111L,
         VatCertificateFileMetadata(YEAR_2018, MONTH_4, Pdf, C79Certificate, None),
         emptyString),
       VatCertificateFile(
         STAT_FILE_NAME_03,
-        downloadUrl3,
+        DOWNLOAD_URL_03,
         SIZE_111L,
         VatCertificateFileMetadata(YEAR_2018, MONTH_5, Pdf, C79Certificate, None),
         emptyString),
       VatCertificateFile(
         STAT_FILE_NAME_02,
-        downloadUrl2,
+        DOWNLOAD_URL_02,
         SIZE_111L,
         VatCertificateFileMetadata(YEAR_2018, MONTH_6, Csv, C79Certificate, None),
         emptyString),
       VatCertificateFile(
         STAT_FILE_NAME_01,
-        downloadUrl1,
+        DOWNLOAD_URL_01,
         SIZE_1300000L,
         VatCertificateFileMetadata(YEAR_2018, MONTH_6, Pdf, C79Certificate, None),
         emptyString)
@@ -281,37 +274,37 @@ class SdesConnectorSpec extends SpecBase {
     val postponedVatCertificateFiles: List[PostponedVatStatementFile] = List(
       PostponedVatStatementFile(
         STAT_FILE_NAME_04,
-        downloadUrl6,
+        DOWNLOAD_URL_06,
         SIZE_111L,
         PostponedVatStatementFileMetadata(YEAR_2018, MONTH_3, Pdf, PostponedVATStatement, CDS, None),
         emptyString),
       PostponedVatStatementFile(
         STAT_FILE_NAME_04,
-        downloadUrl5,
+        DOWNLOAD_URL_05,
         SIZE_111L,
         PostponedVatStatementFileMetadata(YEAR_2018, MONTH_4, Csv, PostponedVATStatement, CDS, None),
         emptyString),
       PostponedVatStatementFile(
         STAT_FILE_NAME_04,
-        downloadUrl4,
+        DOWNLOAD_URL_04,
         SIZE_111L,
         PostponedVatStatementFileMetadata(YEAR_2018, MONTH_4, Pdf, PostponedVATStatement, CDS, None),
         emptyString),
       PostponedVatStatementFile(
         STAT_FILE_NAME_03,
-        downloadUrl3,
+        DOWNLOAD_URL_03,
         SIZE_111L,
         PostponedVatStatementFileMetadata(YEAR_2018, MONTH_5, Pdf, PostponedVATStatement, CDS, None),
         emptyString),
       PostponedVatStatementFile(
         STAT_FILE_NAME_02,
-        downloadUrl2,
+        DOWNLOAD_URL_02,
         SIZE_111L,
         PostponedVatStatementFileMetadata(YEAR_2018, MONTH_6, Csv, PostponedVATStatement, CDS, None),
         emptyString),
       PostponedVatStatementFile(
         STAT_FILE_NAME_01,
-        downloadUrl1,
+        DOWNLOAD_URL_01,
         SIZE_1300000L,
         PostponedVatStatementFileMetadata(YEAR_2018, MONTH_6, Pdf, PostponedVATStatement, CDS, None),
         emptyString)
@@ -320,25 +313,25 @@ class SdesConnectorSpec extends SpecBase {
     val filteredPostponedVatCertificateFiles: List[PostponedVatStatementFile] = List(
       PostponedVatStatementFile(
         STAT_FILE_NAME_04,
-        downloadUrl6,
+        DOWNLOAD_URL_06,
         SIZE_111L,
         PostponedVatStatementFileMetadata(YEAR_2018, MONTH_3, Pdf, PostponedVATStatement, CDS, None),
         emptyString),
       PostponedVatStatementFile(
         STAT_FILE_NAME_04,
-        downloadUrl4,
+        DOWNLOAD_URL_04,
         SIZE_111L,
         PostponedVatStatementFileMetadata(YEAR_2018, MONTH_4, Pdf, PostponedVATStatement, CDS, None),
         emptyString),
       PostponedVatStatementFile(
         STAT_FILE_NAME_03,
-        downloadUrl3,
+        DOWNLOAD_URL_03,
         SIZE_111L,
         PostponedVatStatementFileMetadata(YEAR_2018, MONTH_5, Pdf, PostponedVATStatement, CDS, None),
         emptyString),
       PostponedVatStatementFile(
         STAT_FILE_NAME_01,
-        downloadUrl1,
+        DOWNLOAD_URL_01,
         SIZE_1300000L,
         PostponedVatStatementFileMetadata(YEAR_2018, MONTH_6, Pdf, PostponedVATStatement, CDS, None),
         emptyString)
@@ -347,37 +340,37 @@ class SdesConnectorSpec extends SpecBase {
     val vatCertificateFilesSdesResponse: List[FileInformation] = List(
       FileInformation(
         STAT_FILE_NAME_04,
-        downloadUrl6,
+        DOWNLOAD_URL_06,
         SIZE_111L,
         Metadata(List(periodStartYear, periodStartMonth, fileTypePdf, fileRoleC79Cert))
       ),
       FileInformation(
         STAT_FILE_NAME_04,
-        downloadUrl5,
+        DOWNLOAD_URL_05,
         SIZE_111L,
         Metadata(List(periodStartYear, periodStartMonth4, fileTypeCsv, fileRoleC79Cert))
       ),
       FileInformation(
         STAT_FILE_NAME_04,
-        downloadUrl4,
+        DOWNLOAD_URL_04,
         SIZE_111L,
         Metadata(List(periodStartYear, periodStartMonth4, fileTypePdf, fileRoleC79Cert))
       ),
       FileInformation(
         STAT_FILE_NAME_03,
-        downloadUrl3,
+        DOWNLOAD_URL_03,
         SIZE_111L,
         Metadata(List(periodStartYear, periodStartMonth5, fileTypePdf, fileRoleC79Cert))
       ),
       FileInformation(
         STAT_FILE_NAME_02,
-        downloadUrl2,
+        DOWNLOAD_URL_02,
         SIZE_111L,
         Metadata(List(periodStartYear, periodStartMonth6, fileTypeCsv, fileRoleC79Cert))
       ),
       FileInformation(
         STAT_FILE_NAME_01,
-        downloadUrl1,
+        DOWNLOAD_URL_01,
         SIZE_1300000L,
         Metadata(List(periodStartYear, periodStartMonth6, fileTypePdf, fileRoleC79Cert))
       )
@@ -386,37 +379,37 @@ class SdesConnectorSpec extends SpecBase {
     val postponedVatCertificateFilesSdesResponse: List[FileInformation] = List(
       FileInformation(
         STAT_FILE_NAME_04,
-        downloadUrl6,
+        DOWNLOAD_URL_06,
         SIZE_111L,
         Metadata(List(periodStartYear, periodStartMonth, fileTypePdf, fileRolePVATStatement, dutyPaymentMethod))
       ),
       FileInformation(
         STAT_FILE_NAME_04,
-        downloadUrl5,
+        DOWNLOAD_URL_05,
         SIZE_111L,
         Metadata(List(periodStartYear, periodStartMonth4, fileTypeCsv, fileRolePVATStatement, dutyPaymentMethod))
       ),
       FileInformation(
         STAT_FILE_NAME_04,
-        downloadUrl4,
+        DOWNLOAD_URL_04,
         SIZE_111L,
         Metadata(List(periodStartYear, periodStartMonth4, fileTypePdf, fileRolePVATStatement, dutyPaymentMethod))
       ),
       FileInformation(
         STAT_FILE_NAME_03,
-        downloadUrl3,
+        DOWNLOAD_URL_03,
         SIZE_111L,
         Metadata(List(periodStartYear, periodStartMonth5, fileTypePdf, fileRolePVATStatement, dutyPaymentMethod))
       ),
       FileInformation(
         STAT_FILE_NAME_02,
-        downloadUrl2,
+        DOWNLOAD_URL_02,
         SIZE_111L,
         Metadata(List(periodStartYear, periodStartMonth6, fileTypeCsv, fileRolePVATStatement, dutyPaymentMethod))
       ),
       FileInformation(
         STAT_FILE_NAME_01,
-        downloadUrl1,
+        DOWNLOAD_URL_01,
         SIZE_1300000L,
         Metadata(List(periodStartYear, periodStartMonth6, fileTypePdf, fileRolePVATStatement, dutyPaymentMethod))
       )
@@ -425,13 +418,13 @@ class SdesConnectorSpec extends SpecBase {
     val vatCertificateFilesWithUnknownFileTypesSdesResponse: List[FileInformation] =
       List(FileInformation(
         STAT_FILE_NAME_04,
-        downloadUrl6,
+        DOWNLOAD_URL_06,
         SIZE_111L,
         Metadata(List(periodStartYear, periodStartMonth, fileTypeFoo, fileRoleC79Cert))
       )) ++ vatCertificateFilesSdesResponse ++
       List(FileInformation(
         STAT_FILE_NAME_01,
-        downloadUrl1,
+        DOWNLOAD_URL_01,
         SIZE_1300000L,
         Metadata(List(periodStartYear, periodStartMonth6, fileType, fileRoleC79Cert)))
       )
@@ -440,7 +433,7 @@ class SdesConnectorSpec extends SpecBase {
       List(
         FileInformation(
           STAT_FILE_NAME_04,
-          downloadUrl6,
+          DOWNLOAD_URL_06,
           SIZE_111L,
           Metadata(List(periodStartYear, periodStartMonth, fileTypeFoo, fileRolePVATStatement, dutyPaymentMethod))
         )
@@ -448,7 +441,7 @@ class SdesConnectorSpec extends SpecBase {
         List(
           FileInformation(
             STAT_FILE_NAME_01,
-            downloadUrl1,
+            DOWNLOAD_URL_01,
             SIZE_1300000L,
             Metadata(List(periodStartYear, periodStartMonth6, fileType, fileRolePVATStatement, dutyPaymentMethod)))
         )
@@ -457,7 +450,7 @@ class SdesConnectorSpec extends SpecBase {
       List(
         SecurityStatementFile(
           STAT_FILE_NAME_01,
-          downloadUrl1,
+          DOWNLOAD_URL_01,
           SIZE_111L,
           SecurityStatementFileMetadata(
             YEAR_2018,
@@ -471,7 +464,7 @@ class SdesConnectorSpec extends SpecBase {
         ),
         SecurityStatementFile(
           STAT_FILE_NAME_01,
-          downloadUrl1,
+          DOWNLOAD_URL_01,
           SIZE_111L,
           SecurityStatementFileMetadata(
             YEAR_2018,
@@ -489,14 +482,14 @@ class SdesConnectorSpec extends SpecBase {
       List(
         FileInformation(
           STAT_FILE_NAME_01,
-          downloadUrl1,
+          DOWNLOAD_URL_01,
           SIZE_111L,
           Metadata(List(periodStartYear, periodStartMonth, periodStartDay, periodEndYear, periodEndMonth, periodEndDay,
             fileTypeCsv, fileRole, eoriNumber, fileSize, checksum, issueDate))
         ),
         FileInformation(
           STAT_FILE_NAME_01,
-          downloadUrl1,
+          DOWNLOAD_URL_01,
           SIZE_111L,
           Metadata(List(periodStartYear, periodStartMonth, periodStartDay, periodEndYear, periodEndMonth, periodEndDay,
             fileTypePdf, fileRole, eoriNumber, fileSize, checksum, issueDate))
@@ -507,7 +500,7 @@ class SdesConnectorSpec extends SpecBase {
       List(
         FileInformation(
           STAT_FILE_NAME_01,
-          downloadUrl1,
+          DOWNLOAD_URL_01,
           SIZE_111L,
           Metadata(List(periodStartYear, periodStartMonth, periodStartDay, periodEndYear, periodEndMonth, periodEndDay,
             fileTypeFoo, fileRole, eoriNumber, fileSize, checksum, issueDate))
@@ -516,7 +509,7 @@ class SdesConnectorSpec extends SpecBase {
         List(
           FileInformation(
             STAT_FILE_NAME_01,
-            downloadUrl1,
+            DOWNLOAD_URL_01,
             SIZE_111L,
             Metadata(List(periodStartYear, periodStartMonth, periodStartDay, periodEndYear, periodEndMonth, periodEndDay,
               fileType, fileRole, eoriNumber, fileSize, checksum, issueDate))

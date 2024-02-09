@@ -80,11 +80,19 @@ object CommonTestData {
   val CHECK_SUM_000000 = "0000000"
   val CHECK_SUM_01 = "checksum_01"
 
-  val STAT_FILE_NAME_00 = "statementfile_00"
+  val STAT_FILE_NAME_00 = "statementFile_00"
   val STAT_FILE_NAME_01 = "name_01"
   val STAT_FILE_NAME_02 = "name_02"
   val STAT_FILE_NAME_03 = "name_03"
   val STAT_FILE_NAME_04 = "name_04"
-  
+  val STAT_FILE_NAME_05 = "name_05"
+
   val DOWNLOAD_URL_00 = "download_url_00"
+  val DOWNLOAD_URL_01 = "download_url_01"
+  val DOWNLOAD_URL_02 = "download_url_02"
+  val DOWNLOAD_URL_03 = "download_url_03"
+  val DOWNLOAD_URL_04 = "download_url_04"
+  val DOWNLOAD_URL_05 = "download_url_05"
+  val DOWNLOAD_URL_06 = "download_url_06"
+  val DOWNLOAD_URL_07 = "download_url_07"
 }
