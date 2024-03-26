@@ -1,4 +1,5 @@
 import uk.gov.hmrc.DefaultBuildSettings.{targetJvm, itSettings}
+import scoverage.ScoverageKeys
 
 val appName = "customs-financials-documents-frontend"
 
