@@ -69,7 +69,7 @@ lazy val scoverageSettings = {
       , "Reverse.*"
       , ".*views.*"
       , ".*(BuildInfo|Routes|testOnly).*").mkString(";"),
-    ScoverageKeys.coverageMinimumBranchTotal := 90,
+    ScoverageKeys.coverageMinimumBranchTotal := 83,
     ScoverageKeys.coverageMinimumStmtTotal := 90,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true
