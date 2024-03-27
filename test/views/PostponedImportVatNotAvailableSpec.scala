@@ -54,7 +54,7 @@ class PostponedImportVatNotAvailableSpec extends SpecBase {
 
   trait Setup {
     val app: Application = application().build()
-    val serviceUnavailableUrl: Option[String] = Option("service_unavailable_url")
+    val serviceUnavailableUrl: String = "service_unavailable_url"
     val eori = "test_eori"
     val hmrcDomainUrl = "https://www.gov.uk/government/organisations/hm-revenue-customs"
     val tradeAndExciseEnquiryLink = s"$hmrcDomainUrl/contact/customs-international-trade-and-excise-enquiries"
@@ -64,6 +64,6 @@ class PostponedImportVatNotAvailableSpec extends SpecBase {
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     val view: Document = Jsoup.parse(
-      app.injector.instanceOf[postponed_import_vat_not_available].apply(eori, serviceUnavailableUrl).body)
+      app.injector.instanceOf[postponed_import_vat_not_available].apply(eori, Option(serviceUnavailableUrl)).body)
   }
 }

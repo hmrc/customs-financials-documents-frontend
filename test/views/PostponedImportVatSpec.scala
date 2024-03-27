@@ -48,7 +48,6 @@ class PostponedImportVatSpec extends SpecBase {
     "display the correct title and guidance" in new Setup {
       when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
 
-      val serviceUnavailbleUrl: Option[String] = Option("service_unavailable_url")
       val view: Document = Jsoup.parse(
         app.injector.instanceOf[postponed_import_vat].apply(
           EORI_NUMBER,
@@ -56,7 +55,7 @@ class PostponedImportVatSpec extends SpecBase {
           hasRequestedStatements = true,
           cdsOnly = true,
           Option("some_url"),
-          serviceUnavailbleUrl).body)
+          Option(serviceUnavailbleUrl)).body)
 
       running(app) {
         view.title() mustBe s"${messages(app)("cf.account.pvat.title")} - ${messages(app)("service.name")} - GOV.UK"
@@ -94,6 +93,8 @@ class PostponedImportVatSpec extends SpecBase {
 
   trait Setup {
     val date: LocalDate = LocalDate.now()
+
+    val serviceUnavailbleUrl: String = "service_unavailable_url"
 
     val postVatStatMetaData1: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(date.getYear,
       date.minusMonths(MONTH_7).getMonthValue, Csv, PostponedVATStatement, CDS, None)

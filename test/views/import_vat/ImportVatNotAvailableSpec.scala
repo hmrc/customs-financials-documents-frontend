@@ -52,13 +52,13 @@ class ImportVatNotAvailableSpec extends SpecBase {
 
   trait Setup {
     val app: Application = application().build()
-    val serviceUnavailableUrl: Option[String] = Option("service_unavailable_url")
+    val serviceUnavailableUrl: String = "service_unavailable_url"
 
     implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
     implicit val msg: Messages = messages(app)
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     val view: Document = Jsoup.parse(
-      app.injector.instanceOf[import_vat_not_available].apply(serviceUnavailableUrl).body)
+      app.injector.instanceOf[import_vat_not_available].apply(Option(serviceUnavailableUrl)).body)
   }
 }

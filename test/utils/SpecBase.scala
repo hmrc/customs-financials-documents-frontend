@@ -17,9 +17,8 @@
 package utils
 
 import actions.{IdentifierAction, PvatIdentifierAction}
-import akka.stream.testkit.NoMaterializer
+import org.apache.pekko.stream.testkit.NoMaterializer
 import com.codahale.metrics.MetricRegistry
-import com.kenshoo.play.metrics.Metrics
 import models.EoriHistory
 import org.mockito.scalatest.MockitoSugar
 import org.scalatest.OptionValues
@@ -36,9 +35,9 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.stubPlayBodyParsers
 import utils.Utils.emptyString
 
-class FakeMetrics extends Metrics {
-  override val defaultRegistry: MetricRegistry = new MetricRegistry
-  override val toJson: String = "{}"
+class FakeMetrics extends MetricRegistry {
+  val defaultRegistry: MetricRegistry = new MetricRegistry
+  val toJson: String = "{}"
 }
 
 class SpecBase
@@ -63,11 +62,10 @@ class SpecBase
       bind[IdentifierAction].toInstance(new FakeIdentifierAction(stubPlayBodyParsers(NoMaterializer))(allEoriHistory)),
       bind[PvatIdentifierAction].toInstance(
         new PvatFakeIdentifierAction(stubPlayBodyParsers(NoMaterializer))(allEoriHistory)),
-      bind[Metrics].toInstance(new FakeMetrics)
+      bind[MetricRegistry].toInstance(new FakeMetrics)
     ).configure(
       "play.filters.csp.nonce.enabled" -> "false",
       "auditing.enabled" -> "false",
       "metrics.enabled" -> "false"
     )
-
 }
