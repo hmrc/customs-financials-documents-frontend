@@ -50,6 +50,8 @@ cf.common.missing-documents-guidance.text1={0} for import declarations made in C
 cf.common.missing-documents-guidance.subHeading={0} older than 6 months
 cf.common.missing-documents-guidance.text2={0} are only created for periods in which you imported goods.
 cf.common.not-available=Not available
+cf.common.not-available-screen-reader-cds=No CDS statement for {0}
+cf.common.not-available-screen-reader-chief=No CHIEF statement for {0}
 # ------------------------------------------------------------------------
 
 # Date Format

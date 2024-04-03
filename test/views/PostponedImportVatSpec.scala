@@ -89,6 +89,23 @@ class PostponedImportVatSpec extends SpecBase {
         view.getElementsByTag("dd").size() must be(expectedSize)
       }
     }
+
+    "display 'not available' messages correctly when no statements are present and it is after the 14th of the previous month" in new Setup {
+        when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now().withDayOfMonth(15).minusMonths(1))
+
+        val view: Document = Jsoup.parse(
+          app.injector.instanceOf[postponed_import_vat].apply(
+            EORI_NUMBER,
+            PostponedVatViewModel(postponedVatStatementFiles),
+            hasRequestedStatements = true,
+            cdsOnly = true,
+            Option("some_url")).body)
+
+        running(app) {
+          val cdsNotAvailableMessage = view.select("dd").text()
+          cdsNotAvailableMessage must include(messages(app)("cf.common.not-available"))
+        }
+      }
   }
 
   trait Setup {

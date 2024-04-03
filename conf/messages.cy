@@ -51,6 +51,8 @@ cf.common.missing-documents-guidance.text1=Nid yw {0} ar gyfer datganiadau mewnf
 cf.common.missing-documents-guidance.subHeading={0} sy’n hŷn na 6 mis
 cf.common.missing-documents-guidance.text2= Dim ond ar gyfer cyfnodau lle y gwnaethoch fewnforio nwyddau y mae {0} cael eu creu.
 cf.common.not-available=Ddim ar gael
+cf.common.not-available-screen-reader-cds= {0}
+cf.common.not-available-screen-reader-chief= {0}
 # ------------------------------------------------------------------------
 
 # Date Format
