@@ -83,15 +83,35 @@
             <div class="govuk-summary-list__row" id=@{statementGroup.periodId}>
 
                 <dt class="govuk-summary-list__value">
-                    @h2(msg = Formatters.dateAsMonthAndYear(statementGroup.startDate))
+                    @messages(Formatters.dateAsMonthAndYear(statementGroup.startDate))
                 </dt>
 
                 @if(statementGroup.noStatements) {
                     @if(statementGroup.isPreviousMonthAndAfter14Th) {
-                            <dd class="govuk-summary-list__actions">@messages("cf.common.not-available")</dd>
-                    @if(!cdsOnly){
-                            <dd class="govuk-summary-list__actions">@messages("cf.common.not-available")</dd>
-                            }
+                        <dd class="govuk-summary-list__actions">
+                            <span aria-hidden="true">
+                                @messages("cf.common.not-available")
+                            </span>
+                            <span class="govuk-visually-hidden"> 
+                                @messages(
+                                    "cf.common.not-available-screen-reader-cds", 
+                                    Formatters.dateAsMonthAndYear(statementGroup.startDate)
+                                )
+                            </span>
+                        </dd>
+                        @if(!cdsOnly){
+                            <dd class="govuk-summary-list__actions">
+                               <span aria-hidden="true">
+                                    @messages("cf.common.not-available")
+                                </span>
+                                <span class="govuk-visually-hidden"> 
+                                    @messages(
+                                        "cf.common.not-available-screen-reader-chief", 
+                                        Formatters.dateAsMonthAndYear(statementGroup.startDate)
+                                    )
+                                </span>
+                            </dd>
+                        }
                     }
                 } else {
                                 @for(source <- Seq(CDS, CHIEF)) {
