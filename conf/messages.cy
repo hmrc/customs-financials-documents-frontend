@@ -50,9 +50,9 @@ cf.common.missing-documents-guidance.chiefHeading={0} a wneir yn CHIEF
 cf.common.missing-documents-guidance.text1=Nid yw {0} ar gyfer datganiadau mewnforio a wneir yn System y Tollau ar gyfer Trin Nwyddau a Gaiff eu Mewnforio a’u Hallforio (CHIEF) ar gael yn y gwasanaeth hwn.
 cf.common.missing-documents-guidance.subHeading={0} sy’n hŷn na 6 mis
 cf.common.missing-documents-guidance.text2= Dim ond ar gyfer cyfnodau lle y gwnaethoch fewnforio nwyddau y mae {0} cael eu creu.
-cf.common.not-available=Ddim ar gael
-cf.common.not-available-screen-reader-cds= {0}
-cf.common.not-available-screen-reader-chief= {0}
+cf.common.not-available=Dim datganiad
+cf.common.not-available-screen-reader-cds=Dim datganiad CDS ar gyfer {0}
+cf.common.not-available-screen-reader-chief=Dim datganiad CHIEF ar gyfer {0}
 # ------------------------------------------------------------------------
 
 # Date Format
