@@ -90,7 +90,8 @@ class PostponedImportVatSpec extends SpecBase {
 
     "display 'not available' messages correctly when no statements are present " +
       "and it is after the 14th of the previous month" in new Setup {
-        when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now().withDayOfMonth(DAY_15).minusMonths(ONE_MONTH))
+        when(mockDateTimeService.systemDateTime()).
+          thenReturn(LocalDateTime.now().withDayOfMonth(DAY_15).minusMonths(ONE_MONTH))
 
         val view: Document = Jsoup.parse(
           app.injector.instanceOf[postponed_import_vat].apply(
