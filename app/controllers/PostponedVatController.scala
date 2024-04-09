@@ -84,7 +84,7 @@ class PostponedVatController @Inject()(val authenticate: PvatIdentifierAction,
             req.eori,
             PostponedVatViewModel(currentStatements),
             allPostponedVatStatements.exists(statement => statement.metadata.statementRequestId.nonEmpty),
-            postponedVatStatements.count(_.metadata.source != CHIEF) == postponedVatStatements.size,
+            currentStatements.count(_.metadata.source != CHIEF) == currentStatements.size,
             location,
             Some(historicUrl))
           )
