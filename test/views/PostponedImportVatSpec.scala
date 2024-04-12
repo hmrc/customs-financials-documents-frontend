@@ -106,6 +106,40 @@ class PostponedImportVatSpec extends SpecBase {
           cdsNotAvailableMessage must include(messages(app)("cf.common.not-available"))
         }
       }
+
+      "display grouped certificates by EORI and format correctly" in new Setup {
+        when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
+          val view: Document = Jsoup.parse(
+            app.injector.instanceOf[postponed_import_vat].apply(
+              EORI_NUMBER,
+              PostponedVatViewModel(postponedVatStatementFiles),
+              hasRequestedStatements = true,
+              cdsOnly = false,
+              Option("some_url")).body)
+          
+          val expectedSize = 13
+
+          running(app) {
+            view.select("dd.govuk-summary-list__actions").size() mustBe expectedSize
+            view.html() must include(messages(app)("cf.account.pvat.aria.amended-download-link")) 
+          }
+        }
+
+        "handle missing files and display messages appropriately" in new Setup {
+            when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
+
+            val view: Document = Jsoup.parse(
+              app.injector.instanceOf[postponed_import_vat].apply(
+                EORI_NUMBER,
+                PostponedVatViewModel(Seq.empty),
+                hasRequestedStatements = true,
+                cdsOnly = false,
+                Option("some_url")).body)
+
+            running(app) {
+              view.html() must include(messages(app)("cf.common.not-available"))
+            }
+          }
   }
 
   trait Setup {
