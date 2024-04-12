@@ -98,6 +98,144 @@ class VatControllerSpec extends SpecBase {
       }
     }
 
+    "display only last 6 months certs' rows when previous cert files are retrieved in SDES" in new Setup {
+
+      appConfig.historicStatementsEnabled = false
+      val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("import-vat").url
+
+      val vatCertificateFile1: VatCertificateFile = VatCertificateFile(STAT_FILE_NAME_04,
+        "download_url_01",
+        SIZE_111L,
+        VatCertificateFileMetadata(
+          date.minusMonths(ONE_MONTH).getYear,
+          date.minusMonths(ONE_MONTH).getMonthValue,
+          Pdf,
+          C79Certificate,
+          None),
+        emptyString)(messages(app))
+
+      val vatCertificateFile2: VatCertificateFile = VatCertificateFile(STAT_FILE_NAME_04,
+        "download_url_02",
+        SIZE_111L,
+        VatCertificateFileMetadata(
+          date.minusMonths(TWO_MONTHS).getYear,
+          date.minusMonths(TWO_MONTHS).getMonthValue,
+          Pdf,
+          C79Certificate,
+          None),
+        emptyString)(messages(app))
+
+      val vatCertificateFile3: VatCertificateFile = VatCertificateFile(STAT_FILE_NAME_04,
+        "download_url_03",
+        SIZE_111L,
+        VatCertificateFileMetadata(
+          date.minusMonths(THREE_MONTHS).getYear,
+          date.minusMonths(THREE_MONTHS).getMonthValue,
+          Pdf,
+          C79Certificate,
+          None),
+        emptyString)(messages(app))
+
+      val vatCertificateFile4: VatCertificateFile = VatCertificateFile(STAT_FILE_NAME_04,
+        "download_url_04",
+        SIZE_111L,
+        VatCertificateFileMetadata(
+          date.minusMonths(FOUR_MONTHS).getYear,
+          date.minusMonths(FOUR_MONTHS).getMonthValue,
+          Pdf,
+          C79Certificate,
+          None),
+        emptyString)(messages(app))
+
+      val vatCertificateFile5: VatCertificateFile = VatCertificateFile(STAT_FILE_NAME_04,
+        "download_url_05",
+        SIZE_111L,
+        VatCertificateFileMetadata(
+          date.minusMonths(FIVE_MONTHS).getYear,
+          date.minusMonths(FIVE_MONTHS).getMonthValue,
+          Pdf,
+          C79Certificate,
+          None),
+        emptyString)(messages(app))
+
+      val vatCertificateFile6: VatCertificateFile = VatCertificateFile(STAT_FILE_NAME_04,
+        "download_url_06",
+        SIZE_111L,
+        VatCertificateFileMetadata(
+          date.minusMonths(SIX_MONTHS).getYear,
+          date.minusMonths(SIX_MONTHS).getMonthValue,
+          Pdf,
+          C79Certificate,
+          None),
+        emptyString)(messages(app))
+
+      val vatCertificateFile7: VatCertificateFile = VatCertificateFile(STAT_FILE_NAME_04,
+        "download_url_07",
+        SIZE_111L,
+        VatCertificateFileMetadata(
+          date.minusMonths(SEVEN_MONTHS).getYear,
+          date.minusMonths(SEVEN_MONTHS).getMonthValue,
+          Pdf,
+          C79Certificate,
+          None),
+        emptyString)(messages(app))
+
+      val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
+        VatCertificatesByMonth(date.minusMonths(ONE_MONTH), Seq(vatCertificateFile1))(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(TWO_MONTHS), Seq(vatCertificateFile2))(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(THREE_MONTHS), Seq(vatCertificateFile3))(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(FOUR_MONTHS), Seq(vatCertificateFile4))(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(FIVE_MONTHS), Seq(vatCertificateFile5))(messages(app)),
+        VatCertificatesByMonth(date.minusMonths(SIX_MONTHS), Seq(vatCertificateFile6))(messages(app))
+      )
+
+      val vatCertificatesForEoris: Seq[VatCertificatesForEori] = Seq(VatCertificatesForEori(eoriHistory.head,
+        currentCertificates, Seq.empty))
+
+      val viewModel: VatViewModel = VatViewModel(vatCertificatesForEoris)
+
+      when(mockSdesConnector.getVatCertificates(anyString)(any, any))
+        .thenReturn(Future.successful(
+          Seq(
+            vatCertificateFile1,
+            vatCertificateFile2,
+            vatCertificateFile3,
+            vatCertificateFile4,
+            vatCertificateFile5,
+            vatCertificateFile6,
+            vatCertificateFile7)))
+
+      when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+        .thenReturn(Future.successful(true))
+
+      running(app) {
+        val request = fakeRequest(GET, routes.VatController.showVatAccount.url)
+        val result = route(app, request).value
+
+        status(result) mustBe OK
+
+        if (DateUtils.isDayBefore15ThDayOfTheMonth(LocalDate.now())) {
+          contentAsString(result) mustBe
+            view(viewModel, Some(serviceUnavailableUrl))(request, messages(app), appConfig).toString()
+
+          val doc = Jsoup.parse(contentAsString(result))
+
+          doc.getElementById("statements-list-0-row-0-pdf-download-link").attr("href")should
+            be("download_url_01")
+          doc.getElementById("statements-list-0-row-1-pdf-download-link").attr("href")should
+            be("download_url_02")
+          doc.getElementById("statements-list-0-row-2-pdf-download-link").attr("href")should
+            be("download_url_03")
+          doc.getElementById("statements-list-0-row-3-pdf-download-link").attr("href")should
+            be("download_url_04")
+          doc.getElementById("statements-list-0-row-4-pdf-download-link").attr("href")should
+            be("download_url_05")
+          doc.getElementById("statements-list-0-row-5-pdf-download-link").attr("href")should
+            be("download_url_06")
+        }
+      }
+    }
+
     "display the cert unavailable text for the relevant month when cert files are retrieved " +
       "after 14th of the month and cert is not available" in new Setup {
 

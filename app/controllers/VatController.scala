@@ -27,7 +27,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.api.{Logger, LoggerLike}
 import services.DateTimeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.Constants.MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE
+import utils.Constants.{MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE, sevenMonths}
 import utils.DateUtils._
 import viewmodels.VatViewModel
 import views.html.import_vat.{import_vat, import_vat_not_available}
@@ -95,7 +95,10 @@ class VatController @Inject()(val authenticate: IdentifierAction,
         case (month, filesForMonth) => VatCertificatesByMonth(month, filesForMonth)
       }.toList)
       .map(_.partition(_.files.exists(_.metadata.statementRequestId.isDefined)))
-      .map { case (requested, current) => VatCertificatesForEori(historicEori, current, requested) }
+      .map { case (requested, current) =>
+        val currentCertificatesLast6Months = filterLastSixMonthsStatements(current)
+        VatCertificatesForEori(historicEori, currentCertificatesLast6Months, requested)
+      }
 
     populateEmptyMonths(certificates)
   }
@@ -127,4 +130,10 @@ class VatController @Inject()(val authenticate: IdentifierAction,
     } else {
       currentCerts
     }
+
+  private def filterLastSixMonthsStatements(currentCerts: Seq[VatCertificatesByMonth]): Seq[VatCertificatesByMonth] = {
+
+    val sevenMonthsAgo = LocalDate.now().minusMonths(sevenMonths)
+    currentCerts.filter(_.date.isAfter(sevenMonthsAgo))
+  }
 }
