@@ -16,40 +16,34 @@
 
 package models
 
+import models.FileRole._
 import utils.SpecBase
 
 class FileRoleSpec extends SpecBase {
 
-  "given 'C79Certificate'" should {
+  "apply" should {
+
     "return C79Certificate" in {
       val fileRole = FileRole("C79Certificate")
-      fileRole shouldEqual FileRole.C79Certificate
+      fileRole shouldEqual C79Certificate
     }
-  }
 
-  "given 'PostponedVATStatement'" should {
     "return PostponedVATStatement" in {
       val fileRole = FileRole("PostponedVATStatement")
-      fileRole shouldEqual FileRole.PostponedVATStatement
+      fileRole shouldEqual PostponedVATStatement
     }
-  }
 
-  "given 'SecurityStatement'" should {
     "return SecurityStatement" in {
       val fileRole = FileRole("SecurityStatement")
-      fileRole shouldEqual FileRole.SecurityStatement
+      fileRole shouldEqual SecurityStatement
     }
-  }
 
-  "given 'PostponedVATAmendedStatement'" should {
     "return PostponedVATAmendedStatement" in {
       val fileRole = FileRole("PostponedVATAmendedStatement")
-      fileRole shouldEqual FileRole.PostponedVATAmendedStatement
+      fileRole shouldEqual PostponedVATAmendedStatement
     }
-  }
 
-  "given an unknown role" should {
-    "throw an exception" in {
+    "throw an exception for invalid role " in {
       assertThrows[Exception] {
         FileRole("UnknownRole")
       }

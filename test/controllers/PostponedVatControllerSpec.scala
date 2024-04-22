@@ -316,7 +316,6 @@ class PostponedVatControllerSpec extends SpecBase {
     }
   }
 
-
   trait Setup {
     val eori: String = "testEori1"
     val historicEori: String = "testEori2"
