@@ -290,6 +290,33 @@ class PostponedVatControllerSpec extends SpecBase {
     }
   }
 
+  "show unavailable page" should {
+
+    "when exception occurs in get postponedVAT statements api" in new Setup {
+
+      config.historicStatementsEnabled = false
+      val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("postponed-vat").url
+
+      when(mockDataStoreConnector.getEmail(any)(any))
+        .thenReturn(Future.successful(Right(Email(emailValue))))
+
+      when(mockSdesConnector.getPostponedVatStatements(any)(any))
+        .thenReturn(Future.failed(new Exception("Unknown exception")))
+
+      when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+        .thenReturn(Future.successful(true))
+
+      running(app) {
+        val request = fakeRequest(GET, routes.PostponedVatController.show(Some(cdsLocation)).url)
+        val result = route(app, request).value
+
+        status(result) mustBe SEE_OTHER
+        contentAsString(result).contains(serviceUnavailableUrl)
+      }
+    }
+  }
+
+
   trait Setup {
     val eori: String = "testEori1"
     val historicEori: String = "testEori2"
