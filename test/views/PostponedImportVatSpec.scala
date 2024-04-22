@@ -116,12 +116,12 @@ class PostponedImportVatSpec extends SpecBase {
               hasRequestedStatements = true,
               cdsOnly = false,
               Option("some_url")).body)
-          
+
           val expectedSize = 13
 
           running(app) {
             view.select("dd.govuk-summary-list__actions").size() mustBe expectedSize
-            view.html() must include(messages(app)("cf.account.pvat.aria.amended-download-link")) 
+            view.html() must include(messages(app)("cf.account.pvat.aria.amended-download-link"))
           }
         }
 

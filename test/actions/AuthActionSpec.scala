@@ -126,17 +126,6 @@ class AuthActionSpec extends SpecBase {
     "redirect the user to unauthorised controller when has insufficient enrolments" in {
       val mockAuditingService = mock[AuditingService]
       val mockDataStoreConnector = mock[DataStoreConnector]
-      val mockAuthConnector = mock[AuthConnector]
-
-      when(mockAuthConnector.authorise[Option[Credentials]
-        ~ Option[Name] ~ Option[Email] ~ Option[AffinityGroup] ~ Option[String] ~ Enrolments](any, any)(any, any))
-        .thenReturn(Future.successful(
-          Some(Credentials("someProviderId", "someProviderType")) ~
-            Some(Name(Some("someName"), Some("someLastName"))) ~
-            Some(Email("some@email.com")) ~
-            Some(AffinityGroup.Individual) ~
-            Some("id") ~
-            Enrolments(Set.empty)))
 
       val app = application().overrides(
         inject.bind[AuditingService].toInstance(mockAuditingService),
@@ -147,7 +136,9 @@ class AuthActionSpec extends SpecBase {
       val bodyParsers = app.injector.instanceOf[BodyParsers.Default]
       val authActionHelper = app.injector.instanceOf[AuthActionHelper]
 
-      val authAction = new AuthAction(mockAuthConnector, config, bodyParsers, authActionHelper)
+      val authAction =
+        new AuthAction(new FakeFailingAuthConnector(new InsufficientEnrolments), config, bodyParsers, authActionHelper)
+
       val controller = new Harness(authAction)
 
       running(app) {
