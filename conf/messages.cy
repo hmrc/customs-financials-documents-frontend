@@ -1,4 +1,4 @@
-service.name = Bwrw golwg dros eich cyfrifon ariannol ar gyfer y tollau
+service.name = Rheoli tollau mewnforio a chyfrifon TAW
 
 cf.eori=Rhif EORI:
 cf.account.details.previous-eori=EORI: {0}

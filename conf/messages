@@ -1,4 +1,4 @@
-service.name = View your customs financial accounts
+service.name = Manage import duties and VAT accounts
 
 cf.eori=EORI number:
 cf.account.details.previous-eori=EORI: {0}
