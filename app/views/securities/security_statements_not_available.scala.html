@@ -34,7 +34,11 @@
 
     @h1("cf.security-statements.title", id=Some("security-statements-heading"), classes = "govuk-heading-xl")
 
-    @p(message = "cf.security-statements.unavailable", id = Some("no-statements"))
+    @p(
+        message = "cf.security-statements.unavailable", 
+        id = Some("no-statements"),
+        classes = "govuk-body govuk-!-margin-top-7 govuk-!-margin-bottom-9"
+    )
 
     @missing_guidance("statement")
 
