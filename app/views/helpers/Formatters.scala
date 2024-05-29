@@ -31,12 +31,12 @@ trait DateFormatters {
 
 trait FileFormatters {
 
-  private val kbMin: Long = 1024
-  private val mbMin: Long = 1024 * 1024
+  private val kbThreshold = 1024
+  private val mbThreshold: Int = 1024 * 1024
 
   def fileSize(size: Long): String = size match {
-    case kb if kbMin until mbMin contains kb => s"${kb / kbMin}KB"
-    case mb if mb >= mbMin => f"${mb / mbMin.toDouble}%.1fMB"
+    case kb if kbThreshold until mbThreshold contains kb => s"${kb / kbThreshold}KB"
+    case mb if mb >= mbThreshold => f"${mb / mbThreshold.toDouble}%.1fMB"
     case _ => "1KB"
   }
 }
