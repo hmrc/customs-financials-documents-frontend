@@ -35,7 +35,7 @@ trait FileFormatters {
   private val mbThreshold: Int = 1024 * 1024
 
   def fileSize(size: Long): String = size match {
-    case kb if kbThreshold until mbThreshold contains kb => s"${kb / kbThreshold}KB"
+    case kb if kb >= kbThreshold && kb < mbThreshold => s"${kb / kbThreshold}KB"
     case mb if mb >= mbThreshold => f"${mb / mbThreshold.toDouble}%.1fMB"
     case _ => "1KB"
   }
