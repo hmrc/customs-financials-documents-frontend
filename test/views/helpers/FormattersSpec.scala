@@ -23,37 +23,37 @@ import views.helpers.Formatters.fileSize
 class FormattersSpec extends SpecBase {
 
   "Formatters" should {
-    "a low kb threshold must display 1KB" in new Setup {
+    "display 1KB when fileSize is passed a value below 1KB" in new Setup {
       private val res = fileSize(belowKbThreshold)
       res mustBe "1KB"
     }
 
-    "between kb and mb threshold must display valid KB" in new Setup {
+    "display a valid KB when fileSize is passed an amount above 1KB and below 1MB" in new Setup {
       private val res = fileSize(kbValue)
       res mustBe "29KB"
     }
 
-    "over mb threshold must display valid MB" in new Setup {
+    "display a valid MB when fileSize is passed an amount above the KB limit" in new Setup {
       private val res = fileSize(mbValue)
       res mustBe "19.6MB"
     }
 
-    "on threshold for KB" in new Setup {
+    "display 1KB when the fileSize is on the KB threshold" in new Setup {
       private val res = fileSize(kbThreshold)
       res mustBe "1KB"
     }
 
-    "on threshold for MB" in new Setup {
+    "display 1.0MB when the fileSize is on the MB threshold" in new Setup {
       private val res = fileSize(mbThreshold)
       res mustBe "1.0MB"
     }
 
-    "1kb over threshold for KB" in new Setup {
+    "display 2KB when fileSize is over the KB threshold by 1" in new Setup {
       private val res = fileSize(kbThreshold + 1024)
       res mustBe "2KB"
     }
 
-    "1mb over threshold for MB" in new Setup {
+    "display 2.0MB when fileSize is over the MB threshold by 1" in new Setup {
       private val res = fileSize(mbThreshold + 1024 * 1024)
       res mustBe "2.0MB"
     }
