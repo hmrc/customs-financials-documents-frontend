@@ -19,7 +19,7 @@ cf.account.pvat.aria.original.download-link=Datganiad {0} ar gyfer {1} – {2} (
 cf.account.pvat.aria.amended.download-link=Datganiad diwygiedig {0} ar gyfer {1} – {2} ({3})
 cf.account.pvat.no-statements-yet=Nid oes datganiadau ar gael i’w gweld eto.
 cf.account.pvat.holding-message.1=Dim ond ar gyfer cyfnodau lle y gwnaethoch fewnforio nwyddau y mae datganiadau’n cael eu creu.
-cf.account.pvat.holding-message.2=Fel arfer, bydd eich datganiadau ar gael ar ôl yr 8fed diwrnod gwaith o bob mis.
+cf.account.pvat.holding-message.2=Fel arfer, bydd eich datganiadau ar gael ar ôl 10fed diwrnod gwaith o pob mis.
 cf.account.pvat.holding-message.3=Gallwch ddefnyddio’r gwasanaeth yma er mwyn bwrw golwg dros a lawrlwytho eich datganiadau ar gyfer y 6 mis diwethaf. Gellir gwneud cais am ddatganiadau hŷn gan ddefnyddio’r opsiynau cais ar waelod y dudalen hon.
 cf.account.pvat.link-message=wirio os gallwch ddefnyddio cyfrifyddu TAW ohiriedig (yn agor tab newydd)
 cf.account.pvat.statements.unavailable = Nid oedd unrhyw ddatganiadau i mewn {0}
@@ -116,7 +116,7 @@ cf.security-statements.requested.download-link.aria-text.csv=Lawrlwytho {1} {0} 
 # VAT Detail view
 # ------------------------------------------------------------------------
 cf.account.vat.support.heading=Help a chymorth
-cf.account.vat.available-text=Fel arfer, bydd eich tystysgrifau ar gael ar ôl yr 8fed diwrnod gwaith o bob mis.
+cf.account.vat.available-text=Fel arfer, bydd eich tystysgrifau ar gael ar ôl 10fed diwrnod gwaith o pob mis.
 cf.account.vat.your-certificates.heading=Eich tystysgrifau ar gyfer y chwe mis diwethaf
 cf.account.vat.support.message=Os oes angen help arnoch gyda TAW mewnforio, cysylltwch â’r
 cf.account.vat.support.link=Llinell Gymorth TAW ac Ecséis (yn agor mewn tab newydd).
