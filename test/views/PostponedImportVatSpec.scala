@@ -65,6 +65,8 @@ class PostponedImportVatSpec extends SpecBase {
         view.getElementById("pvat.support.heading").html() must not be empty
         view.getElementById("pvat.support.message").html() must not be empty
         view.html().contains(serviceUnavailbleUrl)
+        view.getElementById("chief-guidance-heading").html() mustBe
+          messages(app)("cf.account.vat.chief.heading")
       }
     }
 

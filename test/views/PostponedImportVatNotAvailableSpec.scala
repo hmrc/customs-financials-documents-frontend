@@ -47,6 +47,8 @@ class PostponedImportVatNotAvailableSpec extends SpecBase {
 
       view.html().contains(tradeAndExciseEnquiryLink)
       view.html().contains(messages(app)("cf.account.pvat.older-statements.description.1"))
+      view.getElementById("chief-guidance-heading").html() mustBe
+        messages(app)("cf.account.vat.chief.heading")
       view.html().contains(messages(app)("cf.account.pvat.older-statements.description.3"))
       view.html().contains(serviceUnavailableUrl)
     }

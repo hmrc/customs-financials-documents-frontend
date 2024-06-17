@@ -64,6 +64,12 @@
         location = serviceUnavailableUrl.getOrElse(emptyString),
         preLinkMessage = Some("cf.account.pvat.older-statements.description.2"))
 
+    @h2(
+        id = Some("chief-guidance-heading"),
+        msg = "cf.account.vat.chief.heading",
+        classes = "govuk-heading-m govuk-!-margin-top-6"
+    )
+
     @link(
         appConfig.pvEmailEmailAddress,
         location = appConfig.pvEmailEmailAddressHref,
