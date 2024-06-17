@@ -59,6 +59,7 @@ class PostponedImportVatSpec extends SpecBase {
         view.title() mustBe s"${messages(app)("cf.account.pvat.title")} - ${messages(app)("service.name")} - GOV.UK"
         view.getElementById("notification-panel").html() must not be empty
         view.getElementById("main-content").html() must not contain "h2"
+        view.html().contains("cf.account.vat.available-text")
         view.getElementsByTag("dl").size() must be > 0
         view.getElementsByTag("dt").size() must be > 0
         view.getElementsByTag("dd").size() must be > 0

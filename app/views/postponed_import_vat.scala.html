@@ -56,11 +56,7 @@
     
     @h1(msg = "cf.account.pvat.title", classes = "govuk-heading-xl  govuk-!-margin-bottom-6")
 
-    @if(messages.isDefinedAt("cf.account.pvat.holding-message.1")) {
-        @p(message= "cf.account.pvat.holding-message.1", id = Some("postponed-vat-holding-message"))
-        @p(message= "cf.account.pvat.holding-message.2")
-        @p(message= "cf.account.pvat.holding-message.3", classes="govuk-body govuk-!-margin-bottom-6")
-    }
+    @p(message = "cf.account.vat.available-text", id = Some("vat-available-text"))
 
     @h2("cf.account.pvat.your-statements.heading")
 
