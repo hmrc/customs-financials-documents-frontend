@@ -113,6 +113,7 @@ cf.security-statements.requested.download-link.aria-text.csv=Download {1} {0} ({
 # ------------------------------------------------------------------------
 cf.account.vat.title=Import VAT certificates (C79)
 cf.account.vat.available-text=Your certificates will usually be available after the 10th working day of each month.
+cf.account.vat.available.statement-text=Your statements will usually be available after the 10th working day of each month.
 cf.account.vat.your-certificates.heading=Your certificates for the last 6 months
 cf.account.vat.missing-file=Unavailable
 cf.account.vat.missing-file-hidden-text={0} for {1} unavailable
