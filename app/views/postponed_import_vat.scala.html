@@ -56,11 +56,7 @@
     
     @h1(msg = "cf.account.pvat.title", classes = "govuk-heading-xl  govuk-!-margin-bottom-6")
 
-    @if(messages.isDefinedAt("cf.account.pvat.holding-message.1")) {
-        @p(message= "cf.account.pvat.holding-message.1", id = Some("postponed-vat-holding-message"))
-        @p(message= "cf.account.pvat.holding-message.2")
-        @p(message= "cf.account.pvat.holding-message.3", classes="govuk-body govuk-!-margin-bottom-6")
-    }
+    @p(message = "cf.account.vat.available.statement-text", id = Some("vat-available-statement-text"))
 
     @h2("cf.account.pvat.your-statements.heading")
 
@@ -158,6 +154,12 @@
                 "cf.account.pvat.older-statements.description.link",
                 location = serviceUnavailableUrl.getOrElse(emptyString),
                 preLinkMessage = Some("cf.account.pvat.older-statements.description.2")
+            )
+
+            @h2(
+                id = Some("chief-guidance-heading"),
+                msg = "cf.account.vat.chief.heading",
+                classes = "govuk-heading-m govuk-!-margin-top-6"
             )
 
             @link(

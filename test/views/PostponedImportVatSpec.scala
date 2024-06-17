@@ -59,12 +59,15 @@ class PostponedImportVatSpec extends SpecBase {
         view.title() mustBe s"${messages(app)("cf.account.pvat.title")} - ${messages(app)("service.name")} - GOV.UK"
         view.getElementById("notification-panel").html() must not be empty
         view.getElementById("main-content").html() must not contain "h2"
+        view.html().contains("cf.account.vat.available.statement-text")
         view.getElementsByTag("dl").size() must be > 0
         view.getElementsByTag("dt").size() must be > 0
         view.getElementsByTag("dd").size() must be > 0
         view.getElementById("pvat.support.heading").html() must not be empty
         view.getElementById("pvat.support.message").html() must not be empty
         view.html().contains(serviceUnavailbleUrl)
+        view.getElementById("chief-guidance-heading").html() mustBe
+          messages(app)("cf.account.vat.chief.heading")
       }
     }
 
