@@ -46,7 +46,6 @@ class PostponedImportVatNotAvailableSpec extends SpecBase {
       view.getElementById("pvat.support.heading").text() must not be empty
 
       view.html().contains(tradeAndExciseEnquiryLink)
-      view.html().contains(messages(app)("cf.account.pvat.older-statements.description.1"))
       view.getElementById("chief-guidance-heading").html() mustBe
         messages(app)("cf.account.vat.chief.heading")
       view.html().contains(messages(app)("cf.account.pvat.older-statements.description.3"))
