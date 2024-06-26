@@ -75,7 +75,7 @@
     }
 <dl class="govuk-summary-list statement-list pVat-statements">
     @for(statementGroup <- statementGroups) {
-            @if(!statementGroup.noStatements || statementGroup.isPreviousMonthAndAfter14Th) {
+            @if(!statementGroup.noStatements || statementGroup.isPreviousMonthAndAfter19Th) {
             <div class="govuk-summary-list__row" id=@{statementGroup.periodId}>
 
                 <dt class="govuk-summary-list__value">
@@ -83,7 +83,7 @@
                 </dt>
 
                 @if(statementGroup.noStatements) {
-                    @if(statementGroup.isPreviousMonthAndAfter14Th) {
+                    @if(statementGroup.isPreviousMonthAndAfter19Th) {
                         <dd class="govuk-summary-list__actions">
                             <span aria-hidden="true">
                                 @messages("cf.common.not-available")
