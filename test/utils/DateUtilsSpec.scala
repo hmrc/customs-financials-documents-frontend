@@ -18,32 +18,34 @@ package utils
 
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import utils.CommonTestData._
-import utils.DateUtils.{isDateInLastSixMonths, isDayBefore15ThDayOfTheMonth}
+import utils.DateUtils.{isDateInLastSixMonths, isDayBefore20ThDayOfTheMonth}
 
 import java.time.LocalDate
 
 class DateUtilsSpec extends SpecBase {
 
-  "isBefore15ThDayOfTheMonth" should {
+  "isDayBefore20ThDayOfTheMonth" should {
 
-    "return true when input day is before 15th day of the current month" in {
-      val dateBefore15ThDay: LocalDate = LocalDate.of(YEAR_2023, MONTH_5, DAY_12)
+    "return true when input day is before 20th day of the current month" in {
+      val dateBefore20ThDay: LocalDate = LocalDate.of(YEAR_2023, MONTH_5, DAY_12)
       val dateOf14ThDayOfTheMonth: LocalDate = LocalDate.of(YEAR_2023, MONTH_5, DAY_14)
+      val dateOf19ThDayOfTheMonth: LocalDate = LocalDate.of(YEAR_2023, MONTH_5, DAY_19)
 
-      isDayBefore15ThDayOfTheMonth(dateBefore15ThDay) shouldBe true
-      isDayBefore15ThDayOfTheMonth(dateOf14ThDayOfTheMonth) shouldBe true
+      isDayBefore20ThDayOfTheMonth(dateBefore20ThDay) shouldBe true
+      isDayBefore20ThDayOfTheMonth(dateOf14ThDayOfTheMonth) shouldBe true
+      isDayBefore20ThDayOfTheMonth(dateOf19ThDayOfTheMonth) shouldBe true
     }
 
-    "return false when input day is after 15th day of the current month" in {
-      val dateAfter15ThDay: LocalDate = LocalDate.of(YEAR_2023, MONTH_4, DAY_20)
+    "return false when input day is after 19th day of the current month" in {
+      val dateAfter19ThDay: LocalDate = LocalDate.of(YEAR_2023, MONTH_4, DAY_20)
 
-      isDayBefore15ThDayOfTheMonth(dateAfter15ThDay) shouldBe false
+      isDayBefore20ThDayOfTheMonth(dateAfter19ThDay) shouldBe false
     }
 
-    "return false when input day is 15th day of the current month" in {
-      val dateWith15ThDay: LocalDate = LocalDate.of(YEAR_2023, MONTH_3, DAY_15)
+    "return false when input day is 20th day of the current month" in {
+      val dateWith20ThDay: LocalDate = LocalDate.of(YEAR_2023, MONTH_3, DAY_20)
 
-      isDayBefore15ThDayOfTheMonth(dateWith15ThDay) shouldBe false
+      isDayBefore20ThDayOfTheMonth(dateWith20ThDay) shouldBe false
     }
   }
 

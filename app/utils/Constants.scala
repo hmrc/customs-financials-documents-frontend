@@ -23,6 +23,7 @@ object Constants {
   val FIXED_DATE_TIME_DAY_OF_MONTH = 20
   val FIXED_DATE_TIME_HOUR_OF_DAY = 12
   val FIXED_DATE_TIME_MINUTES_OF_HOUR = 30
+  val DAY_20 = 20
 
   val MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE: Range.Inclusive = 1 to 6
 
