@@ -31,8 +31,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.running
 import play.api.{Application, inject}
 import services.DateTimeService
-import utils.CommonTestData.{DAY_15, DOWNLOAD_URL_00, EORI_NUMBER, FIVE_MONTHS, FOUR_MONTHS, MONTH_7, ONE_MONTH,
-  SIZE_111L, STAT_FILE_NAME_01, STAT_FILE_NAME_02, STAT_FILE_NAME_03, STAT_FILE_NAME_04, THREE_MONTHS, TWO_MONTHS}
+import utils.CommonTestData._
 import utils.SpecBase
 import viewmodels.PostponedVatViewModel
 import views.html.postponed_import_vat
@@ -92,9 +91,9 @@ class PostponedImportVatSpec extends SpecBase {
     }
 
     "display 'not available' messages correctly when no statements are present " +
-      "and it is after the 14th of the previous month" in new Setup {
+      "and it is after the 19th of the previous month" in new Setup {
         when(mockDateTimeService.systemDateTime()).
-          thenReturn(LocalDateTime.now().withDayOfMonth(DAY_15).minusMonths(ONE_MONTH))
+          thenReturn(LocalDateTime.now().withDayOfMonth(DAY_19).minusMonths(ONE_MONTH))
 
         val view: Document = Jsoup.parse(
           app.injector.instanceOf[postponed_import_vat].apply(

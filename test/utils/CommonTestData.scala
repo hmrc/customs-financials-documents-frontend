@@ -58,6 +58,7 @@ object CommonTestData {
   val DAY_15 = 15
   val DAY_16 = 16
   val DAY_17 = 17
+  val DAY_19 = 19
   val DAY_20 = 20
   val DAY_21 = 21
   val DAY_23 = 23
