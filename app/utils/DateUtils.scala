@@ -16,11 +16,13 @@
 
 package utils
 
+import utils.Constants.DAY_20
+
 import java.time.LocalDate
 
 object DateUtils {
 
-  def isDayBefore15ThDayOfTheMonth(date: LocalDate): Boolean = date.getDayOfMonth < 15
+  def isDayBefore20ThDayOfTheMonth(date: LocalDate): Boolean = date.getDayOfMonth < DAY_20
 
   def isDateInLastSixMonths(date: LocalDate, currentDate: LocalDate): Boolean = {
     val dayOne = 1

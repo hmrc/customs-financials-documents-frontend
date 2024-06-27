@@ -57,4 +57,10 @@ class ConstantsSpec extends SpecBase {
     }
   }
 
+  "DAY_20" should {
+    "return correct value" in {
+      DAY_20 mustBe 20
+    }
+  }
+
 }

@@ -214,7 +214,7 @@ class VatControllerSpec extends SpecBase {
 
         status(result) mustBe OK
 
-        if (DateUtils.isDayBefore15ThDayOfTheMonth(LocalDate.now())) {
+        if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
           contentAsString(result) mustBe
             view(viewModel, Some(serviceUnavailableUrl))(request, messages(app), appConfig).toString()
 
@@ -237,7 +237,7 @@ class VatControllerSpec extends SpecBase {
     }
 
     "display the cert unavailable text for the relevant month when cert files are retrieved " +
-      "after 14th of the month and cert is not available" in new Setup {
+      "after 19th of the month and cert is not available" in new Setup {
 
       val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
         VatCertificatesByMonth(date.minusMonths(ONE_MONTH), Seq())(messages(app)),
@@ -265,7 +265,7 @@ class VatControllerSpec extends SpecBase {
 
         status(result) mustBe OK
 
-        if (!DateUtils.isDayBefore15ThDayOfTheMonth(LocalDate.now())) {
+        if (!DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
           contentAsString(result) mustBe view(viewModel,
             Some(appConfig.historicRequestUrl(C79Certificate)))(request, messages(app), appConfig).toString()
 
@@ -281,7 +281,7 @@ class VatControllerSpec extends SpecBase {
     }
 
     "not display the cert row for the immediate previous month when cert files are retrieved " +
-      "before 15th of the month and cert is not available for immediate previous month" in new Setup {
+      "before 20th of the month and cert is not available for immediate previous month" in new Setup {
 
       appConfig.historicStatementsEnabled = false
       val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("import-vat").url
@@ -310,7 +310,7 @@ class VatControllerSpec extends SpecBase {
 
         status(result) mustBe OK
 
-        if (DateUtils.isDayBefore15ThDayOfTheMonth(LocalDate.now())) {
+        if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
           contentAsString(result) mustBe view(viewModel,
             Some(serviceUnavailableUrl))(request, messages(app), appConfig).toString()
 
@@ -330,7 +330,7 @@ class VatControllerSpec extends SpecBase {
       }
     }
 
-    "display all the certs' row when cert files are retrieved before 15th of the month and " +
+    "display all the certs' row when cert files are retrieved before 20th of the month and " +
       "cert is available" in new Setup {
 
       appConfig.historicStatementsEnabled = false
@@ -373,7 +373,7 @@ class VatControllerSpec extends SpecBase {
 
         status(result) mustBe OK
 
-        if (DateUtils.isDayBefore15ThDayOfTheMonth(LocalDate.now())) {
+        if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
           contentAsString(result) mustBe
             view(viewModel, Some(serviceUnavailableUrl))(request, messages(app), appConfig).toString()
 
@@ -435,7 +435,7 @@ class VatControllerSpec extends SpecBase {
 
         status(result) mustBe OK
 
-        if (DateUtils.isDayBefore15ThDayOfTheMonth(LocalDate.now())) {
+        if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
           contentAsString(result) mustBe
             view(viewModel, Some(historicRequestUrl))(request, messages(app), appConfig).toString()
         }
@@ -514,7 +514,7 @@ class VatControllerSpec extends SpecBase {
 
         status(result) mustBe OK
 
-        if (DateUtils.isDayBefore15ThDayOfTheMonth(LocalDate.now())) {
+        if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
           contentAsString(result) mustBe
             view(viewModel, Some(historicRequestUrl))(request, messages(app), appConfig).toString()
         }

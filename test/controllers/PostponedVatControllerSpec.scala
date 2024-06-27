@@ -146,9 +146,9 @@ class PostponedVatControllerSpec extends SpecBase {
     }
 
     "display the PostponedVat page with no statements text when statement is not available for the " +
-      "immediate previous month and accessed after 14th of the month" in new Setup {
+      "immediate previous month and accessed after 19th of the month" in new Setup {
 
-      val currentDate: LocalDate = LocalDate.of(date.getYear, date.getMonthValue, DAY_16)
+      val currentDate: LocalDate = LocalDate.of(date.getYear, date.getMonthValue, DAY_20)
 
       when(mockDataStoreConnector.getEmail(any)(any))
         .thenReturn(Future.successful(Right(Email(emailValue))))
@@ -189,7 +189,7 @@ class PostponedVatControllerSpec extends SpecBase {
     }
 
     "not display the immediate previous month statement on PostponedVat page when accessed " +
-      "before 15th day of the month and statement is not available" in new Setup {
+      "before 20th day of the month and statement is not available" in new Setup {
       config.historicStatementsEnabled = false
 
       val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("postponed-vat").url
