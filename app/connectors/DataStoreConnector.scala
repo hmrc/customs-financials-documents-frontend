@@ -28,7 +28,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DataStoreConnector @Inject()(http: HttpClient,
+class DataStoreConnector @Inject()(httpClient: HttpClient,
                                    metricsReporter: MetricsReporterService,
                                    appConfig: AppConfig)(implicit ec: ExecutionContext) extends Logging {
 
@@ -37,7 +37,7 @@ class DataStoreConnector @Inject()(http: HttpClient,
     val emptyEoriHistory = Seq(EoriHistory(eori, None, None))
 
     metricsReporter.withResponseTimeLogging("customs-data-store.get.eori-history") {
-      http.GET[EoriHistoryResponse](dataStoreEndpoint).map(response => response.eoriHistory)
+      httpClient.GET[EoriHistoryResponse](dataStoreEndpoint).map(response => response.eoriHistory)
         .recover { case e =>
           logger.error(s"DATASTORE-E-EORI-HISTORY-ERROR: ${e.getClass.getName}")
           emptyEoriHistory
@@ -49,13 +49,33 @@ class DataStoreConnector @Inject()(http: HttpClient,
     val dataStoreEndpoint = appConfig.customsDataStore + s"/eori/$eori/verified-email"
 
     metricsReporter.withResponseTimeLogging(resourceName = "customs-data-store.get.email") {
-      http.GET[EmailResponse](dataStoreEndpoint).map {
+      httpClient.GET[EmailResponse](dataStoreEndpoint).map {
         case EmailResponse(Some(address), _, None) => Right(Email(address))
         case EmailResponse(Some(email), _, Some(_)) => Left(UndeliverableEmail(email))
         case _ => Left(UnverifiedEmail)
       }.recover {
         case UpstreamErrorResponse(_, NOT_FOUND, _, _) => Left(UnverifiedEmail)
       }
+    }
+  }
+
+  def verifiedEmail(implicit hc: HeaderCarrier): Future[EmailVerifiedResponse] = {
+    val emailDisplayApiUrl = s"${appConfig.customsDataStore}/subscriptions/email-display"
+
+    httpClient.GET[EmailVerifiedResponse](emailDisplayApiUrl).recover {
+      case _ =>
+        logger.error(s"Error occurred while calling API $emailDisplayApiUrl")
+        EmailVerifiedResponse(None)
+    }
+  }
+
+  def retrieveUnverifiedEmail(implicit hc: HeaderCarrier): Future[EmailUnverifiedResponse] = {
+    val unverifiedEmailDisplayApiUrl = s"${appConfig.customsDataStore}/subscriptions/unverified-email-display"
+
+    httpClient.GET[EmailUnverifiedResponse](unverifiedEmailDisplayApiUrl).recover {
+      case _ =>
+        logger.error(s"Error occurred while calling API $unverifiedEmailDisplayApiUrl")
+        EmailUnverifiedResponse(None)
     }
   }
 }
