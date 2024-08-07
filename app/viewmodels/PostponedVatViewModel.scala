@@ -24,14 +24,15 @@ import utils.Constants.MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE
 
 
 case class ComponentAttributesRow(message: String,
-                             classes: String = "",
-                              id: Option[String] = None)
+                                  classes: String = "",
+                                  id: Option[String] = None)
 
 case class PostponedVatViewModel(pageTitle: String,
-                             backLink: Option[String] = None,
-                            pageHeading:HtmlFormat.Appendable,
-                            statementsAvailableGuidance:HtmlFormat.Appendable,
-                            requestedStatements: Option[HtmlFormat.Appendable] = None)
+                                 backLink: Option[String] = None,
+                                 pageHeading: HtmlFormat.Appendable,
+                                 statementsAvailableGuidance: HtmlFormat.Appendable,
+                                 requestedStatements: Option[HtmlFormat.Appendable] = None,
+                                 cdsOnly: Boolean)
 
 object PostponedVatViewModel {
   def apply(files: Seq[PostponedVatStatementFile])(implicit messages: Messages,
