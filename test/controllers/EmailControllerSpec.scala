@@ -29,28 +29,6 @@ import scala.concurrent.Future
 
 class EmailControllerSpec extends SpecBase {
 
-  // "showUnverified" must {
-  //   "return unverified email" in new Setup {
-  //     when(mockConnector.retrieveUnverifiedEmail(any)).thenReturn(Future.successful(Some("unverifiedEmail")))
-
-  //     running(app) {
-  //       val connector = app.injector.instanceOf[DataStoreConnector]
-
-  //       val result: Future[Option[String]] = connector.retrieveUnverifiedEmail(hc)
-  //       await(result) shouldBe expectedResult
-  //     }
-  //   }
-
-  //   "return unverified email response" in new Setup {
-  //     when(mockConnector.retrieveUnverifiedEmail(any)).thenReturn(Future.successful(Some("test@test.com")))
-
-  //     running(app) {
-  //       val request = fakeRequest(GET, routes.EmailController.showUnverified().url)
-  //       val result = route(app, request).value
-  //       status(result) shouldBe OK
-  //     }
-  //   }
-  // }
   "showUnverified" must {
     "return unverified email response" in new Setup {
 
