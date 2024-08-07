@@ -26,7 +26,6 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import utils.SpecBase
 import utils.Utils.emptyString
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class FinancialsApiConnectorSpec extends SpecBase {

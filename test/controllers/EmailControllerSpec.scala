@@ -51,6 +51,32 @@ class EmailControllerSpec extends SpecBase {
   //     }
   //   }
   // }
+  "showUnverified" must {
+    "return unverified email response" in new Setup {
+
+      when(mockConnector.retrieveUnverifiedEmail(any)).thenReturn(Future.successful(emailUnverifiedResponse))
+
+      running(app) {
+        val request = fakeRequest(GET, routes.EmailController.showUnverified().url)
+
+        val result = route(app, request).value
+        status(result) shouldBe OK
+      }
+    }
+
+    "display verify your email page when exception occurs while connector making the API call" in new Setup {
+
+      when(mockConnector.retrieveUnverifiedEmail(any))
+        .thenReturn(Future.successful(emailUnverifiedResponseWithNoEmailId))
+
+      running(app) {
+        val request = fakeRequest(GET, routes.EmailController.showUnverified().url)
+
+        val result = route(app, request).value
+        status(result) shouldBe OK
+      }
+    }
+  }
 
   "showUndeliverable" must {
     "display undeliverableEmail page" in new Setup {
@@ -73,7 +99,8 @@ class EmailControllerSpec extends SpecBase {
     val mockMetricsReporterService: MetricsReporterService = mock[MetricsReporterService]
     val mockConnector: DataStoreConnector = mock[DataStoreConnector]
 
-    val response: EmailUnverifiedResponse = EmailUnverifiedResponse(Some("unverifiedEmail"))
+    val emailUnverifiedResponse: EmailUnverifiedResponse = EmailUnverifiedResponse(Some("unverifiedEmail"))
+    val emailUnverifiedResponseWithNoEmailId: EmailUnverifiedResponse = EmailUnverifiedResponse(None)
     val emailVerifiedResponse: EmailVerifiedResponse = EmailVerifiedResponse(Some("test@test.com"))
 
     val app: Application = application().overrides(
