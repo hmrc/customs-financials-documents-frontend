@@ -45,7 +45,6 @@ class FinancialsApiConnectorSpec extends SpecBase {
     }
   }
 
-
   trait Setup {
     val mockMetricsReporterService: MetricsReporterService = mock[MetricsReporterService]
     val mockHttpClient: HttpClient = mock[HttpClient]

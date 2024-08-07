@@ -40,13 +40,15 @@ class EmailController @Inject()(authenticate: IdentifierAction,
 
   def showUnverified():Action[AnyContent] = authenticate async { implicit request =>
     dataStoreConnector.retrieveUnverifiedEmail.map(
-      emailUnverifiedRes => Ok(verifyEmailView(appConfig.emailFrontendUrl, emailUnverifiedRes.unVerifiedEmail))
-      )
+      emailUnverifiedRes => Ok(verifyEmailView(appConfig.emailFrontendUrl, 
+        emailUnverifiedRes.unVerifiedEmail))
+    )
   }
 
   def showUndeliverable(): Action[AnyContent] = authenticate async { implicit request =>
     dataStoreConnector.verifiedEmail.map {
-      verifiedEmailRes => Ok(undeliverableEmail(appConfig.emailFrontendUrl, verifiedEmailRes.verifiedEmail))
+      verifiedEmailRes => Ok(undeliverableEmail(appConfig.emailFrontendUrl, 
+        verifiedEmailRes.verifiedEmail))
     }
   }
 }
