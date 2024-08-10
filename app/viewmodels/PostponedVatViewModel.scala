@@ -16,23 +16,38 @@
 
 package viewmodels
 
+import models.DutyPaymentMethod.{CDS, CHIEF}
 import models.{PostponedVatStatementFile, PostponedVatStatementGroup}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import services.DateTimeService
 import utils.Constants.MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE
 
+case class GuidanceRow(h2Heading: HtmlFormat.Appendable,
+                       link: Option[HtmlFormat.Appendable] = None,
+                       paragraph: Option[HtmlFormat.Appendable] = None)
 
 case class ComponentAttributesRow(message: String,
                                   classes: String = "",
                                   id: Option[String] = None)
 
+case class CurrentStatementsSection(currentStatementRow: Seq[HtmlFormat.Appendable] = Seq.empty[HtmlFormat.Appendable],
+                                    noStatementMsg: Option[HtmlFormat.Appendable] = None) {
+
+  val source: Seq[String] = Seq(CDS, CHIEF)
+}
+
 case class PostponedVatViewModel(pageTitle: String,
                                  backLink: Option[String] = None,
-                                 pageHeading: HtmlFormat.Appendable,
+                                 pageH1Heading: HtmlFormat.Appendable,
                                  statementsAvailableGuidance: HtmlFormat.Appendable,
+                                 statementH2Heading:HtmlFormat.Appendable,
                                  requestedStatements: Option[HtmlFormat.Appendable] = None,
-                                 cdsOnly: Boolean)
+                                 currentStatements: CurrentStatementsSection,
+                                 cdsOnly: Boolean,
+                                 statOlderThanSixMonths: GuidanceRow,
+                                 chiefDeclaration: GuidanceRow,
+                                 helpAndSupport: GuidanceRow)
 
 object PostponedVatViewModel {
   def apply(files: Seq[PostponedVatStatementFile])(implicit messages: Messages,

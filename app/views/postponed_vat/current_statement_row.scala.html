@@ -1,0 +1,90 @@
+@*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.helpers.Formatters
+@import postponed_vat.collapsible_statement_group
+@import utils.Utils.emptyString
+
+@this(collapsibleStatementGroup: collapsible_statement_group)
+
+@(
+    statementGroup: PostponedVatStatementGroup,
+    dutyPaymentMethodSource: Seq[String],
+    isCdsOnly: Boolean
+)(implicit messages: Messages)
+
+@if(!statementGroup.noStatements || statementGroup.isPreviousMonthAndAfter19Th) {
+    <div class="govuk-summary-list__row" id=@{statementGroup.periodId}>
+
+        <dt class="govuk-summary-list__value">
+            @messages(Formatters.dateAsMonthAndYear(statementGroup.startDate))
+        </dt>
+
+            @if(statementGroup.noStatements) {
+                @if(statementGroup.isPreviousMonthAndAfter19Th) {
+                        <dd class="govuk-summary-list__actions">
+                            <span aria-hidden="true">
+                                @messages("cf.common.not-available")
+                            </span>
+                            <span class="govuk-visually-hidden">
+                                @messages(
+                                    "cf.common.not-available-screen-reader-cds",
+                                    Formatters.dateAsMonthAndYear(statementGroup.startDate)
+                                )
+                            </span>
+                        </dd>
+                    @if(!isCdsOnly) {
+                        <dd class="govuk-summary-list__actions">
+                               <span aria-hidden="true">
+                                    @messages("cf.common.not-available")
+                               </span>
+                                <span class="govuk-visually-hidden">
+                                    @messages(
+                                        "cf.common.not-available-screen-reader-chief",
+                                        Formatters.dateAsMonthAndYear(statementGroup.startDate)
+                                    )
+                                </span>
+                        </dd>
+                    }
+                }
+            } else {
+                        @for(source <- dutyPaymentMethodSource) {
+                            @collapsibleStatementGroup(
+                                statementGroup.collectFiles(amended = true, source),
+                                "cf.account.pvat.amended-download-link",
+                                "cf.account.pvat.aria.amended-download-link",
+                                None,
+                                source,
+                                Formatters.dateAsMonthAndYear(statementGroup.startDate),
+                                isCdsOnly
+                            )
+                            @defining(
+                                if(statementGroup.collectFiles(amended = true, source).isEmpty) emptyString
+                                else "original.") { original =>
+                                                        @collapsibleStatementGroup(
+                                                            statementGroup.collectFiles(amended = false, source),
+                                                            s"cf.account.pvat.${original}download-link",
+                                                            s"cf.account.pvat.aria.${original}download-link",
+                                                            Some("cf.common.not-available"),
+                                                            source,
+                                                            Formatters.dateAsMonthAndYear(statementGroup.startDate),
+                                                            isCdsOnly
+                                                        )
+                                                }
+                        }
+            }
+    </div>
+}

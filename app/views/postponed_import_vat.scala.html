@@ -25,6 +25,7 @@
 @import models.DutyPaymentMethod.CDS
 @import models.DutyPaymentMethod.CHIEF
 @import utils.Utils.{emptyString, period}
+@import postponed_vat.collapsible_statement_group
 
 @this(
     layout: Layout,
@@ -36,7 +37,8 @@
     h2: components.h2,
     h2Inner: components.h2Inner,
     inset: components.inset,
-    requested_statements: components.requestedStatements
+    requested_statements: components.requestedStatements,
+    collapsibleStatementGroup: collapsible_statement_group
 )
 
 @(
@@ -76,7 +78,7 @@
     }
 <dl class="govuk-summary-list statement-list pVat-statements">
     @for(statementGroup <- statementGroups) {
-            @if(!statementGroup.noStatements || statementGroup.isPreviousMonthAndAfter19Th) {
+        @if(!statementGroup.noStatements || statementGroup.isPreviousMonthAndAfter19Th) {
             <div class="govuk-summary-list__row" id=@{statementGroup.periodId}>
 
                 <dt class="govuk-summary-list__value">
@@ -96,11 +98,11 @@
                                 )
                             </span>
                         </dd>
-                        @if(!cdsOnly){
+                        @if(!cdsOnly) {
                             <dd class="govuk-summary-list__actions">
                                <span aria-hidden="true">
                                     @messages("cf.common.not-available")
-                                </span>
+                               </span>
                                 <span class="govuk-visually-hidden"> 
                                     @messages(
                                         "cf.common.not-available-screen-reader-chief", 
@@ -118,7 +120,8 @@
                                         "cf.account.pvat.aria.amended-download-link",
                                         None,
                                         source,
-                                        Formatters.dateAsMonthAndYear(statementGroup.startDate)
+                                        Formatters.dateAsMonthAndYear(statementGroup.startDate),
+                                        cdsOnly
                                     )
                                     @defining(
                                         if(statementGroup.collectFiles(amended = true, source).isEmpty)
@@ -130,13 +133,14 @@
                                             s"cf.account.pvat.aria.${original}download-link",
                                             Some("cf.common.not-available"),
                                             source,
-                                            Formatters.dateAsMonthAndYear(statementGroup.startDate)
+                                            Formatters.dateAsMonthAndYear(statementGroup.startDate),
+                                            cdsOnly
                                         )
                                     }
                                 }
-                        }
-                </div>
-            }
+                }
+            </div>
+        }
     }
 </dl>
     @if(statementGroups.isEmpty) {
@@ -185,74 +189,4 @@
         </p>
     </div>
 
-}
-
-@collapsibleStatementGroup(
-    certificateFiles: Seq[PostponedVatStatementFile],
-    downloadLinkMessage: String,
-    downloadAriaLabel: String,
-    missingFileMessage: Option[String],
-    source: String,
-    period: String) = {
-
-    @if(certificateFiles.nonEmpty) {
-        @for(certificates <- certificateFiles.groupBy(_.eori).values) {
-            @for(fileFormat <- PvatFileFormats) {
-                @if(!cdsOnly) {
-                    @missingFileMessage.map{v => <dd class="govuk-summary-list__actions">
-                                                    <span aria-hidden="true">
-                                                        @messages(v, source)
-                                                    </span> 
-                                                    <span class="govuk-visually-hidden"> 
-                                                        @messages(
-                                                            "cf.common.not-available-screen-reader-cds",
-                                                            period
-                                                        )
-                                                    </span>
-                                                </dd>
-                    }
-                }
-                <dd class="govuk-summary-list__actions">
-                    @downloadLink(
-                        fileFormat,
-                        certificates.filter(_.fileFormat == fileFormat),
-                        downloadLinkMessage,
-                        downloadAriaLabel,
-                        period
-                    )
-                </dd>
-            }
-        }
-    } 
-
-}
-
-@downloadLink(
-    fileFormat: FileFormat,
-    certificateFiles: Seq[PostponedVatStatementFile],
-    downloadLinkMessage: String,
-    downloadAriaLabel: String,
-    period: String) = {
-
-@for(certificateFile <- certificateFiles) {
-        @linkInner(
-            msgs = messages(
-                downloadLinkMessage,
-                certificateFile.metadata.source,
-                fileFormat.name,
-                Formatters.fileSize(certificateFile.size),
-                period
-            ),
-            url = certificateFile.downloadURL,
-            ariaLabel = Some(
-                messages(
-                    downloadAriaLabel,
-                    certificateFile.metadata.source,
-                    period,
-                    fileFormat.name,
-                    Formatters.fileSize(certificateFile.size)
-                )
-            )
-        )
-    }
 }
