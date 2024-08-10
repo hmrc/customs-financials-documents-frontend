@@ -27,7 +27,7 @@
   missingFileMessage: Option[String],
   source: String,
   period: String,
-  cdsOnly: Boolean)(implicit messages: Messages)
+  isCdsOnly: Boolean)(implicit messages: Messages)
 
 @if(certificateFiles.nonEmpty) {
 
@@ -35,7 +35,7 @@
 
         @for(fileFormat <- PvatFileFormats) {
 
-            @if(!cdsOnly) {
+            @if(!isCdsOnly) {
                   @missingFileMessage.map{v => <dd class="govuk-summary-list__actions">
                                                     <span aria-hidden="true">
                                                         @messages(v, source)
