@@ -25,7 +25,7 @@
   downloadLinkMessage: String,
   downloadAriaLabel: String,
   missingFileMessage: Option[String],
-  source: String,
+  dutyPaymentMethodSource: String,
   period: String,
   isCdsOnly: Boolean)(implicit messages: Messages)
 
@@ -38,7 +38,7 @@
             @if(!isCdsOnly) {
                   @missingFileMessage.map{v => <dd class="govuk-summary-list__actions">
                                                     <span aria-hidden="true">
-                                                        @messages(v, source)
+                                                        @messages(v, dutyPaymentMethodSource)
                                                     </span>
                                                     <span class="govuk-visually-hidden">
                                                         @messages(
