@@ -23,15 +23,28 @@ import play.twirl.api.HtmlFormat
 import services.DateTimeService
 import utils.Constants.MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE
 
+
+case class DDRow(notAvailableMsg: String,
+                 visuallyHiddenMsg: String)
 case class GuidanceRow(h2Heading: HtmlFormat.Appendable,
                        link: Option[HtmlFormat.Appendable] = None,
                        paragraph: Option[HtmlFormat.Appendable] = None)
 
-case class ComponentAttributesRow(message: String,
-                                  classes: String = "",
-                                  id: Option[String] = None)
+case class CurrentStatementRow(startDateMsgKey: String,
+                               cdsDDRow: Option[DDRow] = None,
+                               chiefDDRow: Option[DDRow] = None)
 
-case class CurrentStatementsSection(currentStatementRow: Seq[HtmlFormat.Appendable] = Seq.empty[HtmlFormat.Appendable],
+object CurrentStatementRow {
+
+  def apply(statementGroup: PostponedVatStatementGroup,
+            dutyPaymentMethodSource: Seq[String],
+            isCdsOnly: Boolean): CurrentStatementRow = {
+
+    CurrentStatementRow("")
+  }
+}
+
+case class CurrentStatementsSection(currentStatementRows: Seq[HtmlFormat.Appendable] = Seq.empty[HtmlFormat.Appendable],
                                     noStatementMsg: Option[HtmlFormat.Appendable] = None) {
 
   val source: Seq[String] = Seq(CDS, CHIEF)
