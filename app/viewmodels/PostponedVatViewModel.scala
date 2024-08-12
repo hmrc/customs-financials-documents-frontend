@@ -26,13 +26,17 @@ import utils.Constants.MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE
 
 case class DDRow(notAvailableMsg: String,
                  visuallyHiddenMsg: String)
+
+case class CollapsibleStatementGroupRow(collapsiblePVATAmendedStatement: HtmlFormat.Appendable,
+                                        collapsiblePVATStatement: HtmlFormat.Appendable)
 case class GuidanceRow(h2Heading: HtmlFormat.Appendable,
                        link: Option[HtmlFormat.Appendable] = None,
                        paragraph: Option[HtmlFormat.Appendable] = None)
 
 case class CurrentStatementRow(startDateMsgKey: String,
                                cdsDDRow: Option[DDRow] = None,
-                               chiefDDRow: Option[DDRow] = None)
+                               chiefDDRow: Option[DDRow] = None,
+                               collapsibleStatementGroupRows: Seq[CollapsibleStatementGroupRow] = Seq())
 
 object CurrentStatementRow {
 

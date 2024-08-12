@@ -26,7 +26,6 @@
     isCdsOnly: Boolean
 )(implicit messages: Messages)
 
-@if(!statementGroup.noStatements || statementGroup.isPreviousMonthAndAfter19Th) {
     <div class="govuk-summary-list__row" id=@{statementGroup.periodId}>
 
         <dt class="govuk-summary-list__value">
@@ -87,4 +86,3 @@
                         }
             }
     </div>
-}

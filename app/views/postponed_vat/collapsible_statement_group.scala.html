@@ -30,13 +30,11 @@
   isCdsOnly: Boolean)(implicit messages: Messages)
 
 @if(certificateFiles.nonEmpty) {
-
     @for(certificates <- certificateFiles.groupBy(_.eori).values) {
-
         @for(fileFormat <- PvatFileFormats) {
 
             @if(!isCdsOnly) {
-                  @missingFileMessage.map{v => <dd class="govuk-summary-list__actions">
+                  @missingFileMessage.map {v => <dd class="govuk-summary-list__actions">
                                                     <span aria-hidden="true">
                                                         @messages(v, dutyPaymentMethodSource)
                                                     </span>
