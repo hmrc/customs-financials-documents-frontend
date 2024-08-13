@@ -27,12 +27,12 @@ import views.helpers.Formatters
 import views.html.components.linkInner
 import views.html.postponed_vat.{collapsible_statement_group, download_link_pvat_statement}
 
-
 case class DDRow(notAvailableMsg: String,
                  visuallyHiddenMsg: String)
 
 case class CollapsibleStatementGroupRow(collapsiblePVATAmendedStatement: Option[HtmlFormat.Appendable] = None,
                                         collapsiblePVATStatement: Option[HtmlFormat.Appendable] = None)
+
 case class GuidanceRow(h2Heading: HtmlFormat.Appendable,
                        link: Option[HtmlFormat.Appendable] = None,
                        paragraph: Option[HtmlFormat.Appendable] = None)
@@ -98,7 +98,7 @@ object CurrentStatementRow {
                                                     isCdsOnly: Boolean)
                                                    (implicit messages: Messages): Seq[CollapsibleStatementGroupRow] = {
 
-    if(statementGroup.noStatements) {
+    if (statementGroup.noStatements) {
       Seq()
     } else {
       dutyPaymentMethodSource.map {
@@ -106,52 +106,59 @@ object CurrentStatementRow {
           val linkInner = new linkInner()
           val downloadLinkPvatStatement = new download_link_pvat_statement(linkInner)
 
-          val collapsibleStatementGroupForPVATAmended = {
-            if(statementGroup.collectFiles(amended = true, paymentSource).nonEmpty) {
-              Some(new collapsible_statement_group(downloadLinkPvatStatement)
-                .apply(
-                  statementGroup.collectFiles(amended = true, paymentSource),
-                  "cf.account.pvat.amended-download-link",
-                  "cf.account.pvat.aria.amended-download-link",
-                  None,
-                  paymentSource,
-                  Formatters.dateAsMonthAndYear(statementGroup.startDate),
-                  isCdsOnly
-                ))
-            } else {
-              None
-            }
-
-          }
-
-          val originalSubStringForMsgKey = if (statementGroup.collectFiles(amended = true, paymentSource).isEmpty) {
-            emptyString
-          } else {
-            "original."
-          }
-
-          val collapsibleStatementGroupForPVAT = {
-            if(statementGroup.collectFiles(amended = false, paymentSource).nonEmpty) {
-              Some(new collapsible_statement_group(downloadLinkPvatStatement).apply(
-                statementGroup.collectFiles(amended = false, paymentSource),
-                s"cf.account.pvat.${originalSubStringForMsgKey}download-link",
-                s"cf.account.pvat.aria.${originalSubStringForMsgKey}download-link",
-                Some("cf.common.not-available"),
-                paymentSource,
-                Formatters.dateAsMonthAndYear(statementGroup.startDate),
-                isCdsOnly
-              ))
-            } else {
-              None
-            }
-
-          }
-
           CollapsibleStatementGroupRow(
-            collapsibleStatementGroupForPVATAmended,
-            collapsibleStatementGroupForPVAT
+            collapsibleStatementGroupForAmendedPVAT(statementGroup, isCdsOnly, paymentSource, downloadLinkPvatStatement),
+            collapsibleStatementGroupForPVAT(statementGroup, isCdsOnly, paymentSource, downloadLinkPvatStatement)
           )
       }
+    }
+  }
+
+  private def collapsibleStatementGroupForPVAT(statementGroup: PostponedVatStatementGroup,
+                                               isCdsOnly: Boolean,
+                                               paymentSource: String,
+                                               downloadLinkPvatStatement: download_link_pvat_statement)
+                                              (implicit messages: Messages): Option[HtmlFormat.Appendable] = {
+
+    val originalSubStringForMsgKey = if (statementGroup.collectFiles(amended = true, paymentSource).isEmpty) {
+      emptyString
+    } else {
+      "original."
+    }
+
+    if (statementGroup.collectFiles(amended = false, paymentSource).nonEmpty) {
+      Some(new collapsible_statement_group(downloadLinkPvatStatement).apply(
+        statementGroup.collectFiles(amended = false, paymentSource),
+        s"cf.account.pvat.${originalSubStringForMsgKey}download-link",
+        s"cf.account.pvat.aria.${originalSubStringForMsgKey}download-link",
+        Some("cf.common.not-available"),
+        paymentSource,
+        Formatters.dateAsMonthAndYear(statementGroup.startDate),
+        isCdsOnly
+      ))
+    } else {
+      None
+    }
+  }
+
+  private def collapsibleStatementGroupForAmendedPVAT(statementGroup: PostponedVatStatementGroup,
+                                                      isCdsOnly: Boolean,
+                                                      paymentSource: String,
+                                                      downloadLinkPvatStatement: download_link_pvat_statement)
+                                                     (implicit messages: Messages): Option[HtmlFormat.Appendable] = {
+    if (statementGroup.collectFiles(amended = true, paymentSource).nonEmpty) {
+      Some(new collapsible_statement_group(downloadLinkPvatStatement)
+        .apply(
+          statementGroup.collectFiles(amended = true, paymentSource),
+          "cf.account.pvat.amended-download-link",
+          "cf.account.pvat.aria.amended-download-link",
+          None,
+          paymentSource,
+          Formatters.dateAsMonthAndYear(statementGroup.startDate),
+          isCdsOnly
+        ))
+    } else {
+      None
     }
   }
 }
@@ -166,7 +173,7 @@ case class PostponedVatViewModel(pageTitle: String,
                                  backLink: Option[String] = None,
                                  pageH1Heading: HtmlFormat.Appendable,
                                  statementsAvailableGuidance: HtmlFormat.Appendable,
-                                 statementH2Heading:HtmlFormat.Appendable,
+                                 statementH2Heading: HtmlFormat.Appendable,
                                  requestedStatements: Option[HtmlFormat.Appendable] = None,
                                  currentStatements: CurrentStatementsSection,
                                  cdsOnly: Boolean,
