@@ -77,7 +77,6 @@
         </div>
     }
 <dl class="govuk-summary-list statement-list pVat-statements">
-    @println("=========size of statementGroups is ========"+statementGroups.size)
     @for(statementGroup <- statementGroups) {
         @if(!statementGroup.noStatements || statementGroup.isPreviousMonthAndAfter19Th) {
             <div class="govuk-summary-list__row" id=@{statementGroup.periodId}>

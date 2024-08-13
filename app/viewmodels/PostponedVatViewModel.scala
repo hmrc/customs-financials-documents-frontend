@@ -22,13 +22,17 @@ import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import services.DateTimeService
 import utils.Constants.MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE
+import utils.Utils.emptyString
+import views.helpers.Formatters
+import views.html.components.linkInner
+import views.html.postponed_vat.{collapsible_statement_group, download_link_pvat_statement}
 
 
 case class DDRow(notAvailableMsg: String,
                  visuallyHiddenMsg: String)
 
-case class CollapsibleStatementGroupRow(collapsiblePVATAmendedStatement: HtmlFormat.Appendable,
-                                        collapsiblePVATStatement: HtmlFormat.Appendable)
+case class CollapsibleStatementGroupRow(collapsiblePVATAmendedStatement: Option[HtmlFormat.Appendable] = None,
+                                        collapsiblePVATStatement: Option[HtmlFormat.Appendable] = None)
 case class GuidanceRow(h2Heading: HtmlFormat.Appendable,
                        link: Option[HtmlFormat.Appendable] = None,
                        paragraph: Option[HtmlFormat.Appendable] = None)
@@ -42,9 +46,113 @@ object CurrentStatementRow {
 
   def apply(statementGroup: PostponedVatStatementGroup,
             dutyPaymentMethodSource: Seq[String],
-            isCdsOnly: Boolean): CurrentStatementRow = {
+            isCdsOnly: Boolean)(implicit messages: Messages): CurrentStatementRow = {
 
-    CurrentStatementRow("")
+    val startDateMsgKey = messages(Formatters.dateAsMonthAndYear(statementGroup.startDate))
+
+    CurrentStatementRow(
+      startDateMsgKey = startDateMsgKey,
+      cdsDDRow = populateCdsDDRow(statementGroup),
+      chiefDDRow = populateChiefDDRow(statementGroup, isCdsOnly),
+      collapsibleStatementGroupRows =
+        populateCollapsibleStatementGroupRows(statementGroup, dutyPaymentMethodSource, isCdsOnly)
+    )
+  }
+
+  private def populateCdsDDRow(statementGroup: PostponedVatStatementGroup)
+                              (implicit messages: Messages): Option[DDRow] = {
+    if (statementGroup.noStatements && statementGroup.isPreviousMonthAndAfter19Th) {
+      Some(
+        DDRow(
+          notAvailableMsg = messages("cf.common.not-available"),
+          visuallyHiddenMsg = messages(
+            "cf.common.not-available-screen-reader-cds",
+            Formatters.dateAsMonthAndYear(statementGroup.startDate)
+          ))
+      )
+    } else {
+      None
+    }
+  }
+
+  private def populateChiefDDRow(statementGroup: PostponedVatStatementGroup,
+                                 isCdsOnly: Boolean)
+                                (implicit messages: Messages): Option[DDRow] = {
+    if (statementGroup.noStatements && statementGroup.isPreviousMonthAndAfter19Th && !isCdsOnly) {
+      Some(
+        DDRow(
+          notAvailableMsg = messages("cf.common.not-available"),
+          visuallyHiddenMsg = messages(
+            "cf.common.not-available-screen-reader-chief",
+            Formatters.dateAsMonthAndYear(statementGroup.startDate)
+          )
+        )
+      )
+    } else {
+      None
+    }
+  }
+
+  private def populateCollapsibleStatementGroupRows(statementGroup: PostponedVatStatementGroup,
+                                                    dutyPaymentMethodSource: Seq[String],
+                                                    isCdsOnly: Boolean)
+                                                   (implicit messages: Messages): Seq[CollapsibleStatementGroupRow] = {
+
+    if(statementGroup.noStatements) {
+      Seq()
+    } else {
+      dutyPaymentMethodSource.map {
+        paymentSource =>
+          val linkInner = new linkInner()
+          val downloadLinkPvatStatement = new download_link_pvat_statement(linkInner)
+
+          val collapsibleStatementGroupForPVATAmended = {
+            if(statementGroup.collectFiles(amended = true, paymentSource).nonEmpty) {
+              Some(new collapsible_statement_group(downloadLinkPvatStatement)
+                .apply(
+                  statementGroup.collectFiles(amended = true, paymentSource),
+                  "cf.account.pvat.amended-download-link",
+                  "cf.account.pvat.aria.amended-download-link",
+                  None,
+                  paymentSource,
+                  Formatters.dateAsMonthAndYear(statementGroup.startDate),
+                  isCdsOnly
+                ))
+            } else {
+              None
+            }
+
+          }
+
+          val originalSubStringForMsgKey = if (statementGroup.collectFiles(amended = true, paymentSource).isEmpty) {
+            emptyString
+          } else {
+            "original."
+          }
+
+          val collapsibleStatementGroupForPVAT = {
+            if(statementGroup.collectFiles(amended = false, paymentSource).nonEmpty) {
+              Some(new collapsible_statement_group(downloadLinkPvatStatement).apply(
+                statementGroup.collectFiles(amended = false, paymentSource),
+                s"cf.account.pvat.${originalSubStringForMsgKey}download-link",
+                s"cf.account.pvat.aria.${originalSubStringForMsgKey}download-link",
+                Some("cf.common.not-available"),
+                paymentSource,
+                Formatters.dateAsMonthAndYear(statementGroup.startDate),
+                isCdsOnly
+              ))
+            } else {
+              None
+            }
+
+          }
+
+          CollapsibleStatementGroupRow(
+            collapsibleStatementGroupForPVATAmended,
+            collapsibleStatementGroupForPVAT
+          )
+      }
+    }
   }
 }
 

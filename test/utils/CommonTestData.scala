@@ -70,6 +70,8 @@ object CommonTestData {
   val HOUR_12 = 12
   val MINUTES_30 = 30
 
+  val SECONDS_50 = 50
+
   val SIZE_99L = 99L
   val SIZE_111L = 111L
   val SIZE_500L = 500L

@@ -19,8 +19,8 @@ package viewmodels
 import models.DutyPaymentMethod.{CDS, CHIEF}
 import models.FileFormat.Pdf
 import models.FileRole.PostponedVATStatement
-import models.{PostponedVatStatementFile, PostponedVatStatementGroup}
 import models.metadata.PostponedVatStatementFileMetadata
+import models.{PostponedVatStatementFile, PostponedVatStatementGroup}
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.Application
 import play.api.i18n.Messages
@@ -29,8 +29,10 @@ import utils.CommonTestData._
 import utils.SpecBase
 import utils.Utils.emptyString
 import views.helpers.Formatters
+import views.html.components.linkInner
+import views.html.postponed_vat.{collapsible_statement_group, download_link_pvat_statement}
 
-import java.time.LocalDate
+import java.time.{LocalDate, LocalDateTime}
 
 class PostponedVatViewModelSpec extends SpecBase {
 
@@ -38,36 +40,135 @@ class PostponedVatViewModelSpec extends SpecBase {
 
     "produce CurrentStatementRow with correct contents" when {
 
-     "isCdsOnly is true and PostponedVatStatementGroup has statements" in new Setup {
+      "isCdsOnly is true and PostponedVatStatementGroup has statements" in new Setup {
 
-       val pvatStatementGroup: PostponedVatStatementGroup =
-         PostponedVatStatementGroup(dateOfPreviousMonth, certificateFiles)
+        val isCdsOnly = true
 
-       CurrentStatementRow(pvatStatementGroup, dutyPaymentMethodSource, isCdsOnly = true) mustBe
-       CurrentStatementRow(
-         msgs(Formatters.dateAsMonthAndYear(dateOfPreviousMonth)),
-         cdsDDRow = None,
-         chiefDDRow = None,
-         collapsibleStatementGroupRows = Seq()
-       )
-     }
+        val pvatStatementGroup: PostponedVatStatementGroup =
+          PostponedVatStatementGroup(dateOfPreviousMonthAndAfter19th, certificateFiles)
 
-      "isCdsOnly is false and PostponedVatStatementGroup has statements" in new Setup {
+        val collapStatGroupRowForSourceCDS: CollapsibleStatementGroupRow =
+          CollapsibleStatementGroupRow(
+            collapsiblePVATAmendedStatement = None,
+            collapsiblePVATStatement = Some(new collapsible_statement_group(downloadLinkPvatStatement).apply(
+              pvatStatementGroup.collectFiles(amended = false, CDS),
+              "cf.account.pvat.download-link",
+              "cf.account.pvat.aria.download-link",
+              Some("cf.common.not-available"),
+              CDS,
+              Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate),
+              isCdsOnly
+            ))
+          )
 
+        val collapStatGroupRowForSourceCHIEF: CollapsibleStatementGroupRow =
+          CollapsibleStatementGroupRow(
+            collapsiblePVATAmendedStatement = None,
+            collapsiblePVATStatement = None
+          )
+
+        val expectedResult: CurrentStatementRow = CurrentStatementRow(
+          msgs(Formatters.dateAsMonthAndYear(dateOfPreviousMonthAndAfter19th)),
+          cdsDDRow = None,
+          chiefDDRow = None,
+          collapsibleStatementGroupRows = Seq(collapStatGroupRowForSourceCDS, collapStatGroupRowForSourceCHIEF)
+        )
+
+        CurrentStatementRow(pvatStatementGroup, dutyPaymentMethodSource, isCdsOnly) mustBe expectedResult
       }
 
-      "PostponedVatStatementGroup has no statements" in new Setup {
+      "isCdsOnly is false and PostponedVatStatementGroup has statements" in new Setup {
+        val isCdsOnly = false
 
+        val pvatStatementGroup: PostponedVatStatementGroup =
+          PostponedVatStatementGroup(dateOfPreviousMonthAndAfter19th, certificateFiles)
+
+        val collapStatGroupRowForSourceCDS: CollapsibleStatementGroupRow =
+          CollapsibleStatementGroupRow(
+            collapsiblePVATAmendedStatement = None,
+            collapsiblePVATStatement = Some(new collapsible_statement_group(downloadLinkPvatStatement).apply(
+              pvatStatementGroup.collectFiles(amended = false, CDS),
+              "cf.account.pvat.download-link",
+              "cf.account.pvat.aria.download-link",
+              Some("cf.common.not-available"),
+              CDS,
+              Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate),
+              isCdsOnly
+            ))
+          )
+
+        val collapStatGroupRowForSourceCHIEF: CollapsibleStatementGroupRow =
+          CollapsibleStatementGroupRow(
+            collapsiblePVATAmendedStatement = None,
+            collapsiblePVATStatement = None
+          )
+
+        val expectedResult: CurrentStatementRow = CurrentStatementRow(
+          msgs(Formatters.dateAsMonthAndYear(dateOfPreviousMonthAndAfter19th)),
+          cdsDDRow = None,
+          chiefDDRow = None,
+          collapsibleStatementGroupRows = Seq(collapStatGroupRowForSourceCDS, collapStatGroupRowForSourceCHIEF)
+        )
+
+        CurrentStatementRow(pvatStatementGroup, dutyPaymentMethodSource, isCdsOnly) mustBe expectedResult
       }
 
       "PostponedVatStatementGroup has no statements, startDate is of the previous month (after 19th) " +
         "and isCdsOnly is true" in new Setup {
 
+        val isCdsOnly = true
+
+        when(mockDateTimeService.systemDateTime()).thenReturn(date)
+
+        val pvatStatementGroup: PostponedVatStatementGroup =
+          PostponedVatStatementGroup(dateOfPreviousMonthAndAfter19th, Seq())
+
+        val cdsDDRow: DDRow = DDRow(
+          msgs("cf.common.not-available"),
+          msgs(
+            "cf.common.not-available-screen-reader-cds",
+            Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate)
+          )
+        )
+
+        val expectedResult: CurrentStatementRow = CurrentStatementRow(
+          msgs(Formatters.dateAsMonthAndYear(dateOfPreviousMonthAndAfter19th)),
+          cdsDDRow = Some(cdsDDRow),
+          chiefDDRow = None,
+          collapsibleStatementGroupRows = Seq()
+        )
+
+        CurrentStatementRow(pvatStatementGroup, dutyPaymentMethodSource, isCdsOnly) mustBe expectedResult
       }
 
       "PostponedVatStatementGroup has no statements, startDate is of the previous month (after 19th) " +
         "and isCdsOnly is false" in new Setup {
 
+        val isCdsOnly = false
+
+        when(mockDateTimeService.systemDateTime()).thenReturn(date)
+
+        val pvatStatementGroup: PostponedVatStatementGroup =
+          PostponedVatStatementGroup(dateOfPreviousMonthAndAfter19th, Seq())
+
+        val cdsDDRow: DDRow = DDRow(msgs("cf.common.not-available"),
+          msgs("cf.common.not-available-screen-reader-cds",
+            Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate))
+        )
+
+        val chiefDDRow: DDRow = DDRow(msgs("cf.common.not-available"),
+          msgs("cf.common.not-available-screen-reader-chief",
+            Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate))
+        )
+
+        val expectedResult: CurrentStatementRow = CurrentStatementRow(
+          msgs(Formatters.dateAsMonthAndYear(dateOfPreviousMonthAndAfter19th)),
+          cdsDDRow = Some(cdsDDRow),
+          chiefDDRow = Some(chiefDDRow),
+          collapsibleStatementGroupRows = Seq()
+        )
+
+        CurrentStatementRow(pvatStatementGroup, dutyPaymentMethodSource, isCdsOnly) mustBe expectedResult
       }
 
     }
@@ -83,11 +184,13 @@ class PostponedVatViewModelSpec extends SpecBase {
         emptyString)
     )
 
-    val date: LocalDate = LocalDate.of(YEAR_2023, MONTH_10, DAY_1)
-    val dateOfPreviousMonth: LocalDate = date.minusMonths(ONE_MONTH).withDayOfMonth(DAY_20)
+    val date: LocalDateTime = LocalDateTime.of(YEAR_2023, MONTH_10, DAY_20, HOUR_12, MINUTES_30, SECONDS_50)
+    val dateOfPreviousMonthAndAfter19th: LocalDate = date.toLocalDate.minusMonths(ONE_MONTH).withDayOfMonth(DAY_20)
     val currentDate: LocalDate = LocalDate.of(YEAR_2023, MONTH_10, DAY_20)
 
     val dutyPaymentMethodSource: Seq[String] = Seq(CDS, CHIEF)
+    val linkInner = new linkInner()
+    val downloadLinkPvatStatement = new download_link_pvat_statement(linkInner)
 
     val app: Application = application().build()
     implicit val msgs: Messages = messages(app)
