@@ -68,6 +68,7 @@ class PostponedVatViewModelSpec extends SpecBase {
           )
 
         val expectedResult: CurrentStatementRow = CurrentStatementRow(
+          pvatStatementGroup.periodId,
           msgs(Formatters.dateAsMonthAndYear(dateOfPreviousMonthAndAfter19th)),
           cdsDDRow = None,
           chiefDDRow = None,
@@ -104,6 +105,7 @@ class PostponedVatViewModelSpec extends SpecBase {
           )
 
         val expectedResult: CurrentStatementRow = CurrentStatementRow(
+          pvatStatementGroup.periodId,
           msgs(Formatters.dateAsMonthAndYear(dateOfPreviousMonthAndAfter19th)),
           cdsDDRow = None,
           chiefDDRow = None,
@@ -132,6 +134,7 @@ class PostponedVatViewModelSpec extends SpecBase {
         )
 
         val expectedResult: CurrentStatementRow = CurrentStatementRow(
+          pvatStatementGroup.periodId,
           msgs(Formatters.dateAsMonthAndYear(dateOfPreviousMonthAndAfter19th)),
           cdsDDRow = Some(cdsDDRow),
           chiefDDRow = None,
@@ -162,6 +165,7 @@ class PostponedVatViewModelSpec extends SpecBase {
         )
 
         val expectedResult: CurrentStatementRow = CurrentStatementRow(
+          pvatStatementGroup.periodId,
           msgs(Formatters.dateAsMonthAndYear(dateOfPreviousMonthAndAfter19th)),
           cdsDDRow = Some(cdsDDRow),
           chiefDDRow = Some(chiefDDRow),
@@ -184,6 +188,7 @@ class PostponedVatViewModelSpec extends SpecBase {
         emptyString)
     )
 
+    val periodId = "test_id"
     val date: LocalDateTime = LocalDateTime.of(YEAR_2023, MONTH_10, DAY_20, HOUR_12, MINUTES_30, SECONDS_50)
     val dateOfPreviousMonthAndAfter19th: LocalDate = date.toLocalDate.minusMonths(ONE_MONTH).withDayOfMonth(DAY_20)
     val currentDate: LocalDate = LocalDate.of(YEAR_2023, MONTH_10, DAY_20)

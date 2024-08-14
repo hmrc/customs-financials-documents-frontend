@@ -17,72 +17,44 @@
 @import views.helpers.Formatters
 @import postponed_vat.collapsible_statement_group
 @import utils.Utils.emptyString
+@import viewmodels.CurrentStatementRow
 
 @this(collapsibleStatementGroup: collapsible_statement_group)
 
 @(
-    statementGroup: PostponedVatStatementGroup,
-    dutyPaymentMethodSource: Seq[String],
-    isCdsOnly: Boolean
+    model: CurrentStatementRow
 )(implicit messages: Messages)
 
-    <div class="govuk-summary-list__row" id=@{statementGroup.periodId}>
+<div class="govuk-summary-list__row" id=@{model.periodId}>
 
-        <dt class="govuk-summary-list__value">
-            @messages(Formatters.dateAsMonthAndYear(statementGroup.startDate))
-        </dt>
+    <dt class="govuk-summary-list__value">
+        @model.startDateMsgKey
+    </dt>
 
-            @if(statementGroup.noStatements) {
-                @if(statementGroup.isPreviousMonthAndAfter19Th) {
-                        <dd class="govuk-summary-list__actions">
-                            <span aria-hidden="true">
-                                @messages("cf.common.not-available")
-                            </span>
-                            <span class="govuk-visually-hidden">
-                                @messages(
-                                    "cf.common.not-available-screen-reader-cds",
-                                    Formatters.dateAsMonthAndYear(statementGroup.startDate)
-                                )
-                            </span>
-                        </dd>
-                    @if(!isCdsOnly) {
-                        <dd class="govuk-summary-list__actions">
-                               <span aria-hidden="true">
-                                    @messages("cf.common.not-available")
-                               </span>
-                                <span class="govuk-visually-hidden">
-                                    @messages(
-                                        "cf.common.not-available-screen-reader-chief",
-                                        Formatters.dateAsMonthAndYear(statementGroup.startDate)
-                                    )
-                                </span>
-                        </dd>
-                    }
-                }
-            } else {
-                        @for(source <- dutyPaymentMethodSource) {
-                            @collapsibleStatementGroup(
-                                statementGroup.collectFiles(amended = true, source),
-                                "cf.account.pvat.amended-download-link",
-                                "cf.account.pvat.aria.amended-download-link",
-                                None,
-                                source,
-                                Formatters.dateAsMonthAndYear(statementGroup.startDate),
-                                isCdsOnly
-                            )
-                            @defining(
-                                if(statementGroup.collectFiles(amended = true, source).isEmpty) emptyString
-                                else "original.") { original =>
-                                                        @collapsibleStatementGroup(
-                                                            statementGroup.collectFiles(amended = false, source),
-                                                            s"cf.account.pvat.${original}download-link",
-                                                            s"cf.account.pvat.aria.${original}download-link",
-                                                            Some("cf.common.not-available"),
-                                                            source,
-                                                            Formatters.dateAsMonthAndYear(statementGroup.startDate),
-                                                            isCdsOnly
-                                                        )
-                                                }
-                        }
-            }
-    </div>
+    @model.cdsDDRow.map { cdsRow =>
+        <dd class="govuk-summary-list__actions">
+            <span aria-hidden="true">
+                @cdsRow.notAvailableMsg
+            </span>
+            <span class="govuk-visually-hidden">
+                @cdsRow.visuallyHiddenMsg
+            </span>
+        </dd>
+    }
+
+    @model.cdsDDRow.map { chiefRow =>
+        <dd class="govuk-summary-list__actions">
+            <span aria-hidden="true">
+                @chiefRow.notAvailableMsg
+            </span>
+            <span class="govuk-visually-hidden">
+                @chiefRow.visuallyHiddenMsg
+            </span>
+        </dd>
+    }
+
+    @model.collapsibleStatementGroupRows.map { collapsibleRow =>
+        @collapsibleRow.collapsiblePVATAmendedStatement.map(identity)
+        @collapsibleRow.collapsiblePVATStatement.map(identity)
+    }
+</div>

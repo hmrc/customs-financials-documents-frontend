@@ -37,7 +37,8 @@ case class GuidanceRow(h2Heading: HtmlFormat.Appendable,
                        link: Option[HtmlFormat.Appendable] = None,
                        paragraph: Option[HtmlFormat.Appendable] = None)
 
-case class CurrentStatementRow(startDateMsgKey: String,
+case class CurrentStatementRow(periodId: String,
+                               startDateMsgKey: String,
                                cdsDDRow: Option[DDRow] = None,
                                chiefDDRow: Option[DDRow] = None,
                                collapsibleStatementGroupRows: Seq[CollapsibleStatementGroupRow] = Seq())
@@ -51,6 +52,7 @@ object CurrentStatementRow {
     val startDateMsgKey = messages(Formatters.dateAsMonthAndYear(statementGroup.startDate))
 
     CurrentStatementRow(
+      periodId = statementGroup.periodId,
       startDateMsgKey = startDateMsgKey,
       cdsDDRow = populateCdsDDRow(statementGroup),
       chiefDDRow = populateChiefDDRow(statementGroup, isCdsOnly),
