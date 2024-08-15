@@ -238,7 +238,7 @@ class PostponedVatViewModelSpec extends SpecBase {
             h2Heading = new h2().apply(id = Some("chief-guidance-heading"),
               msg = "cf.account.vat.chief.heading",
               classes = "govuk-heading-m govuk-!-margin-top-6"),
-            
+
             link = Some(new link().apply(pvEmailEmailAddress,
               location = pvEmailEmailAddressHref,
               preLinkMessage = Some("cf.account.pvat.older-statements.description.3")))
