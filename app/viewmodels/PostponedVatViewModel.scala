@@ -329,8 +329,13 @@ object PostponedVatViewModel {
 
   private def populateCurrentStatementRows(statementGroupList: Seq[PostponedVatStatementGroup],
                                            isCdsOnly: Boolean)(implicit msgs: Messages): Seq[HtmlFormat.Appendable] = {
-    statementGroupList.map {
+
+    val filteredPVATStatGroups = statementGroupList.filter(
+        statementGroup => !statementGroup.noStatements || statementGroup.isPreviousMonthAndAfter19Th)
+
+    filteredPVATStatGroups.map {
       statementGroup => {
+
         val currentStatementRow = CurrentStatementRow(
           statementGroup,
           dutyPaymentMethodSource = Seq(CDS, CHIEF),
