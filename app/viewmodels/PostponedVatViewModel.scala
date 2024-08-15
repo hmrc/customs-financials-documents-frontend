@@ -25,12 +25,13 @@ import utils.Constants.MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE
 import utils.Utils.{emptyString, period}
 import views.helpers.Formatters
 import views.html.components._
-import views.html.postponed_vat.{collapsible_statement_group, download_link_pvat_statement}
+import views.html.postponed_vat.{collapsible_statement_group, current_statement_row, download_link_pvat_statement}
 
 case class PvEmail(emailAddress: String,
                    emailAddressHref: String)
 
-case class PVATUrls(requestStatementsUrl: String,
+case class PVATUrls(customsFinancialsHomePageUrl: String,
+                    requestStatementsUrl: String,
                     pvEmail: PvEmail,
                     viewVatAccountSupportLink: String,
                     serviceUnavailableUrl: Option[String] = None)
@@ -173,7 +174,7 @@ object CurrentStatementRow {
   }
 }
 
-case class CurrentStatementsSection(currentStatementRows: Seq[CurrentStatementRow] = Seq(),
+case class CurrentStatementsSection(currentStatementRows: Seq[HtmlFormat.Appendable] = Seq(),
                                     noStatementMsg: Option[HtmlFormat.Appendable] = None)
 
 case class PostponedVatViewModel(pageTitle: String,
@@ -188,21 +189,6 @@ case class PostponedVatViewModel(pageTitle: String,
                                  helpAndSupportGuidance: GuidanceRow)
 
 object PostponedVatViewModel {
-  def apply(files: Seq[PostponedVatStatementFile])(implicit messages: Messages,
-                                                   dateTimeService: DateTimeService): Seq[PostponedVatStatementGroup] = {
-    val response: Seq[PostponedVatStatementGroup] =
-      files.groupBy(_.monthAndYear).map {
-        case (month, filesForMonth) => PostponedVatStatementGroup(month, filesForMonth)
-      }.toList
-
-    val monthList =
-      MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE.map(n => dateTimeService.systemDateTime().toLocalDate.minusMonths(n))
-
-    monthList.map {
-      date => response.find(_.startDate.getMonth == date.getMonth).getOrElse(PostponedVatStatementGroup(date, Seq.empty))
-    }.toList.sorted.reverse
-  }
-
   def apply(files: Seq[PostponedVatStatementFile],
             hasRequestedStatements: Boolean,
             isCdsOnly: Boolean,
@@ -211,10 +197,11 @@ object PostponedVatViewModel {
            )(implicit messages: Messages, dateTimeService: DateTimeService): PostponedVatViewModel = {
 
     val statementGroupList: Seq[PostponedVatStatementGroup] = statementGroups(files)
+    val bckLinkUrl = location.map(_ => urls.customsFinancialsHomePageUrl)
 
     PostponedVatViewModel(
       pageTitle = messages("cf.account.pvat.title"),
-      backLink = location,
+      backLink = bckLinkUrl,
       pageH1Heading = populatePageHeading,
       statementsAvailableGuidance = populateStatementsAvailableGuidance,
       statementH2Heading = populateStatementH2Heading,
@@ -341,13 +328,20 @@ object PostponedVatViewModel {
   }
 
   private def populateCurrentStatementRows(statementGroupList: Seq[PostponedVatStatementGroup],
-                                           isCdsOnly: Boolean)(implicit msgs: Messages): Seq[CurrentStatementRow] = {
+                                           isCdsOnly: Boolean)(implicit msgs: Messages): Seq[HtmlFormat.Appendable] = {
     statementGroupList.map {
-      statementGroup =>
-        CurrentStatementRow(
+      statementGroup => {
+        val currentStatementRow = CurrentStatementRow(
           statementGroup,
           dutyPaymentMethodSource = Seq(CDS, CHIEF),
           isCdsOnly)
+
+        val innerLink = new linkInner()
+        val pVATDownloadLinkStatement = new download_link_pvat_statement(innerLink)
+        val collapsibleStatementGroup = new collapsible_statement_group(pVATDownloadLinkStatement)
+
+        new current_statement_row(collapsibleStatementGroup).apply(currentStatementRow)
+      }
 
     }
   }

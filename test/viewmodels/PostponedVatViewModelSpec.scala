@@ -31,7 +31,7 @@ import utils.SpecBase
 import utils.Utils.{emptyString, period}
 import views.helpers.Formatters
 import views.html.components._
-import views.html.postponed_vat.{collapsible_statement_group, download_link_pvat_statement}
+import views.html.postponed_vat.{collapsible_statement_group, current_statement_row, download_link_pvat_statement}
 
 import java.time.{LocalDate, LocalDateTime}
 
@@ -187,22 +187,13 @@ class PostponedVatViewModelSpec extends SpecBase {
 
         when(mockDateTimeService.systemDateTime()).thenReturn(date)
 
-        val expectedResult: Seq[PostponedVatStatementGroup] =
-          Seq(pVatGroup1, pVatGroup2, pVatGroup3, pVatGroup6, pVatGroup5, pVatGroup4)
-
-        PostponedVatViewModel(postponedVatCertificateFiles) mustBe expectedResult
-      }
-
-      "PostponedVatStatementFile records are present======" in new Setup {
-
-        when(mockDateTimeService.systemDateTime()).thenReturn(date)
-
         val actualPVatModel: PostponedVatViewModel = PostponedVatViewModel(
           postponedVatCertificateFiles,
           hasRequestedStatements = true,
           isCdsOnly = true,
           Some(location),
           PVATUrls(
+            customsFinancialsHomePageUrl = customsFinancialsHomePageUrl,
             requestStatementsUrl = requestedStatementsUrl,
             pvEmail = PvEmail(pvEmailEmailAddress, pvEmailEmailAddressHref),
             viewVatAccountSupportLink = viewVatAccountSupportLink,
@@ -210,7 +201,7 @@ class PostponedVatViewModelSpec extends SpecBase {
         )
 
         actualPVatModel.pageTitle mustBe msgs("cf.account.pvat.title")
-        actualPVatModel.backLink mustBe Some(location)
+        actualPVatModel.backLink mustBe Some(customsFinancialsHomePageUrl)
 
         actualPVatModel.pageH1Heading mustBe expectedHeading
 
@@ -225,10 +216,7 @@ class PostponedVatViewModelSpec extends SpecBase {
         val expectedResult: Seq[PostponedVatStatementGroup] =
           Seq(pVatGroup1, pVatGroup2, pVatGroup3, pVatGroup6, pVatGroup5, pVatGroup4)
 
-        val expectedCurrentRows: Seq[CurrentStatementRow] = expectedResult.map {
-          pvaStatGroup =>
-            CurrentStatementRow(pvaStatGroup, Seq(CDS, CHIEF), isCdsOnly = true)
-        }
+        val expectedCurrentRows: Seq[HtmlFormat.Appendable] = expectedCurrentRowsValue(expectedResult)
 
         actualPVatModel.currentStatements.currentStatementRows mustBe expectedCurrentRows
 
@@ -249,6 +237,7 @@ class PostponedVatViewModelSpec extends SpecBase {
           isCdsOnly = true,
           Some(location),
           PVATUrls(
+            customsFinancialsHomePageUrl = customsFinancialsHomePageUrl,
             requestStatementsUrl = requestedStatementsUrl,
             pvEmail = PvEmail(pvEmailEmailAddress, pvEmailEmailAddressHref),
             viewVatAccountSupportLink = viewVatAccountSupportLink,
@@ -256,7 +245,7 @@ class PostponedVatViewModelSpec extends SpecBase {
         )
 
         actualPVatModel.pageTitle mustBe msgs("cf.account.pvat.title")
-        actualPVatModel.backLink mustBe Some(location)
+        actualPVatModel.backLink mustBe Some(customsFinancialsHomePageUrl)
 
         actualPVatModel.pageH1Heading mustBe expectedHeading
 
@@ -277,6 +266,22 @@ class PostponedVatViewModelSpec extends SpecBase {
     }
   }
 
+  private def expectedCurrentRowsValue(expectedResult: Seq[PostponedVatStatementGroup])
+                                      (implicit msgs: Messages): Seq[HtmlFormat.Appendable] = {
+    val expectedCurrentRows: Seq[HtmlFormat.Appendable] = expectedResult.map {
+      pvaStatGroup =>
+        CurrentStatementRow(pvaStatGroup, Seq(CDS, CHIEF), isCdsOnly = true)
+    }.map {
+      currentRow =>
+        val innerLink = new linkInner()
+        val pVATDownloadLinkStatement = new download_link_pvat_statement(innerLink)
+        val collapsibleStatementGroup = new collapsible_statement_group(pVATDownloadLinkStatement)
+
+        new current_statement_row(collapsibleStatementGroup).apply(currentRow)
+    }
+    expectedCurrentRows
+  }
+
   trait Setup {
     val certificateFiles: Seq[PostponedVatStatementFile] = Seq(
       PostponedVatStatementFile(
@@ -294,6 +299,7 @@ class PostponedVatViewModelSpec extends SpecBase {
     val pvEmailEmailAddressHref: String = "mailto:pvaenquiries@hmrc.gov.uk"
     val viewVatAccountSupportLink = "https://accountsupport.test.com"
     val requestedStatementsUrl = "http://localhost:9396/customs/historic-statement/requested/postponed-vat"
+    val customsFinancialsHomePageUrl = "http://localhost:9876/customs/payment-records"
 
     val date: LocalDateTime = LocalDateTime.of(YEAR_2023, MONTH_10, DAY_20, HOUR_12, MINUTES_30, SECONDS_50)
     val dateOfPreviousMonthAndAfter19th: LocalDate = date.toLocalDate.minusMonths(ONE_MONTH).withDayOfMonth(DAY_20)
