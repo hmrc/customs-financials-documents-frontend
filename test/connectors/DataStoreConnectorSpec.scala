@@ -143,7 +143,54 @@ class DataStoreConnectorSpec extends SpecBase {
         result mustBe Left(UnverifiedEmail)
       }
     }
+  }
 
+  "verifiedEmail" should {
+    "return EmailVerifiedResponse with email when the API returns a valid response" in new Setup {
+      val emailResponse = EmailVerifiedResponse(Some("verified@email.com"))
+
+      when(mockHttpClient.GET[EmailVerifiedResponse](any, any, any)(any, any, any))
+        .thenReturn(Future.successful(emailResponse))
+
+      running(app) {
+        val result = await(connector.verifiedEmail)
+        result mustBe emailResponse
+      }
+    }
+
+    "return EmailVerifiedResponse with None when the API returns an error" in new Setup {
+      when(mockHttpClient.GET[EmailVerifiedResponse](any, any, any)(any, any, any))
+        .thenReturn(Future.failed(new RuntimeException("API call failed")))
+
+      running(app) {
+        val result = await(connector.verifiedEmail)
+        result mustBe EmailVerifiedResponse(None)
+      }
+    }
+  }
+
+  "retrieveUnverifiedEmail" should {
+    "return EmailUnverifiedResponse with email when the API returns a valid response" in new Setup {
+      val unverifiedEmailResponse = EmailUnverifiedResponse(Some("unverified@email.com"))
+
+      when(mockHttpClient.GET[EmailUnverifiedResponse](any, any, any)(any, any, any))
+        .thenReturn(Future.successful(unverifiedEmailResponse))
+
+      running(app) {
+        val result = await(connector.retrieveUnverifiedEmail)
+        result mustBe unverifiedEmailResponse
+      }
+    }
+
+    "return EmailUnverifiedResponse with None when the API returns an error" in new Setup {
+      when(mockHttpClient.GET[EmailUnverifiedResponse](any, any, any)(any, any, any))
+        .thenReturn(Future.failed(new RuntimeException("API call failed")))
+
+      running(app) {
+        val result = await(connector.retrieveUnverifiedEmail)
+        result mustBe EmailUnverifiedResponse(None)
+      }
+    }
   }
 
   trait Setup {
