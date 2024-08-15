@@ -30,7 +30,8 @@ import views.html.postponed_vat.{collapsible_statement_group, download_link_pvat
 case class PvEmail(emailAddress: String,
                    emailAddressHref: String)
 
-case class PVATUrls(pvEmail: PvEmail,
+case class PVATUrls(requestStatementsUrl: String,
+                    pvEmail: PvEmail,
                     viewVatAccountSupportLink: String,
                     serviceUnavailableUrl: Option[String] = None)
 
@@ -211,15 +212,13 @@ object PostponedVatViewModel {
 
     val statementGroupList: Seq[PostponedVatStatementGroup] = statementGroups(files)
 
-    val pageTitle = messages("cf.account.pvat.title")
-
     PostponedVatViewModel(
-      pageTitle = pageTitle,
+      pageTitle = messages("cf.account.pvat.title"),
       backLink = location,
       pageH1Heading = populatePageHeading,
       statementsAvailableGuidance = populateStatementsAvailableGuidance,
       statementH2Heading = populateStatementH2Heading,
-      requestedStatements = None,
+      requestedStatements = populateRequestedStatements(hasRequestedStatements, urls.requestStatementsUrl),
       currentStatements = populateCurrentStatements(statementGroupList, isCdsOnly),
       statOlderThanSixMonthsGuidance = populateOlderThanSixMonthsGuidance(urls.serviceUnavailableUrl),
       chiefDeclarationGuidance = populateChiefDeclarationGuidance(urls.pvEmail),
@@ -254,6 +253,24 @@ object PostponedVatViewModel {
 
   private def populateStatementH2Heading(implicit msgs: Messages): HtmlFormat.Appendable = {
     new h2().apply("cf.account.pvat.your-statements.heading")
+  }
+
+  private def populateRequestedStatements(hasRequestedStatements: Boolean,
+                                          requestStatementsUrl: String)
+                                         (implicit msgs: Messages): Option[HtmlFormat.Appendable] = {
+    if (hasRequestedStatements) {
+      val link = new link()
+      val requestedStatementSection = new requestedStatements(link).apply(
+        requestStatementsUrl,
+        linkMessageKey = "cf.postponed-vat.requested-statements-available-link-text",
+        preLinkMessageKey = "cf.account.detail.requested-certificates-available-text.pre",
+        postLinkMessageKey = "cf.account.detail.requested-certificates-available-text.post"
+      )
+
+      Some(requestedStatementSection)
+    } else {
+      None
+    }
   }
 
   private def populateCurrentStatements(statementGroupList: Seq[PostponedVatStatementGroup],

@@ -18,13 +18,22 @@
   link: components.link
 )
 
-@(url: String)(implicit messages: Messages)
+@(
+    url: String,
+    linkMessageKey: String = "cf.security-statements.requested-link",
+    preLinkMessageKey: String = "cf.account.detail.requested-certificates-available-text.pre",
+    postLinkMessageKey: String = "cf.account.detail.requested-certificates-available-text.post"
+)(
+    implicit messages: Messages
+)
 
   <div id="request-statement-link" class="notifications-panel">
-    <p class="govuk-body govuk-!-margin-bottom-1">
-     @link("cf.security-statements.requested-link",
-       location = url,
-       preLinkMessage = Some("cf.account.detail.requested-certificates-available-text.pre"),
-       postLinkMessage = Some("cf.account.detail.requested-certificates-available-text.post"))
-    </p>
+        <p class="govuk-body govuk-!-margin-bottom-1">
+            @link(
+                linkMessageKey,
+                location = url,
+                preLinkMessage = Some(preLinkMessageKey),
+                postLinkMessage = Some(postLinkMessageKey)
+            )
+        </p>
  </div>

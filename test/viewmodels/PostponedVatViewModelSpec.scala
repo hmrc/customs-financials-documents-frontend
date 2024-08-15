@@ -24,6 +24,7 @@ import models.{PostponedVatStatementFile, PostponedVatStatementGroup}
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.Application
 import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
 import services.DateTimeService
 import utils.CommonTestData._
 import utils.SpecBase
@@ -192,6 +193,16 @@ class PostponedVatViewModelSpec extends SpecBase {
         PostponedVatViewModel(postponedVatCertificateFiles) mustBe expectedResult
       }
 
+      "PostponedVatStatementFile records are present======" in new Setup {
+
+        when(mockDateTimeService.systemDateTime()).thenReturn(date)
+
+        val expectedResult: Seq[PostponedVatStatementGroup] =
+          Seq(pVatGroup1, pVatGroup2, pVatGroup3, pVatGroup6, pVatGroup5, pVatGroup4)
+
+        PostponedVatViewModel(postponedVatCertificateFiles) mustBe expectedResult
+      }
+
       "there are no PostponedVatStatementFile records" in new Setup {
 
         when(mockDateTimeService.systemDateTime()).thenReturn(date)
@@ -202,6 +213,7 @@ class PostponedVatViewModelSpec extends SpecBase {
           isCdsOnly = true,
           Some(location),
           PVATUrls(
+            requestStatementsUrl = requestedStatementsUrl,
             pvEmail = PvEmail(pvEmailEmailAddress, pvEmailEmailAddressHref),
             viewVatAccountSupportLink = viewVatAccountSupportLink,
             serviceUnavailableUrl = Some(serviceUnavailableUrl))
@@ -218,10 +230,14 @@ class PostponedVatViewModelSpec extends SpecBase {
 
         actualPVatModel.statementH2Heading mustBe new h2().apply("cf.account.pvat.your-statements.heading")
 
-        actualPVatModel.requestedStatements mustBe empty
+        actualPVatModel.requestedStatements mustBe
+          Some(requestedStatementSection(
+            requestedStatementsUrl,
+            "cf.postponed-vat.requested-statements-available-link-text",
+            "cf.account.detail.requested-certificates-available-text.pre",
+            "cf.account.detail.requested-certificates-available-text.post"))
 
         actualPVatModel.currentStatements.noStatementMsg mustBe None
-        //CurrentStatementsSection(noStatementMsg = Some(new inset().apply("cf.account.pvat.no-statements-yet")))
 
         actualPVatModel.statOlderThanSixMonthsGuidance mustBe
           GuidanceRow(
@@ -277,6 +293,7 @@ class PostponedVatViewModelSpec extends SpecBase {
     val pvEmailEmailAddress: String = "pvaenquiries@hmrc.gov.uk"
     val pvEmailEmailAddressHref: String = "mailto:pvaenquiries@hmrc.gov.uk"
     val viewVatAccountSupportLink = "https://accountsupport.test.com"
+    val requestedStatementsUrl = "http://localhost:9396/customs/historic-statement/requested/postponed-vat"
 
     val date: LocalDateTime = LocalDateTime.of(YEAR_2023, MONTH_10, DAY_20, HOUR_12, MINUTES_30, SECONDS_50)
     val dateOfPreviousMonthAndAfter19th: LocalDate = date.toLocalDate.minusMonths(ONE_MONTH).withDayOfMonth(DAY_20)
@@ -365,5 +382,13 @@ class PostponedVatViewModelSpec extends SpecBase {
       PostponedVatStatementGroup(
         LocalDate.of(YEAR_2018, MONTH_4, DAY_1),
         Seq(pVatStatCsvFileForMonth4, pVatStatPdfFileForMonth4))
+
+    protected def requestedStatementSection(url: String,
+                                            linkMessageKey: String,
+                                            preLinkMessageKey: String,
+                                            postLinkMessageKey: String)
+                                           (implicit msgs: Messages): HtmlFormat.Appendable = {
+      app.injector.instanceOf[requestedStatements].apply(url, linkMessageKey, preLinkMessageKey, postLinkMessageKey)
+    }
   }
 }
