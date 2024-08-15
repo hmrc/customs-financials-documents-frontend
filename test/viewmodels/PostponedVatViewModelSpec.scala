@@ -258,57 +258,21 @@ class PostponedVatViewModelSpec extends SpecBase {
         actualPVatModel.pageTitle mustBe msgs("cf.account.pvat.title")
         actualPVatModel.backLink mustBe Some(location)
 
-        actualPVatModel.pageH1Heading mustBe
-          new h1().apply(msg = "cf.account.pvat.title", classes = "govuk-heading-xl  govuk-!-margin-bottom-6")
+        actualPVatModel.pageH1Heading mustBe expectedHeading
 
-        actualPVatModel.statementsAvailableGuidance mustBe
-          new p().apply(message = "cf.account.vat.available.statement-text", id = Some("vat-available-statement-text"))
+        actualPVatModel.statementsAvailableGuidance mustBe expectedStatementsAvailableGuidance
 
-        actualPVatModel.statementH2Heading mustBe new h2().apply("cf.account.pvat.your-statements.heading")
+        actualPVatModel.statementH2Heading mustBe expectedH2Heading
 
-        actualPVatModel.requestedStatements mustBe
-          Some(requestedStatementSection(
-            requestedStatementsUrl,
-            "cf.postponed-vat.requested-statements-available-link-text",
-            "cf.account.detail.requested-certificates-available-text.pre",
-            "cf.account.detail.requested-certificates-available-text.post"))
+        actualPVatModel.requestedStatements mustBe expectedRequestedStatements
 
         actualPVatModel.currentStatements.noStatementMsg mustBe None
 
-        actualPVatModel.statOlderThanSixMonthsGuidance mustBe
-          GuidanceRow(
-            h2Heading = new h2().apply("cf.account.pvat.older-statements.heading",
-              id = Some("missing-documents-guidance-heading"),
-              classes = "govuk-heading-m govuk-!-margin-top-6"),
-            link = Some(new link().apply("cf.account.pvat.older-statements.description.link",
-              location = serviceUnavailableUrl,
-              preLinkMessage = Some("cf.account.pvat.older-statements.description.2")))
-          )
+        actualPVatModel.statOlderThanSixMonthsGuidance mustBe expectedStatOlderThanSixMonthsGuidanceRow
 
-        actualPVatModel.chiefDeclarationGuidance mustBe
-          GuidanceRow(
-            h2Heading = new h2().apply(id = Some("chief-guidance-heading"),
-              msg = "cf.account.vat.chief.heading",
-              classes = "govuk-heading-m govuk-!-margin-top-6"),
+        actualPVatModel.chiefDeclarationGuidance mustBe expectedChiefDeclarationGuidance
 
-            link = Some(new link().apply(pvEmailEmailAddress,
-              location = pvEmailEmailAddressHref,
-              preLinkMessage = Some("cf.account.pvat.older-statements.description.3")))
-          )
-
-        actualPVatModel.helpAndSupportGuidance mustBe
-          GuidanceRow(
-            h2Heading = new h2().apply(id = Some("pvat.support.message.heading"),
-              msg = "cf.account.pvat.support.heading",
-              classes = "govuk-heading-m govuk-!-margin-top-2"),
-
-            link = Some(new link().apply(msgs("cf.account.pvat.support.link"),
-              location = viewVatAccountSupportLink,
-              preLinkMessage = Some("cf.account.pvat.support.message"),
-              postLinkMessage = Some(period),
-              pId = Some("pvat.support.message"),
-              pClass = "govuk-body govuk-!-margin-bottom-9"))
-          )
+        actualPVatModel.helpAndSupportGuidance mustBe expectedHelpAndSupportGuidance
       }
     }
   }
