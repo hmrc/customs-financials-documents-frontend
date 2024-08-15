@@ -28,7 +28,7 @@ import play.twirl.api.HtmlFormat
 import services.DateTimeService
 import utils.CommonTestData._
 import utils.SpecBase
-import utils.Utils.{emptyString, period}
+import utils.Utils.{emptyString, h1Component, h2Component, linkComponent, pComponent, period}
 import views.helpers.Formatters
 import views.html.components._
 import views.html.postponed_vat.{collapsible_statement_group, current_statement_row, download_link_pvat_statement}
@@ -390,12 +390,12 @@ class PostponedVatViewModelSpec extends SpecBase {
         Seq(pVatStatCsvFileForMonth4, pVatStatPdfFileForMonth4))
 
     val expectedHeading: HtmlFormat.Appendable =
-      new h1().apply(msg = "cf.account.pvat.title", classes = "govuk-heading-xl  govuk-!-margin-bottom-6")
+      h1Component.apply(msg = "cf.account.pvat.title", classes = "govuk-heading-xl  govuk-!-margin-bottom-6")
 
     val expectedStatementsAvailableGuidance: HtmlFormat.Appendable =
-      new p().apply(message = "cf.account.vat.available.statement-text", id = Some("vat-available-statement-text"))
+      pComponent.apply(message = "cf.account.vat.available.statement-text", id = Some("vat-available-statement-text"))
 
-    val expectedH2Heading: HtmlFormat.Appendable = new h2().apply("cf.account.pvat.your-statements.heading")
+    val expectedH2Heading: HtmlFormat.Appendable = h2Component.apply("cf.account.pvat.your-statements.heading")
 
     val expectedRequestedStatements: Option[HtmlFormat.Appendable] = Some(requestedStatementSection(
       requestedStatementsUrl,
@@ -404,30 +404,30 @@ class PostponedVatViewModelSpec extends SpecBase {
       "cf.account.detail.requested-certificates-available-text.post"))
 
     val expectedStatOlderThanSixMonthsGuidanceRow: GuidanceRow = GuidanceRow(
-      h2Heading = new h2().apply("cf.account.pvat.older-statements.heading",
+      h2Heading = h2Component.apply("cf.account.pvat.older-statements.heading",
         id = Some("missing-documents-guidance-heading"),
         classes = "govuk-heading-m govuk-!-margin-top-6"),
-      link = Some(new link().apply("cf.account.pvat.older-statements.description.link",
+      link = Some(linkComponent.apply("cf.account.pvat.older-statements.description.link",
         location = serviceUnavailableUrl,
         preLinkMessage = Some("cf.account.pvat.older-statements.description.2")))
     )
 
     val expectedChiefDeclarationGuidance: GuidanceRow = GuidanceRow(
-      h2Heading = new h2().apply(id = Some("chief-guidance-heading"),
+      h2Heading = h2Component.apply(id = Some("chief-guidance-heading"),
         msg = "cf.account.vat.chief.heading",
         classes = "govuk-heading-m govuk-!-margin-top-6"),
 
-      link = Some(new link().apply(pvEmailEmailAddress,
+      link = Some(linkComponent.apply(pvEmailEmailAddress,
         location = pvEmailEmailAddressHref,
         preLinkMessage = Some("cf.account.pvat.older-statements.description.3")))
     )
 
     val expectedHelpAndSupportGuidance: GuidanceRow = GuidanceRow(
-      h2Heading = new h2().apply(id = Some("pvat.support.message.heading"),
+      h2Heading = h2Component.apply(id = Some("pvat.support.message.heading"),
         msg = "cf.account.pvat.support.heading",
         classes = "govuk-heading-m govuk-!-margin-top-2"),
 
-      link = Some(new link().apply(msgs("cf.account.pvat.support.link"),
+      link = Some(linkComponent.apply(msgs("cf.account.pvat.support.link"),
         location = viewVatAccountSupportLink,
         preLinkMessage = Some("cf.account.pvat.support.message"),
         postLinkMessage = Some(period),

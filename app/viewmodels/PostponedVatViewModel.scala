@@ -22,7 +22,7 @@ import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import services.DateTimeService
 import utils.Constants.MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE
-import utils.Utils.{emptyString, period}
+import utils.Utils.{emptyString, h1Component, h2Component, insetComponent, linkComponent, pComponent, period}
 import views.helpers.Formatters
 import views.html.components._
 import views.html.postponed_vat.{collapsible_statement_group, current_statement_row, download_link_pvat_statement}
@@ -108,23 +108,22 @@ object PostponedVatViewModel {
   }
 
   private def populatePageHeading(implicit msgs: Messages): HtmlFormat.Appendable = {
-    new h1().apply(msg = "cf.account.pvat.title", classes = "govuk-heading-xl  govuk-!-margin-bottom-6")
+    h1Component.apply(msg = "cf.account.pvat.title", classes = "govuk-heading-xl  govuk-!-margin-bottom-6")
   }
 
   private def populateStatementsAvailableGuidance(implicit msgs: Messages): HtmlFormat.Appendable = {
-    new p().apply(message = "cf.account.vat.available.statement-text", id = Some("vat-available-statement-text"))
+    pComponent.apply(message = "cf.account.vat.available.statement-text", id = Some("vat-available-statement-text"))
   }
 
   private def populateStatementH2Heading(implicit msgs: Messages): HtmlFormat.Appendable = {
-    new h2().apply("cf.account.pvat.your-statements.heading")
+    h2Component.apply("cf.account.pvat.your-statements.heading")
   }
 
   private def populateRequestedStatements(hasRequestedStatements: Boolean,
                                           requestStatementsUrl: String)
                                          (implicit msgs: Messages): Option[HtmlFormat.Appendable] = {
     if (hasRequestedStatements) {
-      val link = new link()
-      val requestedStatementSection = new requestedStatements(link).apply(
+      val requestedStatementSection = new requestedStatements(linkComponent).apply(
         requestStatementsUrl,
         linkMessageKey = "cf.postponed-vat.requested-statements-available-link-text",
         preLinkMessageKey = "cf.account.detail.requested-certificates-available-text.pre",
@@ -142,7 +141,7 @@ object PostponedVatViewModel {
                                        (implicit msgs: Messages): CurrentStatementsSection = {
     val noStatementMsg =
       if (statementGroupList.isEmpty) {
-        Some(new inset().apply("cf.account.pvat.no-statements-yet"))
+        Some(insetComponent.apply("cf.account.pvat.no-statements-yet"))
       } else {
         None
       }
@@ -155,11 +154,11 @@ object PostponedVatViewModel {
 
   private def populateOlderThanSixMonthsGuidance(serviceUnavailableUrl: Option[String])
                                                 (implicit msgs: Messages): GuidanceRow = {
-    val h2Heading = new h2().apply("cf.account.pvat.older-statements.heading",
+    val h2Heading = h2Component.apply("cf.account.pvat.older-statements.heading",
       id = Some("missing-documents-guidance-heading"),
       classes = "govuk-heading-m govuk-!-margin-top-6")
 
-    val link = new link().apply("cf.account.pvat.older-statements.description.link",
+    val link = linkComponent.apply("cf.account.pvat.older-statements.description.link",
       location = serviceUnavailableUrl.getOrElse(emptyString),
       preLinkMessage = Some("cf.account.pvat.older-statements.description.2"))
 
@@ -170,11 +169,11 @@ object PostponedVatViewModel {
   }
 
   private def populateChiefDeclarationGuidance(pvEmail: PvEmail)(implicit msgs: Messages): GuidanceRow = {
-    val h2Heading = new h2().apply(id = Some("chief-guidance-heading"),
+    val h2Heading = h2Component.apply(id = Some("chief-guidance-heading"),
       msg = "cf.account.vat.chief.heading",
       classes = "govuk-heading-m govuk-!-margin-top-6")
 
-    val link = new link().apply(pvEmail.emailAddress,
+    val link = linkComponent.apply(pvEmail.emailAddress,
       location = pvEmail.emailAddressHref,
       preLinkMessage = Some("cf.account.pvat.older-statements.description.3"))
 
@@ -187,11 +186,11 @@ object PostponedVatViewModel {
   private def populateHelpAndSupportGuidance(viewVatAccountSupportLink: String)
                                             (implicit msgs: Messages): GuidanceRow = {
 
-    val h2Heading = new h2().apply(id = Some("pvat.support.message.heading"),
+    val h2Heading = h2Component.apply(id = Some("pvat.support.message.heading"),
       msg = "cf.account.pvat.support.heading",
       classes = "govuk-heading-m govuk-!-margin-top-2")
 
-    val link = new link().apply(msgs("cf.account.pvat.support.link"),
+    val link = linkComponent.apply(msgs("cf.account.pvat.support.link"),
       location = viewVatAccountSupportLink,
       preLinkMessage = Some("cf.account.pvat.support.message"),
       postLinkMessage = Some(period),
@@ -224,7 +223,6 @@ object PostponedVatViewModel {
 
         new current_statement_row(collapsibleStatementGroup).apply(currentStatementRow)
       }
-
     }
   }
 

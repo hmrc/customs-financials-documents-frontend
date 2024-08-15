@@ -194,7 +194,6 @@ class PostponedVatControllerSpec extends SpecBase {
       "before 20th day of the month and statement is not available" in new Setup {
       config.historicStatementsEnabled = false
 
-      val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("postponed-vat").url
       val currentDate: LocalDate = LocalDate.of(date.getYear, date.getMonthValue, DAY_12)
 
       when(mockDataStoreConnector.getEmail(any)(any))
