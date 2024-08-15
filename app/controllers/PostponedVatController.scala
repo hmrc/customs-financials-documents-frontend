@@ -81,7 +81,6 @@ class PostponedVatController @Inject()(val authenticate: PvatIdentifierAction,
           }
 
           Ok(postponedImportVatView(
-            req.eori,
             PostponedVatViewModel(currentStatements),
             allPostponedVatStatements.exists(statement => statement.metadata.statementRequestId.nonEmpty),
             currentStatements.count(_.metadata.source != CHIEF) == currentStatements.size,

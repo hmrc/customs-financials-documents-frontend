@@ -47,7 +47,6 @@ class PostponedImportVatSpec extends SpecBase {
 
       val view: Document = Jsoup.parse(
         app.injector.instanceOf[postponed_import_vat].apply(
-          EORI_NUMBER,
           PostponedVatViewModel(postponedVatStatementFiles),
           hasRequestedStatements = true,
           cdsOnly = true,
@@ -75,7 +74,6 @@ class PostponedImportVatSpec extends SpecBase {
 
       val view: Document = Jsoup.parse(
         app.injector.instanceOf[postponed_import_vat].apply(
-          EORI_NUMBER,
           PostponedVatViewModel(postponedVatStatementFiles),
           hasRequestedStatements = true,
           cdsOnly = true,
@@ -97,7 +95,6 @@ class PostponedImportVatSpec extends SpecBase {
 
         val view: Document = Jsoup.parse(
           app.injector.instanceOf[postponed_import_vat].apply(
-            EORI_NUMBER,
             PostponedVatViewModel(postponedVatStatementFiles),
             hasRequestedStatements = true,
             cdsOnly = true,
@@ -113,7 +110,6 @@ class PostponedImportVatSpec extends SpecBase {
         when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
           val view: Document = Jsoup.parse(
             app.injector.instanceOf[postponed_import_vat].apply(
-              EORI_NUMBER,
               PostponedVatViewModel(postponedVatStatementFiles),
               hasRequestedStatements = true,
               cdsOnly = false,
@@ -132,7 +128,6 @@ class PostponedImportVatSpec extends SpecBase {
 
             val view: Document = Jsoup.parse(
               app.injector.instanceOf[postponed_import_vat].apply(
-                EORI_NUMBER,
                 PostponedVatViewModel(Seq.empty),
                 hasRequestedStatements = true,
                 cdsOnly = false,

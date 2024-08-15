@@ -70,7 +70,7 @@ class PostponedVatControllerSpec extends SpecBase {
 
         status(result) mustBe OK
 
-        contentAsString(result) mustBe view(eori,
+        contentAsString(result) mustBe view(
           PostponedVatViewModel(currentStatements)(messages(app), mockDateTimeService),
           hasRequestedStatements = true,
           cdsOnly = true,
@@ -170,7 +170,7 @@ class PostponedVatControllerSpec extends SpecBase {
 
         status(result) mustBe OK
 
-        contentAsString(result) mustBe view(eori,
+        contentAsString(result) mustBe view(
           PostponedVatViewModel(postponedVatStatementFilesWithImmediateUnavailable)(
             messages(app), mockDateTimeService),
           hasRequestedStatements = true,
@@ -215,7 +215,7 @@ class PostponedVatControllerSpec extends SpecBase {
         val result = route(app, request).value
         status(result) mustBe OK
 
-        contentAsString(result) mustBe view(eori,
+        contentAsString(result) mustBe view(
           PostponedVatViewModel(postponedVatStatementFilesWithImmediateUnavailable)(
             messages(app), mockDateTimeService),
           hasRequestedStatements = true,
@@ -257,7 +257,7 @@ class PostponedVatControllerSpec extends SpecBase {
         val result = route(app, request).value
         status(result) mustBe OK
 
-        contentAsString(result) mustBe view(eori,
+        contentAsString(result) mustBe view(
           PostponedVatViewModel(postponedVatStatementFilesWithImmediateUnavailable)(
             messages(app), mockDateTimeService),
           hasRequestedStatements = true,

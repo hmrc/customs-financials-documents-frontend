@@ -22,10 +22,17 @@ import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import services.DateTimeService
 import utils.Constants.MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE
-import utils.Utils.emptyString
+import utils.Utils.{emptyString, period}
 import views.helpers.Formatters
-import views.html.components.linkInner
+import views.html.components._
 import views.html.postponed_vat.{collapsible_statement_group, download_link_pvat_statement}
+
+case class PvEmail(emailAddress: String,
+                   emailAddressHref: String)
+
+case class PVATUrls(pvEmail: PvEmail,
+                    viewVatAccountSupportLink: String,
+                    serviceUnavailableUrl: Option[String] = None)
 
 case class DDRow(notAvailableMsg: String,
                  visuallyHiddenMsg: String)
@@ -165,11 +172,8 @@ object CurrentStatementRow {
   }
 }
 
-case class CurrentStatementsSection(currentStatementRows: Seq[HtmlFormat.Appendable] = Seq.empty[HtmlFormat.Appendable],
-                                    noStatementMsg: Option[HtmlFormat.Appendable] = None) {
-
-  val source: Seq[String] = Seq(CDS, CHIEF)
-}
+case class CurrentStatementsSection(currentStatementRows: Seq[CurrentStatementRow] = Seq(),
+                                    noStatementMsg: Option[HtmlFormat.Appendable] = None)
 
 case class PostponedVatViewModel(pageTitle: String,
                                  backLink: Option[String] = None,
@@ -178,10 +182,9 @@ case class PostponedVatViewModel(pageTitle: String,
                                  statementH2Heading: HtmlFormat.Appendable,
                                  requestedStatements: Option[HtmlFormat.Appendable] = None,
                                  currentStatements: CurrentStatementsSection,
-                                 cdsOnly: Boolean,
-                                 statOlderThanSixMonths: GuidanceRow,
-                                 chiefDeclaration: GuidanceRow,
-                                 helpAndSupport: GuidanceRow)
+                                 statOlderThanSixMonthsGuidance: GuidanceRow,
+                                 chiefDeclarationGuidance: GuidanceRow,
+                                 helpAndSupportGuidance: GuidanceRow)
 
 object PostponedVatViewModel {
   def apply(files: Seq[PostponedVatStatementFile])(implicit messages: Messages,
@@ -198,4 +201,138 @@ object PostponedVatViewModel {
       date => response.find(_.startDate.getMonth == date.getMonth).getOrElse(PostponedVatStatementGroup(date, Seq.empty))
     }.toList.sorted.reverse
   }
+
+  def apply(files: Seq[PostponedVatStatementFile],
+            hasRequestedStatements: Boolean,
+            isCdsOnly: Boolean,
+            location: Option[String],
+            urls: PVATUrls
+           )(implicit messages: Messages, dateTimeService: DateTimeService): PostponedVatViewModel = {
+
+    val statementGroupList: Seq[PostponedVatStatementGroup] = statementGroups(files)
+
+    val pageTitle = messages("cf.account.pvat.title")
+
+    PostponedVatViewModel(
+      pageTitle = pageTitle,
+      backLink = location,
+      pageH1Heading = populatePageHeading,
+      statementsAvailableGuidance = populateStatementsAvailableGuidance,
+      statementH2Heading = populateStatementH2Heading,
+      requestedStatements = None,
+      currentStatements = populateCurrentStatements(statementGroupList, isCdsOnly),
+      statOlderThanSixMonthsGuidance = populateOlderThanSixMonthsGuidance(urls.serviceUnavailableUrl),
+      chiefDeclarationGuidance = populateChiefDeclarationGuidance(urls.pvEmail),
+      helpAndSupportGuidance = populateHelpAndSupportGuidance(urls.viewVatAccountSupportLink)
+    )
+  }
+
+  private def statementGroups(files: Seq[PostponedVatStatementFile])
+                             (implicit messages: Messages,
+                              dateTimeService: DateTimeService): Seq[PostponedVatStatementGroup] = {
+
+    val response: Seq[PostponedVatStatementGroup] =
+      files.groupBy(_.monthAndYear).map {
+        case (month, filesForMonth) => PostponedVatStatementGroup(month, filesForMonth)
+      }.toList
+
+    val monthList =
+      MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE.map(n => dateTimeService.systemDateTime().toLocalDate.minusMonths(n))
+
+    monthList.map {
+      date => response.find(_.startDate.getMonth == date.getMonth).getOrElse(PostponedVatStatementGroup(date, Seq.empty))
+    }.toList.sorted.reverse
+  }
+
+  private def populatePageHeading(implicit msgs: Messages): HtmlFormat.Appendable = {
+    new h1().apply(msg = "cf.account.pvat.title", classes = "govuk-heading-xl  govuk-!-margin-bottom-6")
+  }
+
+  private def populateStatementsAvailableGuidance(implicit msgs: Messages): HtmlFormat.Appendable = {
+    new p().apply(message = "cf.account.vat.available.statement-text", id = Some("vat-available-statement-text"))
+  }
+
+  private def populateStatementH2Heading(implicit msgs: Messages): HtmlFormat.Appendable = {
+    new h2().apply("cf.account.pvat.your-statements.heading")
+  }
+
+  private def populateCurrentStatements(statementGroupList: Seq[PostponedVatStatementGroup],
+                                        isCdsOnly: Boolean)
+                                       (implicit msgs: Messages): CurrentStatementsSection = {
+    val noStatementMsg =
+      if (statementGroupList.isEmpty) {
+        Some(new inset().apply("cf.account.pvat.no-statements-yet"))
+      } else {
+        None
+      }
+
+    CurrentStatementsSection(
+      currentStatementRows = populateCurrentStatementRows(statementGroupList, isCdsOnly),
+      noStatementMsg = noStatementMsg
+    )
+  }
+
+  private def populateOlderThanSixMonthsGuidance(serviceUnavailableUrl: Option[String])
+                                                (implicit msgs: Messages): GuidanceRow = {
+    val h2Heading = new h2().apply("cf.account.pvat.older-statements.heading",
+      id = Some("missing-documents-guidance-heading"),
+      classes = "govuk-heading-m govuk-!-margin-top-6")
+
+    val link = new link().apply("cf.account.pvat.older-statements.description.link",
+      location = serviceUnavailableUrl.getOrElse(emptyString),
+      preLinkMessage = Some("cf.account.pvat.older-statements.description.2"))
+
+    GuidanceRow(
+      h2Heading,
+      Some(link)
+    )
+  }
+
+  private def populateChiefDeclarationGuidance(pvEmail: PvEmail)(implicit msgs: Messages): GuidanceRow = {
+    val h2Heading = new h2().apply(id = Some("chief-guidance-heading"),
+      msg = "cf.account.vat.chief.heading",
+      classes = "govuk-heading-m govuk-!-margin-top-6")
+
+    val link = new link().apply(pvEmail.emailAddress,
+      location = pvEmail.emailAddressHref,
+      preLinkMessage = Some("cf.account.pvat.older-statements.description.3"))
+
+    GuidanceRow(
+      h2Heading,
+      Some(link)
+    )
+  }
+
+  private def populateHelpAndSupportGuidance(viewVatAccountSupportLink: String)
+                                            (implicit msgs: Messages): GuidanceRow = {
+
+    val h2Heading = new h2().apply(id = Some("pvat.support.message.heading"),
+      msg = "cf.account.pvat.support.heading",
+      classes = "govuk-heading-m govuk-!-margin-top-2")
+
+    val link = new link().apply(msgs("cf.account.pvat.support.link"),
+      location = viewVatAccountSupportLink,
+      preLinkMessage = Some("cf.account.pvat.support.message"),
+      postLinkMessage = Some(period),
+      pId = Some("pvat.support.message"),
+      pClass = "govuk-body govuk-!-margin-bottom-9")
+
+    GuidanceRow(
+      h2Heading,
+      Some(link)
+    )
+  }
+
+  private def populateCurrentStatementRows(statementGroupList: Seq[PostponedVatStatementGroup],
+                                           isCdsOnly: Boolean)(implicit msgs: Messages): Seq[CurrentStatementRow] = {
+    statementGroupList.map {
+      statementGroup =>
+        CurrentStatementRow(
+          statementGroup,
+          dutyPaymentMethodSource = Seq(CDS, CHIEF),
+          isCdsOnly)
+
+    }
+  }
+
 }
