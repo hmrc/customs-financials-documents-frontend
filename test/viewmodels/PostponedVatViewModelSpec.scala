@@ -197,10 +197,46 @@ class PostponedVatViewModelSpec extends SpecBase {
 
         when(mockDateTimeService.systemDateTime()).thenReturn(date)
 
+        val actualPVatModel: PostponedVatViewModel = PostponedVatViewModel(
+          postponedVatCertificateFiles,
+          hasRequestedStatements = true,
+          isCdsOnly = true,
+          Some(location),
+          PVATUrls(
+            requestStatementsUrl = requestedStatementsUrl,
+            pvEmail = PvEmail(pvEmailEmailAddress, pvEmailEmailAddressHref),
+            viewVatAccountSupportLink = viewVatAccountSupportLink,
+            serviceUnavailableUrl = Some(serviceUnavailableUrl))
+        )
+
+        actualPVatModel.pageTitle mustBe msgs("cf.account.pvat.title")
+        actualPVatModel.backLink mustBe Some(location)
+
+        actualPVatModel.pageH1Heading mustBe expectedHeading
+
+        actualPVatModel.statementsAvailableGuidance mustBe expectedStatementsAvailableGuidance
+
+        actualPVatModel.statementH2Heading mustBe expectedH2Heading
+
+        actualPVatModel.requestedStatements mustBe expectedRequestedStatements
+
+        actualPVatModel.currentStatements.noStatementMsg mustBe None
+
         val expectedResult: Seq[PostponedVatStatementGroup] =
           Seq(pVatGroup1, pVatGroup2, pVatGroup3, pVatGroup6, pVatGroup5, pVatGroup4)
 
-        PostponedVatViewModel(postponedVatCertificateFiles) mustBe expectedResult
+        val expectedCurrentRows: Seq[CurrentStatementRow] = expectedResult.map {
+          pvaStatGroup =>
+            CurrentStatementRow(pvaStatGroup, Seq(CDS, CHIEF), isCdsOnly = true)
+        }
+
+        actualPVatModel.currentStatements.currentStatementRows mustBe expectedCurrentRows
+
+        actualPVatModel.statOlderThanSixMonthsGuidance mustBe expectedStatOlderThanSixMonthsGuidanceRow
+
+        actualPVatModel.chiefDeclarationGuidance mustBe expectedChiefDeclarationGuidance
+
+        actualPVatModel.helpAndSupportGuidance mustBe expectedHelpAndSupportGuidance
       }
 
       "there are no PostponedVatStatementFile records" in new Setup {
@@ -382,6 +418,52 @@ class PostponedVatViewModelSpec extends SpecBase {
       PostponedVatStatementGroup(
         LocalDate.of(YEAR_2018, MONTH_4, DAY_1),
         Seq(pVatStatCsvFileForMonth4, pVatStatPdfFileForMonth4))
+
+    val expectedHeading: HtmlFormat.Appendable =
+      new h1().apply(msg = "cf.account.pvat.title", classes = "govuk-heading-xl  govuk-!-margin-bottom-6")
+
+    val expectedStatementsAvailableGuidance: HtmlFormat.Appendable =
+      new p().apply(message = "cf.account.vat.available.statement-text", id = Some("vat-available-statement-text"))
+
+    val expectedH2Heading: HtmlFormat.Appendable = new h2().apply("cf.account.pvat.your-statements.heading")
+
+    val expectedRequestedStatements: Option[HtmlFormat.Appendable] = Some(requestedStatementSection(
+      requestedStatementsUrl,
+      "cf.postponed-vat.requested-statements-available-link-text",
+      "cf.account.detail.requested-certificates-available-text.pre",
+      "cf.account.detail.requested-certificates-available-text.post"))
+
+    val expectedStatOlderThanSixMonthsGuidanceRow: GuidanceRow = GuidanceRow(
+      h2Heading = new h2().apply("cf.account.pvat.older-statements.heading",
+        id = Some("missing-documents-guidance-heading"),
+        classes = "govuk-heading-m govuk-!-margin-top-6"),
+      link = Some(new link().apply("cf.account.pvat.older-statements.description.link",
+        location = serviceUnavailableUrl,
+        preLinkMessage = Some("cf.account.pvat.older-statements.description.2")))
+    )
+
+    val expectedChiefDeclarationGuidance: GuidanceRow = GuidanceRow(
+      h2Heading = new h2().apply(id = Some("chief-guidance-heading"),
+        msg = "cf.account.vat.chief.heading",
+        classes = "govuk-heading-m govuk-!-margin-top-6"),
+
+      link = Some(new link().apply(pvEmailEmailAddress,
+        location = pvEmailEmailAddressHref,
+        preLinkMessage = Some("cf.account.pvat.older-statements.description.3")))
+    )
+
+    val expectedHelpAndSupportGuidance: GuidanceRow = GuidanceRow(
+      h2Heading = new h2().apply(id = Some("pvat.support.message.heading"),
+        msg = "cf.account.pvat.support.heading",
+        classes = "govuk-heading-m govuk-!-margin-top-2"),
+
+      link = Some(new link().apply(msgs("cf.account.pvat.support.link"),
+        location = viewVatAccountSupportLink,
+        preLinkMessage = Some("cf.account.pvat.support.message"),
+        postLinkMessage = Some(period),
+        pId = Some("pvat.support.message"),
+        pClass = "govuk-body govuk-!-margin-bottom-9"))
+    )
 
     protected def requestedStatementSection(url: String,
                                             linkMessageKey: String,
