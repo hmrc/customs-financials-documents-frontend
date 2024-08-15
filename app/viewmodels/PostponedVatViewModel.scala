@@ -43,8 +43,7 @@ case class CollapsibleStatementGroupRow(collapsiblePVATAmendedStatement: Option[
                                         collapsiblePVATStatement: Option[HtmlFormat.Appendable] = None)
 
 case class GuidanceRow(h2Heading: HtmlFormat.Appendable,
-                       link: Option[HtmlFormat.Appendable] = None,
-                       paragraph: Option[HtmlFormat.Appendable] = None)
+                       link: Option[HtmlFormat.Appendable] = None)
 
 case class CurrentStatementRow(periodId: String,
                                startDateMsgKey: String,
