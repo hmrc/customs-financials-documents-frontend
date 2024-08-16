@@ -22,7 +22,7 @@ import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import services.DateTimeService
 import utils.Constants.MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE
-import utils.Utils.{emptyString, h1Component, h2Component, insetComponent, linkComponent, pComponent, period}
+import utils.Utils._
 import views.helpers.Formatters
 import views.html.components._
 import views.html.postponed_vat.{collapsible_statement_group, current_statement_row, download_link_pvat_statement}
@@ -124,10 +124,8 @@ object PostponedVatViewModel {
                                          (implicit msgs: Messages): Option[HtmlFormat.Appendable] = {
     if (hasRequestedStatements) {
       val requestedStatementSection = new requestedStatements(linkComponent).apply(
-        requestStatementsUrl,
-        linkMessageKey = "cf.postponed-vat.requested-statements-available-link-text",
-        preLinkMessageKey = "cf.account.detail.requested-certificates-available-text.pre",
-        postLinkMessageKey = "cf.account.detail.requested-certificates-available-text.post"
+        url = requestStatementsUrl,
+        linkMessageKey = "cf.postponed-vat.requested-statements-available-link-text"
       )
 
       Some(requestedStatementSection)

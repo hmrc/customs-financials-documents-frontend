@@ -80,20 +80,12 @@ class PostponedVatController @Inject()(val authenticate: PvatIdentifierAction,
             routes.ServiceUnavailableController.onPageLoad(navigator.postponedVatPageId).url
           }
 
-          val pVAUrls = PVATUrls(
-            customsFinancialsHomePageUrl = appConfig.customsFinancialsFrontendHomepage,
-            requestStatementsUrl = appConfig.requestedStatements(PostponedVATStatement),
-            pvEmail = PvEmail(appConfig.pvEmailEmailAddress, appConfig.pvEmailEmailAddressHref),
-            viewVatAccountSupportLink = appConfig.viewVatAccountSupportLink,
-            serviceUnavailableUrl = Some(historicUrl)
-          )
-
           Ok(postponedImportVatView(PostponedVatViewModel(
-              currentStatements,
-              allPostponedVatStatements.exists(statement => statement.metadata.statementRequestId.nonEmpty),
-              currentStatements.count(_.metadata.source != CHIEF) == currentStatements.size,
-              location,
-              pVAUrls))
+            currentStatements,
+            allPostponedVatStatements.exists(statement => statement.metadata.statementRequestId.nonEmpty),
+            currentStatements.count(_.metadata.source != CHIEF) == currentStatements.size,
+            location,
+            populatePVATUrls(historicUrl)))
           )
         }
         ).recover {
@@ -117,5 +109,15 @@ class PostponedVatController @Inject()(val authenticate: PvatIdentifierAction,
         files.find(file =>
           file.monthAndYear.getYear == date.getYear && file.monthAndYear.getMonth == date.getMonth).toSeq
     }
+  }
+
+  private def populatePVATUrls(historicUrl: String): PVATUrls = {
+    PVATUrls(
+      customsFinancialsHomePageUrl = appConfig.customsFinancialsFrontendHomepage,
+      requestStatementsUrl = appConfig.requestedStatements(PostponedVATStatement),
+      pvEmail = PvEmail(appConfig.pvEmailEmailAddress, appConfig.pvEmailEmailAddressHref),
+      viewVatAccountSupportLink = appConfig.viewVatAccountSupportLink,
+      serviceUnavailableUrl = Some(historicUrl)
+    )
   }
 }
