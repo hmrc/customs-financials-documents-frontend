@@ -137,7 +137,7 @@ class PostponedImportVatSpec extends SpecBase {
                   hasRequestedStatements = true,
                   isCdsOnly = false,
                   Option("some_url"),
-                  urls = pvatUrls.copy(serviceUnavailableUrl = None)),
+                  urls = pvatUrls.copy(serviceUnavailableUrl = None))
                 ).body)
 
             running(app) {
