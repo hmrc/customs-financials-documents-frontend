@@ -20,6 +20,7 @@ import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.Utils._
+import views.html.components.{h1, h2, inset, link, p}
 
 class UtilsSpec extends SpecBase {
   "emptyString" should {
@@ -50,6 +51,36 @@ class UtilsSpec extends SpecBase {
     "return correct value" in {
       val path = "somePath"
       pathWithQueryString(fakeRequest("GET", path)) mustBe s"$path"
+    }
+  }
+
+  "h1Component" should {
+    "return the correct component type" in {
+      h1Component mustBe a[h1]
+    }
+  }
+
+  "h2Component" should {
+    "return the correct component type" in {
+      h2Component mustBe a[h2]
+    }
+  }
+
+  "pComponent" should {
+    "return the correct component type" in {
+      pComponent mustBe a[p]
+    }
+  }
+
+  "linkComponent" should {
+    "return the correct component type" in {
+      linkComponent mustBe a[link]
+    }
+  }
+
+  "insetComponent" should {
+    "return the correct component type" in {
+      insetComponent mustBe a[inset]
     }
   }
 

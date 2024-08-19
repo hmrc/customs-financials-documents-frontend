@@ -33,7 +33,7 @@ import uk.gov.hmrc.auth.core.retrieve.Email
 import utils.CommonTestData._
 import utils.SpecBase
 import utils.Utils.{hyphen, singleSpace}
-import viewmodels.PostponedVatViewModel
+import viewmodels.{PVATUrls, PostponedVatViewModel, PvEmail}
 import views.helpers.Formatters
 import views.html.{postponed_import_vat, postponed_import_vat_not_available}
 
@@ -70,12 +70,13 @@ class PostponedVatControllerSpec extends SpecBase {
 
         status(result) mustBe OK
 
-        contentAsString(result) mustBe view(eori,
-          PostponedVatViewModel(currentStatements)(messages(app), mockDateTimeService),
-          hasRequestedStatements = true,
-          cdsOnly = true,
-          Some(cdsLocation),
-          Some(serviceUnavailableUrl))(request, messages(app), config).toString()
+        contentAsString(result) mustBe view(
+          PostponedVatViewModel(
+            currentStatements,
+            hasRequestedStatements = true,
+            isCdsOnly = true,
+            location = Some(cdsLocation),
+            urls = pvatUrls)(messages(app), mockDateTimeService))(request, messages(app), config).toString()
 
         contentAsString(result).contains(serviceUnavailableUrl)
         contentAsString(result) should not include "CHIEF statement -"
@@ -170,13 +171,14 @@ class PostponedVatControllerSpec extends SpecBase {
 
         status(result) mustBe OK
 
-        contentAsString(result) mustBe view(eori,
-          PostponedVatViewModel(postponedVatStatementFilesWithImmediateUnavailable)(
-            messages(app), mockDateTimeService),
-          hasRequestedStatements = true,
-          cdsOnly = true,
-          Some(cdsLocation),
-          Some(config.historicRequestUrl(PostponedVATStatement)))(request, messages(app), config).toString()
+        contentAsString(result) mustBe view(
+          PostponedVatViewModel(
+            postponedVatStatementFilesWithImmediateUnavailable,
+            hasRequestedStatements = true,
+            isCdsOnly = true,
+            location = Some(cdsLocation),
+            urls = pvatUrls.copy(serviceUnavailableUrl = Some(config.historicRequestUrl(PostponedVATStatement)))
+          )(messages(app), mockDateTimeService))(request, messages(app), config).toString()
 
         val doc = Jsoup.parse(contentAsString(result))
         val periodElement = Formatters.dateAsMonthAndYear(
@@ -192,7 +194,6 @@ class PostponedVatControllerSpec extends SpecBase {
       "before 20th day of the month and statement is not available" in new Setup {
       config.historicStatementsEnabled = false
 
-      val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("postponed-vat").url
       val currentDate: LocalDate = LocalDate.of(date.getYear, date.getMonthValue, DAY_12)
 
       when(mockDataStoreConnector.getEmail(any)(any))
@@ -215,13 +216,13 @@ class PostponedVatControllerSpec extends SpecBase {
         val result = route(app, request).value
         status(result) mustBe OK
 
-        contentAsString(result) mustBe view(eori,
-          PostponedVatViewModel(postponedVatStatementFilesWithImmediateUnavailable)(
-            messages(app), mockDateTimeService),
-          hasRequestedStatements = true,
-          cdsOnly = true,
-          Some(cdsLocation),
-          Some(serviceUnavailableUrl))(request, messages(app), config).toString()
+        contentAsString(result) mustBe view(
+          PostponedVatViewModel(
+            postponedVatStatementFilesWithImmediateUnavailable,
+            hasRequestedStatements = true,
+            isCdsOnly = true,
+            location = Some(cdsLocation),
+            urls = pvatUrls)(messages(app), mockDateTimeService))(request, messages(app), config).toString()
 
         val doc = Jsoup.parse(contentAsString(result))
         val periodElement = Formatters.dateAsMonthAndYear(
@@ -257,13 +258,14 @@ class PostponedVatControllerSpec extends SpecBase {
         val result = route(app, request).value
         status(result) mustBe OK
 
-        contentAsString(result) mustBe view(eori,
-          PostponedVatViewModel(postponedVatStatementFilesWithImmediateUnavailable)(
-            messages(app), mockDateTimeService),
-          hasRequestedStatements = true,
-          cdsOnly = true,
-          Some(cdsLocation),
-          Some(historicRequestUrl))(request, messages(app), config).toString()
+        contentAsString(result) mustBe view(
+          PostponedVatViewModel(
+            postponedVatStatementFilesWithImmediateUnavailable,
+            hasRequestedStatements = true,
+            isCdsOnly = true,
+            location = Some(cdsLocation),
+            urls = pvatUrls.copy(serviceUnavailableUrl = Some(historicRequestUrl)))
+          (messages(app), mockDateTimeService))(request, messages(app), config).toString()
       }
     }
   }
@@ -455,5 +457,13 @@ class PostponedVatControllerSpec extends SpecBase {
 
     private def yearValueOfCurrentDate(monthValueToSubtract: Int): Int =
       LocalDate.now().minusMonths(monthValueToSubtract).getYear
+
+    val pvatUrls: PVATUrls = PVATUrls(
+      customsFinancialsHomePageUrl = config.customsFinancialsFrontendHomepage,
+      requestStatementsUrl = config.requestedStatements(PostponedVATStatement),
+      pvEmail = PvEmail(config.pvEmailEmailAddress, config.pvEmailEmailAddressHref),
+      viewVatAccountSupportLink = config.viewVatAccountSupportLink,
+      serviceUnavailableUrl = Some(routes.ServiceUnavailableController.onPageLoad("postponed-vat").url)
+    )
   }
 }

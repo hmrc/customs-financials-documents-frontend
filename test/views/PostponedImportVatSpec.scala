@@ -33,7 +33,7 @@ import play.api.{Application, inject}
 import services.DateTimeService
 import utils.CommonTestData._
 import utils.SpecBase
-import viewmodels.PostponedVatViewModel
+import viewmodels.{PVATUrls, PostponedVatViewModel, PvEmail}
 import views.html.postponed_import_vat
 
 import java.time.{LocalDate, LocalDateTime}
@@ -47,16 +47,14 @@ class PostponedImportVatSpec extends SpecBase {
 
       val view: Document = Jsoup.parse(
         app.injector.instanceOf[postponed_import_vat].apply(
-          EORI_NUMBER,
-          PostponedVatViewModel(postponedVatStatementFiles),
-          hasRequestedStatements = true,
-          cdsOnly = true,
-          Option("some_url"),
-          Option(serviceUnavailbleUrl)).body)
+          PostponedVatViewModel(postponedVatStatementFiles,
+            hasRequestedStatements = true,
+            isCdsOnly = true,
+            Option("some_url"),
+            urls = pvatUrls)).body)
 
       running(app) {
         view.title() mustBe s"${messages(app)("cf.account.pvat.title")} - ${messages(app)("service.name")} - GOV.UK"
-        view.getElementById("notification-panel").html() must not be empty
         view.getElementById("main-content").html() must not contain "h2"
         view.html().contains("cf.account.vat.available.statement-text")
         view.getElementsByTag("dl").size() must be > 0
@@ -75,11 +73,12 @@ class PostponedImportVatSpec extends SpecBase {
 
       val view: Document = Jsoup.parse(
         app.injector.instanceOf[postponed_import_vat].apply(
-          EORI_NUMBER,
-          PostponedVatViewModel(postponedVatStatementFiles),
-          hasRequestedStatements = true,
-          cdsOnly = true,
-          Option("some_url")).body)
+          PostponedVatViewModel(postponedVatStatementFiles,
+            hasRequestedStatements = true,
+            isCdsOnly = true,
+            location = Option("some_url"),
+            urls = pvatUrls.copy(serviceUnavailableUrl = None))
+          ).body)
 
       val expectedSize = 7
 
@@ -97,11 +96,12 @@ class PostponedImportVatSpec extends SpecBase {
 
         val view: Document = Jsoup.parse(
           app.injector.instanceOf[postponed_import_vat].apply(
-            EORI_NUMBER,
-            PostponedVatViewModel(postponedVatStatementFiles),
-            hasRequestedStatements = true,
-            cdsOnly = true,
-            Option("some_url")).body)
+            PostponedVatViewModel(postponedVatStatementFiles,
+              hasRequestedStatements = true,
+              isCdsOnly = true,
+              Option("some_url"),
+              urls = pvatUrls.copy(serviceUnavailableUrl = None))
+            ).body)
 
         running(app) {
           val cdsNotAvailableMessage = view.select("dd").text()
@@ -113,11 +113,12 @@ class PostponedImportVatSpec extends SpecBase {
         when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
           val view: Document = Jsoup.parse(
             app.injector.instanceOf[postponed_import_vat].apply(
-              EORI_NUMBER,
-              PostponedVatViewModel(postponedVatStatementFiles),
-              hasRequestedStatements = true,
-              cdsOnly = false,
-              Option("some_url")).body)
+              PostponedVatViewModel(postponedVatStatementFiles,
+                hasRequestedStatements = true,
+                isCdsOnly = false,
+                Option("some_url"),
+                urls = pvatUrls.copy(serviceUnavailableUrl = None))
+             ).body)
 
           val expectedSize = 13
 
@@ -132,11 +133,12 @@ class PostponedImportVatSpec extends SpecBase {
 
             val view: Document = Jsoup.parse(
               app.injector.instanceOf[postponed_import_vat].apply(
-                EORI_NUMBER,
-                PostponedVatViewModel(Seq.empty),
-                hasRequestedStatements = true,
-                cdsOnly = false,
-                Option("some_url")).body)
+                PostponedVatViewModel(Seq.empty,
+                  hasRequestedStatements = true,
+                  isCdsOnly = false,
+                  Option("some_url"),
+                  urls = pvatUrls.copy(serviceUnavailableUrl = None))
+                ).body)
 
             running(app) {
               view.html() must include(messages(app)("cf.common.not-available"))
@@ -209,5 +211,13 @@ class PostponedImportVatSpec extends SpecBase {
     implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
     implicit val msg: Messages = messages(app)
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
+
+    val pvatUrls: PVATUrls = PVATUrls(
+      customsFinancialsHomePageUrl = appConfig.customsFinancialsFrontendHomepage,
+      requestStatementsUrl = appConfig.requestedStatements(PostponedVATStatement),
+      pvEmail = PvEmail(appConfig.pvEmailEmailAddress, appConfig.pvEmailEmailAddressHref),
+      viewVatAccountSupportLink = appConfig.viewVatAccountSupportLink,
+      serviceUnavailableUrl = Some(serviceUnavailbleUrl)
+    )
   }
 }

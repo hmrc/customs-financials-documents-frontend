@@ -17,6 +17,7 @@
 package utils
 
 import play.api.mvc.RequestHeader
+import views.html.components.{h1, h2, inset, link, p}
 
 object Utils {
   val emptyString = ""
@@ -25,6 +26,12 @@ object Utils {
   val period = "."
 
   private val questionMark = "?"
+
+  val h1Component = new h1()
+  val h2Component = new h2()
+  val pComponent = new p()
+  val linkComponent = new link()
+  val insetComponent = new inset()
 
   def referrerUrl(platformHost: Option[String])(implicit request: RequestHeader): Option[String] =
     Some(s"${platformHost.getOrElse(emptyString)}${pathWithQueryString(request)}")

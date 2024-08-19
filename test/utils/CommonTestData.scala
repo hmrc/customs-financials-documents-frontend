@@ -70,6 +70,8 @@ object CommonTestData {
   val HOUR_12 = 12
   val MINUTES_30 = 30
 
+  val SECONDS_50 = 50
+
   val SIZE_99L = 99L
   val SIZE_111L = 111L
   val SIZE_500L = 500L
@@ -96,4 +98,6 @@ object CommonTestData {
   val DOWNLOAD_URL_05 = "download_url_05"
   val DOWNLOAD_URL_06 = "download_url_06"
   val DOWNLOAD_URL_07 = "download_url_07"
+
+  val URL_TEST = "http://test.com"
 }

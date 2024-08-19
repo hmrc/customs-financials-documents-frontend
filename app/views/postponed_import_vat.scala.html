@@ -14,244 +14,52 @@
  * limitations under the License.
  *@
 
-@import views.html.components._
-@import models.PostponedVatStatementFile
-@import models.FileFormat._
-@import views.helpers.Formatters
-@import models.FileRole.PostponedVATStatement
-@import views.html.Layout
-@import models.PostponedVatStatementGroup
-@import models.FileFormat
-@import models.DutyPaymentMethod.CDS
-@import models.DutyPaymentMethod.CHIEF
-@import utils.Utils.{emptyString, period}
+@import viewmodels.PostponedVatViewModel
 
-@this(
-    layout: Layout,
-    p: components.p,
-    pInner: components.pInner,
-    link: components.link,
-    linkInner: components.linkInner,
-    h1: components.h1,
-    h2: components.h2,
-    h2Inner: components.h2Inner,
-    inset: components.inset
-)
+@this(layout: Layout)
 
 @(
-    eori: String,
-    statementGroups: Seq[PostponedVatStatementGroup],
-    hasRequestedStatements: Boolean,
-    cdsOnly: Boolean,
-    location: Option[String],
-    serviceUnavailableUrl: Option[String] = None
+    viewModel: PostponedVatViewModel
 )(
     implicit request: Request[_],
     messages: Messages,
     appConfig: config.AppConfig
 )
 
-@layout(pageTitle = Some(messages("cf.account.pvat.title")),
-        backLink = location.map(_ => appConfig.customsFinancialsFrontendHomepage)) {
+@layout(pageTitle = Some(viewModel.pageTitle), backLink = viewModel.backLink) {
     
-    @h1(msg = "cf.account.pvat.title", classes = "govuk-heading-xl  govuk-!-margin-bottom-6")
+    @viewModel.pageH1Heading
 
-    @p(message = "cf.account.vat.available.statement-text", id = Some("vat-available-statement-text"))
+    @viewModel.statementsAvailableGuidance
 
-    @h2("cf.account.pvat.your-statements.heading")
+    @viewModel.statementH2Heading
 
-    @if(hasRequestedStatements) {
-        <div id="notification-panel" class="notifications-panel">
-            <p class="govuk-body govuk-!-margin-bottom-1">
-                @messages("cf.account.detail.requested-certificates-available-text.pre")
+    @viewModel.requestedStatements.map(identity)
 
-                <a href="@{appConfig.requestedStatements(PostponedVATStatement)}"
-                   class="govuk-link">@messages("cf.postponed-vat.requested-statements-available-link-text")
-                </a>
+    <dl class="govuk-summary-list statement-list pVat-statements">
+        @defining(viewModel.currentStatements) { currentStatementsSection =>
+            @currentStatementsSection.currentStatementRows.map(identity)
+            @currentStatementsSection.noStatementMsg.map(identity)
+        }
+    </dl>
 
-                @messages("cf.account.detail.requested-certificates-available-text.post")
-            </p>
-        </div>
-    }
-<dl class="govuk-summary-list statement-list pVat-statements">
-    @for(statementGroup <- statementGroups) {
-            @if(!statementGroup.noStatements || statementGroup.isPreviousMonthAndAfter19Th) {
-            <div class="govuk-summary-list__row" id=@{statementGroup.periodId}>
+    <div id="missing-documents-guidance" class="govuk-!-padding-top-2">
+        @defining(viewModel.statOlderThanSixMonthsGuidance) { guidance =>
+            @guidance.h2Heading
+            @guidance.link.map(identity)
+        }
 
-                <dt class="govuk-summary-list__value">
-                    @messages(Formatters.dateAsMonthAndYear(statementGroup.startDate))
-                </dt>
-
-                @if(statementGroup.noStatements) {
-                    @if(statementGroup.isPreviousMonthAndAfter19Th) {
-                        <dd class="govuk-summary-list__actions">
-                            <span aria-hidden="true">
-                                @messages("cf.common.not-available")
-                            </span>
-                            <span class="govuk-visually-hidden"> 
-                                @messages(
-                                    "cf.common.not-available-screen-reader-cds", 
-                                    Formatters.dateAsMonthAndYear(statementGroup.startDate)
-                                )
-                            </span>
-                        </dd>
-                        @if(!cdsOnly){
-                            <dd class="govuk-summary-list__actions">
-                               <span aria-hidden="true">
-                                    @messages("cf.common.not-available")
-                                </span>
-                                <span class="govuk-visually-hidden"> 
-                                    @messages(
-                                        "cf.common.not-available-screen-reader-chief", 
-                                        Formatters.dateAsMonthAndYear(statementGroup.startDate)
-                                    )
-                                </span>
-                            </dd>
-                        }
-                    }
-                } else {
-                                @for(source <- Seq(CDS, CHIEF)) {
-                                    @collapsibleStatementGroup(
-                                        statementGroup.collectFiles(amended = true, source),
-                                        "cf.account.pvat.amended-download-link",
-                                        "cf.account.pvat.aria.amended-download-link",
-                                        None,
-                                        source,
-                                        Formatters.dateAsMonthAndYear(statementGroup.startDate)
-                                    )
-                                    @defining(
-                                        if(statementGroup.collectFiles(amended = true, source).isEmpty)
-                                            emptyString
-                                        else "original.") { original =>
-                                        @collapsibleStatementGroup(
-                                            statementGroup.collectFiles(amended = false, source),
-                                            s"cf.account.pvat.${original}download-link",
-                                            s"cf.account.pvat.aria.${original}download-link",
-                                            Some("cf.common.not-available"),
-                                            source,
-                                            Formatters.dateAsMonthAndYear(statementGroup.startDate)
-                                        )
-                                    }
-                                }
-                        }
-                </div>
-            }
-    }
-</dl>
-    @if(statementGroups.isEmpty) {
-        @inset("cf.account.pvat.no-statements-yet")
-    } else {
-        <div id="missing-documents-guidance" class="govuk-!-padding-top-2">
-            @h2(
-                "cf.account.pvat.older-statements.heading",
-                id = Some("missing-documents-guidance-heading"),
-                classes = "govuk-heading-m govuk-!-margin-top-6"
-            )
-    
-            @link(
-                "cf.account.pvat.older-statements.description.link",
-                location = serviceUnavailableUrl.getOrElse(emptyString),
-                preLinkMessage = Some("cf.account.pvat.older-statements.description.2")
-            )
-
-            @h2(
-                id = Some("chief-guidance-heading"),
-                msg = "cf.account.vat.chief.heading",
-                classes = "govuk-heading-m govuk-!-margin-top-6"
-            )
-
-            @link(
-                appConfig.pvEmailEmailAddress,
-                location = appConfig.pvEmailEmailAddressHref,
-                preLinkMessage = Some("cf.account.pvat.older-statements.description.3")
-            )
-            
-        </div>
-    }
-
-    <div id="pvat.support.heading" class="govuk-!-padding-top-2">
-        @h2(
-            id = Some("pvat.support.message.heading"),
-            msg = "cf.account.pvat.support.heading",
-            classes = "govuk-heading-m govuk-!-margin-top-2"
-        )
-        <p class="govuk-body govuk-!-margin-bottom-9" id="pvat.support.message">
-            @messages("cf.account.pvat.support.message")
-
-            <a class="govuk-link" target="_blank" rel="noreferrer noopener" href="@{appConfig.viewVatAccountSupportLink}">
-                @messages("cf.account.pvat.support.link")
-            </a>@period
-        </p>
+        @defining(viewModel.chiefDeclarationGuidance) { guidance =>
+            @guidance.h2Heading
+            @guidance.link.map(identity)
+        }
     </div>
 
-}
-
-@collapsibleStatementGroup(
-    certificateFiles: Seq[PostponedVatStatementFile],
-    downloadLinkMessage: String,
-    downloadAriaLabel: String,
-    missingFileMessage: Option[String],
-    source: String,
-    period: String) = {
-
-    @if(certificateFiles.nonEmpty) {
-        @for(certificates <- certificateFiles.groupBy(_.eori).values) {
-            @for(fileFormat <- PvatFileFormats) {
-                @if(!cdsOnly) {
-                    @missingFileMessage.map{v => <dd class="govuk-summary-list__actions">
-                                                    <span aria-hidden="true">
-                                                        @messages(v, source)
-                                                    </span> 
-                                                    <span class="govuk-visually-hidden"> 
-                                                        @messages(
-                                                            "cf.common.not-available-screen-reader-cds",
-                                                            period
-                                                        )
-                                                    </span>
-                                                </dd>
-                    }
-                }
-                <dd class="govuk-summary-list__actions">
-                    @downloadLink(
-                        fileFormat,
-                        certificates.filter(_.fileFormat == fileFormat),
-                        downloadLinkMessage,
-                        downloadAriaLabel,
-                        period
-                    )
-                </dd>
-            }
+    <div id="pvat.support.heading" class="govuk-!-padding-top-2">
+        @defining(viewModel.helpAndSupportGuidance) { guidance =>
+            @guidance.h2Heading
+            @guidance.link.map(identity)
         }
-    } 
+    </div>
 
-}
-
-@downloadLink(
-    fileFormat: FileFormat,
-    certificateFiles: Seq[PostponedVatStatementFile],
-    downloadLinkMessage: String,
-    downloadAriaLabel: String,
-    period: String) = {
-
-@for(certificateFile <- certificateFiles) {
-        @linkInner(
-            msgs = messages(
-                downloadLinkMessage,
-                certificateFile.metadata.source,
-                fileFormat.name,
-                Formatters.fileSize(certificateFile.size),
-                period
-            ),
-            url = certificateFile.downloadURL,
-            ariaLabel = Some(
-                messages(
-                    downloadAriaLabel,
-                    certificateFile.metadata.source,
-                    period,
-                    fileFormat.name,
-                    Formatters.fileSize(certificateFile.size)
-                )
-            )
-        )
-    }
 }

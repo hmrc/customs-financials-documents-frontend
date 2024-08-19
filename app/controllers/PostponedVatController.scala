@@ -29,7 +29,7 @@ import play.api.{Logger, LoggerLike}
 import services.DateTimeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Constants.MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE
-import viewmodels.PostponedVatViewModel
+import viewmodels.{PVATUrls, PostponedVatViewModel, PvEmail}
 import views.html.{postponed_import_vat, postponed_import_vat_not_available}
 
 import javax.inject.{Inject, Singleton}
@@ -80,13 +80,12 @@ class PostponedVatController @Inject()(val authenticate: PvatIdentifierAction,
             routes.ServiceUnavailableController.onPageLoad(navigator.postponedVatPageId).url
           }
 
-          Ok(postponedImportVatView(
-            req.eori,
-            PostponedVatViewModel(currentStatements),
+          Ok(postponedImportVatView(PostponedVatViewModel(
+            currentStatements,
             allPostponedVatStatements.exists(statement => statement.metadata.statementRequestId.nonEmpty),
             currentStatements.count(_.metadata.source != CHIEF) == currentStatements.size,
             location,
-            Some(historicUrl))
+            populatePVATUrls(historicUrl)))
           )
         }
         ).recover {
@@ -110,5 +109,15 @@ class PostponedVatController @Inject()(val authenticate: PvatIdentifierAction,
         files.find(file =>
           file.monthAndYear.getYear == date.getYear && file.monthAndYear.getMonth == date.getMonth).toSeq
     }
+  }
+
+  private def populatePVATUrls(historicUrl: String): PVATUrls = {
+    PVATUrls(
+      customsFinancialsHomePageUrl = appConfig.customsFinancialsFrontendHomepage,
+      requestStatementsUrl = appConfig.requestedStatements(PostponedVATStatement),
+      pvEmail = PvEmail(appConfig.pvEmailEmailAddress, appConfig.pvEmailEmailAddressHref),
+      viewVatAccountSupportLink = appConfig.viewVatAccountSupportLink,
+      serviceUnavailableUrl = Some(historicUrl)
+    )
   }
 }
