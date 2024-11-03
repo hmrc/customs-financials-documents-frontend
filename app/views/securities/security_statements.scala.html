@@ -46,9 +46,7 @@
 
     @h1("cf.security-statements.title", classes = "govuk-heading-xl")
 
-    @if(model.hasRequestedStatements) {
-        @requested_statements(appConfig.requestedStatements(SecurityStatement))
-    }
+    @model.requestedStatementNotification
 
     @if(model.hasCurrentStatements) {
 

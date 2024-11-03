@@ -25,15 +25,29 @@ import views.html.components.{link, requestedStatements}
 
 case class SecurityStatementsViewModel(statementsForAllEoris: Seq[SecurityStatementsForEori],
                                        hasRequestedStatements: Boolean,
-                                       hasCurrentStatements: Boolean)
+                                       hasCurrentStatements: Boolean,
+                                       requestedStatementNotification: HtmlFormat.Appendable)
 
 object SecurityStatementsViewModel {
-  def apply(statementsForAllEoris: Seq[SecurityStatementsForEori]): SecurityStatementsViewModel = {
+  def apply(statementsForAllEoris: Seq[SecurityStatementsForEori])(implicit appConfig: AppConfig,
+                                                                   messages: Messages): SecurityStatementsViewModel = {
 
     SecurityStatementsViewModel(
       statementsForAllEoris = statementsForAllEoris,
       hasRequestedStatements = hasRequestedStatements(statementsForAllEoris),
-      hasCurrentStatements = hasCurrentStatements(statementsForAllEoris))
+      hasCurrentStatements = hasCurrentStatements(statementsForAllEoris),
+      requestedStatementNotification = requestedStatementNotification(statementsForAllEoris))
+  }
+
+  private def requestedStatementNotification(statementsForAllEoris: Seq[SecurityStatementsForEori])
+                                            (implicit appConfig: AppConfig, messages: Messages
+                                            ): HtmlFormat.Appendable = {
+    if (hasRequestedStatements(statementsForAllEoris)) {
+      new requestedStatements(new link).apply(
+        url = appConfig.requestedStatements(SecurityStatement))
+    } else {
+      HtmlFormat.empty
+    }
   }
 
   private def hasRequestedStatements(statementsForAllEoris: Seq[SecurityStatementsForEori]): Boolean =
