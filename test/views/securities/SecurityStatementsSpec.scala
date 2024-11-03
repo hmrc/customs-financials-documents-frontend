@@ -172,7 +172,12 @@ class SecurityStatementsSpec extends SpecBase {
   }
 
   trait Setup {
-    val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory(EORI_NUMBER, None, None))
+    val app: Application = application().build()
+
+    implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+    implicit val msg: Messages = messages(app)
+    implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
+
     val date: LocalDate = LocalDate.now().withDayOfMonth(DAY_28)
 
     val securityStatementFilePdf: SecurityStatementFile =
@@ -263,12 +268,5 @@ class SecurityStatementsSpec extends SpecBase {
 
     val viewModelWithStatements: SecurityStatementsViewModel =
       SecurityStatementsViewModel(Seq(securityStatementsForEori))
-
-    val app: Application = application().build()
-    val serviceUnavailableUrl: Option[String] = Option("service_unavailable_url")
-
-    implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-    implicit val msg: Messages = messages(app)
-    implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
   }
 }
