@@ -16,9 +16,29 @@
 
 package viewmodels
 
+import config.AppConfig
+import models.FileRole.SecurityStatement
 import models.SecurityStatementsForEori
+import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
+import views.html.components.{link, requestedStatements}
 
-case class SecurityStatementsViewModel(statementsForAllEoris: Seq[SecurityStatementsForEori]) {
-  val hasRequestedStatements: Boolean = statementsForAllEoris.exists(_.requestedStatements.nonEmpty)
-  val hasCurrentStatements: Boolean = statementsForAllEoris.exists(_.currentStatements.nonEmpty)
+case class SecurityStatementsViewModel(statementsForAllEoris: Seq[SecurityStatementsForEori],
+                                       hasRequestedStatements: Boolean,
+                                       hasCurrentStatements: Boolean)
+
+object SecurityStatementsViewModel {
+  def apply(statementsForAllEoris: Seq[SecurityStatementsForEori]): SecurityStatementsViewModel = {
+
+    SecurityStatementsViewModel(
+      statementsForAllEoris = statementsForAllEoris,
+      hasRequestedStatements = hasRequestedStatements(statementsForAllEoris),
+      hasCurrentStatements = hasCurrentStatements(statementsForAllEoris))
+  }
+
+  private def hasRequestedStatements(statementsForAllEoris: Seq[SecurityStatementsForEori]): Boolean =
+    statementsForAllEoris.exists(_.requestedStatements.nonEmpty)
+
+  private def hasCurrentStatements(statementsForAllEoris: Seq[SecurityStatementsForEori]): Boolean =
+    statementsForAllEoris.exists(_.currentStatements.nonEmpty)
 }
