@@ -167,10 +167,9 @@
         )
     }
 
-    @missing_guidance("statement")
+    @model.missingGuidance
 
-    @p(id = Some("historic-statement-request"),
-        message = "cf.security-statements.historic.description")
+    @model.statementServiceParagraph
 
     @model.requestStatementsLink
 }

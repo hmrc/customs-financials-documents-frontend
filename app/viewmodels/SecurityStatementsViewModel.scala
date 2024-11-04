@@ -21,13 +21,15 @@ import models.FileRole.SecurityStatement
 import models.SecurityStatementsForEori
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import views.html.components.{link, requestedStatements}
+import views.html.components.{h2Inner, h3Inner, link, missing_documents_guidance, p, pInner, requestedStatements}
 
 case class SecurityStatementsViewModel(statementsForAllEoris: Seq[SecurityStatementsForEori],
                                        hasRequestedStatements: Boolean,
                                        hasCurrentStatements: Boolean,
                                        requestedStatementNotification: HtmlFormat.Appendable,
-                                       requestStatementsLink: HtmlFormat.Appendable)
+                                       requestStatementsLink: HtmlFormat.Appendable,
+                                       statementServiceParagraph: HtmlFormat.Appendable,
+                                       missingGuidance: HtmlFormat.Appendable)
 
 object SecurityStatementsViewModel {
   def apply(statementsForAllEoris: Seq[SecurityStatementsForEori])(implicit appConfig: AppConfig,
@@ -38,7 +40,9 @@ object SecurityStatementsViewModel {
       hasRequestedStatements = hasRequestedStatements(statementsForAllEoris),
       hasCurrentStatements = hasCurrentStatements(statementsForAllEoris),
       requestedStatementNotification = requestedStatementNotification(statementsForAllEoris),
-      requestStatementsLink = generateRequestStatementLink)
+      requestStatementsLink = generateRequestStatementLink,
+      statementServiceParagraph = generateStatementServiceParagraph,
+      missingGuidance = generateMissingGuidance)
   }
 
   private def requestedStatementNotification(statementsForAllEoris: Seq[SecurityStatementsForEori])
@@ -57,6 +61,17 @@ object SecurityStatementsViewModel {
 
   private def hasCurrentStatements(statementsForAllEoris: Seq[SecurityStatementsForEori]): Boolean =
     statementsForAllEoris.exists(_.currentStatements.nonEmpty)
+
+  private def generateMissingGuidance(implicit messages: Messages): HtmlFormat.Appendable = {
+    new missing_documents_guidance(new h2Inner, new h3Inner, new pInner).apply(
+      documentType = "statement")
+  }
+
+  private def generateStatementServiceParagraph(implicit messages: Messages): HtmlFormat.Appendable = {
+    new p().apply(
+      message = "cf.security-statements.historic.description",
+      id = Some("historic-statement-request"))
+  }
 
   private def generateRequestStatementLink(implicit appConfig: AppConfig, messages: Messages): HtmlFormat.Appendable = {
     new link().apply(
