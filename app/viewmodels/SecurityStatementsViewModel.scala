@@ -21,11 +21,12 @@ import models.FileRole.SecurityStatement
 import models.SecurityStatementsForEori
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import views.html.components.{h2Inner, h3Inner, link, missing_documents_guidance, p, pInner, requestedStatements}
+import views.html.components.{h1, h2Inner, h3Inner, link, missing_documents_guidance, p, pInner, requestedStatements}
 
 case class SecurityStatementsViewModel(statementsForAllEoris: Seq[SecurityStatementsForEori],
                                        hasRequestedStatements: Boolean,
                                        hasCurrentStatements: Boolean,
+                                       header: HtmlFormat.Appendable,
                                        requestedStatementNotification: HtmlFormat.Appendable,
                                        requestStatementsLink: HtmlFormat.Appendable,
                                        statementServiceParagraph: HtmlFormat.Appendable,
@@ -39,15 +40,22 @@ object SecurityStatementsViewModel {
       statementsForAllEoris = statementsForAllEoris,
       hasRequestedStatements = hasRequestedStatements(statementsForAllEoris),
       hasCurrentStatements = hasCurrentStatements(statementsForAllEoris),
-      requestedStatementNotification = requestedStatementNotification(statementsForAllEoris),
+      header = generateHeader,
+      requestedStatementNotification = generateRequestedStatementNotification(statementsForAllEoris),
       requestStatementsLink = generateRequestStatementLink,
       statementServiceParagraph = generateStatementServiceParagraph,
       missingGuidance = generateMissingGuidance)
   }
 
-  private def requestedStatementNotification(statementsForAllEoris: Seq[SecurityStatementsForEori])
-                                            (implicit appConfig: AppConfig, messages: Messages
-                                            ): HtmlFormat.Appendable = {
+  private def generateHeader(implicit messages: Messages): HtmlFormat.Appendable = {
+    new h1().apply(
+      msg = "cf.security-statements.title",
+      classes = "govuk-heading-xl")
+  }
+
+  private def generateRequestedStatementNotification(statementsForAllEoris: Seq[SecurityStatementsForEori])
+                                                    (implicit appConfig: AppConfig, messages: Messages
+                                                    ): HtmlFormat.Appendable = {
     if (hasRequestedStatements(statementsForAllEoris)) {
       new requestedStatements(new link).apply(
         url = appConfig.requestedStatements(SecurityStatement))
@@ -55,12 +63,6 @@ object SecurityStatementsViewModel {
       HtmlFormat.empty
     }
   }
-
-  private def hasRequestedStatements(statementsForAllEoris: Seq[SecurityStatementsForEori]): Boolean =
-    statementsForAllEoris.exists(_.requestedStatements.nonEmpty)
-
-  private def hasCurrentStatements(statementsForAllEoris: Seq[SecurityStatementsForEori]): Boolean =
-    statementsForAllEoris.exists(_.currentStatements.nonEmpty)
 
   private def generateMissingGuidance(implicit messages: Messages): HtmlFormat.Appendable = {
     new missing_documents_guidance(new h2Inner, new h3Inner, new pInner).apply(
@@ -81,4 +83,10 @@ object SecurityStatementsViewModel {
       linkMessage = "cf.security-statements.historic.request",
       location = appConfig.historicRequestUrl(SecurityStatement))
   }
+
+  private def hasRequestedStatements(statementsForAllEoris: Seq[SecurityStatementsForEori]): Boolean =
+    statementsForAllEoris.exists(_.requestedStatements.nonEmpty)
+
+  private def hasCurrentStatements(statementsForAllEoris: Seq[SecurityStatementsForEori]): Boolean =
+    statementsForAllEoris.exists(_.currentStatements.nonEmpty)
 }
