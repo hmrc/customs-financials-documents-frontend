@@ -171,12 +171,6 @@
 
     @p(id = Some("historic-statement-request"),
         message = "cf.security-statements.historic.description")
-    
-    @link(
-        pClass = "govuk-body govuk-!-margin-bottom-9",
-        linkId = Some("historic-statement-request-link"),
-        linkClass = "govuk-body govuk-link",
-        linkMessage = "cf.security-statements.historic.request",
-        location = appConfig.historicRequestUrl(SecurityStatement)
-        )
+
+    @model.requestStatementsLink
 }

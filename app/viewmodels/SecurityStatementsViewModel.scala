@@ -26,7 +26,8 @@ import views.html.components.{link, requestedStatements}
 case class SecurityStatementsViewModel(statementsForAllEoris: Seq[SecurityStatementsForEori],
                                        hasRequestedStatements: Boolean,
                                        hasCurrentStatements: Boolean,
-                                       requestedStatementNotification: HtmlFormat.Appendable)
+                                       requestedStatementNotification: HtmlFormat.Appendable,
+                                       requestStatementsLink: HtmlFormat.Appendable)
 
 object SecurityStatementsViewModel {
   def apply(statementsForAllEoris: Seq[SecurityStatementsForEori])(implicit appConfig: AppConfig,
@@ -36,7 +37,8 @@ object SecurityStatementsViewModel {
       statementsForAllEoris = statementsForAllEoris,
       hasRequestedStatements = hasRequestedStatements(statementsForAllEoris),
       hasCurrentStatements = hasCurrentStatements(statementsForAllEoris),
-      requestedStatementNotification = requestedStatementNotification(statementsForAllEoris))
+      requestedStatementNotification = requestedStatementNotification(statementsForAllEoris),
+      requestStatementsLink = generateRequestStatementLink)
   }
 
   private def requestedStatementNotification(statementsForAllEoris: Seq[SecurityStatementsForEori])
@@ -55,4 +57,13 @@ object SecurityStatementsViewModel {
 
   private def hasCurrentStatements(statementsForAllEoris: Seq[SecurityStatementsForEori]): Boolean =
     statementsForAllEoris.exists(_.currentStatements.nonEmpty)
+
+  private def generateRequestStatementLink(implicit appConfig: AppConfig, messages: Messages): HtmlFormat.Appendable = {
+    new link().apply(
+      pClass = "govuk-body govuk-!-margin-bottom-9",
+      linkId = Some("historic-statement-request-link"),
+      linkClass = "govuk-body govuk-link",
+      linkMessage = "cf.security-statements.historic.request",
+      location = appConfig.historicRequestUrl(SecurityStatement))
+  }
 }
