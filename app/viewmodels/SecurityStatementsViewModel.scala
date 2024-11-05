@@ -23,7 +23,9 @@ import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import views.html.components.{h1, h2Inner, h3Inner, link, missing_documents_guidance, p, pInner, requestedStatements}
 
-case class SecurityStatementsViewModel(statementsForAllEoris: Seq[SecurityStatementsForEori],
+case class SecurityStatementsViewModel(pageTitle: Option[String],
+                                       backLink: Option[String],
+                                       statementsForAllEoris: Seq[SecurityStatementsForEori],
                                        hasRequestedStatements: Boolean,
                                        hasCurrentStatements: Boolean,
                                        header: HtmlFormat.Appendable,
@@ -37,6 +39,8 @@ object SecurityStatementsViewModel {
                                                                    messages: Messages): SecurityStatementsViewModel = {
 
     SecurityStatementsViewModel(
+      pageTitle = Some(messages("cf.security-statements.title")),
+      backLink = Some(appConfig.customsFinancialsFrontendHomepage),
       statementsForAllEoris = statementsForAllEoris,
       hasRequestedStatements = hasRequestedStatements(statementsForAllEoris),
       hasCurrentStatements = hasCurrentStatements(statementsForAllEoris),

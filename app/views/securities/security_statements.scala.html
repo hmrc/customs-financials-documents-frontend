@@ -41,8 +41,7 @@
 
 @histories = @{model.statementsForAllEoris.indices}
 
-@layout(pageTitle = Some(messages("cf.security-statements.title")),
-        backLink = Some(appConfig.customsFinancialsFrontendHomepage)) {
+@layout(model.pageTitle, model.backLink) {
 
     @model.header
 
