@@ -20,7 +20,7 @@ import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.Utils._
-import views.html.components.{h1, h2, inset, link, p}
+import views.html.components.{h1, h2, inset, link, p, span}
 
 class UtilsSpec extends SpecBase {
   "emptyString" should {
@@ -81,6 +81,12 @@ class UtilsSpec extends SpecBase {
   "insetComponent" should {
     "return the correct component type" in {
       insetComponent mustBe a[inset]
+    }
+  }
+
+  "spanComponent" should {
+    "return the correct component type" in {
+      spanComponent mustBe a[span]
     }
   }
 
