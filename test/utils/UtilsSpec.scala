@@ -20,7 +20,8 @@ import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.Utils._
-import views.html.components.{h1, h2, inset, link, p, span}
+import views.html.components.description_list.{dd, dl, dt}
+import views.html.components.{div, h1, h2, inset, link, p, span}
 
 class UtilsSpec extends SpecBase {
   "emptyString" should {
@@ -87,6 +88,30 @@ class UtilsSpec extends SpecBase {
   "spanComponent" should {
     "return the correct component type" in {
       spanComponent mustBe a[span]
+    }
+  }
+
+  "divComponent" should {
+    "return the correct component type" in {
+      divComponent mustBe a[div]
+    }
+  }
+
+  "ddComponent" should {
+    "return the correct component type" in {
+      ddComponent mustBe a[dd]
+    }
+  }
+
+  "dlComponent" should {
+    "return the correct component type" in {
+      dlComponent mustBe a[dl]
+    }
+  }
+
+  "dtComponent" should {
+    "return the correct component type" in {
+      dtComponent mustBe a[dt]
     }
   }
 
