@@ -107,6 +107,7 @@ cf.security-statements.eom=Eich datganiadau diwedd y mis
 cf.security-statements.requested.title=Hysbysiad o ddatganiadau addasu y gofynnwyd amdanynt
 cf.security-statements.requested.available.text=Mae datganiadau y gofynnwyd amdanynt ar gael i’w gweld am 10 diwrnod. Gallwn ddarparu’r rhain ar ffurf PDF yn unig.
 cf.security-statements.requested.period={0} i {1}
+cf.security-statements.requested.to=i
 cf.security-statements.requested.download-link.aria-text=Lawrlwytho {0} ar gyfer {1} i {2} ({3})
 cf.security-statements.requested.download-link.aria-text.csv=Lawrlwytho {1} {0} ({2})
 # ------------------------------------------------------------------------

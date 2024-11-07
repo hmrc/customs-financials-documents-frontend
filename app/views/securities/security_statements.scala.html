@@ -15,43 +15,22 @@
  *@
 
 @import viewmodels.SecurityStatementsViewModel
-@import views.helpers.Formatters._
-@import views.html.components._
-@import views.html.Layout
-@import models.FileRole.SecurityStatement
-@import models.FileFormat.{Pdf, Csv}
 
-@this(
-        layout: Layout,
-        h1: components.h1,
-        h2: components.h2,
-        link: components.link,
-        p: components.p,
-        missing_guidance: components.missing_documents_guidance,
-        requested_statements: components.requestedStatements
-)
+@this(layout: Layout)
 
-@(
-    model: SecurityStatementsViewModel
-)(
-    implicit request: Request[_],
-    messages: Messages,
-    appConfig: config.AppConfig
-)
+@(viewModel: SecurityStatementsViewModel)(implicit request: Request[_], messages: Messages)
 
-@histories = @{model.statementsForAllEoris.indices}
+@layout(viewModel.pageTitle, viewModel.backLink) {
 
-@layout(model.pageTitle, model.backLink) {
+  @viewModel.header
 
-    @model.header
+  @viewModel.requestedStatementNotification
 
-    @model.requestedStatementNotification
+  @viewModel.currentStatements
 
-    @model.currentStatements
+  @viewModel.missingGuidance
 
-    @model.missingGuidance
+  @viewModel.statementServiceParagraph
 
-    @model.statementServiceParagraph
-
-    @model.requestStatementsLink
+  @viewModel.requestStatementsLink
 }

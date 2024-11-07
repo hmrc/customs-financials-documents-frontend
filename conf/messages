@@ -105,6 +105,7 @@ cf.security-statements.eom= Your end of month statements
 cf.security-statements.requested.title=Requested notification of adjustment statements
 cf.security-statements.requested.available.text=Requested statements are available to view for 10 days. We can only provide these in PDF format.
 cf.security-statements.requested.period={0} to {1}
+cf.security-statements.requested.to=to
 cf.security-statements.requested.download-link.aria-text=Download {1} to {2} {0} ({3})
 cf.security-statements.requested.download-link.aria-text.csv=Download {1} {0} ({2})
 # ------------------------------------------------------------------------

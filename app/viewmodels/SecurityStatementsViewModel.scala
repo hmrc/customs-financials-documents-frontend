@@ -22,57 +22,56 @@ import models.FileRole.SecurityStatement
 import models.{SecurityStatementFile, SecurityStatementsByPeriod, SecurityStatementsForEori}
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
-import utils.Utils.emptyString
-import views.helpers.Formatters.{dateAsDayMonthAndYear, dateAsMonthAndYear}
-import views.html.components.description_list.{dd, dl, dt}
-import views.html.components.{
-  div, h1, h2, h2Inner, h3Inner,
-  link, missing_documents_guidance, p, pInner, requestedStatements, span
+import utils.Utils.{
+  ddComponent, divComponent, dlComponent, dtComponent, emptyString,
+  h1Component, h2Component, linkComponent, pComponent, spanComponent
 }
+import views.helpers.Formatters.{dateAsDayMonthAndYear, dateAsMonthAndYear}
+import views.html.components.{h2Inner, h3Inner, missing_documents_guidance, pInner, requestedStatements}
 
 import java.time.LocalDate
 
 case class SecurityStatementsViewModel(pageTitle: Option[String],
                                        backLink: Option[String],
-                                       statementsForAllEoris: Seq[SecurityStatementsForEori],
-                                       hasRequestedStatements: Boolean,
-                                       hasCurrentStatements: Boolean,
                                        header: HtmlFormat.Appendable,
                                        requestedStatementNotification: HtmlFormat.Appendable,
-                                       requestStatementsLink: HtmlFormat.Appendable,
                                        currentStatements: HtmlFormat.Appendable,
+                                       missingGuidance: HtmlFormat.Appendable,
                                        statementServiceParagraph: HtmlFormat.Appendable,
-                                       missingGuidance: HtmlFormat.Appendable)
+                                       requestStatementsLink: HtmlFormat.Appendable,
+                                       details: SecurityStatementsViewModelDetails)
+
+case class SecurityStatementsViewModelDetails(statementsForAllEoris: Seq[SecurityStatementsForEori],
+                                              hasRequestedStatements: Boolean,
+                                              hasCurrentStatements: Boolean)
 
 object SecurityStatementsViewModel {
   def apply(statementsForAllEoris: Seq[SecurityStatementsForEori])(implicit appConfig: AppConfig,
                                                                    messages: Messages): SecurityStatementsViewModel = {
-
     SecurityStatementsViewModel(
       pageTitle = Some(messages("cf.security-statements.title")),
       backLink = Some(appConfig.customsFinancialsFrontendHomepage),
-      statementsForAllEoris = statementsForAllEoris,
-      hasRequestedStatements = hasRequestedStatements(statementsForAllEoris),
-      hasCurrentStatements = hasCurrentStatements(statementsForAllEoris),
       header = generateHeader,
       requestedStatementNotification = generateRequestedStatementNotification(statementsForAllEoris),
-      requestStatementsLink = generateRequestStatementLink,
       currentStatements = generateCurrentStatements(statementsForAllEoris),
+      missingGuidance = generateMissingGuidance,
       statementServiceParagraph = generateStatementServiceParagraph,
-      missingGuidance = generateMissingGuidance)
+      requestStatementsLink = generateRequestStatementLink,
+      details = SecurityStatementsViewModelDetails(
+        statementsForAllEoris = statementsForAllEoris,
+        hasRequestedStatements = hasRequestedStatements(statementsForAllEoris),
+        hasCurrentStatements = hasCurrentStatements(statementsForAllEoris)))
   }
 
   private def generateHeader(implicit messages: Messages): HtmlFormat.Appendable = {
-    new h1().apply(
-      msg = "cf.security-statements.title",
-      classes = "govuk-heading-xl")
+    h1Component(msg = "cf.security-statements.title", classes = "govuk-heading-xl")
   }
 
   private def generateRequestedStatementNotification(statementsForAllEoris: Seq[SecurityStatementsForEori])
                                                     (implicit appConfig: AppConfig, messages: Messages
                                                     ): HtmlFormat.Appendable = {
     if (hasRequestedStatements(statementsForAllEoris)) {
-      new requestedStatements(new link).apply(
+      new requestedStatements(linkComponent).apply(
         url = appConfig.requestedStatements(SecurityStatement))
     } else {
       HtmlFormat.empty
@@ -102,7 +101,7 @@ object SecurityStatementsViewModel {
   private def generateEoriHeader(historyIndex: Int, statementsForEori: SecurityStatementsForEori)
                                 (implicit messages: Messages): Option[HtmlFormat.Appendable] = {
     if (historyIndex > 0) {
-      Some(new h2().apply(
+      Some(h2Component(
         msg = messages("cf.account.details.previous-eori", statementsForEori.eoriHistory.eori),
         id = Some(s"historic-eori-$historyIndex"),
         classes = "govuk-heading-s govuk-!-margin-bottom-1"))
@@ -114,7 +113,7 @@ object SecurityStatementsViewModel {
   private def generateEomHeader(statementsForEori: SecurityStatementsForEori)
                                (implicit messages: Messages): Option[HtmlFormat.Appendable] = {
     if (statementsForEori.currentStatements.exists(_.hasCsv)) {
-      Some(new h2().apply(
+      Some(h2Component(
         msg = messages("cf.security-statements.eom"),
         classes = "govuk-heading-m govuk-!-padding-top-2"))
     } else {
@@ -130,14 +129,14 @@ object SecurityStatementsViewModel {
       case _ => None
     }
 
-    new dl().apply(
+    dlComponent(
       content = HtmlFormat.fill(statementContent),
       classes = Some("govuk-summary-list statement-list"),
       id = Some(s"statements-list-$historyIndex${if (isCsv) "-csv" else emptyString}"))
   }
 
   private def generateNoStatementsParagraph(implicit messages: Messages): HtmlFormat.Appendable = {
-    new p().apply(
+    pComponent(
       message = "cf.security-statements.no-statements",
       classes = "govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-9 govuk-!-padding-bottom-7",
       id = Some("no-statements"))
@@ -149,7 +148,7 @@ object SecurityStatementsViewModel {
     val linkCell = generateLinkCell(statement, historyIndex, index, isCsv)
     val rowContent = HtmlFormat.fill(Seq(dateCell, generateDdComponent(linkCell, historyIndex, index, isCsv)))
 
-    new div().apply(
+    divComponent(
       content = rowContent,
       classes = Some("govuk-summary-list__row"),
       id = Some(s"statements-list-$historyIndex-row-$index${if (isCsv) "-csv" else emptyString}"))
@@ -168,7 +167,7 @@ object SecurityStatementsViewModel {
         dateAsDayMonthAndYear(endDate.get))
     }
 
-    new dt().apply(
+    dtComponent(
       content = Html(dateMessage),
       classes = Some("govuk-summary-list__value"),
       id = Some(s"statements-list-$historyIndex-row-$index-date-cell${if (isCsv) "-csv" else emptyString}"))
@@ -202,11 +201,10 @@ object SecurityStatementsViewModel {
       "cf.security-statements.screen-reader.unavailable"
     }, fileType, dateMessage)
 
-    new div().apply(
-      content = HtmlFormat.fill(Seq(
-        new span().apply(key = ariaLabel, classes = Some("govuk-visually-hidden")),
-        new span().apply(key = messages("cf.unavailable"), ariaHidden = Some("true"))
-      )),
+    divComponent(content = HtmlFormat.fill(Seq(
+      spanComponent(key = ariaLabel, classes = Some("govuk-visually-hidden")),
+      spanComponent(key = messages("cf.unavailable"), ariaHidden = Some("true"))
+    )),
       id = Some(s"statements-list-$historyIndex-row-$index-unavailable${if (isCsv) "-csv" else emptyString}"))
   }
 
@@ -217,7 +215,9 @@ object SecurityStatementsViewModel {
     val dateMessage = if (isCsv) {
       dateAsMonthAndYear(statement.startDate)
     } else {
-      s"${dateAsDayMonthAndYear(statement.startDate)} to ${dateAsDayMonthAndYear(statement.endDate)}"
+      s"${
+        dateAsDayMonthAndYear(statement.startDate)
+      } ${messages("cf.security-statements.requested.to")} ${dateAsDayMonthAndYear(statement.endDate)}"
     }
 
     val ariaLabel = messages(if (isCsv) {
@@ -226,7 +226,7 @@ object SecurityStatementsViewModel {
       "cf.security-statements.requested.download-link.aria-text"
     }, fileType, dateMessage, file.formattedSize)
 
-    new link().apply(
+    linkComponent(
       linkMessage = s"${fileType.toString.toUpperCase} (${file.formattedSize})",
       linkClass = "file-link govuk-link",
       location = file.downloadURL,
@@ -238,7 +238,7 @@ object SecurityStatementsViewModel {
                                   historyIndex: Int,
                                   index: Int,
                                   isCsv: Boolean): HtmlFormat.Appendable = {
-    new dd().apply(
+    ddComponent(
       content = linkCell,
       classes = Some("govuk-summary-list__actions"),
       id = Some(s"statements-list-$historyIndex-row-$index-link-cell${if (isCsv) "-csv" else emptyString}"))
@@ -250,13 +250,13 @@ object SecurityStatementsViewModel {
   }
 
   private def generateStatementServiceParagraph(implicit messages: Messages): HtmlFormat.Appendable = {
-    new p().apply(
+    pComponent(
       message = "cf.security-statements.historic.description",
       id = Some("historic-statement-request"))
   }
 
   private def generateRequestStatementLink(implicit appConfig: AppConfig, messages: Messages): HtmlFormat.Appendable = {
-    new link().apply(
+    linkComponent(
       pClass = "govuk-body govuk-!-margin-bottom-9",
       linkId = Some("historic-statement-request-link"),
       linkClass = "govuk-body govuk-link",
