@@ -135,6 +135,29 @@ class SecurityStatementsSpec extends SpecBase {
         view.text().contains(dateAsMonthAndYear(statementsByPeriodForCsvWithUnknownFileType.startDate)) mustBe true
         view.text().contains(messages(app)("cf.unavailable")) mustBe true
       }
+
+      "statements are available and EORI header is present" in new Setup {
+        val multipleEoris: Seq[SecurityStatementsForEori] = Seq(
+          securityStatementsForEori,
+          securityStatementsForEori.copy(eoriHistory = EoriHistory("testEori", None, None)))
+
+        val viewModel: SecurityStatementsViewModel = SecurityStatementsViewModel(multipleEoris)
+        val view: Document = Jsoup.parse(app.injector.instanceOf[security_statements].apply(viewModel).body)
+
+        view.text().contains(messages(app)("cf.account.details.previous-eori", "testEori"))
+      }
+    }
+
+    "return PDF statements when CSV statements are empty" in new Setup {
+      val statementsWithMixedCurrent: Seq[SecurityStatementsForEori] = Seq(
+        securityStatementsForEori.copy(currentStatements = Seq.empty),
+        securityStatementsForEori.copy(currentStatements = Seq(statementsByPeriodForPdf)))
+
+      val viewModel: SecurityStatementsViewModel = SecurityStatementsViewModel(statementsWithMixedCurrent)
+      val view: Document = Jsoup.parse(app.injector.instanceOf[security_statements].apply(viewModel).body)
+
+      view.text().contains("PDF") mustBe true
+      view.text().contains("CSV") mustBe false
     }
   }
 

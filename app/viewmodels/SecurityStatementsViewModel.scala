@@ -17,11 +17,20 @@
 package viewmodels
 
 import config.AppConfig
+import models.FileFormat.{Csv, Pdf}
 import models.FileRole.SecurityStatement
-import models.SecurityStatementsForEori
+import models.{SecurityStatementFile, SecurityStatementsByPeriod, SecurityStatementsForEori}
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
-import views.html.components.{h1, h2Inner, h3Inner, link, missing_documents_guidance, p, pInner, requestedStatements}
+import play.twirl.api.{Html, HtmlFormat}
+import utils.Utils.emptyString
+import views.helpers.Formatters.{dateAsDayMonthAndYear, dateAsMonthAndYear}
+import views.html.components.description_list.{dd, dl, dt}
+import views.html.components.{
+  div, h1, h2, h2Inner, h3Inner,
+  link, missing_documents_guidance, p, pInner, requestedStatements, span
+}
+
+import java.time.LocalDate
 
 case class SecurityStatementsViewModel(pageTitle: Option[String],
                                        backLink: Option[String],
@@ -31,6 +40,7 @@ case class SecurityStatementsViewModel(pageTitle: Option[String],
                                        header: HtmlFormat.Appendable,
                                        requestedStatementNotification: HtmlFormat.Appendable,
                                        requestStatementsLink: HtmlFormat.Appendable,
+                                       currentStatements: HtmlFormat.Appendable,
                                        statementServiceParagraph: HtmlFormat.Appendable,
                                        missingGuidance: HtmlFormat.Appendable)
 
@@ -47,6 +57,7 @@ object SecurityStatementsViewModel {
       header = generateHeader,
       requestedStatementNotification = generateRequestedStatementNotification(statementsForAllEoris),
       requestStatementsLink = generateRequestStatementLink,
+      currentStatements = generateCurrentStatements(statementsForAllEoris),
       statementServiceParagraph = generateStatementServiceParagraph,
       missingGuidance = generateMissingGuidance)
   }
@@ -66,6 +77,171 @@ object SecurityStatementsViewModel {
     } else {
       HtmlFormat.empty
     }
+  }
+
+  private def generateCurrentStatements(statementsForAllEoris: Seq[SecurityStatementsForEori])
+                                       (implicit messages: Messages): HtmlFormat.Appendable = {
+    if (hasCurrentStatements(statementsForAllEoris)) {
+      HtmlFormat.fill(statementsForAllEoris.zipWithIndex.flatMap {
+        case (statementsForEori, historyIndex) if statementsForEori.currentStatements.nonEmpty =>
+          val eoriHeader = generateEoriHeader(historyIndex, statementsForEori)
+          val eomHeader = generateEomHeader(statementsForEori)
+
+          val pdfStatements = generateStatements(statementsForEori, historyIndex, isCsv = false)
+          val csvStatements = generateStatements(statementsForEori, historyIndex, isCsv = true)
+
+          Seq(eoriHeader, Some(pdfStatements), eomHeader, Some(csvStatements)).flatten
+
+        case _ => Seq.empty
+      })
+    } else {
+      generateNoStatementsParagraph
+    }
+  }
+
+  private def generateEoriHeader(historyIndex: Int, statementsForEori: SecurityStatementsForEori)
+                                (implicit messages: Messages): Option[HtmlFormat.Appendable] = {
+    if (historyIndex > 0) {
+      Some(new h2().apply(
+        msg = messages("cf.account.details.previous-eori", statementsForEori.eoriHistory.eori),
+        id = Some(s"historic-eori-$historyIndex"),
+        classes = "govuk-heading-s govuk-!-margin-bottom-1"))
+    } else {
+      None
+    }
+  }
+
+  private def generateEomHeader(statementsForEori: SecurityStatementsForEori)
+                               (implicit messages: Messages): Option[HtmlFormat.Appendable] = {
+    if (statementsForEori.currentStatements.exists(_.hasCsv)) {
+      Some(new h2().apply(
+        msg = messages("cf.security-statements.eom"),
+        classes = "govuk-heading-m govuk-!-padding-top-2"))
+    } else {
+      None
+    }
+  }
+
+  private def generateStatements(statementsForEori: SecurityStatementsForEori, historyIndex: Int, isCsv: Boolean)
+                                (implicit messages: Messages): HtmlFormat.Appendable = {
+    val statementContent = statementsForEori.currentStatements.zipWithIndex.flatMap {
+      case (statement, index) if isCsv != statement.hasPdf =>
+        Some(generateStatementRow(statement, historyIndex, index, isCsv))
+      case _ => None
+    }
+
+    new dl().apply(
+      content = HtmlFormat.fill(statementContent),
+      classes = Some("govuk-summary-list statement-list"),
+      id = Some(s"statements-list-$historyIndex${if (isCsv) "-csv" else emptyString}"))
+  }
+
+  private def generateNoStatementsParagraph(implicit messages: Messages): HtmlFormat.Appendable = {
+    new p().apply(
+      message = "cf.security-statements.no-statements",
+      classes = "govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-9 govuk-!-padding-bottom-7",
+      id = Some("no-statements"))
+  }
+
+  private def generateStatementRow(statement: SecurityStatementsByPeriod, historyIndex: Int, index: Int, isCsv: Boolean)
+                                  (implicit messages: Messages): HtmlFormat.Appendable = {
+    val dateCell = generateDateCell(statement.startDate, Some(statement.endDate), historyIndex, index, isCsv)
+    val linkCell = generateLinkCell(statement, historyIndex, index, isCsv)
+    val rowContent = HtmlFormat.fill(Seq(dateCell, generateDdComponent(linkCell, historyIndex, index, isCsv)))
+
+    new div().apply(
+      content = rowContent,
+      classes = Some("govuk-summary-list__row"),
+      id = Some(s"statements-list-$historyIndex-row-$index${if (isCsv) "-csv" else emptyString}"))
+  }
+
+  private def generateDateCell(startDate: LocalDate,
+                               endDate: Option[LocalDate],
+                               historyIndex: Int,
+                               index: Int, isCsv: Boolean)(implicit messages: Messages): HtmlFormat.Appendable = {
+    val dateMessage = if (isCsv) {
+      dateAsMonthAndYear(startDate)
+    } else {
+      messages(
+        "cf.security-statements.requested.period",
+        dateAsDayMonthAndYear(startDate),
+        dateAsDayMonthAndYear(endDate.get))
+    }
+
+    new dt().apply(
+      content = Html(dateMessage),
+      classes = Some("govuk-summary-list__value"),
+      id = Some(s"statements-list-$historyIndex-row-$index-date-cell${if (isCsv) "-csv" else emptyString}"))
+  }
+
+  private def generateLinkCell(statement: SecurityStatementsByPeriod, historyIndex: Int, index: Int, isCsv: Boolean)
+                              (implicit messages: Messages): HtmlFormat.Appendable = {
+    val fileType = if (isCsv) statement.csv else statement.pdf
+    fileType.fold {
+      generateUnavailableLink(statement, historyIndex, index, isCsv)
+    } { file =>
+      generateAvailableLink(file, statement, isCsv)
+    }
+  }
+
+  private def generateUnavailableLink(statement: SecurityStatementsByPeriod,
+                                      historyIndex: Int,
+                                      index: Int,
+                                      isCsv: Boolean)(implicit messages: Messages): HtmlFormat.Appendable = {
+    val fileType = if (isCsv) Csv else Pdf
+
+    val dateMessage = if (isCsv) {
+      dateAsMonthAndYear(statement.startDate)
+    } else {
+      s"${dateAsDayMonthAndYear(statement.startDate)} to ${dateAsDayMonthAndYear(statement.endDate)}"
+    }
+
+    val ariaLabel = messages(if (isCsv) {
+      "cf.security-statements.screen-reader.unavailable.month.year"
+    } else {
+      "cf.security-statements.screen-reader.unavailable"
+    }, fileType, dateMessage)
+
+    new div().apply(
+      content = HtmlFormat.fill(Seq(
+        new span().apply(key = ariaLabel, classes = Some("govuk-visually-hidden")),
+        new span().apply(key = messages("cf.unavailable"), ariaHidden = Some("true"))
+      )),
+      id = Some(s"statements-list-$historyIndex-row-$index-unavailable${if (isCsv) "-csv" else emptyString}"))
+  }
+
+  private def generateAvailableLink(file: SecurityStatementFile, statement: SecurityStatementsByPeriod, isCsv: Boolean)
+                                   (implicit messages: Messages): HtmlFormat.Appendable = {
+    val fileType = if (isCsv) Csv else Pdf
+
+    val dateMessage = if (isCsv) {
+      dateAsMonthAndYear(statement.startDate)
+    } else {
+      s"${dateAsDayMonthAndYear(statement.startDate)} to ${dateAsDayMonthAndYear(statement.endDate)}"
+    }
+
+    val ariaLabel = messages(if (isCsv) {
+      "cf.security-statements.requested.download-link.aria-text.csv"
+    } else {
+      "cf.security-statements.requested.download-link.aria-text"
+    }, fileType, dateMessage, file.formattedSize)
+
+    new link().apply(
+      linkMessage = s"${fileType.toString.toUpperCase} (${file.formattedSize})",
+      linkClass = "file-link govuk-link",
+      location = file.downloadURL,
+      pWrapped = false,
+      ariaLabel = Some(ariaLabel))
+  }
+
+  private def generateDdComponent(linkCell: HtmlFormat.Appendable,
+                                  historyIndex: Int,
+                                  index: Int,
+                                  isCsv: Boolean): HtmlFormat.Appendable = {
+    new dd().apply(
+      content = linkCell,
+      classes = Some("govuk-summary-list__actions"),
+      id = Some(s"statements-list-$historyIndex-row-$index-link-cell${if (isCsv) "-csv" else emptyString}"))
   }
 
   private def generateMissingGuidance(implicit messages: Messages): HtmlFormat.Appendable = {
