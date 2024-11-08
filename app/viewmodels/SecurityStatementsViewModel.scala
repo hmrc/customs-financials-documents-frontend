@@ -38,12 +38,7 @@ case class SecurityStatementsViewModel(pageTitle: Option[String],
                                        currentStatements: HtmlFormat.Appendable,
                                        missingGuidance: HtmlFormat.Appendable,
                                        statementServiceParagraph: HtmlFormat.Appendable,
-                                       requestStatementsLink: HtmlFormat.Appendable,
-                                       details: SecurityStatementsViewModelDetails)
-
-case class SecurityStatementsViewModelDetails(statementsForAllEoris: Seq[SecurityStatementsForEori],
-                                              hasRequestedStatements: Boolean,
-                                              hasCurrentStatements: Boolean)
+                                       requestStatementsLink: HtmlFormat.Appendable)
 
 object SecurityStatementsViewModel {
   def apply(statementsForAllEoris: Seq[SecurityStatementsForEori])(implicit appConfig: AppConfig,
@@ -56,11 +51,7 @@ object SecurityStatementsViewModel {
       currentStatements = generateCurrentStatements(statementsForAllEoris),
       missingGuidance = generateMissingGuidance,
       statementServiceParagraph = generateStatementServiceParagraph,
-      requestStatementsLink = generateRequestStatementLink,
-      details = SecurityStatementsViewModelDetails(
-        statementsForAllEoris = statementsForAllEoris,
-        hasRequestedStatements = hasRequestedStatements(statementsForAllEoris),
-        hasCurrentStatements = hasCurrentStatements(statementsForAllEoris)))
+      requestStatementsLink = generateRequestStatementLink)
   }
 
   private def generateHeader(implicit messages: Messages): HtmlFormat.Appendable = {
@@ -81,20 +72,25 @@ object SecurityStatementsViewModel {
   private def generateCurrentStatements(statementsForAllEoris: Seq[SecurityStatementsForEori])
                                        (implicit messages: Messages): HtmlFormat.Appendable = {
     if (hasCurrentStatements(statementsForAllEoris)) {
-      HtmlFormat.fill(statementsForAllEoris.zipWithIndex.flatMap {
-        case (statementsForEori, historyIndex) if statementsForEori.currentStatements.nonEmpty =>
-          val eoriHeader = generateEoriHeader(historyIndex, statementsForEori)
-          val eomHeader = generateEomHeader(statementsForEori)
-
-          val pdfStatements = generateStatements(statementsForEori, historyIndex, isCsv = false)
-          val csvStatements = generateStatements(statementsForEori, historyIndex, isCsv = true)
-
-          Seq(eoriHeader, Some(pdfStatements), eomHeader, Some(csvStatements)).flatten
-
-        case _ => Seq.empty
-      })
+      HtmlFormat.fill(populateCurrentPdfAndCsvStatements(statementsForAllEoris))
     } else {
       generateNoStatementsParagraph
+    }
+  }
+
+  private def populateCurrentPdfAndCsvStatements(statementsForAllEoris: Seq[SecurityStatementsForEori])
+                                                (implicit messages: Messages): Seq[HtmlFormat.Appendable] = {
+    statementsForAllEoris.zipWithIndex.flatMap {
+      case (statementsForEori, historyIndex) if statementsForEori.currentStatements.nonEmpty =>
+        val eoriHeader = generateEoriHeader(historyIndex, statementsForEori)
+        val eomHeader = generateEomHeader(statementsForEori)
+
+        val pdfStatements = generateStatements(statementsForEori, historyIndex, isCsv = false)
+        val csvStatements = generateStatements(statementsForEori, historyIndex, isCsv = true)
+
+        Seq(eoriHeader, Some(pdfStatements), eomHeader, Some(csvStatements)).flatten
+
+      case _ => Seq.empty
     }
   }
 

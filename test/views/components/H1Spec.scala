@@ -35,6 +35,7 @@ class H1Spec extends SpecBase {
         h1Component.text() mustBe message(msgKey)
 
         val h1: Elements = h1Component.select("h1")
+
         h1.size() mustBe 1
         h1.first().hasAttr("class") mustBe true
         h1.first().classNames() must contain(defaultClass)
@@ -45,6 +46,7 @@ class H1Spec extends SpecBase {
         h1ComponentWithClass.text() mustBe message(msgKey)
 
         val h1: Elements = h1ComponentWithClass.select("h1")
+
         h1.first().classNames() must contain(classes)
       }
 
@@ -52,6 +54,7 @@ class H1Spec extends SpecBase {
         h1ComponentWithId.text() mustBe message(msgKey)
 
         val h1: Elements = h1ComponentWithId.select("h1")
+
         h1.first().attr("id") mustBe id
       }
 
@@ -59,6 +62,7 @@ class H1Spec extends SpecBase {
         h1ComponentWithClassAndId.text() mustBe message(msgKey)
 
         val h1: Elements = h1ComponentWithClassAndId.select("h1")
+
         h1.first().classNames() must contain(classes)
         h1.first().attr("id") mustBe id
       }

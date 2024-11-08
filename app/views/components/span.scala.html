@@ -20,5 +20,8 @@
 
 @(key: String, classes: Option[String] = None, ariaHidden: Option[String] = None)(implicit messages: Messages)
 
-<span @{classes.fold(emptyString)(classes => s"class=$classes")}
-  @{ariaHidden.fold(emptyString)(value => s"aria-hidden=$value")}>@messages(key)</span>
+<span
+  @{classes.fold(emptyString)(classes => s"class=$classes")}
+  @{ariaHidden.fold(emptyString)(value => s"aria-hidden=$value")}>
+  @{messages(key)}
+</span>

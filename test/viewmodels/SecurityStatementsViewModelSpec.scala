@@ -48,8 +48,6 @@ class SecurityStatementsViewModelSpec extends SpecBase {
         result.missingGuidance mustBe expectedMissingGuidance
         result.statementServiceParagraph mustBe expectedStatementServiceParagraph
         result.requestStatementsLink mustBe expectedRequestStatementsLink
-        result.details.hasRequestedStatements mustBe true
-        result.details.hasCurrentStatements mustBe true
       }
     }
   }
@@ -86,34 +84,44 @@ class SecurityStatementsViewModelSpec extends SpecBase {
         content = HtmlFormat.empty,
         classes = Some("govuk-summary-list statement-list"),
         id = Some("statements-list-0")),
+      createDetailedList()))
+
+    private def createDetailedList(): HtmlFormat.Appendable = {
       dlComponent(
-        content = HtmlFormat.fill(Seq(
-          divComponent(
-            content = HtmlFormat.fill(Seq(
-              dtComponent(
-                content = Html("November 2024"),
-                classes = Some("govuk-summary-list__value"),
-                id = Some("statements-list-0-row-0-date-cell-csv")),
-              ddComponent(
-                content = divComponent(
-                  content = HtmlFormat.fill(Seq(
-                    spanComponent(
-                      key = "CSV for November 2024 unavailable",
-                      classes = Some("govuk-visually-hidden")),
-                    spanComponent(
-                      key = "Unavailable",
-                      ariaHidden = Some("true"))
-                  )),
-                  id = Some("statements-list-0-row-0-unavailable-csv")
-                ),
-                classes = Some("govuk-summary-list__actions"),
-                id = Some("statements-list-0-row-0-link-cell-csv"))
-            )),
-            classes = Some("govuk-summary-list__row"),
-            id = Some("statements-list-0-row-0-csv"))
-        )),
+        content = HtmlFormat.fill(Seq(createSummaryListRow())),
         classes = Some("govuk-summary-list statement-list"),
-        id = Some("statements-list-0-csv"))))
+        id = Some("statements-list-0-csv"))
+    }
+
+    private def createSummaryListRow(): HtmlFormat.Appendable = {
+      divComponent(
+        content = HtmlFormat.fill(Seq(createDateCell(), createUnavailableLinkCell())),
+        classes = Some("govuk-summary-list__row"),
+        id = Some("statements-list-0-row-0-csv"))
+    }
+
+    private def createDateCell(): HtmlFormat.Appendable = {
+      dtComponent(
+        content = Html("November 2024"),
+        classes = Some("govuk-summary-list__value"),
+        id = Some("statements-list-0-row-0-date-cell-csv"))
+    }
+
+    private def createUnavailableLinkCell(): HtmlFormat.Appendable = {
+      ddComponent(
+        content = divComponent(
+          content = createUnavailableCsvCell(),
+          id = Some("statements-list-0-row-0-unavailable-csv")
+        ),
+        classes = Some("govuk-summary-list__actions"),
+        id = Some("statements-list-0-row-0-link-cell-csv"))
+    }
+
+    private def createUnavailableCsvCell(): HtmlFormat.Appendable = {
+      HtmlFormat.fill(Seq(
+        spanComponent(key = "CSV for November 2024 unavailable", classes = Some("govuk-visually-hidden")),
+        spanComponent(key = "Unavailable", ariaHidden = Some("true"))))
+    }
 
     val expectedNoStatementsParagraph: HtmlFormat.Appendable = pComponent(
       "cf.security-statements.no-statements", "govuk-body")

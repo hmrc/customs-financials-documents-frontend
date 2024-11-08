@@ -34,6 +34,7 @@ class DescriptionListSpec extends SpecBase {
 
       "only content has been provided" in new Setup {
         val dd: Elements = ddComponent.select("dd")
+
         dd.text() mustBe contentText
         dd.first().hasAttr("class") mustBe false
         dd.first().hasAttr("id") mustBe false
@@ -41,6 +42,7 @@ class DescriptionListSpec extends SpecBase {
 
       "class has been provided along with content" in new Setup {
         val dd: Elements = ddComponentWithClass.select("dd")
+
         dd.text() mustBe contentText
         dd.first().classNames() must contain(testClass)
         dd.first().hasAttr("id") mustBe false
@@ -48,6 +50,7 @@ class DescriptionListSpec extends SpecBase {
 
       "id has been provided along with content" in new Setup {
         val dd: Elements = ddComponentWithId.select("dd")
+
         dd.text() mustBe contentText
         dd.first().hasAttr("class") mustBe false
         dd.first().attr("id") mustBe testId
@@ -55,6 +58,7 @@ class DescriptionListSpec extends SpecBase {
 
       "both class and id have been provided along with content" in new Setup {
         val dd: Elements = ddComponentWithClassAndId.select("dd")
+
         dd.text() mustBe contentText
         dd.first().classNames() must contain(testClass)
         dd.first().attr("id") mustBe testId
@@ -68,6 +72,7 @@ class DescriptionListSpec extends SpecBase {
 
       "only content has been provided" in new Setup {
         val dl: Elements = dlComponent.select("dl")
+
         dl.html() mustBe contentText
         dl.first().hasAttr("class") mustBe false
         dl.first().hasAttr("id") mustBe false
@@ -75,6 +80,7 @@ class DescriptionListSpec extends SpecBase {
 
       "class has been provided along with content" in new Setup {
         val dl: Elements = dlComponentWithClass.select("dl")
+
         dl.html() mustBe contentText
         dl.first().classNames() must contain(testClass)
         dl.first().hasAttr("id") mustBe false
@@ -82,6 +88,7 @@ class DescriptionListSpec extends SpecBase {
 
       "id has been provided along with content" in new Setup {
         val dl: Elements = dlComponentWithId.select("dl")
+
         dl.html() mustBe contentText
         dl.first().hasAttr("class") mustBe false
         dl.first().attr("id") mustBe testId
@@ -89,6 +96,7 @@ class DescriptionListSpec extends SpecBase {
 
       "both class and id have been provided along with content" in new Setup {
         val dl: Elements = dlComponentWithClassAndId.select("dl")
+
         dl.html() mustBe contentText
         dl.first().classNames() must contain(testClass)
         dl.first().attr("id") mustBe testId
@@ -102,6 +110,7 @@ class DescriptionListSpec extends SpecBase {
 
       "only content has been provided" in new Setup {
         val dt: Elements = dtComponent.select("dt")
+
         dt.text() mustBe contentText
         dt.first().hasAttr("class") mustBe false
         dt.first().hasAttr("id") mustBe false
@@ -109,6 +118,7 @@ class DescriptionListSpec extends SpecBase {
 
       "class has been provided along with content" in new Setup {
         val dt: Elements = dtComponentWithClass.select("dt")
+
         dt.text() mustBe contentText
         dt.first().classNames() must contain(testClass)
         dt.first().hasAttr("id") mustBe false
@@ -116,6 +126,7 @@ class DescriptionListSpec extends SpecBase {
 
       "id has been provided along with content" in new Setup {
         val dt: Elements = dtComponentWithId.select("dt")
+
         dt.text() mustBe contentText
         dt.first().hasAttr("class") mustBe false
         dt.first().attr("id") mustBe testId
@@ -123,6 +134,7 @@ class DescriptionListSpec extends SpecBase {
 
       "both class and id have been provided along with content" in new Setup {
         val dt: Elements = dtComponentWithClassAndId.select("dt")
+
         dt.text() mustBe contentText
         dt.first().classNames() must contain(testClass)
         dt.first().attr("id") mustBe testId

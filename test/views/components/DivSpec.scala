@@ -34,6 +34,7 @@ class DivSpec extends SpecBase {
 
       "only content has been provided" in new Setup {
         val div: Elements = divComponent.select("div")
+
         div.text() mustBe contentText
         div.first().hasAttr("class") mustBe false
         div.first().hasAttr("id") mustBe false
@@ -41,6 +42,7 @@ class DivSpec extends SpecBase {
 
       "class has been provided along with content" in new Setup {
         val div: Elements = divComponentWithClass.select("div")
+
         div.text() mustBe contentText
         div.first().classNames() must contain(testClass)
         div.first().hasAttr("id") mustBe false
@@ -48,6 +50,7 @@ class DivSpec extends SpecBase {
 
       "id has been provided along with content" in new Setup {
         val div: Elements = divComponentWithId.select("div")
+
         div.text() mustBe contentText
         div.first().hasAttr("class") mustBe false
         div.first().attr("id") mustBe testId
@@ -55,6 +58,7 @@ class DivSpec extends SpecBase {
 
       "both class and id have been provided along with content" in new Setup {
         val div: Elements = divComponentWithClassAndId.select("div")
+
         div.text() mustBe contentText
         div.first().classNames() must contain(testClass)
         div.first().attr("id") mustBe testId
