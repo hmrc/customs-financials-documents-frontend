@@ -192,7 +192,9 @@ object SecurityStatementsViewModel {
     val dateMessage = if (isCsv) {
       dateAsMonthAndYear(statement.startDate)
     } else {
-      s"${dateAsDayMonthAndYear(statement.startDate)} to ${dateAsDayMonthAndYear(statement.endDate)}"
+      s"${
+        dateAsDayMonthAndYear(statement.startDate)
+      } ${messages("cf.security-statements.requested.to")} ${dateAsDayMonthAndYear(statement.endDate)}"
     }
 
     val ariaLabel = messages(if (isCsv) {
