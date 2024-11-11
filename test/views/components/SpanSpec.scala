@@ -35,6 +35,7 @@ class SpanSpec extends SpecBase {
         spanComponent.text() mustBe message(msgKey)
 
         val span: Elements = spanComponent.select("span")
+
         span.size() mustBe 1
         span.first().hasAttr("class") mustBe false
         span.first().hasAttr("aria-hidden") mustBe false
@@ -44,6 +45,7 @@ class SpanSpec extends SpecBase {
         spanComponentWithClass.text() mustBe message(msgKey)
 
         val span: Elements = spanComponentWithClass.select("span")
+
         span.size() mustBe 1
         span.first().classNames() must contain(classes)
       }
@@ -52,6 +54,7 @@ class SpanSpec extends SpecBase {
         spanComponentWithAriaHidden.text() mustBe message(msgKey)
 
         val span: Elements = spanComponentWithAriaHidden.select("span")
+
         span.size() mustBe 1
         span.first().attr("aria-hidden") mustBe ariaHidden
       }
@@ -60,6 +63,7 @@ class SpanSpec extends SpecBase {
         spanComponentWithClassAndAriaHidden.text() mustBe message(msgKey)
 
         val span: Elements = spanComponentWithClassAndAriaHidden.select("span")
+
         span.size() mustBe 1
         span.first().classNames() must contain(classes)
         span.first().attr("aria-hidden") mustBe ariaHidden

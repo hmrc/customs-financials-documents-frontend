@@ -35,6 +35,7 @@ class H2Spec extends SpecBase {
         h2Component.text() mustBe message(msgKey)
 
         val h2: Elements = h2Component.select("h2")
+
         h2.size() mustBe 1
         h2.first().hasAttr("class") mustBe true
         h2.first().classNames() must contain(defaultClass)
@@ -45,6 +46,7 @@ class H2Spec extends SpecBase {
         h2ComponentWithClass.text() mustBe message(msgKey)
 
         val h2: Elements = h2ComponentWithClass.select("h2")
+
         h2.first().classNames() must contain(classes)
       }
 
@@ -52,6 +54,7 @@ class H2Spec extends SpecBase {
         h2ComponentWithId.text() mustBe message(msgKey)
 
         val h2: Elements = h2ComponentWithId.select("h2")
+
         h2.first().attr("id") mustBe id
       }
 
@@ -59,6 +62,7 @@ class H2Spec extends SpecBase {
         h2ComponentWithClassAndId.text() mustBe message(msgKey)
 
         val h2: Elements = h2ComponentWithClassAndId.select("h2")
+
         h2.first().classNames() must contain(classes)
         h2.first().attr("id") mustBe id
       }

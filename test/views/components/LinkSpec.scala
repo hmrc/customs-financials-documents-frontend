@@ -35,6 +35,7 @@ class LinkSpec extends SpecBase {
         linkComponent.text() mustBe message(linkMessage)
 
         val link: Elements = linkComponent.select("a")
+
         link.size() mustBe 1
         link.first().hasAttr("class") mustBe true
         link.first().classNames() must contain(defaultClass)
@@ -46,6 +47,7 @@ class LinkSpec extends SpecBase {
         linkComponentWithClass.text() mustBe message(linkMessage)
 
         val link: Elements = linkComponentWithClass.select("a")
+
         link.first().classNames() must contain(classes)
       }
 
@@ -53,6 +55,7 @@ class LinkSpec extends SpecBase {
         linkComponentWithId.text() mustBe message(linkMessage)
 
         val link: Elements = linkComponentWithId.select("a")
+
         link.first().attr("id") mustBe linkId
       }
 
@@ -60,6 +63,7 @@ class LinkSpec extends SpecBase {
         linkComponentWithClassAndId.text() mustBe message(linkMessage)
 
         val link: Elements = linkComponentWithClassAndId.select("a")
+
         link.first().classNames() must contain(classes)
         link.first().attr("id") mustBe linkId
       }
@@ -69,6 +73,7 @@ class LinkSpec extends SpecBase {
         linkComponentWithAriaLabel.text() must include(ariaLabelText)
 
         val link: Elements = linkComponentWithAriaLabel.select("a")
+
         link.first().select(".govuk-visually-hidden").text() mustBe ariaLabelText
       }
     }
