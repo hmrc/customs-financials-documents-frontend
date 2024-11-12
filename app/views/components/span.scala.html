@@ -14,23 +14,14 @@
  * limitations under the License.
  *@
 
-@import viewmodels.SecurityStatementsViewModel
+@import utils.Utils.emptyString
 
-@this(layout: Layout)
+@this()
 
-@(viewModel: SecurityStatementsViewModel)(implicit request: Request[_], messages: Messages)
+@(key: String, classes: Option[String] = None, ariaHidden: Option[String] = None)(implicit messages: Messages)
 
-@layout(viewModel.pageTitle, viewModel.backLink) {
-
-  @viewModel.header
-
-  @viewModel.requestedStatementNotification
-
-  @viewModel.currentStatements
-
-  @viewModel.missingGuidance
-
-  @viewModel.statementServiceParagraph
-
-  @viewModel.requestStatementsLink
-}
+<span
+  @{classes.fold(emptyString)(classes => s"class=$classes")}
+  @{ariaHidden.fold(emptyString)(value => s"aria-hidden=$value")}>
+  @{messages(key)}
+</span>

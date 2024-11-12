@@ -24,12 +24,16 @@ import models.metadata.SecurityStatementFileMetadata
 import models.{EoriHistory, SecurityStatementFile, SecurityStatementsByPeriod, SecurityStatementsForEori}
 import org.jsoup.Jsoup
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import play.api.i18n.Messages
+import play.api.mvc.{AnyContentAsEmpty, Result}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Application, inject}
 import utils.CommonTestData.{
-  CHECK_SUM_000000, DAY_10, DAY_12, DAY_15, DAY_17, DAY_28, DAY_9, DOWNLOAD_URL_00, EIGHT_MONTHS,
-  EORI_NUMBER, NINE_MONTHS, ONE_MONTH, SEVEN_MONTHS, SIZE_500L, SIZE_99L, STAT_FILE_NAME_00, TEN_MONTHS, THREE_MONTHS,
-  TWO_MONTHS
+  CHECK_SUM_000000, DAY_10, DAY_12, DAY_15, DAY_17,
+  DAY_28, DAY_9, DOWNLOAD_URL_00, EIGHT_MONTHS, EORI_NUMBER,
+  NINE_MONTHS, ONE_MONTH, SEVEN_MONTHS, SIZE_500L, SIZE_99L,
+  STAT_FILE_NAME_00, TEN_MONTHS, THREE_MONTHS, TWO_MONTHS
 }
 import utils.SpecBase
 import viewmodels.SecurityStatementsViewModel
@@ -47,12 +51,8 @@ class SecuritiesControllerSpec extends SpecBase {
         .thenReturn(Future.successful(Seq(securityStatementFile)))
 
       running(app) {
-        val request = fakeRequest(GET, routes.SecuritiesController.showSecurityStatements.url)
-        val result = route(app, request).value
-
         status(result) mustBe OK
-        contentAsString(result) mustBe
-          view(SecurityStatementsViewModel(Seq(securityStatementsForEori)))(request, messages(app), appConfig).toString()
+        contentAsString(result) mustBe view(SecurityStatementsViewModel(Seq(securityStatementsForEori))).toString()
       }
     }
 
@@ -62,14 +62,8 @@ class SecuritiesControllerSpec extends SpecBase {
           securityStatementFile4, securityStatementFile5, securityStatementFile6)))
 
       running(app) {
-        val request = fakeRequest(GET, routes.SecuritiesController.showSecurityStatements.url)
-        val result = route(app, request).value
-
         status(result) mustBe OK
-
-        contentAsString(result) mustBe
-          view(SecurityStatementsViewModel(
-            Seq(securityStatementsPdfForEori)))(request, messages(app), appConfig).toString()
+        contentAsString(result) mustBe view(SecurityStatementsViewModel(Seq(securityStatementsPdfForEori))).toString()
       }
     }
 
@@ -79,14 +73,8 @@ class SecuritiesControllerSpec extends SpecBase {
           securityStatementCsvFile3, securityStatementCsvFile4, securityStatementCsvFile5, securityStatementCsvFile6)))
 
       running(app) {
-        val request = fakeRequest(GET, routes.SecuritiesController.showSecurityStatements.url)
-        val result = route(app, request).value
-
         status(result) mustBe OK
-
-        contentAsString(result) mustBe
-          view(SecurityStatementsViewModel(Seq(securityStatementsCsvForEori)))(
-            request, messages(app), appConfig).toString()
+        contentAsString(result) mustBe view(SecurityStatementsViewModel(Seq(securityStatementsCsvForEori))).toString()
       }
     }
 
@@ -97,41 +85,21 @@ class SecuritiesControllerSpec extends SpecBase {
           securityStatementFile8)))
 
       running(app) {
-        val request = fakeRequest(GET, routes.SecuritiesController.showSecurityStatements.url)
-        val result = route(app, request).value
-
         status(result) mustBe OK
-
-        contentAsString(result) mustBe
-          view(SecurityStatementsViewModel(Seq(securityStatementsPdfForEori)))(
-            request, messages(app), appConfig).toString()
+        contentAsString(result) mustBe view(SecurityStatementsViewModel(Seq(securityStatementsPdfForEori))).toString()
 
         val doc = Jsoup.parse(contentAsString(result))
-
         Option(doc.getElementById("request-statement-link")) should not be empty
       }
     }
 
-    "redirect to security statements unavailable if a problem occurs" in {
-      val mockFinancialsApiConnector: FinancialsApiConnector = mock[FinancialsApiConnector]
-      val mockSdesConnector: SdesConnector = mock[SdesConnector]
-
+    "redirect to security statements unavailable if a problem occurs" in new Setup {
       when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
         .thenReturn(Future.successful(true))
       when(mockSdesConnector.getSecurityStatements(eqTo(EORI_NUMBER))(any))
         .thenReturn(Future.failed(new RuntimeException("Something went wrong")))
 
-      val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory(EORI_NUMBER, None, None))
-
-      val app: Application = application(eoriHistory).overrides(
-        inject.bind[FinancialsApiConnector].toInstance(mockFinancialsApiConnector),
-        inject.bind[SdesConnector].toInstance(mockSdesConnector)
-      ).build()
-
       running(app) {
-        val request = fakeRequest(GET, routes.SecuritiesController.showSecurityStatements.url)
-        val result = route(app, request).value
-
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.SecuritiesController.statementsUnavailablePage().url
       }
@@ -156,9 +124,27 @@ class SecuritiesControllerSpec extends SpecBase {
   }
 
   trait Setup {
+    val mockFinancialsApiConnector: FinancialsApiConnector = mock[FinancialsApiConnector]
+    val mockSdesConnector: SdesConnector = mock[SdesConnector]
+
+    val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory(EORI_NUMBER, None, None))
+
+    val app: Application = application(eoriHistory).overrides(
+      inject.bind[FinancialsApiConnector].toInstance(mockFinancialsApiConnector),
+      inject.bind[SdesConnector].toInstance(mockSdesConnector)).build()
+
+    implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+      fakeRequest(GET, routes.SecuritiesController.showSecurityStatements.url)
+    implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+    implicit val msg: Messages = messages(app)
+
+    val result: Future[Result] = route(app, request).value
+    val view: security_statements = app.injector.instanceOf[security_statements]
 
     val date: LocalDate = LocalDate.now().withDayOfMonth(DAY_28)
     val someRequestId: Option[String] = Some("statement-request-id")
+
+    when(mockFinancialsApiConnector.deleteNotification(any, any)(any)).thenReturn(Future.successful(true))
 
     val securityStatementFile: SecurityStatementFile =
       SecurityStatementFile(STAT_FILE_NAME_00, DOWNLOAD_URL_00, SIZE_99L,
@@ -237,8 +223,7 @@ class SecuritiesControllerSpec extends SpecBase {
           EORI_NUMBER,
           SIZE_500L,
           CHECK_SUM_000000,
-          Some("1abcdefg2-a2b1-abcd-abcd-0123456789"))
-      )
+          Some("1abcdefg2-a2b1-abcd-abcd-0123456789")))
 
     val securityStatementFile5: SecurityStatementFile =
       SecurityStatementFile(STAT_FILE_NAME_00, DOWNLOAD_URL_00, SIZE_99L,
@@ -302,8 +287,6 @@ class SecuritiesControllerSpec extends SpecBase {
           CHECK_SUM_000000,
           someRequestId))
 
-    val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory(EORI_NUMBER, None, None))
-
     val statementsByPeriod: SecurityStatementsByPeriod =
       SecurityStatementsByPeriod(date.minusMonths(ONE_MONTH), date, Seq(securityStatementFile))
 
@@ -311,16 +294,7 @@ class SecuritiesControllerSpec extends SpecBase {
       SecurityStatementsByPeriod(
         securityStatementFile7.startDate,
         securityStatementFile7.endDate,
-        Seq(securityStatementFile7, securityStatementFile8)
-      )
-
-    val statementsByPeriodPdfForMonth6: SecurityStatementsByPeriod =
-      SecurityStatementsByPeriod(
-        securityStatementFile6.startDate, securityStatementFile6.endDate, Seq(securityStatementFile6))
-
-    val statementsByPeriodPdfForMonth5: SecurityStatementsByPeriod =
-      SecurityStatementsByPeriod(
-        securityStatementFile5.startDate, securityStatementFile5.endDate, Seq(securityStatementFile5))
+        Seq(securityStatementFile7, securityStatementFile8))
 
     val statementsByPeriodPdfForMonth4: SecurityStatementsByPeriod =
       SecurityStatementsByPeriod(
@@ -345,8 +319,7 @@ class SecuritiesControllerSpec extends SpecBase {
       SecurityStatementsForEori(
         EoriHistory(EORI_NUMBER, None, None),
         Seq(statementsByPeriodPdfForMonth1, statementsByPeriodPdfForMonth2, statementsByPeriodPdfForMonth3),
-        Seq(statementsByPeriodPdfForMonth4, statementsByPeriodPdfForMonth7)
-      )
+        Seq(statementsByPeriodPdfForMonth4, statementsByPeriodPdfForMonth7))
 
     val securityStatementCsvFile1: SecurityStatementFile =
       SecurityStatementFile(STAT_FILE_NAME_00, DOWNLOAD_URL_00, SIZE_99L,
@@ -443,14 +416,6 @@ class SecuritiesControllerSpec extends SpecBase {
           CHECK_SUM_000000,
           None))
 
-    val statementsByPeriodCsvForMonth6: SecurityStatementsByPeriod =
-      SecurityStatementsByPeriod(
-        securityStatementCsvFile6.startDate, securityStatementCsvFile6.endDate, Seq(securityStatementCsvFile6))
-
-    val statementsByPeriodCsvForMonth5: SecurityStatementsByPeriod =
-      SecurityStatementsByPeriod(
-        securityStatementCsvFile5.startDate, securityStatementCsvFile5.endDate, Seq(securityStatementCsvFile5))
-
     val statementsByPeriodCsvForMonth4: SecurityStatementsByPeriod =
       SecurityStatementsByPeriod(
         securityStatementCsvFile4.startDate, securityStatementCsvFile4.endDate, Seq(securityStatementCsvFile4))
@@ -471,21 +436,6 @@ class SecuritiesControllerSpec extends SpecBase {
       SecurityStatementsForEori(
         EoriHistory(EORI_NUMBER, None, None),
         Seq(statementsByPeriodCsvForMonth1, statementsByPeriodCsvForMonth2, statementsByPeriodCsvForMonth3),
-        Seq(statementsByPeriodCsvForMonth4)
-      )
-
-    val mockFinancialsApiConnector: FinancialsApiConnector = mock[FinancialsApiConnector]
-    val mockSdesConnector: SdesConnector = mock[SdesConnector]
-
-    when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
-      .thenReturn(Future.successful(true))
-
-    val app: Application = application(eoriHistory).overrides(
-      inject.bind[FinancialsApiConnector].toInstance(mockFinancialsApiConnector),
-      inject.bind[SdesConnector].toInstance(mockSdesConnector)
-    ).build()
-
-    val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-    val view: security_statements = app.injector.instanceOf[security_statements]
+        Seq(statementsByPeriodCsvForMonth4))
   }
 }

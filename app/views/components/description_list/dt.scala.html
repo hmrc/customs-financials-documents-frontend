@@ -1,5 +1,5 @@
 @*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,8 @@
  * limitations under the License.
  *@
 
-@import viewmodels.SecurityStatementsViewModel
+@this()
 
-@this(layout: Layout)
+@(content: Html, classes: Option[String] = None, id: Option[String] = None)
 
-@(viewModel: SecurityStatementsViewModel)(implicit request: Request[_], messages: Messages)
-
-@layout(viewModel.pageTitle, viewModel.backLink) {
-
-  @viewModel.header
-
-  @viewModel.requestedStatementNotification
-
-  @viewModel.currentStatements
-
-  @viewModel.missingGuidance
-
-  @viewModel.statementServiceParagraph
-
-  @viewModel.requestStatementsLink
-}
+<dt @id.map(i => s"id=$i") @classes.map(c => s"class=$c")>@content</dt>

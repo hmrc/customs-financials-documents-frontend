@@ -135,6 +135,29 @@ class SecurityStatementsSpec extends SpecBase {
         view.text().contains(dateAsMonthAndYear(statementsByPeriodForCsvWithUnknownFileType.startDate)) mustBe true
         view.text().contains(messages(app)("cf.unavailable")) mustBe true
       }
+
+      "statements are available and EORI header is present" in new Setup {
+        val multipleEoris: Seq[SecurityStatementsForEori] = Seq(
+          securityStatementsForEori,
+          securityStatementsForEori.copy(eoriHistory = EoriHistory("testEori", None, None)))
+
+        val viewModel: SecurityStatementsViewModel = SecurityStatementsViewModel(multipleEoris)
+        val view: Document = Jsoup.parse(app.injector.instanceOf[security_statements].apply(viewModel).body)
+
+        view.text().contains(messages(app)("cf.account.details.previous-eori", "testEori"))
+      }
+    }
+
+    "return PDF statements when CSV statements are empty" in new Setup {
+      val statementsWithMixedCurrent: Seq[SecurityStatementsForEori] = Seq(
+        securityStatementsForEori.copy(currentStatements = Seq.empty),
+        securityStatementsForEori.copy(currentStatements = Seq(statementsByPeriodForPdf)))
+
+      val viewModel: SecurityStatementsViewModel = SecurityStatementsViewModel(statementsWithMixedCurrent)
+      val view: Document = Jsoup.parse(app.injector.instanceOf[security_statements].apply(viewModel).body)
+
+      view.text().contains("PDF") mustBe true
+      view.text().contains("CSV") mustBe false
     }
   }
 
@@ -172,7 +195,12 @@ class SecurityStatementsSpec extends SpecBase {
   }
 
   trait Setup {
-    val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory(EORI_NUMBER, None, None))
+    val app: Application = application().build()
+
+    implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+    implicit val msg: Messages = messages(app)
+    implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
+
     val date: LocalDate = LocalDate.now().withDayOfMonth(DAY_28)
 
     val securityStatementFilePdf: SecurityStatementFile =
@@ -263,12 +291,5 @@ class SecurityStatementsSpec extends SpecBase {
 
     val viewModelWithStatements: SecurityStatementsViewModel =
       SecurityStatementsViewModel(Seq(securityStatementsForEori))
-
-    val app: Application = application().build()
-    val serviceUnavailableUrl: Option[String] = Option("service_unavailable_url")
-
-    implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-    implicit val msg: Messages = messages(app)
-    implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
   }
 }
