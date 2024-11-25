@@ -16,8 +16,8 @@ GET        /service-unavailable                        controllers.ServiceUnavai
 GET        /postponed-vat                              controllers.PostponedVatController.show(location: Option[String])
 GET        /postponed-vat/statements-unavailable       controllers.PostponedVatController.statementsUnavailablePage()
 
-GET        /adjustments                                controllers.SecuritiesController.showSecurityStatements
+GET        /adjustments                                controllers.SecuritiesController.showSecurityStatements()
 GET        /adjustments/statements-unavailable         controllers.SecuritiesController.statementsUnavailablePage()
 
-GET        /import-vat                                 controllers.VatController.showVatAccount
+GET        /import-vat                                 controllers.VatController.showVatAccount()
 GET        /import-vat/certificates-unavailable        controllers.VatController.certificatesUnavailablePage()

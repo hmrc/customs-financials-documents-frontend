@@ -19,16 +19,17 @@ package connectors
 import config.AppConfig
 import models.FileFormat.{SdesFileFormats, filterFileFormats}
 import models.FileRole.{C79Certificate, PostponedVATStatement, SecurityStatement}
-import models._
+import models.*
 import play.api.i18n.Messages
 import services.{AuditingService, MetricsReporterService, SdesGatekeeperService}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse, StringContextOps}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.HttpReads.Implicits.*
+import uk.gov.hmrc.http.client.HttpClientV2
 
-class SdesConnector @Inject()(httpClient: HttpClient,
+class SdesConnector @Inject()(httpClient: HttpClientV2,
                               appConfig: AppConfig,
                               metricsReporterService: MetricsReporterService,
                               sdesGatekeeperService: SdesGatekeeperService,
@@ -75,18 +76,16 @@ class SdesConnector @Inject()(httpClient: HttpClient,
     )
   }
 
-  private def getSdesFiles[A, B <: SdesFile](url: String,
+  private def getSdesFiles[A, B <: SdesFile](urlLink: String,
                                              key: String,
                                              metricsName: String,
                                              transform: Seq[A] => Seq[B])
-                                            (implicit reads: HttpReads[HttpResponse],
-                                             readSeq: HttpReads[Seq[A]]): Future[Seq[B]] = {
+                                            (implicit readSeq: HttpReads[Seq[A]]): Future[Seq[B]] = {
     metricsReporterService.withResponseTimeLogging(metricsName) {
-      httpClient.GET[HttpResponse](
-        url,
-        headers = Seq("x-client-id" -> appConfig.xClientIdHeader, "X-SDES-Key" -> key)
-      )(reads, HeaderCarrier(), implicitly)
-        .map(readSeq.read("GET", url, _))
+      httpClient.get(url"$urlLink")(HeaderCarrier())
+        .setHeader(("x-client-id" -> appConfig.xClientIdHeader), ("X-SDES-Key" -> key))
+        .execute[HttpResponse]
+        .map(readSeq.read("GET", urlLink, _))
         .map(transform)
     }
   }
