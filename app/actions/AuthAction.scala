@@ -34,5 +34,5 @@ class AuthAction @Inject()(override val authConnector: AuthConnector,
                           (override implicit val executionContext: ExecutionContext)
   extends IdentifierAction
     with AuthActionBuilder {
-  override lazy val continueUrl: String = appConfig.loginContinueUrl
+  override val continueUrl: String = appConfig.loginContinueUrl
 }

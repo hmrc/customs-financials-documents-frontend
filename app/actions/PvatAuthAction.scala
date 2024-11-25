@@ -35,5 +35,5 @@ class PvatAuthAction @Inject()(override val authConnector: AuthConnector,
                               (override implicit val executionContext: ExecutionContext)
   extends PvatIdentifierAction with AuthActionBuilder {
 
-  override lazy val continueUrl: String = appConfig.pvatLoginContinueUrl
+  override val continueUrl: String = appConfig.pvatLoginContinueUrl
 }
