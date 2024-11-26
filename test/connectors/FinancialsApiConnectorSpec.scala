@@ -24,7 +24,7 @@ import org.mockito.Mockito.when
 import play.api.test.Helpers.*
 import play.api.{Application, inject}
 import services.MetricsReporterService
-import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utils.SpecBase
 import utils.Utils.emptyString
@@ -39,8 +39,8 @@ class FinancialsApiConnectorSpec extends SpecBase {
         i.getArgument[Future[HttpResponse]](1)
       })
 
-    when[Future[HttpResponse]](mockHttpClient.DELETE(any, any)(any, any, any))
-      .thenReturn(Future.successful(HttpResponse(OK, emptyString)))
+    when(mockHttpClient.delete(any)(any)).thenReturn(requestBuilder)
+    when(requestBuilder.execute(any, any)).thenReturn(Future.successful(HttpResponse(OK, emptyString)))
 
     running(app) {
       val result = await(connector.deleteNotification("someEori", FileRole.C79Certificate))
@@ -51,6 +51,7 @@ class FinancialsApiConnectorSpec extends SpecBase {
   trait Setup {
     val mockMetricsReporterService: MetricsReporterService = mock[MetricsReporterService]
     val mockHttpClient: HttpClientV2 = mock[HttpClientV2]
+    val requestBuilder: RequestBuilder = mock[RequestBuilder]
 
     val app: Application = application().overrides(
       inject.bind[MetricsReporterService].toInstance(mockMetricsReporterService),

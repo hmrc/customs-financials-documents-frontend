@@ -25,7 +25,7 @@ import play.api.test.Helpers.*
 import play.api.{Application, inject}
 import services.MetricsReporterService
 import uk.gov.hmrc.auth.core.retrieve.Email
-import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import utils.CommonTestData.{DAY_1, DAY_28, MONTH_1, MONTH_2, MONTH_3, YEAR_2018, YEAR_2019}
 import utils.SpecBase
@@ -58,8 +58,8 @@ class DataStoreConnectorSpec extends SpecBase {
 
       val eoriHistoryResponse: EoriHistoryResponse = EoriHistoryResponse(Seq(eoriHistory1, eoriHistory2))
 
-      when[Future[EoriHistoryResponse]](mockHttpClient.GET(any, any, any)(any, any, any))
-        .thenReturn(Future.successful(eoriHistoryResponse))
+      when(mockHttpClient.get(any)(any)).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any, any)).thenReturn(Future.successful(eoriHistoryResponse))
 
       running(app) {
         val result = await(connector.getAllEoriHistory("someEori"))
@@ -73,8 +73,8 @@ class DataStoreConnectorSpec extends SpecBase {
           i.getArgument[Future[Seq[EoriHistory]]](1)
         })
 
-
-      when[Future[EoriHistoryResponse]](mockHttpClient.GET(any, any, any)(any, any, any))
+      when(mockHttpClient.get(any)(any)).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any, any))
         .thenReturn(Future.failed(new RuntimeException("No history found")))
 
       running(app) {
@@ -91,10 +91,11 @@ class DataStoreConnectorSpec extends SpecBase {
           i.getArgument[Future[EmailResponse]](1)
         })
 
-      when[Future[EmailResponse]](mockHttpClient.GET(any, any, any)(any, any, any))
-        .thenReturn(Future.successful(
-          EmailResponse(Some("some@email.com"), None, Some(UndeliverableInformation("subject", "eventId", "groupId")))
-        ))
+      when(mockHttpClient.get(any)(any)).thenReturn(requestBuilder)
+
+      when(requestBuilder.execute(any, any)).thenReturn(Future.successful(
+        EmailResponse(Some("some@email.com"), None, Some(UndeliverableInformation("subject", "eventId", "groupId")))
+      ))
 
       running(app) {
         val result = await(connector.getEmail("someEori"))
@@ -108,7 +109,8 @@ class DataStoreConnectorSpec extends SpecBase {
           i.getArgument[Future[EmailResponse]](1)
         })
 
-      when[Future[EmailResponse]](mockHttpClient.GET(any, any, any)(any, any, any))
+      when(mockHttpClient.get(any)(any)).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any, any))
         .thenReturn(Future.successful(EmailResponse(Some("some@email.com"), None, None)))
 
       running(app) {
@@ -123,8 +125,8 @@ class DataStoreConnectorSpec extends SpecBase {
           i.getArgument[Future[EmailResponse]](1)
         })
 
-      when[Future[EmailResponse]](mockHttpClient.GET(any, any, any)(any, any, any))
-        .thenReturn(Future.successful(EmailResponse(None, None, None)))
+      when(mockHttpClient.get(any)(any)).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any, any)).thenReturn(Future.successful(EmailResponse(None, None, None)))
 
       running(app) {
         val result = await(connector.getEmail("someEori"))
@@ -138,7 +140,8 @@ class DataStoreConnectorSpec extends SpecBase {
           i.getArgument[Future[EmailResponse]](1)
         })
 
-      when[Future[EmailResponse]](mockHttpClient.GET(any, any, any)(any, any, any))
+      when(mockHttpClient.get(any)(any)).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any, any))
         .thenReturn(Future.failed(UpstreamErrorResponse("NoData", NOT_FOUND, NOT_FOUND)))
 
       running(app) {
@@ -152,8 +155,8 @@ class DataStoreConnectorSpec extends SpecBase {
     "return EmailVerifiedResponse with email when the API returns a valid response" in new Setup {
       val emailResponse = EmailVerifiedResponse(Some("verified@email.com"))
 
-      when(mockHttpClient.GET[EmailVerifiedResponse](any, any, any)(any, any, any))
-        .thenReturn(Future.successful(emailResponse))
+      when(mockHttpClient.get(any)(any)).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any, any)).thenReturn(Future.successful(emailResponse))
 
       running(app) {
         val result = await(connector.verifiedEmail)
@@ -162,7 +165,9 @@ class DataStoreConnectorSpec extends SpecBase {
     }
 
     "return EmailVerifiedResponse with None when the API returns an error" in new Setup {
-      when(mockHttpClient.GET[EmailVerifiedResponse](any, any, any)(any, any, any))
+
+      when(mockHttpClient.get(any)(any)).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any, any))
         .thenReturn(Future.failed(new RuntimeException("API call failed")))
 
       running(app) {
@@ -176,8 +181,8 @@ class DataStoreConnectorSpec extends SpecBase {
     "return EmailUnverifiedResponse with email when the API returns a valid response" in new Setup {
       val unverifiedEmailResponse = EmailUnverifiedResponse(Some("unverified@email.com"))
 
-      when(mockHttpClient.GET[EmailUnverifiedResponse](any, any, any)(any, any, any))
-        .thenReturn(Future.successful(unverifiedEmailResponse))
+      when(mockHttpClient.get(any)(any)).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any, any)).thenReturn(Future.successful(unverifiedEmailResponse))
 
       running(app) {
         val result = await(connector.retrieveUnverifiedEmail)
@@ -186,7 +191,9 @@ class DataStoreConnectorSpec extends SpecBase {
     }
 
     "return EmailUnverifiedResponse with None when the API returns an error" in new Setup {
-      when(mockHttpClient.GET[EmailUnverifiedResponse](any, any, any)(any, any, any))
+
+      when(mockHttpClient.get(any)(any)).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any, any))
         .thenReturn(Future.failed(new RuntimeException("API call failed")))
 
       running(app) {
@@ -199,6 +206,8 @@ class DataStoreConnectorSpec extends SpecBase {
   trait Setup {
     val mockMetricsReporterService: MetricsReporterService = mock[MetricsReporterService]
     val mockHttpClient: HttpClientV2 = mock[HttpClientV2]
+    val requestBuilder: RequestBuilder = mock[RequestBuilder]
+
     val app: Application = application().overrides(
       inject.bind[MetricsReporterService].toInstance(mockMetricsReporterService),
       inject.bind[HttpClientV2].toInstance(mockHttpClient)
