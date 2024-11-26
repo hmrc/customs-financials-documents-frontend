@@ -48,22 +48,28 @@ class SdesConnectorSpec extends SpecBase {
     "getSecurityStatements" should {
 
       "make a GET request to sdesSecurityStatementsUrl" in new Setup {
+
         val urlLink: URL = url"$sdesSecurityStatementsUrl"
         val sdesService: SdesConnector = app.injector.instanceOf[SdesConnector]
 
+        when(requestBuilder.setHeader(any[(String, String)]())).thenReturn(requestBuilder)
         when(mockHttp.get(any)(any)).thenReturn(requestBuilder)
         when(requestBuilder.execute(any, any))
           .thenReturn(Future.successful(HttpResponse(Status.OK, JsArray(Nil).toString())))
 
         await(sdesService.getSecurityStatements(someEori)(hc))
-        verify(mockHttp).get(eqTo(urlLink))
+        verify(mockHttp).get(eqTo(urlLink))(any[HeaderCarrier])
       }
 
       "filter out unknown file types" in new Setup {
+
         val urlLink: URL = url"$sdesSecurityStatementsUrl"
         val sdesService: SdesConnector = app.injector.instanceOf[SdesConnector]
 
+        when(requestBuilder.setHeader(any[(String, String)]())).thenReturn(requestBuilder)
+
         when(mockHttp.get(any)(any)).thenReturn(requestBuilder)
+
         when(requestBuilder.execute(any, any))
           .thenReturn(Future.successful(
             HttpResponse(Status.OK, Json.toJson(securityStatementFilesWithUnkownFileTypesSdesResponse).toString())
@@ -73,14 +79,18 @@ class SdesConnectorSpec extends SpecBase {
           await(sdesService.getSecurityStatements(someEoriWithUnknownFileTypes)(hc))
 
         result mustBe securityStatementFiles
-        verify(mockHttp).get(eqTo(urlLink))
+        verify(mockHttp).get(eqTo(urlLink))(any[HeaderCarrier])
       }
 
       "converts Sdes response to List[SecurityStatementFile]" in new Setup {
+
         val urlLink: URL = url"$sdesSecurityStatementsUrl"
         val numberOfStatements: Int = securityStatementFilesSdesResponse.length
 
+        when(requestBuilder.setHeader(any[(String, String)]())).thenReturn(requestBuilder)
+
         when(mockHttp.get(any)(any)).thenReturn(requestBuilder)
+
         when(requestBuilder.execute(any, any))
           .thenReturn(
             Future.successful(HttpResponse(Status.OK, Json.toJson(securityStatementFilesSdesResponse).toString()))
@@ -97,7 +107,7 @@ class SdesConnectorSpec extends SpecBase {
 
         await(sdesService.getSecurityStatements(someEori)(hc))
 
-        verify(mockHttp).get(eqTo(urlLink))
+        verify(mockHttp).get(eqTo(urlLink))(any[HeaderCarrier])
         verify(sdesGatekeeperServiceSpy, times(numberOfStatements)).convertToSecurityStatementFile(any)
       }
     }
@@ -105,9 +115,11 @@ class SdesConnectorSpec extends SpecBase {
     "getVatCertificates" should {
 
       "filter out unknown file types" in new Setup {
+
         val urlLink = url"$sdesVatCertificatesUrl"
         val sdesService: SdesConnector = app.injector.instanceOf[SdesConnector]
 
+        when(requestBuilder.setHeader(any[(String, String)]())).thenReturn(requestBuilder)
         when(mockHttp.get(any)(any)).thenReturn(requestBuilder)
         when(requestBuilder.execute(any, any))
           .thenReturn(Future.successful(
@@ -118,13 +130,14 @@ class SdesConnectorSpec extends SpecBase {
           await(sdesService.getVatCertificates(someEoriWithUnknownFileTypes)(hc, messages))
 
         result mustBe vatCertificateFiles
-        verify(mockHttp).get(eqTo(urlLink))
+        verify(mockHttp).get(eqTo(urlLink))(any[HeaderCarrier])
       }
 
       "converts Sdes response to List[VatCertificateFile]" in new Setup {
         val urlLink: URL = url"$sdesVatCertificatesUrl"
         val numberOfStatements: Int = vatCertificateFilesSdesResponse.length
 
+        when(requestBuilder.setHeader(any[(String, String)]())).thenReturn(requestBuilder)
         when(mockHttp.get(any)(any)).thenReturn(requestBuilder)
         when(requestBuilder.execute(any, any))
           .thenReturn(Future.successful(
@@ -143,7 +156,7 @@ class SdesConnectorSpec extends SpecBase {
         await(sdesService.getVatCertificates(someEori)(hc, messages))
 
         verify(sdesGatekeeperServiceSpy, times(numberOfStatements)).convertToVatCertificateFile(any)(any)
-        verify(mockHttp).get(eqTo(urlLink))
+        verify(mockHttp).get(eqTo(urlLink))(any[HeaderCarrier])
       }
     }
 
@@ -153,6 +166,7 @@ class SdesConnectorSpec extends SpecBase {
         val urlLink: URL = url"$sdesPostponedVatStatementsUrl"
         val sdesService: SdesConnector = app.injector.instanceOf[SdesConnector]
 
+        when(requestBuilder.setHeader(any[(String, String)]())).thenReturn(requestBuilder)
         when(mockHttp.get(any)(any)).thenReturn(requestBuilder)
         when(requestBuilder.execute(any, any))
           .thenReturn(Future.successful(
@@ -165,13 +179,15 @@ class SdesConnectorSpec extends SpecBase {
           await(sdesService.getPostponedVatStatements(someEoriWithUnknownFileTypes)(hc))
 
         result mustBe filteredPostponedVatCertificateFiles
-        verify(mockHttp).get(eqTo(urlLink))
+        verify(mockHttp).get(eqTo(urlLink))(any[HeaderCarrier])
       }
 
       "converts Sdes response to List[PostponedVatCertificateFile]" in new Setup {
+
         val urlLink: URL = url"$sdesPostponedVatStatementsUrl"
         val numberOfStatements: Int = postponedVatCertificateFilesSdesResponse.length
 
+        when(requestBuilder.setHeader(any[(String, String)]())).thenReturn(requestBuilder)
         when(mockHttp.get(any)(any)).thenReturn(requestBuilder)
         when(requestBuilder.execute(any, any))
           .thenReturn(Future.successful(
@@ -190,7 +206,7 @@ class SdesConnectorSpec extends SpecBase {
         await(sdesService.getPostponedVatStatements(someEori)(hc))
 
         verify(sdesGatekeeperServiceSpy, times(numberOfStatements)).convertToPostponedVatCertificateFile(any)
-        verify(mockHttp).get(eqTo(urlLink))
+        verify(mockHttp).get(eqTo(urlLink))(any[HeaderCarrier])
       }
     }
   }

@@ -39,8 +39,8 @@ class SdesConnector @Inject()(httpClient: HttpClientV2,
 
   def getVatCertificates(eori: String)(implicit hc: HeaderCarrier,
                                        messages: Messages): Future[Seq[VatCertificateFile]] = {
-    val transform = convertTo[VatCertificateFile] andThen filterFileFormats(SdesFileFormats)
 
+    val transform = convertTo[VatCertificateFile] andThen filterFileFormats(SdesFileFormats)
     auditingService.auditVatCertificates(eori)
 
     getSdesFiles[FileInformation, VatCertificateFile](
@@ -52,8 +52,8 @@ class SdesConnector @Inject()(httpClient: HttpClientV2,
   }
 
   def getPostponedVatStatements(eori: String)(implicit hc: HeaderCarrier): Future[Seq[PostponedVatStatementFile]] = {
-    val transform = convertTo[PostponedVatStatementFile] andThen filterFileFormats(SdesFileFormats)
 
+    val transform = convertTo[PostponedVatStatementFile] andThen filterFileFormats(SdesFileFormats)
     auditingService.auditPostponedVatStatements(eori)
 
     getSdesFiles[FileInformation, PostponedVatStatementFile](
@@ -64,8 +64,8 @@ class SdesConnector @Inject()(httpClient: HttpClientV2,
   }
 
   def getSecurityStatements(eori: String)(implicit hc: HeaderCarrier): Future[Seq[SecurityStatementFile]] = {
-    val transform = convertTo[SecurityStatementFile] andThen filterFileFormats(SdesFileFormats)
 
+    val transform = convertTo[SecurityStatementFile] andThen filterFileFormats(SdesFileFormats)
     auditingService.auditSecurityStatements(eori)
 
     getSdesFiles[FileInformation, SecurityStatementFile](
