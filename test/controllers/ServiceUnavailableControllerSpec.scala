@@ -59,7 +59,7 @@ class ServiceUnavailableControllerSpec extends SpecBase {
         val request = fakeRequest(GET, routes.ServiceUnavailableController.onPageLoad("import-vat").url)
         val result = route(app, request).value
 
-        val backlink = Some(routes.VatController.showVatAccount.url)
+        val backlink = Some(routes.VatController.showVatAccount().url)
 
         status(result) mustBe OK
         contentAsString(result) mustBe view(backlink)(request, messages(app), appConfig).toString()

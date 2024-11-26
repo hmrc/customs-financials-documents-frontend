@@ -36,6 +36,8 @@ import utils.SpecBase
 import viewmodels.{PVATUrls, PostponedVatViewModel, PvEmail}
 import views.html.postponed_import_vat
 
+import org.mockito.Mockito.when
+
 import java.time.{LocalDate, LocalDateTime}
 
 class PostponedImportVatSpec extends SpecBase {

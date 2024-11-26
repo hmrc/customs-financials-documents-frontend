@@ -40,7 +40,7 @@ import utils.CommonTestData.{
 import utils.SpecBase
 import viewmodels.SecurityStatementsViewModel
 import views.html.securities.{security_statements, security_statements_not_available}
-
+import org.mockito.ArgumentMatchers.{eq => eqTo}
 import java.time.LocalDate
 import scala.concurrent.Future
 
@@ -136,7 +136,7 @@ class SecuritiesControllerSpec extends SpecBase {
       inject.bind[SdesConnector].toInstance(mockSdesConnector)).build()
 
     implicit val request: FakeRequest[AnyContentAsEmpty.type] =
-      fakeRequest(GET, routes.SecuritiesController.showSecurityStatements.url)
+      fakeRequest(GET, routes.SecuritiesController.showSecurityStatements().url)
     implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
     implicit val msg: Messages = messages(app)
 

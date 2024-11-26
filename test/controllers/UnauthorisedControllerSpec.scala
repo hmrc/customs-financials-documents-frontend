@@ -18,6 +18,9 @@ package controllers
 
 import config.AppConfig
 import org.scalatest.matchers.must.Matchers.mustBe
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.{eq => eqTo}
 import play.api.test.Helpers._
 import play.api.{Application, inject}
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway

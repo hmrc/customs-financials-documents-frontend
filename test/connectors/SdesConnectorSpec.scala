@@ -20,19 +20,21 @@ import config.AppConfig
 import models.DutyPaymentMethod.CDS
 import models.FileFormat.{Csv, Pdf}
 import models.FileRole.{C79Certificate, PostponedVATStatement, SecurityStatement}
-import models._
-import models.metadata._
+import models.*
+import models.metadata.*
 import org.scalatest.matchers.must.Matchers.mustBe
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{spy, times, verify, when}
+import org.mockito.ArgumentMatchers.eq as eqTo
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, Json}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import play.api.{Application, inject}
 import services.{AuditingService, MetricsReporterService, SdesGatekeeperService}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
-import utils.CommonTestData._
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import utils.CommonTestData.*
 import utils.SpecBase
 import utils.Utils.emptyString
 
@@ -85,7 +87,7 @@ class SdesConnectorSpec extends SpecBase {
         when(sdesGatekeeperServiceSpy.convertTo(any)).thenCallRealMethod()
 
         override val app: Application = application().overrides(
-          inject.bind[HttpClient].toInstance(mockHttp),
+          inject.bind[HttpClientV2].toInstance(mockHttp),
           inject.bind[SdesGatekeeperService].toInstance(sdesGatekeeperServiceSpy)
         ).build()
 
@@ -132,7 +134,7 @@ class SdesConnectorSpec extends SpecBase {
         when(sdesGatekeeperServiceSpy.convertTo(any)).thenCallRealMethod()
 
         override val app: Application = application().overrides(
-          inject.bind[HttpClient].toInstance(mockHttp),
+          inject.bind[HttpClientV2].toInstance(mockHttp),
           inject.bind[SdesGatekeeperService].toInstance(sdesGatekeeperServiceSpy)
         ).build()
 
@@ -181,7 +183,7 @@ class SdesConnectorSpec extends SpecBase {
         when(sdesGatekeeperServiceSpy.convertTo(any)).thenCallRealMethod()
 
         override val app: Application = application().overrides(
-          inject.bind[HttpClient].toInstance(mockHttp),
+          inject.bind[HttpClientV2].toInstance(mockHttp),
           inject.bind[SdesGatekeeperService].toInstance(sdesGatekeeperServiceSpy)
         ).build()
 

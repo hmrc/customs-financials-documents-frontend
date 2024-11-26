@@ -21,10 +21,11 @@ import org.mockito.invocation.InvocationOnMock
 import org.scalatest.matchers.must.Matchers.mustBe
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import play.api.{Application, inject}
 import services.MetricsReporterService
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utils.SpecBase
 import utils.Utils.emptyString
 
