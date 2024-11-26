@@ -17,7 +17,7 @@
 package controllers
 
 import config.AppConfig
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.mustBe
 import play.api.Application
 import play.api.test.Helpers._
 import utils.SpecBase

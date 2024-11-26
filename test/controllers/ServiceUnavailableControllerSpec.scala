@@ -18,7 +18,7 @@ package controllers
 
 import config.AppConfig
 import navigation.Navigator
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.mustBe
 import play.api.Application
 import play.api.http.Status.OK
 import play.api.test.Helpers.{

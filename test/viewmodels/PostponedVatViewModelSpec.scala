@@ -21,7 +21,7 @@ import models.FileFormat.{Csv, Pdf}
 import models.FileRole.PostponedVATStatement
 import models.metadata.PostponedVatStatementFileMetadata
 import models.{PostponedVatStatementFile, PostponedVatStatementGroup}
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.mustBe
 import play.api.Application
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat

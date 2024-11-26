@@ -19,7 +19,7 @@ package actions
 import com.google.inject.Inject
 import config.AppConfig
 import connectors.DataStoreConnector
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+
 import play.api.inject
 import play.api.mvc.{Action, AnyContent, BodyParsers, Results}
 import play.api.test.Helpers._
@@ -33,6 +33,8 @@ import utils.Utils.emptyString
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
+
+import org.scalatest.matchers.must.Matchers.mustBe
 
 class AuthActionSpec extends SpecBase {
 

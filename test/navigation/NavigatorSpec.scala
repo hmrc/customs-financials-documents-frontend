@@ -16,7 +16,7 @@
 
 package navigation
 
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.mustBe
 import utils.SpecBase
 
 class NavigatorSpec extends SpecBase {

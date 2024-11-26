@@ -20,7 +20,7 @@ import models.FileFormat.{Csv, Pdf}
 import models.FileRole.SecurityStatement
 import utils.SpecBase
 import models.metadata.SecurityStatementFileMetadata
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.mustBe
 import utils.CommonTestData.{
   CHECK_SUM_000000, DAY_28, DOWNLOAD_URL_00, EORI_NUMBER, ONE_MONTH, SIZE_500L, SIZE_99L,
   STAT_FILE_NAME_00

@@ -22,7 +22,7 @@ import models.FileFormat.{Csv, Pdf}
 import models.FileRole.{C79Certificate, PostponedVATStatement, SecurityStatement}
 import models._
 import models.metadata._
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.mustBe
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, Json}

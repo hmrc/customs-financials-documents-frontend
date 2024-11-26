@@ -18,7 +18,7 @@ package actions
 
 import config.AppConfig
 import connectors.DataStoreConnector
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.mustBe
 import play.api.inject
 import play.api.mvc.BodyParsers.Default
 import play.api.mvc.{Action, AnyContent, BodyParsers, Results}

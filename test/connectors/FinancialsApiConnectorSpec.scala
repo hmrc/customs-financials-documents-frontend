@@ -18,7 +18,7 @@ package connectors
 
 import models.FileRole
 import org.mockito.invocation.InvocationOnMock
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.mustBe
 import play.api.test.Helpers._
 import play.api.{Application, inject}
 import services.MetricsReporterService

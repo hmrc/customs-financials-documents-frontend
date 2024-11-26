@@ -19,7 +19,7 @@ package viewmodels
 import config.AppConfig
 import models.FileRole.SecurityStatement
 import models.{EoriHistory, SecurityStatementsByPeriod, SecurityStatementsForEori}
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.mustBe
 import play.api.Application
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
