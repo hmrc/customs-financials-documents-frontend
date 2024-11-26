@@ -23,6 +23,8 @@ import models.FileRole.{C79Certificate, PostponedVATStatement, SecurityStatement
 import models._
 import models.metadata._
 import org.scalatest.matchers.must.Matchers.mustBe
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, Json}
@@ -517,12 +519,12 @@ class SdesConnectorSpec extends SpecBase {
         )
 
     val sdesGatekeeperServiceSpy: SdesGatekeeperService = spy(new SdesGatekeeperService())
-    val mockHttp: HttpClient = mock[HttpClient]
+    val mockHttp: HttpClientV2 = mock[HttpClientV2]
     val mockAppConfig: AppConfig = mock[AppConfig]
     val mockMetricsReporterService: MetricsReporterService = mock[MetricsReporterService]
     val mockAuditingService: AuditingService = mock[AuditingService]
 
-    val app: Application = application().overrides(inject.bind[HttpClient].toInstance(mockHttp)).build()
+    val app: Application = application().overrides(inject.bind[HttpClientV2].toInstance(mockHttp)).build()
 
     private def getVatCertificateFileMetadata(periodStartYear: Int = YEAR_2018,
                                               periodStartMonth: Int = MONTH_3,

@@ -24,6 +24,8 @@ import models.metadata.SecurityStatementFileMetadata
 import models.{EoriHistory, SecurityStatementFile, SecurityStatementsByPeriod, SecurityStatementsForEori}
 import org.jsoup.Jsoup
 import org.scalatest.matchers.must.Matchers.mustBe
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.i18n.Messages
 import play.api.mvc.{AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest

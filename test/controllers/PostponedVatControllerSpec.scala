@@ -26,6 +26,8 @@ import models.{EoriHistory, PostponedVatStatementFile}
 import navigation.Navigator
 import org.jsoup.Jsoup
 import org.scalatest.matchers.must.Matchers.mustBe
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.test.Helpers._
 import play.api.{Application, inject}
 import services.DateTimeService

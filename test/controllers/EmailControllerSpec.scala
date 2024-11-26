@@ -24,7 +24,8 @@ import play.api.test.Helpers._
 import services.MetricsReporterService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.SpecBase
-
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import scala.concurrent.Future
 
 class EmailControllerSpec extends SpecBase {

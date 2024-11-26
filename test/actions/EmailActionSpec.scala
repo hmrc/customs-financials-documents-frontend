@@ -20,7 +20,7 @@ import connectors.DataStoreConnector
 import models.{AuthenticatedRequest, UndeliverableEmail, UnverifiedEmail}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.matchers.must.Matchers.mustBe
+import org.scalatest.matchers.must.Matchers.{must, mustBe}
 import play.api.{Application, inject}
 import play.api.mvc.{AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest

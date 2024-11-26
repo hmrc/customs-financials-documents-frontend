@@ -19,6 +19,8 @@ package connectors
 import models.FileRole
 import org.mockito.invocation.InvocationOnMock
 import org.scalatest.matchers.must.Matchers.mustBe
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.test.Helpers._
 import play.api.{Application, inject}
 import services.MetricsReporterService
@@ -47,11 +49,11 @@ class FinancialsApiConnectorSpec extends SpecBase {
 
   trait Setup {
     val mockMetricsReporterService: MetricsReporterService = mock[MetricsReporterService]
-    val mockHttpClient: HttpClient = mock[HttpClient]
+    val mockHttpClient: HttpClientV2 = mock[HttpClientV2]
 
     val app: Application = application().overrides(
       inject.bind[MetricsReporterService].toInstance(mockMetricsReporterService),
-      inject.bind[HttpClient].toInstance(mockHttpClient)
+      inject.bind[HttpClientV2].toInstance(mockHttpClient)
     ).build()
 
     implicit val hc: HeaderCarrier = HeaderCarrier()

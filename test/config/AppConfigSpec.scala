@@ -17,7 +17,7 @@
 package config
 
 import models.FileRole
-import org.scalatest.matchers.must.Matchers.mustBe
+import org.scalatest.matchers.must.Matchers.{must, mustBe}
 import play.api.Application
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -37,13 +37,13 @@ class AppConfigSpec extends SpecBase {
     "historic request url" should {
       "contain 'adjustments'" in new Setup {
         running(app) {
-          appConfig.historicRequestUrl(FileRole.SecurityStatement) must include ("adjustments")
+          appConfig.historicRequestUrl(FileRole.SecurityStatement) must include("adjustments")
         }
       }
 
       "contain 'import-vat'" in new Setup {
         running(app) {
-          appConfig.historicRequestUrl(FileRole.C79Certificate) must include ("import-vat")
+          appConfig.historicRequestUrl(FileRole.C79Certificate) must include("import-vat")
         }
       }
 
@@ -57,13 +57,13 @@ class AppConfigSpec extends SpecBase {
     "requested statements url" should {
       "contain adjustments" in new Setup {
         running(app) {
-          appConfig.requestedStatements(FileRole.SecurityStatement) must include ("adjustments")
+          appConfig.requestedStatements(FileRole.SecurityStatement) must include("adjustments")
         }
       }
 
       "contain import-vat" in new Setup {
         running(app) {
-          appConfig.requestedStatements(FileRole.C79Certificate) must include ("import-vat")
+          appConfig.requestedStatements(FileRole.C79Certificate) must include("import-vat")
         }
       }
 

@@ -20,7 +20,7 @@ import actions.{IdentifierAction, PvatIdentifierAction}
 import org.apache.pekko.stream.testkit.NoMaterializer
 import com.codahale.metrics.MetricRegistry
 import models.EoriHistory
-import org.mockito.scalatest.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.should.Matchers

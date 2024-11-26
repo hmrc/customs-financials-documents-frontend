@@ -34,7 +34,7 @@ import utils.Utils.emptyString
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-import org.scalatest.matchers.must.Matchers.mustBe
+import org.scalatest.matchers.must.Matchers.{must, mustBe}
 
 class AuthActionSpec extends SpecBase {
 
