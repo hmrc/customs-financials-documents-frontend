@@ -18,7 +18,9 @@ package actions
 
 import connectors.DataStoreConnector
 import models.{AuthenticatedRequest, UndeliverableEmail, UnverifiedEmail}
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import org.scalatest.matchers.must.Matchers.{must, mustBe}
 import play.api.{Application, inject}
 import play.api.mvc.{AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest

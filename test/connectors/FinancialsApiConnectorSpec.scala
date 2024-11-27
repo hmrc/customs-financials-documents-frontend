@@ -18,11 +18,14 @@ package connectors
 
 import models.FileRole
 import org.mockito.invocation.InvocationOnMock
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
-import play.api.test.Helpers._
+import org.scalatest.matchers.must.Matchers.mustBe
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import play.api.test.Helpers.*
 import play.api.{Application, inject}
 import services.MetricsReporterService
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utils.SpecBase
 import utils.Utils.emptyString
 
@@ -36,7 +39,8 @@ class FinancialsApiConnectorSpec extends SpecBase {
         i.getArgument[Future[HttpResponse]](1)
       })
 
-    when[Future[HttpResponse]](mockHttpClient.DELETE(any, any)(any, any, any))
+    when(mockHttpClient.delete(any)(any)).thenReturn(requestBuilder)
+    when(requestBuilder.execute(any, any))
       .thenReturn(Future.successful(HttpResponse(OK, emptyString)))
 
     running(app) {
@@ -47,11 +51,12 @@ class FinancialsApiConnectorSpec extends SpecBase {
 
   trait Setup {
     val mockMetricsReporterService: MetricsReporterService = mock[MetricsReporterService]
-    val mockHttpClient: HttpClient = mock[HttpClient]
+    val mockHttpClient: HttpClientV2 = mock[HttpClientV2]
+    val requestBuilder: RequestBuilder = mock[RequestBuilder]
 
     val app: Application = application().overrides(
       inject.bind[MetricsReporterService].toInstance(mockMetricsReporterService),
-      inject.bind[HttpClient].toInstance(mockHttpClient)
+      inject.bind[HttpClientV2].toInstance(mockHttpClient)
     ).build()
 
     implicit val hc: HeaderCarrier = HeaderCarrier()

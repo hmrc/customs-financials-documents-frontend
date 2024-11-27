@@ -24,7 +24,7 @@ import models.PostponedVatStatementFile
 import models.metadata.PostponedVatStatementFileMetadata
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.{must, mustBe}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -35,6 +35,8 @@ import utils.CommonTestData._
 import utils.SpecBase
 import viewmodels.{PVATUrls, PostponedVatViewModel, PvEmail}
 import views.html.postponed_import_vat
+
+import org.mockito.Mockito.when
 
 import java.time.{LocalDate, LocalDateTime}
 

@@ -29,7 +29,7 @@
 
 @(backlink: Option[String] = None)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-@layout(pageTitle = Some(messages("cf.service-unavailable.title")), backLink = backlink, deskpro = false) {
+@layout(pageTitle = Some(messages("cf.service-unavailable.title")), backLinkUrl = backlink, deskpro = false) {
 
 @h1(
     msg = "cf.service-unavailable.heading",

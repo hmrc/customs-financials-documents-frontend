@@ -16,7 +16,7 @@
 
 package utils
 
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.mustBe
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.Utils._

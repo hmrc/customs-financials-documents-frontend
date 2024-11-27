@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,21 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.govukfrontend.views.html.components.Text
+package config
 
-@this(
-        layout: Layout,
-        h1: components.h1,
-        p: components.p
-)
-
-@(pageTitle: String, heading: String, message: String)(implicit request: RequestHeader, messages: Messages)
-
-@layout(pageTitle = Some(pageTitle)) {
-
-  @h1(Text(heading).asHtml.toString, id = None, classes = "govuk-heading-xl")
-
-  @p(Text(message).asHtml.toString)
+object Headers {
+  val X_CLIENT_ID: String = "x-client-id"
+  val X_SDES_KEY: String = "X-SDES-Key"
 }

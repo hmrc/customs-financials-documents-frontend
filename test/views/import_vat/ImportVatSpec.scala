@@ -28,7 +28,7 @@ import utils.SpecBase
 import viewmodels.VatViewModel
 import views.html.import_vat.import_vat
 import models.{VatCertificatesByMonth, VatCertificatesForEori}
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.mustBe
 import utils.CommonTestData.{
   DAY_28, EORI_NUMBER, FIVE_MONTHS, FOUR_MONTHS, ONE_MONTH, SIX_MONTHS, THREE_MONTHS,
   TWO_MONTHS

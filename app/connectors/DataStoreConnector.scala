@@ -17,18 +17,19 @@
 package connectors
 
 import config.AppConfig
-import models._
+import models.*
 import play.api.Logging
 import play.api.http.Status.NOT_FOUND
 import services.MetricsReporterService
 import uk.gov.hmrc.auth.core.retrieve.Email
-import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
+import uk.gov.hmrc.http.HttpReads.Implicits.*
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps, UpstreamErrorResponse}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DataStoreConnector @Inject()(httpClient: HttpClient,
+class DataStoreConnector @Inject()(httpClient: HttpClientV2,
                                    metricsReporter: MetricsReporterService,
                                    appConfig: AppConfig)(implicit ec: ExecutionContext) extends Logging {
 
@@ -37,7 +38,9 @@ class DataStoreConnector @Inject()(httpClient: HttpClient,
     val emptyEoriHistory = Seq(EoriHistory(eori, None, None))
 
     metricsReporter.withResponseTimeLogging("customs-data-store.get.eori-history") {
-      httpClient.GET[EoriHistoryResponse](dataStoreEndpoint).map(response => response.eoriHistory)
+      httpClient.get(url"$dataStoreEndpoint")
+        .execute[EoriHistoryResponse]
+        .map(response => response.eoriHistory)
         .recover { case e =>
           logger.error(s"DATASTORE-E-EORI-HISTORY-ERROR: ${e.getClass.getName}")
           emptyEoriHistory
@@ -49,7 +52,7 @@ class DataStoreConnector @Inject()(httpClient: HttpClient,
     val dataStoreEndpoint = s"${appConfig.customsDataStore}/eori/$eori/verified-email"
 
     metricsReporter.withResponseTimeLogging(resourceName = "customs-data-store.get.email") {
-      httpClient.GET[EmailResponse](dataStoreEndpoint).map {
+      httpClient.get(url"$dataStoreEndpoint").execute[EmailResponse].map {
         case EmailResponse(Some(address), _, None) => Right(Email(address))
         case EmailResponse(Some(email), _, Some(_)) => Left(UndeliverableEmail(email))
         case _ => Left(UnverifiedEmail)
@@ -62,20 +65,24 @@ class DataStoreConnector @Inject()(httpClient: HttpClient,
   def verifiedEmail(implicit hc: HeaderCarrier): Future[EmailVerifiedResponse] = {
     val emailDisplayApiUrl = s"${appConfig.customsDataStore}/subscriptions/email-display"
 
-    httpClient.GET[EmailVerifiedResponse](emailDisplayApiUrl).recover {
-      case _ =>
-        logger.error(s"Error occurred while calling API $emailDisplayApiUrl")
-        EmailVerifiedResponse(None)
-    }
+    httpClient.get(url"$emailDisplayApiUrl")
+      .execute[EmailVerifiedResponse]
+      .recover {
+        case _ =>
+          logger.error(s"Error occurred while calling API $emailDisplayApiUrl")
+          EmailVerifiedResponse(None)
+      }
   }
 
   def retrieveUnverifiedEmail(implicit hc: HeaderCarrier): Future[EmailUnverifiedResponse] = {
     val unverifiedEmailDisplayApiUrl = s"${appConfig.customsDataStore}/subscriptions/unverified-email-display"
 
-    httpClient.GET[EmailUnverifiedResponse](unverifiedEmailDisplayApiUrl).recover {
-      case _ =>
-        logger.error(s"Error occurred while calling API $unverifiedEmailDisplayApiUrl")
-        EmailUnverifiedResponse(None)
-    }
+    httpClient.get(url"$unverifiedEmailDisplayApiUrl")
+      .execute[EmailUnverifiedResponse]
+      .recover {
+        case _ =>
+          logger.error(s"Error occurred while calling API $unverifiedEmailDisplayApiUrl")
+          EmailUnverifiedResponse(None)
+      }
   }
 }

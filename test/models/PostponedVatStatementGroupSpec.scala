@@ -16,7 +16,8 @@
 
 package models
 
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.mustBe
+import org.mockito.Mockito.when
 import play.api.{Application, inject}
 import services.DateTimeService
 import utils.CommonTestData._

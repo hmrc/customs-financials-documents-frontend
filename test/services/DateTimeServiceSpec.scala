@@ -16,7 +16,7 @@
 
 package services
 
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.mustBe
 import play.api.test.Helpers._
 import utils.CommonTestData.{DAY_20, HOUR_12, MINUTES_30, MONTH_12, YEAR_2027}
 import utils.SpecBase

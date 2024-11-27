@@ -41,7 +41,8 @@
     appConfig: config.AppConfig
 )
 
-@layout(pageTitle = Some(messages("cf.account.pvat.title")) , backLink = Some(appConfig.customsFinancialsFrontendHomepage)) {
+@layout(pageTitle = Some(messages("cf.account.pvat.title")),
+        backLinkUrl = Some(appConfig.customsFinancialsFrontendHomepage)) {
 
 @h1(msg = "cf.account.pvat.title", classes = "govuk-heading-xl  govuk-!-margin-bottom-6")
 

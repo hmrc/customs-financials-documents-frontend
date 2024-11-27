@@ -25,7 +25,9 @@ import models.{EoriHistory, VatCertificateFile, VatCertificatesByMonth, VatCerti
 import navigation.Navigator
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers.anyString
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.mustBe
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.test.Helpers._
 import play.api.{Application, inject}
 import utils.CommonTestData.{
@@ -76,7 +78,7 @@ class VatControllerSpec extends SpecBase {
         .thenReturn(Future.successful(Seq(vatCertificateFile)))
 
       running(app) {
-        val request = fakeRequest(GET, routes.VatController.showVatAccount.url)
+        val request = fakeRequest(GET, routes.VatController.showVatAccount().url)
         val result = route(app, request).value
 
         status(result) mustBe OK
@@ -90,7 +92,7 @@ class VatControllerSpec extends SpecBase {
         .thenReturn(Future.failed(new RuntimeException("Something went wrong")))
 
       running(app) {
-        val request = fakeRequest(GET, routes.VatController.showVatAccount.url)
+        val request = fakeRequest(GET, routes.VatController.showVatAccount().url)
         val result = route(app, request).value
 
         status(result) mustBe SEE_OTHER
@@ -209,7 +211,7 @@ class VatControllerSpec extends SpecBase {
         .thenReturn(Future.successful(true))
 
       running(app) {
-        val request = fakeRequest(GET, routes.VatController.showVatAccount.url)
+        val request = fakeRequest(GET, routes.VatController.showVatAccount().url)
         val result = route(app, request).value
 
         status(result) mustBe OK
@@ -260,7 +262,7 @@ class VatControllerSpec extends SpecBase {
         .thenReturn(Future.successful(true))
 
       running(app) {
-        val request = fakeRequest(GET, routes.VatController.showVatAccount.url)
+        val request = fakeRequest(GET, routes.VatController.showVatAccount().url)
         val result = route(app, request).value
 
         status(result) mustBe OK
@@ -305,7 +307,7 @@ class VatControllerSpec extends SpecBase {
         .thenReturn(Future.successful(true))
 
       running(app) {
-        val request = fakeRequest(GET, routes.VatController.showVatAccount.url)
+        val request = fakeRequest(GET, routes.VatController.showVatAccount().url)
         val result = route(app, request).value
 
         status(result) mustBe OK
@@ -368,7 +370,7 @@ class VatControllerSpec extends SpecBase {
         .thenReturn(Future.successful(true))
 
       running(app) {
-        val request = fakeRequest(GET, routes.VatController.showVatAccount.url)
+        val request = fakeRequest(GET, routes.VatController.showVatAccount().url)
         val result = route(app, request).value
 
         status(result) mustBe OK
@@ -430,7 +432,7 @@ class VatControllerSpec extends SpecBase {
         .thenReturn(Future.successful(true))
 
       running(app) {
-        val request = fakeRequest(GET, routes.VatController.showVatAccount.url)
+        val request = fakeRequest(GET, routes.VatController.showVatAccount().url)
         val result = route(app, request).value
 
         status(result) mustBe OK
@@ -509,7 +511,7 @@ class VatControllerSpec extends SpecBase {
         .thenReturn(Future.successful(true))
 
       running(app) {
-        val request = fakeRequest(GET, routes.VatController.showVatAccount.url)
+        val request = fakeRequest(GET, routes.VatController.showVatAccount().url)
         val result = route(app, request).value
 
         status(result) mustBe OK

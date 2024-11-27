@@ -30,7 +30,7 @@ class Navigator @Inject()() {
 
   def backLinkUrlForServiceUnavailablePage(id: String): Option[String] =
     id match {
-      case pageId if pageId == importVatPageId => Some(controllers.routes.VatController.showVatAccount.url)
+      case pageId if pageId == importVatPageId => Some(controllers.routes.VatController.showVatAccount().url)
 
       case pageId if pageId == importVatNotAvailablePageId =>
         Some(controllers.routes.VatController.certificatesUnavailablePage().url)

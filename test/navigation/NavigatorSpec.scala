@@ -16,7 +16,7 @@
 
 package navigation
 
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.mustBe
 import utils.SpecBase
 
 class NavigatorSpec extends SpecBase {
@@ -27,7 +27,7 @@ class NavigatorSpec extends SpecBase {
       val navigatorOb = new Navigator()
 
       navigatorOb.backLinkUrlForServiceUnavailablePage(navigatorOb.importVatPageId) mustBe
-        Some(controllers.routes.VatController.showVatAccount.url)
+        Some(controllers.routes.VatController.showVatAccount().url)
 
       navigatorOb.backLinkUrlForServiceUnavailablePage(navigatorOb.postponedVatPageId) mustBe
         Some(controllers.routes.PostponedVatController.show(Some("CDS")).url)

@@ -40,7 +40,8 @@
     appConfig: config.AppConfig
 )
 
-@layout(pageTitle = Some(messages("cf.account.vat.title")), backLink = Some(appConfig.customsFinancialsFrontendHomepage)) {
+@layout(pageTitle = Some(messages("cf.account.vat.title")),
+        backLinkUrl = Some(appConfig.customsFinancialsFrontendHomepage)) {
 
     @h1("cf.account.vat.title", id = Some("import-vat-certificates-heading"), classes = "govuk-heading-xl")
 

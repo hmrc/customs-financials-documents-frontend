@@ -16,7 +16,7 @@
 
 package views.helpers
 
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.mustBe
 import utils.SpecBase
 import views.helpers.Formatters.fileSize
 
