@@ -76,14 +76,17 @@ class SdesConnector @Inject()(httpClient: HttpClientV2,
     )
   }
 
+  private def addXHeaders(hc: HeaderCarrier, key: String): HeaderCarrier =
+    hc.copy(extraHeaders = hc.extraHeaders ++ Seq("x-client-id" -> appConfig.xClientIdHeader, "X-SDES-Key" -> key))
+
   private def getSdesFiles[A, B <: SdesFile](urlLink: String,
                                              key: String,
                                              metricsName: String,
                                              transform: Seq[A] => Seq[B])
-                                            (implicit readSeq: HttpReads[Seq[A]]): Future[Seq[B]] = {
+                                            (implicit readSeq: HttpReads[Seq[A]], hc: HeaderCarrier): Future[Seq[B]] = {
     metricsReporterService.withResponseTimeLogging(metricsName) {
-      httpClient.get(url"$urlLink")(HeaderCarrier())
-        .setHeader(("x-client-id" -> appConfig.xClientIdHeader), ("X-SDES-Key" -> key))
+      httpClient.get(url"$urlLink")
+        .setHeader(addXHeaders(hc, key).extraHeaders: _*)
         .execute[HttpResponse]
         .map(readSeq.read("GET", urlLink, _))
         .map(transform)
