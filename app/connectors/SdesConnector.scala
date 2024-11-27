@@ -17,6 +17,7 @@
 package connectors
 
 import config.AppConfig
+import config.Headers.{X_CLIENT_ID, X_SDES_KEY}
 import models.FileFormat.{SdesFileFormats, filterFileFormats}
 import models.FileRole.{C79Certificate, PostponedVATStatement, SecurityStatement}
 import models.*
@@ -77,7 +78,7 @@ class SdesConnector @Inject()(httpClient: HttpClientV2,
   }
 
   private def addXHeaders(hc: HeaderCarrier, key: String): HeaderCarrier =
-    hc.copy(extraHeaders = hc.extraHeaders ++ Seq("x-client-id" -> appConfig.xClientIdHeader, "X-SDES-Key" -> key))
+    hc.copy(extraHeaders = hc.extraHeaders ++ Seq(X_CLIENT_ID -> appConfig.xClientIdHeader, X_SDES_KEY -> key))
 
   private def getSdesFiles[A, B <: SdesFile](urlLink: String,
                                              key: String,
