@@ -40,7 +40,8 @@ class FinancialsApiConnectorSpec extends SpecBase {
       })
 
     when(mockHttpClient.delete(any)(any)).thenReturn(requestBuilder)
-    when(requestBuilder.execute(any, any)).thenReturn(Future.successful(HttpResponse(OK, emptyString)))
+    when(requestBuilder.execute(any, any))
+      .thenReturn(Future.successful(HttpResponse(OK, emptyString)))
 
     running(app) {
       val result = await(connector.deleteNotification("someEori", FileRole.C79Certificate))

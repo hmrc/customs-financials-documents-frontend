@@ -96,7 +96,9 @@
     templateOverrides = TemplateOverrides(
         additionalHeadBlock = Some(additionalHead)),
     banners = Banners(
-        phaseBanner = Some(PhaseBanner(tag = Some(Tag(content = Text("BETA"))), content = HtmlContent(phaseBannerContent))),
+        phaseBanner = Some(PhaseBanner(
+                            tag = Some(Tag(content = Text("BETA"))),
+                            content = HtmlContent(phaseBannerContent))),
         userResearchBanner = Some(UserResearchBanner(url = appConfig.helpMakeGovUkBetterUrl))
     ),
     isWelshTranslationAvailable = welshToggle

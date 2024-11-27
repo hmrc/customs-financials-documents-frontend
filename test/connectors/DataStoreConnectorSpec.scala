@@ -92,7 +92,6 @@ class DataStoreConnectorSpec extends SpecBase {
         })
 
       when(mockHttpClient.get(any)(any)).thenReturn(requestBuilder)
-
       when(requestBuilder.execute(any, any)).thenReturn(Future.successful(
         EmailResponse(Some("some@email.com"), None, Some(UndeliverableInformation("subject", "eventId", "groupId")))
       ))

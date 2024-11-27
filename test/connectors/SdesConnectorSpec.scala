@@ -67,9 +67,7 @@ class SdesConnectorSpec extends SpecBase {
         val sdesService: SdesConnector = app.injector.instanceOf[SdesConnector]
 
         when(requestBuilder.setHeader(any[(String, String)]())).thenReturn(requestBuilder)
-
         when(mockHttp.get(any)(any)).thenReturn(requestBuilder)
-
         when(requestBuilder.execute(any, any))
           .thenReturn(Future.successful(
             HttpResponse(Status.OK, Json.toJson(securityStatementFilesWithUnkownFileTypesSdesResponse).toString())
@@ -88,9 +86,7 @@ class SdesConnectorSpec extends SpecBase {
         val numberOfStatements: Int = securityStatementFilesSdesResponse.length
 
         when(requestBuilder.setHeader(any[(String, String)]())).thenReturn(requestBuilder)
-
         when(mockHttp.get(any)(any)).thenReturn(requestBuilder)
-
         when(requestBuilder.execute(any, any))
           .thenReturn(
             Future.successful(HttpResponse(Status.OK, Json.toJson(securityStatementFilesSdesResponse).toString()))

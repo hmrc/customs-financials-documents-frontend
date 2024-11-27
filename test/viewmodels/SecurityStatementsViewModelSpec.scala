@@ -20,7 +20,6 @@ import config.AppConfig
 import models.FileRole.SecurityStatement
 import models.{EoriHistory, SecurityStatementsByPeriod, SecurityStatementsForEori}
 import org.scalatest.matchers.must.Matchers.mustBe
-import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.Application
 import play.api.i18n.Messages
