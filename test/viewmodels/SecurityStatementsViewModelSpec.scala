@@ -24,11 +24,11 @@ import org.mockito.Mockito.when
 import play.api.Application
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
-import utils.CommonTestData.DAY_28
+import utils.CommonTestData.{DAY_28, MONTH_11, YEAR_2019}
 import utils.SpecBase
 import utils.Utils.{
-  ddComponent, divComponent, dlComponent, dtComponent, h1Component,
-  linkComponent, pComponent, spanComponent
+  ddComponent, divComponent, dlComponent, dtComponent,
+  h1Component, linkComponent, pComponent, spanComponent
 }
 import views.html.components.{h2Inner, h3Inner, missing_documents_guidance, pInner, requestedStatements}
 
@@ -58,7 +58,7 @@ class SecurityStatementsViewModelSpec extends SpecBase {
     val app: Application = application().build()
     implicit val message: Messages = messages(app)
 
-    val date: LocalDate = LocalDate.now().withDayOfMonth(DAY_28)
+    val date: LocalDate = LocalDate.of(YEAR_2019, MONTH_11, DAY_28)
 
     val currentStatement: SecurityStatementsByPeriod = SecurityStatementsByPeriod(
       startDate = date,
@@ -103,7 +103,7 @@ class SecurityStatementsViewModelSpec extends SpecBase {
 
     private def createDateCell(): HtmlFormat.Appendable = {
       dtComponent(
-        content = Html("November 2024"),
+        content = Html("November 2019"),
         classes = Some("govuk-summary-list__value"),
         id = Some("statements-list-0-row-0-date-cell-csv"))
     }
@@ -120,7 +120,7 @@ class SecurityStatementsViewModelSpec extends SpecBase {
 
     private def createUnavailableCsvCell(): HtmlFormat.Appendable = {
       HtmlFormat.fill(Seq(
-        spanComponent(key = "CSV for November 2024 unavailable", classes = Some("govuk-visually-hidden")),
+        spanComponent(key = "CSV for November 2019 unavailable", classes = Some("govuk-visually-hidden")),
         spanComponent(key = "Unavailable", ariaHidden = Some("true"))))
     }
 
