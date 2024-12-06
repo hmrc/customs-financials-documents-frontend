@@ -29,7 +29,7 @@ cf.account.pvat.your-statements.heading=Your statements for the last 6 months
 cf.account.pvat.older-statements.heading=Statements older than 6 months
 cf.account.pvat.older-statements.description.1=There are 2 ways to request statements.
 cf.account.pvat.older-statements.description.2=For declarations made using the Customs Declaration Service,
-cf.account.pvat.older-statements.description.link=complete and send a statement request.
+cf.account.pvat.older-statements.description.link=complete and send a certificate request.
 cf.account.pvat.older-statements.description.3=For declarations made using CHIEF, email your request to
 # ------------------------------------------------------------------------
 
