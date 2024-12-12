@@ -44,6 +44,8 @@ class ImportVatNotAvailableSpec extends SpecBase {
       view.getElementById("vat.support.message.heading").html() mustBe
         messages(app)("cf.account.vat.support.heading")
 
+      view.html().contains(messages(app)("cf.account.vat.older-certificates.description.link"))
+      view.html().contains(messages(app)("cf.account.vat.older-certificates.description.1"))
       view.html().contains(messages(app)("cf.account.vat.older-certificates.description.2"))
       view.html().contains(messages(app)("cf.account.vat.support.link"))
       view.html().contains(serviceUnavailableUrl)

@@ -59,7 +59,6 @@ class ImportVatSpec extends SpecBase {
       view.html().contains("cf.account.vat.older-certificates.description.2")
       view.html().contains("cf.account.vat.older-certificates.description.link")
       view.html().contains("cf.account.vat.older-certificates.description.1")
-      view.html().contains("cf.account.c-79.older-certificates.description.link")
       view.html().contains(appConfig.c79EmailAddressHref)
       view.html().contains(appConfig.c79EmailAddress)
       view.html().contains(serviceUnavailableUrl.getOrElse(emptyString))
