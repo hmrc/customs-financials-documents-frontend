@@ -60,4 +60,5 @@ lazy val scoverageSettings = {
   )
 }
 
-addCommandAlias("runAllChecks", ";clean;compile;coverage;test;it/test;scalafmtAll;scalastyle;Test/scalastyle;coverageReport")
+addCommandAlias("runAllChecks",
+  ";clean;compile;coverage;test;it/test;scalafmtAll;scalastyle;Test/scalastyle;coverageReport")
