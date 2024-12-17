@@ -36,18 +36,19 @@ import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class VatController @Inject()(val authenticate: IdentifierAction,
-                              val resolveSessionId: SessionIdAction,
-                              val sdesConnector: SdesConnector,
-                              dateTimeService: DateTimeService,
-                              financialsApiConnector: FinancialsApiConnector,
-                              checkEmailIsVerified: EmailAction,
-                              importVatView: import_vat,
-                              importVatNotAvailableView: import_vat_not_available,
-                              navigator: Navigator,
-                              implicit val mcc: MessagesControllerComponents)
-                             (implicit val appConfig: AppConfig, val errorHandler: ErrorHandler, ec: ExecutionContext)
-  extends FrontendController(mcc)
+class VatController @Inject() (
+  val authenticate: IdentifierAction,
+  val resolveSessionId: SessionIdAction,
+  val sdesConnector: SdesConnector,
+  dateTimeService: DateTimeService,
+  financialsApiConnector: FinancialsApiConnector,
+  checkEmailIsVerified: EmailAction,
+  importVatView: import_vat,
+  importVatNotAvailableView: import_vat_not_available,
+  navigator: Navigator,
+  implicit val mcc: MessagesControllerComponents
+)(implicit val appConfig: AppConfig, val errorHandler: ErrorHandler, ec: ExecutionContext)
+    extends FrontendController(mcc)
     with I18nSupport {
 
   val log: LoggerLike = Logger(this.getClass)
@@ -60,18 +61,17 @@ class VatController @Inject()(val authenticate: IdentifierAction,
       (
         for {
           allCertificates <- Future.sequence(req.allEoriHistory.map(getCertificates(_)))
-          viewModel = VatViewModel(allCertificates.sorted)
+          viewModel        = VatViewModel(allCertificates.sorted)
 
           historicUrl = if (appConfig.historicStatementsEnabled) {
-            appConfig.historicRequestUrl(C79Certificate)
-          } else {
-            routes.ServiceUnavailableController.onPageLoad(navigator.importVatPageId).url
-          }
+                          appConfig.historicRequestUrl(C79Certificate)
+                        } else {
+                          routes.ServiceUnavailableController.onPageLoad(navigator.importVatPageId).url
+                        }
         } yield Ok(importVatView(viewModel, Some(historicUrl)))
-        ).recover {
-        case e =>
-          log.error(s"Unable to retrieve VAT certificates :${e.getMessage}")
-          Redirect(routes.VatController.certificatesUnavailablePage())
+      ).recover { case e =>
+        log.error(s"Unable to retrieve VAT certificates :${e.getMessage}")
+        Redirect(routes.VatController.certificatesUnavailablePage())
       }
     }
 
@@ -87,13 +87,19 @@ class VatController @Inject()(val authenticate: IdentifierAction,
       Future.successful(Ok(importVatNotAvailableView(Some(historicUrl))))
     }
 
-  private def getCertificates(historicEori: EoriHistory)
-                             (implicit req: AuthenticatedRequestWithSessionId[_]): Future[VatCertificatesForEori] = {
+  private def getCertificates(
+    historicEori: EoriHistory
+  )(implicit req: AuthenticatedRequestWithSessionId[_]): Future[VatCertificatesForEori] = {
 
-    val certificates = sdesConnector.getVatCertificates(historicEori.eori)
-      .map(_.groupBy(_.monthAndYear).map {
-        case (month, filesForMonth) => VatCertificatesByMonth(month, filesForMonth)
-      }.toList)
+    val certificates = sdesConnector
+      .getVatCertificates(historicEori.eori)
+      .map(
+        _.groupBy(_.monthAndYear)
+          .map { case (month, filesForMonth) =>
+            VatCertificatesByMonth(month, filesForMonth)
+          }
+          .toList
+      )
       .map(_.partition(_.files.exists(_.metadata.statementRequestId.isDefined)))
       .map { case (requested, current) =>
         val currentCertificatesLast6Months = filterLastSixMonthsStatements(current)
@@ -103,28 +109,32 @@ class VatController @Inject()(val authenticate: IdentifierAction,
     populateEmptyMonths(certificates)
   }
 
-  private def populateEmptyMonths(certificates: Future[VatCertificatesForEori])
-                                 (implicit messages: Messages): Future[VatCertificatesForEori] = {
+  private def populateEmptyMonths(
+    certificates: Future[VatCertificatesForEori]
+  )(implicit messages: Messages): Future[VatCertificatesForEori] =
     for {
-      certs <- certificates
-      monthList = MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE.map(n => dateTimeService.systemDateTime().toLocalDate.minusMonths(n))
+      certs    <- certificates
+      monthList =
+        MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE.map(n => dateTimeService.systemDateTime().toLocalDate.minusMonths(n))
 
       response = certs.copy(
-        currentCertificates = dropImmediatePreviousMonthCertIfUnavailable(populateEmptyMonth(monthList, certs)))
+                   currentCertificates =
+                     dropImmediatePreviousMonthCertIfUnavailable(populateEmptyMonth(monthList, certs))
+                 )
     } yield response
-  }
 
-  private def populateEmptyMonth(monthList: IndexedSeq[LocalDate],
-                                 certs: VatCertificatesForEori)
-                                (implicit messages: Messages): Seq[VatCertificatesByMonth] = {
-    monthList.map {
-      date =>
-        certs.currentCertificates
-          .find(_.date.getMonth == date.getMonth).getOrElse(VatCertificatesByMonth(date, Seq.empty))
+  private def populateEmptyMonth(monthList: IndexedSeq[LocalDate], certs: VatCertificatesForEori)(implicit
+    messages: Messages
+  ): Seq[VatCertificatesByMonth] =
+    monthList.map { date =>
+      certs.currentCertificates
+        .find(_.date.getMonth == date.getMonth)
+        .getOrElse(VatCertificatesByMonth(date, Seq.empty))
     }
-  }
 
-  private def dropImmediatePreviousMonthCertIfUnavailable(currentCerts: Seq[VatCertificatesByMonth]): Seq[VatCertificatesByMonth] =
+  private def dropImmediatePreviousMonthCertIfUnavailable(
+    currentCerts: Seq[VatCertificatesByMonth]
+  ): Seq[VatCertificatesByMonth] =
     if (isDayBefore20ThDayOfTheMonth(dateTimeService.systemDateTime().toLocalDate) && currentCerts.head.files.isEmpty) {
       currentCerts.drop(1)
     } else {

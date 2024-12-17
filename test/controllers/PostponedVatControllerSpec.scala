@@ -69,7 +69,7 @@ class PostponedVatControllerSpec extends SpecBase {
 
       running(app) {
         val request = fakeRequest(GET, routes.PostponedVatController.show(Some(cdsLocation)).url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
         status(result) mustBe OK
 
@@ -79,7 +79,9 @@ class PostponedVatControllerSpec extends SpecBase {
             hasRequestedStatements = true,
             isCdsOnly = true,
             location = Some(cdsLocation),
-            urls = pvatUrls)(messages(app), mockDateTimeService))(request, messages(app), config).toString()
+            urls = pvatUrls
+          )(messages(app), mockDateTimeService)
+        )(request, messages(app), config).toString()
 
         contentAsString(result).contains(serviceUnavailableUrl)
         contentAsString(result) should not include "CHIEF statement -"
@@ -108,7 +110,7 @@ class PostponedVatControllerSpec extends SpecBase {
 
       running(app) {
         val request = fakeRequest(GET, routes.PostponedVatController.show(Some(cdsLocation)).url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
         status(result) mustBe OK
 
@@ -119,127 +121,137 @@ class PostponedVatControllerSpec extends SpecBase {
 
     "display the PostponedVat page with one column(CDS) " +
       "and Ignore historic CHIEF statements older than 6 months" in new Setup {
-      config.historicStatementsEnabled = false
+        config.historicStatementsEnabled = false
 
-      val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("postponed-vat").url
+        val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("postponed-vat").url
 
-      when(mockDataStoreConnector.getEmail(any)(any))
-        .thenReturn(Future.successful(Right(Email(emailValue))))
+        when(mockDataStoreConnector.getEmail(any)(any))
+          .thenReturn(Future.successful(Right(Email(emailValue))))
 
-      when(mockSdesConnector.getPostponedVatStatements(eqTo(eori))(any))
-        .thenReturn(Future.successful(postponedVatStatementFiles))
+        when(mockSdesConnector.getPostponedVatStatements(eqTo(eori))(any))
+          .thenReturn(Future.successful(postponedVatStatementFiles))
 
-      when(mockSdesConnector.getPostponedVatStatements(eqTo(historicEori))(any))
-        .thenReturn(Future.successful(historicPostponedVatStatementFilesWithCHIEF))
+        when(mockSdesConnector.getPostponedVatStatements(eqTo(historicEori))(any))
+          .thenReturn(Future.successful(historicPostponedVatStatementFilesWithCHIEF))
 
-      when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
-        .thenReturn(Future.successful(true))
+        when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+          .thenReturn(Future.successful(true))
 
-      when(mockDateTimeService.systemDateTime())
-        .thenReturn(date.atStartOfDay())
+        when(mockDateTimeService.systemDateTime())
+          .thenReturn(date.atStartOfDay())
 
-      running(app) {
-        val request = fakeRequest(GET, routes.PostponedVatController.show(Some(cdsLocation)).url)
-        val result = route(app, request).value
+        running(app) {
+          val request = fakeRequest(GET, routes.PostponedVatController.show(Some(cdsLocation)).url)
+          val result  = route(app, request).value
 
-        status(result) mustBe OK
+          status(result) mustBe OK
 
-        contentAsString(result).contains(serviceUnavailableUrl)
-        contentAsString(result) should not include "CHIEF statement -"
+          contentAsString(result).contains(serviceUnavailableUrl)
+          contentAsString(result) should not include "CHIEF statement -"
+        }
       }
-    }
 
     "display the PostponedVat page with no statements text when statement is not available for the " +
       "immediate previous month and accessed after 19th of the month" in new Setup {
 
-      val currentDate: LocalDate = LocalDate.of(date.getYear, date.getMonthValue, DAY_20)
+        val currentDate: LocalDate = LocalDate.of(date.getYear, date.getMonthValue, DAY_20)
 
-      when(mockDataStoreConnector.getEmail(any)(any))
-        .thenReturn(Future.successful(Right(Email(emailValue))))
+        when(mockDataStoreConnector.getEmail(any)(any))
+          .thenReturn(Future.successful(Right(Email(emailValue))))
 
-      when(mockSdesConnector.getPostponedVatStatements(eqTo(eori))(any))
-        .thenReturn(Future.successful(postponedVatStatementFilesWithImmediateUnavailable))
+        when(mockSdesConnector.getPostponedVatStatements(eqTo(eori))(any))
+          .thenReturn(Future.successful(postponedVatStatementFilesWithImmediateUnavailable))
 
-      when(mockSdesConnector.getPostponedVatStatements(eqTo(historicEori))(any))
-        .thenReturn(Future.successful(historicPostponedVatStatementFiles))
+        when(mockSdesConnector.getPostponedVatStatements(eqTo(historicEori))(any))
+          .thenReturn(Future.successful(historicPostponedVatStatementFiles))
 
-      when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
-        .thenReturn(Future.successful(true))
+        when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+          .thenReturn(Future.successful(true))
 
-      when(mockDateTimeService.systemDateTime()).thenReturn(currentDate.atStartOfDay())
+        when(mockDateTimeService.systemDateTime()).thenReturn(currentDate.atStartOfDay())
 
-      running(app) {
-        val request = fakeRequest(GET, routes.PostponedVatController.show(Some(cdsLocation)).url)
-        val result = route(app, request).value
+        running(app) {
+          val request = fakeRequest(GET, routes.PostponedVatController.show(Some(cdsLocation)).url)
+          val result  = route(app, request).value
 
-        status(result) mustBe OK
+          status(result) mustBe OK
 
-        contentAsString(result) mustBe view(
-          PostponedVatViewModel(
-            postponedVatStatementFilesWithImmediateUnavailable,
-            hasRequestedStatements = true,
-            isCdsOnly = true,
-            location = Some(cdsLocation),
-            urls = pvatUrls.copy(serviceUnavailableUrl = Some(config.historicRequestUrl(PostponedVATStatement)))
-          )(messages(app), mockDateTimeService))(request, messages(app), config).toString()
+          contentAsString(result) mustBe view(
+            PostponedVatViewModel(
+              postponedVatStatementFilesWithImmediateUnavailable,
+              hasRequestedStatements = true,
+              isCdsOnly = true,
+              location = Some(cdsLocation),
+              urls = pvatUrls.copy(serviceUnavailableUrl = Some(config.historicRequestUrl(PostponedVATStatement)))
+            )(messages(app), mockDateTimeService)
+          )(request, messages(app), config).toString()
 
-        val doc = Jsoup.parse(contentAsString(result))
-        val periodElement = Formatters.dateAsMonthAndYear(
-          date.minusMonths(ONE_MONTH))(messages(app)).replace(singleSpace, hyphen).toLowerCase
+          val doc           = Jsoup.parse(contentAsString(result))
+          val periodElement = Formatters
+            .dateAsMonthAndYear(date.minusMonths(ONE_MONTH))(messages(app))
+            .replace(singleSpace, hyphen)
+            .toLowerCase
 
-        doc.getElementById(s"period-$periodElement").children().text() should include(messages(app)(
-          "cf.common.not-available", Formatters.dateAsMonth(date.minusMonths(ONE_MONTH))(messages(app))
-        ))
+          doc.getElementById(s"period-$periodElement").children().text() should include(
+            messages(app)(
+              "cf.common.not-available",
+              Formatters.dateAsMonth(date.minusMonths(ONE_MONTH))(messages(app))
+            )
+          )
+        }
       }
-    }
 
     "not display the immediate previous month statement on PostponedVat page when accessed " +
       "before 20th day of the month and statement is not available" in new Setup {
-      config.historicStatementsEnabled = false
+        config.historicStatementsEnabled = false
 
-      val currentDate: LocalDate = LocalDate.of(date.getYear, date.getMonthValue, DAY_12)
+        val currentDate: LocalDate = LocalDate.of(date.getYear, date.getMonthValue, DAY_12)
 
-      when(mockDataStoreConnector.getEmail(any)(any))
-        .thenReturn(Future.successful(Right(Email(emailValue))))
+        when(mockDataStoreConnector.getEmail(any)(any))
+          .thenReturn(Future.successful(Right(Email(emailValue))))
 
-      when(mockSdesConnector.getPostponedVatStatements(eqTo(eori))(any))
-        .thenReturn(Future.successful(postponedVatStatementFilesWithImmediateUnavailable))
+        when(mockSdesConnector.getPostponedVatStatements(eqTo(eori))(any))
+          .thenReturn(Future.successful(postponedVatStatementFilesWithImmediateUnavailable))
 
-      when(mockSdesConnector.getPostponedVatStatements(eqTo(historicEori))(any))
-        .thenReturn(Future.successful(historicPostponedVatStatementFiles))
+        when(mockSdesConnector.getPostponedVatStatements(eqTo(historicEori))(any))
+          .thenReturn(Future.successful(historicPostponedVatStatementFiles))
 
-      when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
-        .thenReturn(Future.successful(true))
+        when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+          .thenReturn(Future.successful(true))
 
-      when(mockDateTimeService.systemDateTime())
-        .thenReturn(currentDate.atStartOfDay())
+        when(mockDateTimeService.systemDateTime())
+          .thenReturn(currentDate.atStartOfDay())
 
-      running(app) {
-        val request = fakeRequest(GET, routes.PostponedVatController.show(Some(cdsLocation)).url)
-        val result = route(app, request).value
-        status(result) mustBe OK
+        running(app) {
+          val request = fakeRequest(GET, routes.PostponedVatController.show(Some(cdsLocation)).url)
+          val result  = route(app, request).value
+          status(result) mustBe OK
 
-        contentAsString(result) mustBe view(
-          PostponedVatViewModel(
-            postponedVatStatementFilesWithImmediateUnavailable,
-            hasRequestedStatements = true,
-            isCdsOnly = true,
-            location = Some(cdsLocation),
-            urls = pvatUrls)(messages(app), mockDateTimeService))(request, messages(app), config).toString()
+          contentAsString(result) mustBe view(
+            PostponedVatViewModel(
+              postponedVatStatementFilesWithImmediateUnavailable,
+              hasRequestedStatements = true,
+              isCdsOnly = true,
+              location = Some(cdsLocation),
+              urls = pvatUrls
+            )(messages(app), mockDateTimeService)
+          )(request, messages(app), config).toString()
 
-        val doc = Jsoup.parse(contentAsString(result))
-        val periodElement = Formatters.dateAsMonthAndYear(
-          date.minusMonths(ONE_MONTH))(messages(app)).replace(singleSpace, hyphen).toLowerCase
+          val doc           = Jsoup.parse(contentAsString(result))
+          val periodElement = Formatters
+            .dateAsMonthAndYear(date.minusMonths(ONE_MONTH))(messages(app))
+            .replace(singleSpace, hyphen)
+            .toLowerCase
 
-        Option(doc.getElementById(s"period-$periodElement")) mustBe empty
+          Option(doc.getElementById(s"period-$periodElement")) mustBe empty
+        }
       }
-    }
 
     "display historic statements Url when feature is enabled" in new Setup {
       config.historicStatementsEnabled = true
 
       val historicRequestUrl: String = config.historicRequestUrl(PostponedVATStatement)
-      val currentDate: LocalDate = LocalDate.of(date.getYear, date.getMonthValue, DAY_12)
+      val currentDate: LocalDate     = LocalDate.of(date.getYear, date.getMonthValue, DAY_12)
 
       when(mockDataStoreConnector.getEmail(any)(any))
         .thenReturn(Future.successful(Right(Email(emailValue))))
@@ -258,7 +270,7 @@ class PostponedVatControllerSpec extends SpecBase {
 
       running(app) {
         val request = fakeRequest(GET, routes.PostponedVatController.show(Some(cdsLocation)).url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
         status(result) mustBe OK
 
         contentAsString(result) mustBe view(
@@ -267,8 +279,9 @@ class PostponedVatControllerSpec extends SpecBase {
             hasRequestedStatements = true,
             isCdsOnly = true,
             location = Some(cdsLocation),
-            urls = pvatUrls.copy(serviceUnavailableUrl = Some(historicRequestUrl)))
-          (messages(app), mockDateTimeService))(request, messages(app), config).toString()
+            urls = pvatUrls.copy(serviceUnavailableUrl = Some(historicRequestUrl))
+          )(messages(app), mockDateTimeService)
+        )(request, messages(app), config).toString()
       }
     }
   }
@@ -276,8 +289,8 @@ class PostponedVatControllerSpec extends SpecBase {
   "statementsUnavailablePage" should {
     "display the view correctly" in {
 
-      val app = application().build()
-      val view = app.injector.instanceOf[postponed_import_vat_not_available]
+      val app       = application().build()
+      val view      = app.injector.instanceOf[postponed_import_vat_not_available]
       val appConfig = app.injector.instanceOf[AppConfig]
       val navigator = app.injector.instanceOf[Navigator]
 
@@ -286,7 +299,7 @@ class PostponedVatControllerSpec extends SpecBase {
 
       running(app) {
         val request = fakeRequest(GET, routes.PostponedVatController.statementsUnavailablePage().url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
         status(result) mustBe OK
         contentAsString(result) mustBe
@@ -313,7 +326,7 @@ class PostponedVatControllerSpec extends SpecBase {
 
       running(app) {
         val request = fakeRequest(GET, routes.PostponedVatController.show(Some(cdsLocation)).url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
         status(result) mustBe SEE_OTHER
         contentAsString(result).contains(serviceUnavailableUrl)
@@ -322,138 +335,385 @@ class PostponedVatControllerSpec extends SpecBase {
   }
 
   trait Setup {
-    val eori: String = "testEori1"
-    val historicEori: String = "testEori2"
-    val emailValue: String = "some@email.com"
-    val cdsLocation = "CDS"
+    val eori: String               = "testEori1"
+    val historicEori: String       = "testEori2"
+    val emailValue: String         = "some@email.com"
+    val cdsLocation                = "CDS"
     val statementRequestId: String = "statement-request-id"
 
     val mockFinancialsApiConnector: FinancialsApiConnector = mock[FinancialsApiConnector]
-    val mockSdesConnector: SdesConnector = mock[SdesConnector]
-    val mockDataStoreConnector: DataStoreConnector = mock[DataStoreConnector]
-    val mockDateTimeService: DateTimeService = mock[DateTimeService]
+    val mockSdesConnector: SdesConnector                   = mock[SdesConnector]
+    val mockDataStoreConnector: DataStoreConnector         = mock[DataStoreConnector]
+    val mockDateTimeService: DateTimeService               = mock[DateTimeService]
 
     val date: LocalDate = LocalDate.now()
 
     val postponedVatStatementFiles: Seq[PostponedVatStatementFile] = List(
-      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
-        PostponedVatStatementFileMetadata(yearValueOfCurrentDate(SEVEN_MONTHS),
-          monthValueOfCurrentDate(SEVEN_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
-
-      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
-        PostponedVatStatementFileMetadata(yearValueOfCurrentDate(FOUR_MONTHS),
-          monthValueOfCurrentDate(FOUR_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
-
-      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_1300000L,
-        PostponedVatStatementFileMetadata(yearValueOfCurrentDate(FIVE_MONTHS),
-          monthValueOfCurrentDate(FIVE_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
-
-      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
-        PostponedVatStatementFileMetadata(yearValueOfCurrentDate(THREE_MONTHS),
-          monthValueOfCurrentDate(THREE_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
-
-      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
-        PostponedVatStatementFileMetadata(yearValueOfCurrentDate(TWO_MONTHS),
-          monthValueOfCurrentDate(TWO_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
-
-      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
-        PostponedVatStatementFileMetadata(yearValueOfCurrentDate(ONE_MONTH),
-          monthValueOfCurrentDate(ONE_MONTH), Pdf, PostponedVATStatement, CDS, None), eori)
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_00,
+        SIZE_4096L,
+        PostponedVatStatementFileMetadata(
+          yearValueOfCurrentDate(SEVEN_MONTHS),
+          monthValueOfCurrentDate(SEVEN_MONTHS),
+          Pdf,
+          PostponedVATStatement,
+          CDS,
+          None
+        ),
+        eori
+      ),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_00,
+        SIZE_4096L,
+        PostponedVatStatementFileMetadata(
+          yearValueOfCurrentDate(FOUR_MONTHS),
+          monthValueOfCurrentDate(FOUR_MONTHS),
+          Pdf,
+          PostponedVATStatement,
+          CDS,
+          None
+        ),
+        eori
+      ),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_00,
+        SIZE_1300000L,
+        PostponedVatStatementFileMetadata(
+          yearValueOfCurrentDate(FIVE_MONTHS),
+          monthValueOfCurrentDate(FIVE_MONTHS),
+          Pdf,
+          PostponedVATStatement,
+          CDS,
+          None
+        ),
+        eori
+      ),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_00,
+        SIZE_4096L,
+        PostponedVatStatementFileMetadata(
+          yearValueOfCurrentDate(THREE_MONTHS),
+          monthValueOfCurrentDate(THREE_MONTHS),
+          Pdf,
+          PostponedVATStatement,
+          CDS,
+          None
+        ),
+        eori
+      ),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_00,
+        SIZE_4096L,
+        PostponedVatStatementFileMetadata(
+          yearValueOfCurrentDate(TWO_MONTHS),
+          monthValueOfCurrentDate(TWO_MONTHS),
+          Pdf,
+          PostponedVATStatement,
+          CDS,
+          None
+        ),
+        eori
+      ),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_00,
+        SIZE_4096L,
+        PostponedVatStatementFileMetadata(
+          yearValueOfCurrentDate(ONE_MONTH),
+          monthValueOfCurrentDate(ONE_MONTH),
+          Pdf,
+          PostponedVATStatement,
+          CDS,
+          None
+        ),
+        eori
+      )
     )
 
     val postponedVatStatementFilesWithCHIEF: Seq[PostponedVatStatementFile] = List(
-      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
-        PostponedVatStatementFileMetadata(yearValueOfCurrentDate(SEVEN_MONTHS),
-          monthValueOfCurrentDate(SEVEN_MONTHS), Pdf, PostponedVATStatement, CHIEF, None), eori),
-
-      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
-        PostponedVatStatementFileMetadata(yearValueOfCurrentDate(FOUR_MONTHS),
-          monthValueOfCurrentDate(FOUR_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
-
-      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_1300000L,
-        PostponedVatStatementFileMetadata(yearValueOfCurrentDate(FIVE_MONTHS),
-          monthValueOfCurrentDate(FIVE_MONTHS), Pdf, PostponedVATStatement, CHIEF, None), eori),
-
-      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
-        PostponedVatStatementFileMetadata(yearValueOfCurrentDate(THREE_MONTHS),
-          monthValueOfCurrentDate(THREE_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
-
-      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
-        PostponedVatStatementFileMetadata(yearValueOfCurrentDate(TWO_MONTHS),
-          monthValueOfCurrentDate(TWO_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
-
-      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
-        PostponedVatStatementFileMetadata(yearValueOfCurrentDate(ONE_MONTH),
-          monthValueOfCurrentDate(ONE_MONTH), Pdf, PostponedVATStatement, CDS, None), eori)
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_00,
+        SIZE_4096L,
+        PostponedVatStatementFileMetadata(
+          yearValueOfCurrentDate(SEVEN_MONTHS),
+          monthValueOfCurrentDate(SEVEN_MONTHS),
+          Pdf,
+          PostponedVATStatement,
+          CHIEF,
+          None
+        ),
+        eori
+      ),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_00,
+        SIZE_4096L,
+        PostponedVatStatementFileMetadata(
+          yearValueOfCurrentDate(FOUR_MONTHS),
+          monthValueOfCurrentDate(FOUR_MONTHS),
+          Pdf,
+          PostponedVATStatement,
+          CDS,
+          None
+        ),
+        eori
+      ),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_00,
+        SIZE_1300000L,
+        PostponedVatStatementFileMetadata(
+          yearValueOfCurrentDate(FIVE_MONTHS),
+          monthValueOfCurrentDate(FIVE_MONTHS),
+          Pdf,
+          PostponedVATStatement,
+          CHIEF,
+          None
+        ),
+        eori
+      ),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_00,
+        SIZE_4096L,
+        PostponedVatStatementFileMetadata(
+          yearValueOfCurrentDate(THREE_MONTHS),
+          monthValueOfCurrentDate(THREE_MONTHS),
+          Pdf,
+          PostponedVATStatement,
+          CDS,
+          None
+        ),
+        eori
+      ),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_00,
+        SIZE_4096L,
+        PostponedVatStatementFileMetadata(
+          yearValueOfCurrentDate(TWO_MONTHS),
+          monthValueOfCurrentDate(TWO_MONTHS),
+          Pdf,
+          PostponedVATStatement,
+          CDS,
+          None
+        ),
+        eori
+      ),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_00,
+        SIZE_4096L,
+        PostponedVatStatementFileMetadata(
+          yearValueOfCurrentDate(ONE_MONTH),
+          monthValueOfCurrentDate(ONE_MONTH),
+          Pdf,
+          PostponedVATStatement,
+          CDS,
+          None
+        ),
+        eori
+      )
     )
 
     val postponedVatStatementFilesWithImmediateUnavailable: Seq[PostponedVatStatementFile] = List(
-      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
-        PostponedVatStatementFileMetadata(yearValueOfCurrentDate(SEVEN_MONTHS),
-          monthValueOfCurrentDate(SEVEN_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
-
-      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
-        PostponedVatStatementFileMetadata(yearValueOfCurrentDate(FOUR_MONTHS),
-          monthValueOfCurrentDate(FOUR_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
-
-      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_1300000L,
-        PostponedVatStatementFileMetadata(yearValueOfCurrentDate(FIVE_MONTHS),
-          monthValueOfCurrentDate(FIVE_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
-
-      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
-        PostponedVatStatementFileMetadata(yearValueOfCurrentDate(THREE_MONTHS),
-          monthValueOfCurrentDate(THREE_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
-
-      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
-        PostponedVatStatementFileMetadata(yearValueOfCurrentDate(TWO_MONTHS),
-          monthValueOfCurrentDate(TWO_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori)
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_00,
+        SIZE_4096L,
+        PostponedVatStatementFileMetadata(
+          yearValueOfCurrentDate(SEVEN_MONTHS),
+          monthValueOfCurrentDate(SEVEN_MONTHS),
+          Pdf,
+          PostponedVATStatement,
+          CDS,
+          None
+        ),
+        eori
+      ),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_00,
+        SIZE_4096L,
+        PostponedVatStatementFileMetadata(
+          yearValueOfCurrentDate(FOUR_MONTHS),
+          monthValueOfCurrentDate(FOUR_MONTHS),
+          Pdf,
+          PostponedVATStatement,
+          CDS,
+          None
+        ),
+        eori
+      ),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_00,
+        SIZE_1300000L,
+        PostponedVatStatementFileMetadata(
+          yearValueOfCurrentDate(FIVE_MONTHS),
+          monthValueOfCurrentDate(FIVE_MONTHS),
+          Pdf,
+          PostponedVATStatement,
+          CDS,
+          None
+        ),
+        eori
+      ),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_00,
+        SIZE_4096L,
+        PostponedVatStatementFileMetadata(
+          yearValueOfCurrentDate(THREE_MONTHS),
+          monthValueOfCurrentDate(THREE_MONTHS),
+          Pdf,
+          PostponedVATStatement,
+          CDS,
+          None
+        ),
+        eori
+      ),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_00,
+        SIZE_4096L,
+        PostponedVatStatementFileMetadata(
+          yearValueOfCurrentDate(TWO_MONTHS),
+          monthValueOfCurrentDate(TWO_MONTHS),
+          Pdf,
+          PostponedVATStatement,
+          CDS,
+          None
+        ),
+        eori
+      )
     )
 
     val currentStatements: Seq[PostponedVatStatementFile] = Seq(
-      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
-        PostponedVatStatementFileMetadata(yearValueOfCurrentDate(ONE_MONTH),
-          monthValueOfCurrentDate(ONE_MONTH), Pdf, PostponedVATStatement, CDS, None), eori),
-
-      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
-        PostponedVatStatementFileMetadata(yearValueOfCurrentDate(TWO_MONTHS),
-          monthValueOfCurrentDate(TWO_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
-
-      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
-        PostponedVatStatementFileMetadata(yearValueOfCurrentDate(THREE_MONTHS),
-          monthValueOfCurrentDate(THREE_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
-
-      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
-        PostponedVatStatementFileMetadata(yearValueOfCurrentDate(FOUR_MONTHS),
-          monthValueOfCurrentDate(FOUR_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori),
-
-      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_1300000L,
-        PostponedVatStatementFileMetadata(yearValueOfCurrentDate(FIVE_MONTHS),
-          monthValueOfCurrentDate(FIVE_MONTHS), Pdf, PostponedVATStatement, CDS, None), eori))
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_00,
+        SIZE_4096L,
+        PostponedVatStatementFileMetadata(
+          yearValueOfCurrentDate(ONE_MONTH),
+          monthValueOfCurrentDate(ONE_MONTH),
+          Pdf,
+          PostponedVATStatement,
+          CDS,
+          None
+        ),
+        eori
+      ),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_00,
+        SIZE_4096L,
+        PostponedVatStatementFileMetadata(
+          yearValueOfCurrentDate(TWO_MONTHS),
+          monthValueOfCurrentDate(TWO_MONTHS),
+          Pdf,
+          PostponedVATStatement,
+          CDS,
+          None
+        ),
+        eori
+      ),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_00,
+        SIZE_4096L,
+        PostponedVatStatementFileMetadata(
+          yearValueOfCurrentDate(THREE_MONTHS),
+          monthValueOfCurrentDate(THREE_MONTHS),
+          Pdf,
+          PostponedVATStatement,
+          CDS,
+          None
+        ),
+        eori
+      ),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_00,
+        SIZE_4096L,
+        PostponedVatStatementFileMetadata(
+          yearValueOfCurrentDate(FOUR_MONTHS),
+          monthValueOfCurrentDate(FOUR_MONTHS),
+          Pdf,
+          PostponedVATStatement,
+          CDS,
+          None
+        ),
+        eori
+      ),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_00,
+        SIZE_1300000L,
+        PostponedVatStatementFileMetadata(
+          yearValueOfCurrentDate(FIVE_MONTHS),
+          monthValueOfCurrentDate(FIVE_MONTHS),
+          Pdf,
+          PostponedVATStatement,
+          CDS,
+          None
+        ),
+        eori
+      )
+    )
 
     val historicPostponedVatStatementFiles: Seq[PostponedVatStatementFile] = List(
-      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
-        PostponedVatStatementFileMetadata(yearValueOfCurrentDate(EIGHT_MONTHS),
-          monthValueOfCurrentDate(EIGHT_MONTHS), Pdf, PostponedVATStatement, CDS,
-          Some(statementRequestId)), historicEori)
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_00,
+        SIZE_4096L,
+        PostponedVatStatementFileMetadata(
+          yearValueOfCurrentDate(EIGHT_MONTHS),
+          monthValueOfCurrentDate(EIGHT_MONTHS),
+          Pdf,
+          PostponedVATStatement,
+          CDS,
+          Some(statementRequestId)
+        ),
+        historicEori
+      )
     )
 
     val historicPostponedVatStatementFilesWithCHIEF: Seq[PostponedVatStatementFile] = List(
-      PostponedVatStatementFile(STAT_FILE_NAME_01, DOWNLOAD_URL_00, SIZE_4096L,
-        PostponedVatStatementFileMetadata(yearValueOfCurrentDate(EIGHT_MONTHS),
-          monthValueOfCurrentDate(EIGHT_MONTHS), Pdf, PostponedVATStatement, CHIEF,
-          Some(statementRequestId)), historicEori)
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_00,
+        SIZE_4096L,
+        PostponedVatStatementFileMetadata(
+          yearValueOfCurrentDate(EIGHT_MONTHS),
+          monthValueOfCurrentDate(EIGHT_MONTHS),
+          Pdf,
+          PostponedVATStatement,
+          CHIEF,
+          Some(statementRequestId)
+        ),
+        historicEori
+      )
     )
 
-    val app: Application = application(Seq(EoriHistory(historicEori, Some(date.minusYears(ONE_YEAR)),
-      Some(date.minusMonths(SIX_MONTHS))))).overrides(
-      inject.bind[FinancialsApiConnector].toInstance(mockFinancialsApiConnector),
-      inject.bind[SdesConnector].toInstance(mockSdesConnector),
-      inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector),
-      inject.bind[DateTimeService].toInstance(mockDateTimeService)
-    ).build()
+    val app: Application =
+      application(Seq(EoriHistory(historicEori, Some(date.minusYears(ONE_YEAR)), Some(date.minusMonths(SIX_MONTHS)))))
+        .overrides(
+          inject.bind[FinancialsApiConnector].toInstance(mockFinancialsApiConnector),
+          inject.bind[SdesConnector].toInstance(mockSdesConnector),
+          inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector),
+          inject.bind[DateTimeService].toInstance(mockDateTimeService)
+        )
+        .build()
 
     val view: postponed_import_vat = app.injector.instanceOf[postponed_import_vat]
-    val config: AppConfig = app.injector.instanceOf[AppConfig]
+    val config: AppConfig          = app.injector.instanceOf[AppConfig]
 
     private def monthValueOfCurrentDate(monthValueToSubtract: Int): Int =
       LocalDate.now().minusMonths(monthValueToSubtract).getMonthValue

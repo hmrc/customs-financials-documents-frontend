@@ -64,7 +64,7 @@ class EmailControllerSpec extends SpecBase {
 
       running(app) {
         val request = fakeRequest(GET, routes.EmailController.showUndeliverable().url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
         status(result) shouldBe OK
       }
@@ -73,18 +73,20 @@ class EmailControllerSpec extends SpecBase {
 
   trait Setup {
     val expectedResult: Option[String] = Some("unverifiedEmail")
-    implicit val hc: HeaderCarrier = HeaderCarrier()
+    implicit val hc: HeaderCarrier     = HeaderCarrier()
 
     val mockMetricsReporterService: MetricsReporterService = mock[MetricsReporterService]
-    val mockConnector: DataStoreConnector = mock[DataStoreConnector]
+    val mockConnector: DataStoreConnector                  = mock[DataStoreConnector]
 
-    val emailUnverifiedResponse: EmailUnverifiedResponse = EmailUnverifiedResponse(Some("unverifiedEmail"))
+    val emailUnverifiedResponse: EmailUnverifiedResponse              = EmailUnverifiedResponse(Some("unverifiedEmail"))
     val emailUnverifiedResponseWithNoEmailId: EmailUnverifiedResponse = EmailUnverifiedResponse(None)
-    val emailVerifiedResponse: EmailVerifiedResponse = EmailVerifiedResponse(Some("test@test.com"))
+    val emailVerifiedResponse: EmailVerifiedResponse                  = EmailVerifiedResponse(Some("test@test.com"))
 
-    val app: Application = application().overrides(
-      bind[MetricsReporterService].toInstance(mockMetricsReporterService),
-      bind[DataStoreConnector].toInstance(mockConnector)
-    ).build()
+    val app: Application = application()
+      .overrides(
+        bind[MetricsReporterService].toInstance(mockMetricsReporterService),
+        bind[DataStoreConnector].toInstance(mockConnector)
+      )
+      .build()
   }
 }

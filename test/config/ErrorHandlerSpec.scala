@@ -23,12 +23,11 @@ import play.api.test.FakeRequest
 
 import scala.concurrent.ExecutionContext
 
-class ErrorHandlerSpec extends AnyWordSpec with Matchers
-  with GuiceOneAppPerSuite {
+class ErrorHandlerSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
   private val fakeRequest = FakeRequest("GET", "/")
 
-  private val handler = app.injector.instanceOf[ErrorHandler]
+  private val handler               = app.injector.instanceOf[ErrorHandler]
   implicit val ec: ExecutionContext = ExecutionContext.global
 
   "Error handler" should {
@@ -37,16 +36,16 @@ class ErrorHandlerSpec extends AnyWordSpec with Matchers
       val response =
         handler.standardErrorTemplate(pageTitle = "title", heading = "heading", message = "message")(fakeRequest)
 
-      response.map {
-        html => html.contentType shouldBe "text/html"
+      response.map { html =>
+        html.contentType shouldBe "text/html"
       }
     }
 
     "render not found template HTML" in {
       val response = handler.notFoundTemplate(fakeRequest)
 
-      response.map {
-        html => html.contentType shouldBe "text/html"
+      response.map { html =>
+        html.contentType shouldBe "text/html"
       }
     }
 

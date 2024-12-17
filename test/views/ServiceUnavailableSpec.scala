@@ -39,10 +39,7 @@ class ServiceUnavailableSpec extends SpecBase {
 
       view.getElementById("older-statement-guidance-text").text() must not be empty
       view.getElementById("older-statement-guidance-text").text() mustBe
-        s"${messages(app)("cf.service-unavailable.description.1")} ${
-          messages(app)(
-            "cf.service-unavailable.description.2")
-        }"
+        s"${messages(app)("cf.service-unavailable.description.1")} ${messages(app)("cf.service-unavailable.description.2")}"
 
       view.html().contains(backLinkUrl)
       view.html().contains(messages(app)("cf.service-unavailable.description.3"))
@@ -51,17 +48,16 @@ class ServiceUnavailableSpec extends SpecBase {
   }
 
   trait Setup {
-    val backLinkUrl = "test_url"
+    val backLinkUrl         = "test_url"
     val deskProLink: String = "http://localhost:9250" +
       "/contact/report-technical-problem?newTab=true&amp;service=CDS%20FinancialsreferrerUrl=test_Path"
 
     val app: Application = application().build()
 
-    implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-    implicit val msg: Messages = messages(app)
+    implicit val appConfig: AppConfig                         = app.injector.instanceOf[AppConfig]
+    implicit val msg: Messages                                = messages(app)
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
-    val view: Document = Jsoup.parse(
-      app.injector.instanceOf[service_unavailable].apply(Option(backLinkUrl)).body)
+    val view: Document = Jsoup.parse(app.injector.instanceOf[service_unavailable].apply(Option(backLinkUrl)).body)
   }
 }

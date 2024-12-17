@@ -25,14 +25,14 @@ object DateUtils {
   def isDayBefore20ThDayOfTheMonth(date: LocalDate): Boolean = date.getDayOfMonth < DAY_20
 
   def isDateInLastSixMonths(date: LocalDate, currentDate: LocalDate): Boolean = {
-    val dayOne = 1
+    val dayOne    = 1
     val sixMonths = 6
 
     val currentMonthValue = currentDate.getMonthValue
-    val currentYearValue = currentDate.getYear
+    val currentYearValue  = currentDate.getYear
 
     val currentDateWithFirstDay = LocalDate.of(currentYearValue, currentMonthValue, dayOne)
-    val dateBefore6Months = currentDateWithFirstDay.minusMonths(sixMonths)
+    val dateBefore6Months       = currentDateWithFirstDay.minusMonths(sixMonths)
 
     !date.isBefore(dateBefore6Months)
   }

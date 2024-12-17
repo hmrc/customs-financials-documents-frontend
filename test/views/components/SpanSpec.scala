@@ -72,16 +72,16 @@ class SpanSpec extends SpecBase {
   }
 
   trait Setup {
-    val msgKey = "messageKey"
-    val classes = "custom-class"
+    val msgKey     = "messageKey"
+    val classes    = "custom-class"
     val ariaHidden = "true"
 
-    val app: Application = application().build()
+    val app: Application           = application().build()
     implicit val message: Messages = messages(app)
-    val instanceOfSpan: span = app.injector.instanceOf[span]
+    val instanceOfSpan: span       = app.injector.instanceOf[span]
 
-    val spanComponent: Document = Jsoup.parse(instanceOfSpan(msgKey).body)
-    val spanComponentWithClass: Document = Jsoup.parse(instanceOfSpan(msgKey, classes = Some(classes)).body)
+    val spanComponent: Document               = Jsoup.parse(instanceOfSpan(msgKey).body)
+    val spanComponentWithClass: Document      = Jsoup.parse(instanceOfSpan(msgKey, classes = Some(classes)).body)
     val spanComponentWithAriaHidden: Document = Jsoup.parse(instanceOfSpan(msgKey, ariaHidden = Some(ariaHidden)).body)
 
     val spanComponentWithClassAndAriaHidden: Document =

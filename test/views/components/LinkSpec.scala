@@ -80,24 +80,24 @@ class LinkSpec extends SpecBase {
   }
 
   trait Setup {
-    val linkMessage = "linkMessage"
-    val location = "jackie-chan.com"
-    val defaultClass = "govuk-link"
-    val classes = "custom-class"
-    val linkId = "custom-id"
+    val linkMessage   = "linkMessage"
+    val location      = "jackie-chan.com"
+    val defaultClass  = "govuk-link"
+    val classes       = "custom-class"
+    val linkId        = "custom-id"
     val ariaLabelText = "visually hidden label"
 
-    val app: Application = application().build()
+    val app: Application           = application().build()
     implicit val message: Messages = messages(app)
-    val instanceOfLink: link = app.injector.instanceOf[link]
+    val instanceOfLink: link       = app.injector.instanceOf[link]
 
-    val linkComponent: Document = Jsoup.parse(instanceOfLink(linkMessage, location).body)
+    val linkComponent: Document          = Jsoup.parse(instanceOfLink(linkMessage, location).body)
     val linkComponentWithClass: Document = Jsoup.parse(instanceOfLink(linkMessage, location, linkClass = classes).body)
-    val linkComponentWithId: Document = Jsoup.parse(instanceOfLink(linkMessage, location, linkId = Some(linkId)).body)
+    val linkComponentWithId: Document    = Jsoup.parse(instanceOfLink(linkMessage, location, linkId = Some(linkId)).body)
 
-    val linkComponentWithClassAndId: Document = Jsoup.parse(
-      instanceOfLink(linkMessage, location, linkId = Some(linkId), linkClass = classes).body)
-    val linkComponentWithAriaLabel: Document = Jsoup.parse(
-      instanceOfLink(linkMessage, location, ariaLabel = Some(ariaLabelText)).body)
+    val linkComponentWithClassAndId: Document =
+      Jsoup.parse(instanceOfLink(linkMessage, location, linkId = Some(linkId), linkClass = classes).body)
+    val linkComponentWithAriaLabel: Document  =
+      Jsoup.parse(instanceOfLink(linkMessage, location, ariaLabel = Some(ariaLabelText)).body)
   }
 }

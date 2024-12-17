@@ -36,20 +36,20 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PostponedVatController @Inject()(val authenticate: PvatIdentifierAction,
-                                       val resolveSessionId: SessionIdAction,
-                                       implicit val dateTimeService: DateTimeService,
-                                       postponedImportVatView: postponed_import_vat,
-                                       postponedImportVatNotAvailableView: postponed_import_vat_not_available,
-                                       financialsApiConnector: FinancialsApiConnector,
-                                       checkEmailIsVerified: EmailAction,
-                                       sdesConnector: SdesConnector,
-                                       navigator: Navigator,
-                                       implicit val mcc: MessagesControllerComponents)
-                                      (implicit val appConfig: AppConfig,
-                                       val errorHandler: ErrorHandler,
-                                       ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport {
+class PostponedVatController @Inject() (
+  val authenticate: PvatIdentifierAction,
+  val resolveSessionId: SessionIdAction,
+  implicit val dateTimeService: DateTimeService,
+  postponedImportVatView: postponed_import_vat,
+  postponedImportVatNotAvailableView: postponed_import_vat_not_available,
+  financialsApiConnector: FinancialsApiConnector,
+  checkEmailIsVerified: EmailAction,
+  sdesConnector: SdesConnector,
+  navigator: Navigator,
+  implicit val mcc: MessagesControllerComponents
+)(implicit val appConfig: AppConfig, val errorHandler: ErrorHandler, ec: ExecutionContext)
+    extends FrontendController(mcc)
+    with I18nSupport {
 
   val log: LoggerLike = Logger(this.getClass)
 
@@ -60,13 +60,15 @@ class PostponedVatController @Inject()(val authenticate: PvatIdentifierAction,
 
       (
         for {
-          postponedVatStatements <- sdesConnector.getPostponedVatStatements(req.eori)
-          filteredHistoricEoris = req.allEoriHistory.filterNot(_.eori == req.eori)
-          historicPostponedVatStatements <- Future.sequence(
-            filteredHistoricEoris.map { eoriHistory =>
-              sdesConnector.getPostponedVatStatements(eoriHistory.eori)
-            }
-          ).map(_.flatten)
+          postponedVatStatements         <- sdesConnector.getPostponedVatStatements(req.eori)
+          filteredHistoricEoris           = req.allEoriHistory.filterNot(_.eori == req.eori)
+          historicPostponedVatStatements <- Future
+                                              .sequence(
+                                                filteredHistoricEoris.map { eoriHistory =>
+                                                  sdesConnector.getPostponedVatStatements(eoriHistory.eori)
+                                                }
+                                              )
+                                              .map(_.flatten)
         } yield {
 
           val allPostponedVatStatements: Seq[PostponedVatStatementFile] =
@@ -80,38 +82,45 @@ class PostponedVatController @Inject()(val authenticate: PvatIdentifierAction,
             routes.ServiceUnavailableController.onPageLoad(navigator.postponedVatPageId).url
           }
 
-          Ok(postponedImportVatView(PostponedVatViewModel(
-            currentStatements,
-            allPostponedVatStatements.exists(statement => statement.metadata.statementRequestId.nonEmpty),
-            currentStatements.count(_.metadata.source != CHIEF) == currentStatements.size,
-            location,
-            populatePVATUrls(historicUrl)))
+          Ok(
+            postponedImportVatView(
+              PostponedVatViewModel(
+                currentStatements,
+                allPostponedVatStatements.exists(statement => statement.metadata.statementRequestId.nonEmpty),
+                currentStatements.count(_.metadata.source != CHIEF) == currentStatements.size,
+                location,
+                populatePVATUrls(historicUrl)
+              )
+            )
           )
         }
-        ).recover {
-        case _ => Redirect(routes.PostponedVatController.statementsUnavailablePage())
+      ).recover { case _ =>
+        Redirect(routes.PostponedVatController.statementsUnavailablePage())
       }
     }
 
   def statementsUnavailablePage(): Action[AnyContent] =
     authenticate andThen checkEmailIsVerified async { implicit req =>
-      Future.successful(Ok(postponedImportVatNotAvailableView(
-        req.eori,
-        Some(routes.ServiceUnavailableController.onPageLoad(navigator.postponedVatNotAvailablePageId).url))
-      ))
+      Future.successful(
+        Ok(
+          postponedImportVatNotAvailableView(
+            req.eori,
+            Some(routes.ServiceUnavailableController.onPageLoad(navigator.postponedVatNotAvailablePageId).url)
+          )
+        )
+      )
     }
 
   private def filterLastSixMonthsStatements(files: Seq[PostponedVatStatementFile]): Seq[PostponedVatStatementFile] = {
-    val monthList = MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE.map(n => dateTimeService.systemDateTime().toLocalDate.minusMonths(n))
+    val monthList =
+      MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE.map(n => dateTimeService.systemDateTime().toLocalDate.minusMonths(n))
 
-    monthList.flatMap {
-      date =>
-        files.find(file =>
-          file.monthAndYear.getYear == date.getYear && file.monthAndYear.getMonth == date.getMonth).toSeq
+    monthList.flatMap { date =>
+      files.find(file => file.monthAndYear.getYear == date.getYear && file.monthAndYear.getMonth == date.getMonth).toSeq
     }
   }
 
-  private def populatePVATUrls(historicUrl: String): PVATUrls = {
+  private def populatePVATUrls(historicUrl: String): PVATUrls =
     PVATUrls(
       customsFinancialsHomePageUrl = appConfig.customsFinancialsFrontendHomepage,
       requestStatementsUrl = appConfig.requestedStatements(PostponedVATStatement),
@@ -119,5 +128,4 @@ class PostponedVatController @Inject()(val authenticate: PvatIdentifierAction,
       viewVatAccountSupportLink = appConfig.viewVatAccountSupportLink,
       serviceUnavailableUrl = Some(historicUrl)
     )
-  }
 }

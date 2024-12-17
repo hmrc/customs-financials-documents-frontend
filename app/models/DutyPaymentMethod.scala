@@ -17,6 +17,6 @@
 package models
 
 object DutyPaymentMethod {
-  val CDS = "CDS"
+  val CDS   = "CDS"
   val CHIEF = "CHIEF"
 }

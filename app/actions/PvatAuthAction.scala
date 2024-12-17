@@ -25,15 +25,17 @@ import uk.gov.hmrc.auth.core._
 import scala.concurrent.ExecutionContext
 
 trait PvatIdentifierAction
-  extends ActionBuilder[AuthenticatedRequest, AnyContent]
+    extends ActionBuilder[AuthenticatedRequest, AnyContent]
     with ActionRefiner[Request, AuthenticatedRequest]
 
-class PvatAuthAction @Inject()(override val authConnector: AuthConnector,
-                               override val appConfig: AppConfig,
-                               override val parser: BodyParsers.Default,
-                               override val authActionHelper: AuthActionHelper)
-                              (override implicit val executionContext: ExecutionContext)
-  extends PvatIdentifierAction with AuthActionBuilder {
+class PvatAuthAction @Inject() (
+  override val authConnector: AuthConnector,
+  override val appConfig: AppConfig,
+  override val parser: BodyParsers.Default,
+  override val authActionHelper: AuthActionHelper
+)(override implicit val executionContext: ExecutionContext)
+    extends PvatIdentifierAction
+    with AuthActionBuilder {
 
   override val continueUrl: String = appConfig.pvatLoginContinueUrl
 }

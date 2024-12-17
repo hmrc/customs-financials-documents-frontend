@@ -39,13 +39,17 @@ class UnauthorisedControllerSpec extends SpecBase {
   "onPageLoad" should {
 
     "render the not subscribed to CDS page" in new Setup {
-      when(mockAuthConnector.authorise(
-        eqTo(AuthProviders(GovernmentGateway)), eqTo(EmptyRetrieval))(any[HeaderCarrier], any[ExecutionContext]))
-        .thenReturn(Future.successful({}))
+      when(
+        mockAuthConnector.authorise(eqTo(AuthProviders(GovernmentGateway)), eqTo(EmptyRetrieval))(
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
+        .thenReturn(Future.successful {})
 
       running(app) {
         val request = fakeRequest(GET, routes.UnauthorisedController.onPageLoad.url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
         status(result) mustBe OK
         contentAsString(result) mustBe view()(request, messages(app), appConfig).toString()
@@ -53,8 +57,12 @@ class UnauthorisedControllerSpec extends SpecBase {
     }
 
     "redirect to login if no auth session found" in new Setup {
-      when(mockAuthConnector.authorise(
-        eqTo(AuthProviders(GovernmentGateway)), eqTo(EmptyRetrieval))(any[HeaderCarrier], any[ExecutionContext]))
+      when(
+        mockAuthConnector.authorise(eqTo(AuthProviders(GovernmentGateway)), eqTo(EmptyRetrieval))(
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
         .thenReturn(Future.failed(new UnauthorizedException(emptyString)))
 
       running(app) {
@@ -69,11 +77,13 @@ class UnauthorisedControllerSpec extends SpecBase {
 
   trait Setup {
     val mockAuthConnector: AuthConnector = mock[AuthConnector]
-    val app: Application = application().overrides(
-      inject.bind[AuthConnector].toInstance(mockAuthConnector)
-    ).build()
+    val app: Application                 = application()
+      .overrides(
+        inject.bind[AuthConnector].toInstance(mockAuthConnector)
+      )
+      .build()
 
     val view: not_subscribed_to_cds = app.injector.instanceOf[not_subscribed_to_cds]
-    val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+    val appConfig: AppConfig        = app.injector.instanceOf[AppConfig]
   }
 }

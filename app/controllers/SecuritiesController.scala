@@ -32,55 +32,64 @@ import views.html.securities.{security_statements, security_statements_not_avail
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SecuritiesController @Inject()(authenticate: IdentifierAction,
-                                     resolveSessionId: SessionIdAction,
-                                     sdesConnector: SdesConnector,
-                                     dateTimeService: DateTimeService,
-                                     checkEmailIsVerified: EmailAction,
-                                     financialsApiConnector: FinancialsApiConnector,
-                                     securityStatementsView: security_statements,
-                                     securityStatementsNotAvailableView: security_statements_not_available,
-                                     mcc: MessagesControllerComponents
-                                    )(implicit val appConfig: AppConfig,
-                                      val errorHandler: ErrorHandler,
-                                      ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport {
+class SecuritiesController @Inject() (
+  authenticate: IdentifierAction,
+  resolveSessionId: SessionIdAction,
+  sdesConnector: SdesConnector,
+  dateTimeService: DateTimeService,
+  checkEmailIsVerified: EmailAction,
+  financialsApiConnector: FinancialsApiConnector,
+  securityStatementsView: security_statements,
+  securityStatementsNotAvailableView: security_statements_not_available,
+  mcc: MessagesControllerComponents
+)(implicit val appConfig: AppConfig, val errorHandler: ErrorHandler, ec: ExecutionContext)
+    extends FrontendController(mcc)
+    with I18nSupport {
 
   def showSecurityStatements(): Action[AnyContent] =
     (authenticate andThen checkEmailIsVerified andThen resolveSessionId) async { implicit req =>
       financialsApiConnector.deleteNotification(req.eori, SecurityStatement)
 
       (for {
-        allStatements <- Future.sequence(req.allEoriHistory.map(getStatements))
+        allStatements          <- Future.sequence(req.allEoriHistory.map(getStatements))
         securityStatementsModel = SecurityStatementsViewModel(allStatements.sorted)
-      } yield Ok(securityStatementsView(securityStatementsModel))
-        ).recover { case _ => Redirect(routes.SecuritiesController.statementsUnavailablePage()) }
+      } yield Ok(securityStatementsView(securityStatementsModel))).recover { case _ =>
+        Redirect(routes.SecuritiesController.statementsUnavailablePage())
+      }
     }
 
   def statementsUnavailablePage(): Action[AnyContent] =
-    authenticate andThen checkEmailIsVerified async {
-      implicit req =>
-        Future.successful(Ok(securityStatementsNotAvailableView()))
+    authenticate andThen checkEmailIsVerified async { implicit req =>
+      Future.successful(Ok(securityStatementsNotAvailableView()))
     }
 
-  private def getStatements(historicEori: EoriHistory)(implicit req: AuthenticatedRequestWithSessionId[_]): Future[SecurityStatementsForEori] = {
-    sdesConnector.getSecurityStatements(historicEori.eori)
+  private def getStatements(
+    historicEori: EoriHistory
+  )(implicit req: AuthenticatedRequestWithSessionId[_]): Future[SecurityStatementsForEori] =
+    sdesConnector
+      .getSecurityStatements(historicEori.eori)
       .map(groupByMonthDescending)
       .map(_.partition(_.files.exists(_.metadata.statementRequestId.isDefined)))
-      .map {
-        case (requested, current) =>
-          SecurityStatementsForEori(historicEori, securityStatementsInLastSixMonths(current), requested)
+      .map { case (requested, current) =>
+        SecurityStatementsForEori(historicEori, securityStatementsInLastSixMonths(current), requested)
       }
-  }
 
-  private def securityStatementsInLastSixMonths(securityStatementFiles: Seq[SecurityStatementsByPeriod]): Seq[SecurityStatementsByPeriod] =
-    securityStatementFiles.filter(
-      stf => isDateInLastSixMonths(stf.startDate, dateTimeService.systemDateTime().toLocalDate)
+  private def securityStatementsInLastSixMonths(
+    securityStatementFiles: Seq[SecurityStatementsByPeriod]
+  ): Seq[SecurityStatementsByPeriod] =
+    securityStatementFiles.filter(stf =>
+      isDateInLastSixMonths(stf.startDate, dateTimeService.systemDateTime().toLocalDate)
     )
 
-  private def groupByMonthDescending(securityStatementFiles: Seq[SecurityStatementFile]): Seq[SecurityStatementsByPeriod] = {
-    securityStatementFiles.groupBy(file => (file.startDate, file.endDate)).map {
-      case ((startDate, endDate), filesForMonth) => SecurityStatementsByPeriod(startDate, endDate, filesForMonth)
-    }.toList.sorted.reverse
-  }
+  private def groupByMonthDescending(
+    securityStatementFiles: Seq[SecurityStatementFile]
+  ): Seq[SecurityStatementsByPeriod] =
+    securityStatementFiles
+      .groupBy(file => (file.startDate, file.endDate))
+      .map { case ((startDate, endDate), filesForMonth) =>
+        SecurityStatementsByPeriod(startDate, endDate, filesForMonth)
+      }
+      .toList
+      .sorted
+      .reverse
 }

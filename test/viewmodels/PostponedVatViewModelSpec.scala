@@ -52,15 +52,17 @@ class PostponedVatViewModelSpec extends SpecBase {
         val collapStatGroupRowForSourceCDS: CollapsibleStatementGroupRow =
           CollapsibleStatementGroupRow(
             collapsiblePVATAmendedStatement = None,
-            collapsiblePVATStatement = Some(new collapsible_statement_group(downloadLinkPvatStatement).apply(
-              pvatStatementGroup.collectFiles(amended = false, CDS),
-              "cf.account.pvat.download-link",
-              "cf.account.pvat.aria.download-link",
-              Some("cf.common.not-available"),
-              CDS,
-              Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate),
-              isCdsOnly
-            ))
+            collapsiblePVATStatement = Some(
+              new collapsible_statement_group(downloadLinkPvatStatement).apply(
+                pvatStatementGroup.collectFiles(amended = false, CDS),
+                "cf.account.pvat.download-link",
+                "cf.account.pvat.aria.download-link",
+                Some("cf.common.not-available"),
+                CDS,
+                Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate),
+                isCdsOnly
+              )
+            )
           )
 
         val collapStatGroupRowForSourceCHIEF: CollapsibleStatementGroupRow =
@@ -89,15 +91,17 @@ class PostponedVatViewModelSpec extends SpecBase {
         val collapStatGroupRowForSourceCDS: CollapsibleStatementGroupRow =
           CollapsibleStatementGroupRow(
             collapsiblePVATAmendedStatement = None,
-            collapsiblePVATStatement = Some(new collapsible_statement_group(downloadLinkPvatStatement).apply(
-              pvatStatementGroup.collectFiles(amended = false, CDS),
-              "cf.account.pvat.download-link",
-              "cf.account.pvat.aria.download-link",
-              Some("cf.common.not-available"),
-              CDS,
-              Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate),
-              isCdsOnly
-            ))
+            collapsiblePVATStatement = Some(
+              new collapsible_statement_group(downloadLinkPvatStatement).apply(
+                pvatStatementGroup.collectFiles(amended = false, CDS),
+                "cf.account.pvat.download-link",
+                "cf.account.pvat.aria.download-link",
+                Some("cf.common.not-available"),
+                CDS,
+                Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate),
+                isCdsOnly
+              )
+            )
           )
 
         val collapStatGroupRowForSourceCHIEF: CollapsibleStatementGroupRow =
@@ -120,62 +124,68 @@ class PostponedVatViewModelSpec extends SpecBase {
       "PostponedVatStatementGroup has no statements, startDate is of the previous month (after 19th) " +
         "and isCdsOnly is true" in new Setup {
 
-        val isCdsOnly = true
+          val isCdsOnly = true
 
-        when(mockDateTimeService.systemDateTime()).thenReturn(date)
+          when(mockDateTimeService.systemDateTime()).thenReturn(date)
 
-        val pvatStatementGroup: PostponedVatStatementGroup =
-          PostponedVatStatementGroup(dateOfPreviousMonthAndAfter19th, Seq())
+          val pvatStatementGroup: PostponedVatStatementGroup =
+            PostponedVatStatementGroup(dateOfPreviousMonthAndAfter19th, Seq())
 
-        val cdsDDRow: DDRow = DDRow(
-          msgs("cf.common.not-available"),
-          msgs(
-            "cf.common.not-available-screen-reader-cds",
-            Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate)
+          val cdsDDRow: DDRow = DDRow(
+            msgs("cf.common.not-available"),
+            msgs(
+              "cf.common.not-available-screen-reader-cds",
+              Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate)
+            )
           )
-        )
 
-        val expectedResult: CurrentStatementRow = CurrentStatementRow(
-          pvatStatementGroup.periodId,
-          msgs(Formatters.dateAsMonthAndYear(dateOfPreviousMonthAndAfter19th)),
-          cdsDDRow = Some(cdsDDRow),
-          chiefDDRow = None,
-          collapsibleStatementGroupRows = Seq()
-        )
+          val expectedResult: CurrentStatementRow = CurrentStatementRow(
+            pvatStatementGroup.periodId,
+            msgs(Formatters.dateAsMonthAndYear(dateOfPreviousMonthAndAfter19th)),
+            cdsDDRow = Some(cdsDDRow),
+            chiefDDRow = None,
+            collapsibleStatementGroupRows = Seq()
+          )
 
-        CurrentStatementRow(pvatStatementGroup, dutyPaymentMethodSource, isCdsOnly) mustBe expectedResult
-      }
+          CurrentStatementRow(pvatStatementGroup, dutyPaymentMethodSource, isCdsOnly) mustBe expectedResult
+        }
 
       "PostponedVatStatementGroup has no statements, startDate is of the previous month (after 19th) " +
         "and isCdsOnly is false" in new Setup {
 
-        val isCdsOnly = false
+          val isCdsOnly = false
 
-        when(mockDateTimeService.systemDateTime()).thenReturn(date)
+          when(mockDateTimeService.systemDateTime()).thenReturn(date)
 
-        val pvatStatementGroup: PostponedVatStatementGroup =
-          PostponedVatStatementGroup(dateOfPreviousMonthAndAfter19th, Seq())
+          val pvatStatementGroup: PostponedVatStatementGroup =
+            PostponedVatStatementGroup(dateOfPreviousMonthAndAfter19th, Seq())
 
-        val cdsDDRow: DDRow = DDRow(msgs("cf.common.not-available"),
-          msgs("cf.common.not-available-screen-reader-cds",
-            Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate))
-        )
+          val cdsDDRow: DDRow = DDRow(
+            msgs("cf.common.not-available"),
+            msgs(
+              "cf.common.not-available-screen-reader-cds",
+              Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate)
+            )
+          )
 
-        val chiefDDRow: DDRow = DDRow(msgs("cf.common.not-available"),
-          msgs("cf.common.not-available-screen-reader-chief",
-            Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate))
-        )
+          val chiefDDRow: DDRow = DDRow(
+            msgs("cf.common.not-available"),
+            msgs(
+              "cf.common.not-available-screen-reader-chief",
+              Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate)
+            )
+          )
 
-        val expectedResult: CurrentStatementRow = CurrentStatementRow(
-          pvatStatementGroup.periodId,
-          msgs(Formatters.dateAsMonthAndYear(dateOfPreviousMonthAndAfter19th)),
-          cdsDDRow = Some(cdsDDRow),
-          chiefDDRow = Some(chiefDDRow),
-          collapsibleStatementGroupRows = Seq()
-        )
+          val expectedResult: CurrentStatementRow = CurrentStatementRow(
+            pvatStatementGroup.periodId,
+            msgs(Formatters.dateAsMonthAndYear(dateOfPreviousMonthAndAfter19th)),
+            cdsDDRow = Some(cdsDDRow),
+            chiefDDRow = Some(chiefDDRow),
+            collapsibleStatementGroupRows = Seq()
+          )
 
-        CurrentStatementRow(pvatStatementGroup, dutyPaymentMethodSource, isCdsOnly) mustBe expectedResult
-      }
+          CurrentStatementRow(pvatStatementGroup, dutyPaymentMethodSource, isCdsOnly) mustBe expectedResult
+        }
 
     }
   }
@@ -198,7 +208,8 @@ class PostponedVatViewModelSpec extends SpecBase {
             requestStatementsUrl = requestedStatementsUrl,
             pvEmail = PvEmail(pvEmailEmailAddress, pvEmailEmailAddressHref),
             viewVatAccountSupportLink = viewVatAccountSupportLink,
-            serviceUnavailableUrl = Some(serviceUnavailableUrl))
+            serviceUnavailableUrl = Some(serviceUnavailableUrl)
+          )
         )
 
         actualPVatModel.pageTitle mustBe msgs("cf.account.pvat.title")
@@ -242,7 +253,8 @@ class PostponedVatViewModelSpec extends SpecBase {
             requestStatementsUrl = requestedStatementsUrl,
             pvEmail = PvEmail(pvEmailEmailAddress, pvEmailEmailAddressHref),
             viewVatAccountSupportLink = viewVatAccountSupportLink,
-            serviceUnavailableUrl = Some(serviceUnavailableUrl))
+            serviceUnavailableUrl = Some(serviceUnavailableUrl)
+          )
         )
 
         actualPVatModel.pageTitle mustBe msgs("cf.account.pvat.title")
@@ -267,19 +279,20 @@ class PostponedVatViewModelSpec extends SpecBase {
     }
   }
 
-  private def expectedCurrentRowsValue(expectedResult: Seq[PostponedVatStatementGroup])
-                                      (implicit msgs: Messages): Seq[HtmlFormat.Appendable] = {
-    val expectedCurrentRows: Seq[HtmlFormat.Appendable] = expectedResult.map {
-      pvaStatGroup =>
+  private def expectedCurrentRowsValue(
+    expectedResult: Seq[PostponedVatStatementGroup]
+  )(implicit msgs: Messages): Seq[HtmlFormat.Appendable] = {
+    val expectedCurrentRows: Seq[HtmlFormat.Appendable] = expectedResult
+      .map { pvaStatGroup =>
         CurrentStatementRow(pvaStatGroup, Seq(CDS, CHIEF), isCdsOnly = true)
-    }.map {
-      currentRow =>
-        val innerLink = new linkInner()
+      }
+      .map { currentRow =>
+        val innerLink                 = new linkInner()
         val pVATDownloadLinkStatement = new download_link_pvat_statement(innerLink)
         val collapsibleStatementGroup = new collapsible_statement_group(pVATDownloadLinkStatement)
 
         new current_statement_row(collapsibleStatementGroup).apply(currentRow)
-    }
+      }
     expectedCurrentRows
   }
 
@@ -290,27 +303,28 @@ class PostponedVatViewModelSpec extends SpecBase {
         DOWNLOAD_URL_06,
         SIZE_111L,
         PostponedVatStatementFileMetadata(YEAR_2018, MONTH_3, Pdf, PostponedVATStatement, CDS, None),
-        emptyString)
+        emptyString
+      )
     )
 
-    val periodId = "test_id"
-    val location = "test_location"
-    val serviceUnavailableUrl = "unavailable_url"
-    val pvEmailEmailAddress: String = "pvaenquiries@hmrc.gov.uk"
+    val periodId                        = "test_id"
+    val location                        = "test_location"
+    val serviceUnavailableUrl           = "unavailable_url"
+    val pvEmailEmailAddress: String     = "pvaenquiries@hmrc.gov.uk"
     val pvEmailEmailAddressHref: String = "mailto:pvaenquiries@hmrc.gov.uk"
-    val viewVatAccountSupportLink = "https://accountsupport.test.com"
-    val requestedStatementsUrl = "http://localhost:9396/customs/historic-statement/requested/postponed-vat"
-    val customsFinancialsHomePageUrl = "http://localhost:9876/customs/payment-records"
+    val viewVatAccountSupportLink       = "https://accountsupport.test.com"
+    val requestedStatementsUrl          = "http://localhost:9396/customs/historic-statement/requested/postponed-vat"
+    val customsFinancialsHomePageUrl    = "http://localhost:9876/customs/payment-records"
 
-    val date: LocalDateTime = LocalDateTime.of(YEAR_2023, MONTH_10, DAY_20, HOUR_12, MINUTES_30, SECONDS_50)
+    val date: LocalDateTime                        = LocalDateTime.of(YEAR_2023, MONTH_10, DAY_20, HOUR_12, MINUTES_30, SECONDS_50)
     val dateOfPreviousMonthAndAfter19th: LocalDate = date.toLocalDate.minusMonths(ONE_MONTH).withDayOfMonth(DAY_20)
-    val currentDate: LocalDate = LocalDate.of(YEAR_2023, MONTH_10, DAY_20)
+    val currentDate: LocalDate                     = LocalDate.of(YEAR_2023, MONTH_10, DAY_20)
 
     val dutyPaymentMethodSource: Seq[String] = Seq(CDS, CHIEF)
-    val linkInner = new linkInner()
-    val downloadLinkPvatStatement = new download_link_pvat_statement(linkInner)
+    val linkInner                            = new linkInner()
+    val downloadLinkPvatStatement            = new download_link_pvat_statement(linkInner)
 
-    val app: Application = application().build()
+    val app: Application        = application().build()
     implicit val msgs: Messages = messages(app)
 
     implicit val mockDateTimeService: DateTimeService = mock[DateTimeService]
@@ -320,42 +334,48 @@ class PostponedVatViewModelSpec extends SpecBase {
       DOWNLOAD_URL_02,
       SIZE_111L,
       PostponedVatStatementFileMetadata(YEAR_2018, MONTH_6, Csv, PostponedVATStatement, CDS, None),
-      EORI_NUMBER)
+      EORI_NUMBER
+    )
 
     val pVatStatPdfFileForMonth6: PostponedVatStatementFile = PostponedVatStatementFile(
       STAT_FILE_NAME_01,
       DOWNLOAD_URL_01,
       SIZE_1300000L,
       PostponedVatStatementFileMetadata(YEAR_2018, MONTH_6, Pdf, PostponedVATStatement, CDS, None),
-      EORI_NUMBER)
+      EORI_NUMBER
+    )
 
     val pVatStatPdfFileForMonth5: PostponedVatStatementFile = PostponedVatStatementFile(
       STAT_FILE_NAME_03,
       DOWNLOAD_URL_03,
       SIZE_111L,
       PostponedVatStatementFileMetadata(YEAR_2018, MONTH_5, Pdf, PostponedVATStatement, CDS, None),
-      EORI_NUMBER)
+      EORI_NUMBER
+    )
 
     val pVatStatCsvFileForMonth4: PostponedVatStatementFile = PostponedVatStatementFile(
       STAT_FILE_NAME_04,
       DOWNLOAD_URL_05,
       SIZE_111L,
       PostponedVatStatementFileMetadata(YEAR_2018, MONTH_4, Csv, PostponedVATStatement, CDS, None),
-      EORI_NUMBER)
+      EORI_NUMBER
+    )
 
     val pVatStatPdfFileForMonth4: PostponedVatStatementFile = PostponedVatStatementFile(
       STAT_FILE_NAME_04,
       DOWNLOAD_URL_04,
       SIZE_111L,
       PostponedVatStatementFileMetadata(YEAR_2018, MONTH_4, Pdf, PostponedVATStatement, CDS, None),
-      EORI_NUMBER)
+      EORI_NUMBER
+    )
 
     val pVatStatPdfFileForMonth3: PostponedVatStatementFile = PostponedVatStatementFile(
       STAT_FILE_NAME_04,
       DOWNLOAD_URL_06,
       SIZE_111L,
       PostponedVatStatementFileMetadata(YEAR_2018, MONTH_3, Pdf, PostponedVATStatement, CDS, None),
-      EORI_NUMBER)
+      EORI_NUMBER
+    )
 
     val postponedVatCertificateFiles: List[PostponedVatStatementFile] = List(
       pVatStatPdfFileForMonth3,
@@ -378,17 +398,17 @@ class PostponedVatViewModelSpec extends SpecBase {
     val pVatGroup6: PostponedVatStatementGroup =
       PostponedVatStatementGroup(
         LocalDate.of(YEAR_2018, MONTH_6, DAY_1),
-        Seq(pVatStatCsvFileForMonth6, pVatStatPdfFileForMonth6))
+        Seq(pVatStatCsvFileForMonth6, pVatStatPdfFileForMonth6)
+      )
 
     val pVatGroup5: PostponedVatStatementGroup =
-      PostponedVatStatementGroup(
-        LocalDate.of(YEAR_2018, MONTH_5, DAY_1),
-        Seq(pVatStatPdfFileForMonth5))
+      PostponedVatStatementGroup(LocalDate.of(YEAR_2018, MONTH_5, DAY_1), Seq(pVatStatPdfFileForMonth5))
 
     val pVatGroup4: PostponedVatStatementGroup =
       PostponedVatStatementGroup(
         LocalDate.of(YEAR_2018, MONTH_4, DAY_1),
-        Seq(pVatStatCsvFileForMonth4, pVatStatPdfFileForMonth4))
+        Seq(pVatStatCsvFileForMonth4, pVatStatPdfFileForMonth4)
+      )
 
     val expectedHeading: HtmlFormat.Appendable =
       h1Component.apply(msg = "cf.account.pvat.title", classes = "govuk-heading-xl  govuk-!-margin-bottom-6")
@@ -398,50 +418,69 @@ class PostponedVatViewModelSpec extends SpecBase {
 
     val expectedH2Heading: HtmlFormat.Appendable = h2Component.apply("cf.account.pvat.your-statements.heading")
 
-    val expectedRequestedStatements: Option[HtmlFormat.Appendable] = Some(requestedStatementSection(
-      requestedStatementsUrl,
-      "cf.postponed-vat.requested-statements-available-link-text",
-      "cf.account.detail.requested-certificates-available-text.pre",
-      "cf.account.detail.requested-certificates-available-text.post"))
+    val expectedRequestedStatements: Option[HtmlFormat.Appendable] = Some(
+      requestedStatementSection(
+        requestedStatementsUrl,
+        "cf.postponed-vat.requested-statements-available-link-text",
+        "cf.account.detail.requested-certificates-available-text.pre",
+        "cf.account.detail.requested-certificates-available-text.post"
+      )
+    )
 
     val expectedStatOlderThanSixMonthsGuidanceRow: GuidanceRow = GuidanceRow(
-      h2Heading = h2Component.apply("cf.account.pvat.older-statements.heading",
+      h2Heading = h2Component.apply(
+        "cf.account.pvat.older-statements.heading",
         id = Some("missing-documents-guidance-heading"),
-        classes = "govuk-heading-m govuk-!-margin-top-6"),
-      link = Some(linkComponent.apply("cf.account.pvat.older-statements.description.link",
-        location = serviceUnavailableUrl,
-        preLinkMessage = Some("cf.account.pvat.older-statements.description.2")))
+        classes = "govuk-heading-m govuk-!-margin-top-6"
+      ),
+      link = Some(
+        linkComponent.apply(
+          "cf.account.pvat.older-statements.description.link",
+          location = serviceUnavailableUrl,
+          preLinkMessage = Some("cf.account.pvat.older-statements.description.2")
+        )
+      )
     )
 
     val expectedChiefDeclarationGuidance: GuidanceRow = GuidanceRow(
-      h2Heading = h2Component.apply(id = Some("chief-guidance-heading"),
+      h2Heading = h2Component.apply(
+        id = Some("chief-guidance-heading"),
         msg = "cf.account.vat.chief.heading",
-        classes = "govuk-heading-m govuk-!-margin-top-6"),
-
-      link = Some(linkComponent.apply(pvEmailEmailAddress,
-        location = pvEmailEmailAddressHref,
-        preLinkMessage = Some("cf.account.pvat.older-statements.description.3")))
+        classes = "govuk-heading-m govuk-!-margin-top-6"
+      ),
+      link = Some(
+        linkComponent.apply(
+          pvEmailEmailAddress,
+          location = pvEmailEmailAddressHref,
+          preLinkMessage = Some("cf.account.pvat.older-statements.description.3")
+        )
+      )
     )
 
     val expectedHelpAndSupportGuidance: GuidanceRow = GuidanceRow(
-      h2Heading = h2Component.apply(id = Some("pvat.support.message.heading"),
+      h2Heading = h2Component.apply(
+        id = Some("pvat.support.message.heading"),
         msg = "cf.account.pvat.support.heading",
-        classes = "govuk-heading-m govuk-!-margin-top-2"),
-
-      link = Some(linkComponent.apply(msgs("cf.account.pvat.support.link"),
-        location = viewVatAccountSupportLink,
-        preLinkMessage = Some("cf.account.pvat.support.message"),
-        postLinkMessage = Some(period),
-        pId = Some("pvat.support.message"),
-        pClass = "govuk-body govuk-!-margin-bottom-9"))
+        classes = "govuk-heading-m govuk-!-margin-top-2"
+      ),
+      link = Some(
+        linkComponent.apply(
+          msgs("cf.account.pvat.support.link"),
+          location = viewVatAccountSupportLink,
+          preLinkMessage = Some("cf.account.pvat.support.message"),
+          postLinkMessage = Some(period),
+          pId = Some("pvat.support.message"),
+          pClass = "govuk-body govuk-!-margin-bottom-9"
+        )
+      )
     )
 
-    protected def requestedStatementSection(url: String,
-                                            linkMessageKey: String,
-                                            preLinkMessageKey: String,
-                                            postLinkMessageKey: String)
-                                           (implicit msgs: Messages): HtmlFormat.Appendable = {
+    protected def requestedStatementSection(
+      url: String,
+      linkMessageKey: String,
+      preLinkMessageKey: String,
+      postLinkMessageKey: String
+    )(implicit msgs: Messages): HtmlFormat.Appendable =
       app.injector.instanceOf[requestedStatements].apply(url, linkMessageKey, preLinkMessageKey, postLinkMessageKey)
-    }
   }
 }

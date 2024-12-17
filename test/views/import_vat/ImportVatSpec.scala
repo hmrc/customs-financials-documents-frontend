@@ -30,8 +30,7 @@ import views.html.import_vat.import_vat
 import models.{VatCertificatesByMonth, VatCertificatesForEori}
 import org.scalatest.matchers.must.Matchers.mustBe
 import utils.CommonTestData.{
-  DAY_28, EORI_NUMBER, FIVE_MONTHS, FOUR_MONTHS, ONE_MONTH, SIX_MONTHS, THREE_MONTHS,
-  TWO_MONTHS
+  DAY_28, EORI_NUMBER, FIVE_MONTHS, FOUR_MONTHS, ONE_MONTH, SIX_MONTHS, THREE_MONTHS, TWO_MONTHS
 }
 import utils.Utils.emptyString
 
@@ -66,15 +65,15 @@ class ImportVatSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = application().build()
+    val app: Application                      = application().build()
     val serviceUnavailableUrl: Option[String] = Option("service_unavailable_url")
 
-    implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-    implicit val msg: Messages = messages(app)
+    implicit val appConfig: AppConfig                         = app.injector.instanceOf[AppConfig]
+    implicit val msg: Messages                                = messages(app)
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory(EORI_NUMBER, None, None))
-    val date: LocalDate = LocalDate.now().withDayOfMonth(DAY_28)
+    val date: LocalDate               = LocalDate.now().withDayOfMonth(DAY_28)
 
     val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
       VatCertificatesByMonth(date.minusMonths(ONE_MONTH), Seq())(messages(app)),
@@ -90,7 +89,6 @@ class ImportVatSpec extends SpecBase {
 
     val viewModel: VatViewModel = VatViewModel(vatCertificatesForEoris)
 
-    val view: Document = Jsoup.parse(
-      app.injector.instanceOf[import_vat].apply(viewModel, serviceUnavailableUrl).body)
+    val view: Document = Jsoup.parse(app.injector.instanceOf[import_vat].apply(viewModel, serviceUnavailableUrl).body)
   }
 }

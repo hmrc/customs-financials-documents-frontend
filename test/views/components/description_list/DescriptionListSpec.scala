@@ -143,33 +143,33 @@ class DescriptionListSpec extends SpecBase {
   }
 
   trait Setup {
-    val contentText = "some content"
+    val contentText   = "some content"
     val content: Html = Html(contentText)
-    val testClass = "test-class"
-    val testId = "test-id"
+    val testClass     = "test-class"
+    val testId        = "test-id"
 
-    val app: Application = application().build()
+    val app: Application           = application().build()
     implicit val message: Messages = messages(app)
 
     val instanceOfDd: dd = app.injector.instanceOf[dd]
     val instanceOfDl: dl = app.injector.instanceOf[dl]
     val instanceOfDt: dt = app.injector.instanceOf[dt]
 
-    val ddComponent: Document = Jsoup.parse(instanceOfDd(content).body)
-    val ddComponentWithClass: Document = Jsoup.parse(instanceOfDd(content, classes = Some(testClass)).body)
-    val ddComponentWithId: Document = Jsoup.parse(instanceOfDd(content, id = Some(testId)).body)
+    val ddComponent: Document               = Jsoup.parse(instanceOfDd(content).body)
+    val ddComponentWithClass: Document      = Jsoup.parse(instanceOfDd(content, classes = Some(testClass)).body)
+    val ddComponentWithId: Document         = Jsoup.parse(instanceOfDd(content, id = Some(testId)).body)
     val ddComponentWithClassAndId: Document =
       Jsoup.parse(instanceOfDd(content, classes = Some(testClass), id = Some(testId)).body)
 
-    val dlComponent: Document = Jsoup.parse(instanceOfDl(content).body)
-    val dlComponentWithClass: Document = Jsoup.parse(instanceOfDl(content, classes = Some(testClass)).body)
-    val dlComponentWithId: Document = Jsoup.parse(instanceOfDl(content, id = Some(testId)).body)
+    val dlComponent: Document               = Jsoup.parse(instanceOfDl(content).body)
+    val dlComponentWithClass: Document      = Jsoup.parse(instanceOfDl(content, classes = Some(testClass)).body)
+    val dlComponentWithId: Document         = Jsoup.parse(instanceOfDl(content, id = Some(testId)).body)
     val dlComponentWithClassAndId: Document =
       Jsoup.parse(instanceOfDl(content, classes = Some(testClass), id = Some(testId)).body)
 
-    val dtComponent: Document = Jsoup.parse(instanceOfDt(content).body)
-    val dtComponentWithClass: Document = Jsoup.parse(instanceOfDt(content, classes = Some(testClass)).body)
-    val dtComponentWithId: Document = Jsoup.parse(instanceOfDt(content, id = Some(testId)).body)
+    val dtComponent: Document               = Jsoup.parse(instanceOfDt(content).body)
+    val dtComponentWithClass: Document      = Jsoup.parse(instanceOfDt(content, classes = Some(testClass)).body)
+    val dtComponentWithId: Document         = Jsoup.parse(instanceOfDt(content, id = Some(testId)).body)
     val dtComponentWithClassAndId: Document =
       Jsoup.parse(instanceOfDt(content, classes = Some(testClass), id = Some(testId)).body)
   }

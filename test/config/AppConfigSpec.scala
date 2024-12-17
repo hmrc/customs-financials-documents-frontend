@@ -84,12 +84,12 @@ class AppConfigSpec extends SpecBase {
     }
 
     "return correct value for deskProLinkUrlForServiceUnavailable" in new Setup {
-      val path = "test_Path"
+      val path                                                     = "test_Path"
       implicit val reqHeaders: FakeRequest[AnyContentAsEmpty.type] = fakeRequest("GET", path)
 
       appConfig.deskProLinkUrlForServiceUnavailable mustBe
         "http://localhost:9250" +
-          "/contact/report-technical-problem?newTab=true&amp;service=CDS%20FinancialsreferrerUrl=test_Path"
+        "/contact/report-technical-problem?newTab=true&amp;service=CDS%20FinancialsreferrerUrl=test_Path"
     }
   }
 
@@ -106,7 +106,7 @@ class AppConfigSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = application(allEoriHistory = Seq.empty).build()
+    val app: Application     = application(allEoriHistory = Seq.empty).build()
     val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
   }
 }

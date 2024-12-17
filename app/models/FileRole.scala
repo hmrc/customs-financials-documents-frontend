@@ -19,49 +19,55 @@ package models
 import play.api.libs.json.{Format, JsString, JsSuccess, JsValue}
 import play.api.{Logger, LoggerLike}
 
-sealed abstract class FileRole(val name: String,
-                               val featureName: String,
-                               val transactionName: String,
-                               val messageKey: String)
+sealed abstract class FileRole(
+  val name: String,
+  val featureName: String,
+  val transactionName: String,
+  val messageKey: String
+)
 
 object FileRole {
 
   case object C79Certificate
-    extends FileRole(
-      name = "C79Certificate",
-      featureName = "import-vat",
-      transactionName = "Download import VAT statement",
-      messageKey = "c79")
+      extends FileRole(
+        name = "C79Certificate",
+        featureName = "import-vat",
+        transactionName = "Download import VAT statement",
+        messageKey = "c79"
+      )
 
   case object PostponedVATStatement
-    extends FileRole(
-      name = "PostponedVATStatement",
-      featureName = "postponed-vat",
-      transactionName = "Download postponed VAT statement",
-      messageKey = "postponed-vat")
+      extends FileRole(
+        name = "PostponedVATStatement",
+        featureName = "postponed-vat",
+        transactionName = "Download postponed VAT statement",
+        messageKey = "postponed-vat"
+      )
 
   case object SecurityStatement
-    extends FileRole(
-      name = "SecurityStatement",
-      featureName = "adjustments",
-      transactionName = "Download adjustments statement",
-      messageKey = "adjustments")
+      extends FileRole(
+        name = "SecurityStatement",
+        featureName = "adjustments",
+        transactionName = "Download adjustments statement",
+        messageKey = "adjustments"
+      )
 
   case object PostponedVATAmendedStatement
-    extends FileRole(
-      name = "PostponedVATAmendedStatement",
-      featureName = "postponed-vat",
-      transactionName = "Download postponed VAT amend statement",
-      messageKey = "postponed-vat")
+      extends FileRole(
+        name = "PostponedVATAmendedStatement",
+        featureName = "postponed-vat",
+        transactionName = "Download postponed VAT amend statement",
+        messageKey = "postponed-vat"
+      )
 
   val log: LoggerLike = Logger(this.getClass)
 
   def apply(name: String): FileRole = name match {
-    case "C79Certificate" => C79Certificate
-    case "PostponedVATStatement" => PostponedVATStatement
-    case "SecurityStatement" => SecurityStatement
+    case "C79Certificate"               => C79Certificate
+    case "PostponedVATStatement"        => PostponedVATStatement
+    case "SecurityStatement"            => SecurityStatement
     case "PostponedVATAmendedStatement" => PostponedVATAmendedStatement
-    case _ => throw new Exception(s"Unknown file role: $name")
+    case _                              => throw new Exception(s"Unknown file role: $name")
   }
 
   def unapply(fileRole: FileRole): Option[String] = Some(fileRole.name)

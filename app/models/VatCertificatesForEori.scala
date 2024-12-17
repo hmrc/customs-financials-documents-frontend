@@ -16,7 +16,8 @@
 
 package models
 
-case class VatCertificatesForEori(eoriHistory: EoriHistory,
-                                  currentCertificates: Seq[VatCertificatesByMonth],
-                                  requestedCertificates: Seq[VatCertificatesByMonth])
-  extends OrderedByEoriHistory[VatCertificatesForEori]
+case class VatCertificatesForEori(
+  eoriHistory: EoriHistory,
+  currentCertificates: Seq[VatCertificatesByMonth],
+  requestedCertificates: Seq[VatCertificatesByMonth]
+) extends OrderedByEoriHistory[VatCertificatesForEori]

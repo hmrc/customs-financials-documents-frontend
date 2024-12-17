@@ -27,16 +27,18 @@ import uk.gov.hmrc.http.client.HttpClientV2
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class FinancialsApiConnector @Inject()(appConfig: AppConfig,
-                                       metricsReporterService: MetricsReporterService,
-                                       httpClient: HttpClientV2)(implicit executionContext: ExecutionContext) {
+class FinancialsApiConnector @Inject() (
+  appConfig: AppConfig,
+  metricsReporterService: MetricsReporterService,
+  httpClient: HttpClientV2
+)(implicit executionContext: ExecutionContext) {
 
-  def deleteNotification(eori: String,
-                         fileRole: FileRole)(implicit hc: HeaderCarrier): Future[Boolean] = {
+  def deleteNotification(eori: String, fileRole: FileRole)(implicit hc: HeaderCarrier): Future[Boolean] = {
     val apiEndpoint = appConfig.customsFinancialsApi + s"/eori/$eori/notifications/$fileRole"
 
     metricsReporterService.withResponseTimeLogging(resourceName = "customs-financials-api.delete.notification") {
-      httpClient.delete(url"$apiEndpoint")
+      httpClient
+        .delete(url"$apiEndpoint")
         .execute[HttpResponse]
         .map(_.status == Status.OK)
     }

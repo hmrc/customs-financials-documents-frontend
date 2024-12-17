@@ -24,12 +24,12 @@ import utils.Utils.emptyString
 
 import javax.inject.Singleton
 
-
 @Singleton
 class SdesGatekeeperService() {
 
-  implicit def convertToVatCertificateFile(sdesResponseFile: FileInformation)
-                                          (implicit messages: Messages): VatCertificateFile = {
+  implicit def convertToVatCertificateFile(
+    sdesResponseFile: FileInformation
+  )(implicit messages: Messages): VatCertificateFile = {
     val metadata = sdesResponseFile.metadata.asMap
 
     VatCertificateFile(
@@ -41,7 +41,8 @@ class SdesGatekeeperService() {
         metadata("PeriodStartMonth").toInt,
         FileFormat(metadata("FileType")),
         FileRole(metadata("FileRole")),
-        metadata.get("statementRequestID")),
+        metadata.get("statementRequestID")
+      ),
       emptyString
     )
   }
@@ -84,17 +85,17 @@ class SdesGatekeeperService() {
         metadata.getOrElse("eoriNumber", "MISSING EORI NUMBER"),
         metadata.getOrElse("fileSize", sdesResponseFile.fileSize.toString).toLong,
         metadata.getOrElse("checksum", "MISSING CHECKSUM"),
-        metadata.get("statementRequestID"))
+        metadata.get("statementRequestID")
+      )
     )
   }
 
   def convertTo[T <: SdesFile](implicit converter: FileInformation => T): Seq[FileInformation] => Seq[T] =
     _.map(converter)
 
-  private def mapDutyPaymentMethod(dutyPaymentMethod: String): String = {
+  private def mapDutyPaymentMethod(dutyPaymentMethod: String): String =
     dutyPaymentMethod match {
       case "Chief" => CHIEF
-      case _ => CDS
+      case _       => CDS
     }
-  }
 }

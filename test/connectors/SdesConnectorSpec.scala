@@ -49,7 +49,7 @@ class SdesConnectorSpec extends SpecBase {
 
       "make a GET request to sdesSecurityStatementsUrl" in new Setup {
 
-        val urlLink: URL = url"$sdesSecurityStatementsUrl"
+        val urlLink: URL               = url"$sdesSecurityStatementsUrl"
         val sdesService: SdesConnector = app.injector.instanceOf[SdesConnector]
 
         when(requestBuilder.setHeader(any[(String, String)]())).thenReturn(requestBuilder)
@@ -63,15 +63,17 @@ class SdesConnectorSpec extends SpecBase {
 
       "filter out unknown file types" in new Setup {
 
-        val urlLink: URL = url"$sdesSecurityStatementsUrl"
+        val urlLink: URL               = url"$sdesSecurityStatementsUrl"
         val sdesService: SdesConnector = app.injector.instanceOf[SdesConnector]
 
         when(requestBuilder.setHeader(any[(String, String)]())).thenReturn(requestBuilder)
         when(mockHttp.get(any)(any)).thenReturn(requestBuilder)
         when(requestBuilder.execute(any, any))
-          .thenReturn(Future.successful(
-            HttpResponse(Status.OK, Json.toJson(securityStatementFilesWithUnkownFileTypesSdesResponse).toString())
-          ))
+          .thenReturn(
+            Future.successful(
+              HttpResponse(Status.OK, Json.toJson(securityStatementFilesWithUnkownFileTypesSdesResponse).toString())
+            )
+          )
 
         val result: Seq[SecurityStatementFile] =
           await(sdesService.getSecurityStatements(someEoriWithUnknownFileTypes)(hc))
@@ -82,7 +84,7 @@ class SdesConnectorSpec extends SpecBase {
 
       "converts Sdes response to List[SecurityStatementFile]" in new Setup {
 
-        val urlLink: URL = url"$sdesSecurityStatementsUrl"
+        val urlLink: URL            = url"$sdesSecurityStatementsUrl"
         val numberOfStatements: Int = securityStatementFilesSdesResponse.length
 
         when(requestBuilder.setHeader(any[(String, String)]())).thenReturn(requestBuilder)
@@ -94,10 +96,12 @@ class SdesConnectorSpec extends SpecBase {
 
         when(sdesGatekeeperServiceSpy.convertTo(any())).thenCallRealMethod()
 
-        override val app: Application = application().overrides(
-          inject.bind[HttpClientV2].toInstance(mockHttp),
-          inject.bind[SdesGatekeeperService].toInstance(sdesGatekeeperServiceSpy)
-        ).build()
+        override val app: Application = application()
+          .overrides(
+            inject.bind[HttpClientV2].toInstance(mockHttp),
+            inject.bind[SdesGatekeeperService].toInstance(sdesGatekeeperServiceSpy)
+          )
+          .build()
 
         val sdesService: SdesConnector = app.injector.instanceOf[SdesConnector]
 
@@ -112,15 +116,17 @@ class SdesConnectorSpec extends SpecBase {
 
       "filter out unknown file types" in new Setup {
 
-        val urlLink = url"$sdesVatCertificatesUrl"
+        val urlLink                    = url"$sdesVatCertificatesUrl"
         val sdesService: SdesConnector = app.injector.instanceOf[SdesConnector]
 
         when(requestBuilder.setHeader(any[(String, String)]())).thenReturn(requestBuilder)
         when(mockHttp.get(any)(any)).thenReturn(requestBuilder)
         when(requestBuilder.execute(any, any))
-          .thenReturn(Future.successful(
-            HttpResponse(Status.OK, Json.toJson(vatCertificateFilesWithUnknownFileTypesSdesResponse).toString())
-          ))
+          .thenReturn(
+            Future.successful(
+              HttpResponse(Status.OK, Json.toJson(vatCertificateFilesWithUnknownFileTypesSdesResponse).toString())
+            )
+          )
 
         val result: Seq[VatCertificateFile] =
           await(sdesService.getVatCertificates(someEoriWithUnknownFileTypes)(hc, messages))
@@ -130,22 +136,26 @@ class SdesConnectorSpec extends SpecBase {
       }
 
       "converts Sdes response to List[VatCertificateFile]" in new Setup {
-        val urlLink: URL = url"$sdesVatCertificatesUrl"
+        val urlLink: URL            = url"$sdesVatCertificatesUrl"
         val numberOfStatements: Int = vatCertificateFilesSdesResponse.length
 
         when(requestBuilder.setHeader(any[(String, String)]())).thenReturn(requestBuilder)
         when(mockHttp.get(any)(any)).thenReturn(requestBuilder)
         when(requestBuilder.execute(any, any))
-          .thenReturn(Future.successful(
-            HttpResponse(Status.OK, Json.toJson(vatCertificateFilesSdesResponse).toString())
-          ))
+          .thenReturn(
+            Future.successful(
+              HttpResponse(Status.OK, Json.toJson(vatCertificateFilesSdesResponse).toString())
+            )
+          )
 
         when(sdesGatekeeperServiceSpy.convertTo(any())).thenCallRealMethod()
 
-        override val app: Application = application().overrides(
-          inject.bind[HttpClientV2].toInstance(mockHttp),
-          inject.bind[SdesGatekeeperService].toInstance(sdesGatekeeperServiceSpy)
-        ).build()
+        override val app: Application = application()
+          .overrides(
+            inject.bind[HttpClientV2].toInstance(mockHttp),
+            inject.bind[SdesGatekeeperService].toInstance(sdesGatekeeperServiceSpy)
+          )
+          .build()
 
         val sdesService: SdesConnector = app.injector.instanceOf[SdesConnector]
 
@@ -159,17 +169,20 @@ class SdesConnectorSpec extends SpecBase {
     "getPostponedVatStatements" should {
 
       "filter out unknown file types" in new Setup {
-        val urlLink: URL = url"$sdesPostponedVatStatementsUrl"
+        val urlLink: URL               = url"$sdesPostponedVatStatementsUrl"
         val sdesService: SdesConnector = app.injector.instanceOf[SdesConnector]
 
         when(requestBuilder.setHeader(any[(String, String)]())).thenReturn(requestBuilder)
         when(mockHttp.get(any)(any)).thenReturn(requestBuilder)
         when(requestBuilder.execute(any, any))
-          .thenReturn(Future.successful(
-            HttpResponse(
-              Status.OK,
-              Json.toJson(postponedVatCertificateFilesWithUnknownFileTypesSdesResponse).toString())
-          ))
+          .thenReturn(
+            Future.successful(
+              HttpResponse(
+                Status.OK,
+                Json.toJson(postponedVatCertificateFilesWithUnknownFileTypesSdesResponse).toString()
+              )
+            )
+          )
 
         val result: Seq[PostponedVatStatementFile] =
           await(sdesService.getPostponedVatStatements(someEoriWithUnknownFileTypes)(hc))
@@ -180,22 +193,26 @@ class SdesConnectorSpec extends SpecBase {
 
       "converts Sdes response to List[PostponedVatCertificateFile]" in new Setup {
 
-        val urlLink: URL = url"$sdesPostponedVatStatementsUrl"
+        val urlLink: URL            = url"$sdesPostponedVatStatementsUrl"
         val numberOfStatements: Int = postponedVatCertificateFilesSdesResponse.length
 
         when(requestBuilder.setHeader(any[(String, String)]())).thenReturn(requestBuilder)
         when(mockHttp.get(any)(any)).thenReturn(requestBuilder)
         when(requestBuilder.execute(any, any))
-          .thenReturn(Future.successful(
-            HttpResponse(Status.OK, Json.toJson(postponedVatCertificateFilesSdesResponse).toString())
-          ))
+          .thenReturn(
+            Future.successful(
+              HttpResponse(Status.OK, Json.toJson(postponedVatCertificateFilesSdesResponse).toString())
+            )
+          )
 
         when(sdesGatekeeperServiceSpy.convertTo(any())).thenCallRealMethod()
 
-        override val app: Application = application().overrides(
-          inject.bind[HttpClientV2].toInstance(mockHttp),
-          inject.bind[SdesGatekeeperService].toInstance(sdesGatekeeperServiceSpy)
-        ).build()
+        override val app: Application = application()
+          .overrides(
+            inject.bind[HttpClientV2].toInstance(mockHttp),
+            inject.bind[SdesGatekeeperService].toInstance(sdesGatekeeperServiceSpy)
+          )
+          .build()
 
         val sdesService: SdesConnector = app.injector.instanceOf[SdesConnector]
 
@@ -208,81 +225,83 @@ class SdesConnectorSpec extends SpecBase {
   }
 
   trait Setup {
-    implicit val hc: HeaderCarrier = HeaderCarrier()
+    implicit val hc: HeaderCarrier  = HeaderCarrier()
     implicit val messages: Messages = stubMessages()
 
-    val someEori = "12345678"
+    val someEori                     = "12345678"
     val someEoriWithUnknownFileTypes = "EoriFooBar"
-    val someDan = "87654321"
-    val xClientId = "TheClientId"
-    val xClientIdHeader = "x-client-id"
-    val xSDESKey = "X-SDES-Key"
+    val someDan                      = "87654321"
+    val xClientId                    = "TheClientId"
+    val xClientIdHeader              = "x-client-id"
+    val xSDESKey                     = "X-SDES-Key"
 
-    val sdesVatCertificatesUrl = "http://localhost:9754/customs-financials-sdes-stub/files-available/list/C79Certificate"
+    val sdesVatCertificatesUrl        =
+      "http://localhost:9754/customs-financials-sdes-stub/files-available/list/C79Certificate"
     val sdesPostponedVatStatementsUrl =
       "http://localhost:9754/customs-financials-sdes-stub/files-available/list/PostponedVATStatement"
 
     val sdesSecurityStatementsUrl =
       "http://localhost:9754/customs-financials-sdes-stub/files-available/list/SecurityStatement"
 
-    val periodStartYear: MetadataItem = MetadataItem("PeriodStartYear", "2018")
-    val periodStartMonth: MetadataItem = MetadataItem("PeriodStartMonth", "3")
-    val periodStartMonth4: MetadataItem = MetadataItem("PeriodStartMonth", "4")
-    val periodStartMonth5: MetadataItem = MetadataItem("PeriodStartMonth", "5")
-    val periodStartMonth6: MetadataItem = MetadataItem("PeriodStartMonth", "6")
-    val periodStartDay: MetadataItem = MetadataItem("PeriodStartDay", "14")
-    val periodEndYear: MetadataItem = MetadataItem("PeriodEndYear", "2018")
-    val periodEndMonth: MetadataItem = MetadataItem("PeriodEndMonth", "3")
-    val periodEndDay: MetadataItem = MetadataItem("PeriodEndDay", "23")
-    val fileType: MetadataItem = MetadataItem("FileType", "bar")
-    val fileTypePdf: MetadataItem = MetadataItem("FileType", "pdf")
-    val fileTypeCsv: MetadataItem = MetadataItem("FileType", "CSV")
-    val fileTypeFoo: MetadataItem = MetadataItem("FileType", "foo")
-    val fileRole: MetadataItem = MetadataItem("FileRole", "SecurityStatement")
+    val periodStartYear: MetadataItem       = MetadataItem("PeriodStartYear", "2018")
+    val periodStartMonth: MetadataItem      = MetadataItem("PeriodStartMonth", "3")
+    val periodStartMonth4: MetadataItem     = MetadataItem("PeriodStartMonth", "4")
+    val periodStartMonth5: MetadataItem     = MetadataItem("PeriodStartMonth", "5")
+    val periodStartMonth6: MetadataItem     = MetadataItem("PeriodStartMonth", "6")
+    val periodStartDay: MetadataItem        = MetadataItem("PeriodStartDay", "14")
+    val periodEndYear: MetadataItem         = MetadataItem("PeriodEndYear", "2018")
+    val periodEndMonth: MetadataItem        = MetadataItem("PeriodEndMonth", "3")
+    val periodEndDay: MetadataItem          = MetadataItem("PeriodEndDay", "23")
+    val fileType: MetadataItem              = MetadataItem("FileType", "bar")
+    val fileTypePdf: MetadataItem           = MetadataItem("FileType", "pdf")
+    val fileTypeCsv: MetadataItem           = MetadataItem("FileType", "CSV")
+    val fileTypeFoo: MetadataItem           = MetadataItem("FileType", "foo")
+    val fileRole: MetadataItem              = MetadataItem("FileRole", "SecurityStatement")
     val fileRolePVATStatement: MetadataItem = MetadataItem("FileRole", "PostponedVATStatement")
-    val fileRoleC79Cert: MetadataItem = MetadataItem("FileRole", "C79Certificate")
-    val eoriNumber: MetadataItem = MetadataItem("eoriNumber", someEori)
-    val fileSize: MetadataItem = MetadataItem("fileSize", "111")
-    val checksum: MetadataItem = MetadataItem("checksum", CHECK_SUM_01)
-    val issueDate: MetadataItem = MetadataItem("issueDate", "3/4/2018")
-    val dutyPaymentMethod: MetadataItem = MetadataItem("DutyPaymentMethod", "Immediate")
+    val fileRoleC79Cert: MetadataItem       = MetadataItem("FileRole", "C79Certificate")
+    val eoriNumber: MetadataItem            = MetadataItem("eoriNumber", someEori)
+    val fileSize: MetadataItem              = MetadataItem("fileSize", "111")
+    val checksum: MetadataItem              = MetadataItem("checksum", CHECK_SUM_01)
+    val issueDate: MetadataItem             = MetadataItem("issueDate", "3/4/2018")
+    val dutyPaymentMethod: MetadataItem     = MetadataItem("DutyPaymentMethod", "Immediate")
 
     val vatCertificateFiles: List[VatCertificateFile] = List(
-      VatCertificateFile(
-        STAT_FILE_NAME_04,
-        DOWNLOAD_URL_06,
-        SIZE_111L,
-        getVatCertificateFileMetadata(), emptyString),
+      VatCertificateFile(STAT_FILE_NAME_04, DOWNLOAD_URL_06, SIZE_111L, getVatCertificateFileMetadata(), emptyString),
       VatCertificateFile(
         STAT_FILE_NAME_04,
         DOWNLOAD_URL_05,
         SIZE_111L,
         getVatCertificateFileMetadata(periodStartMonth = MONTH_4, fileFormat = Csv),
-        emptyString),
+        emptyString
+      ),
       VatCertificateFile(
         STAT_FILE_NAME_04,
         DOWNLOAD_URL_04,
         SIZE_111L,
         VatCertificateFileMetadata(YEAR_2018, MONTH_4, Pdf, C79Certificate, None),
-        emptyString),
+        emptyString
+      ),
       VatCertificateFile(
         STAT_FILE_NAME_03,
         DOWNLOAD_URL_03,
         SIZE_111L,
         VatCertificateFileMetadata(YEAR_2018, MONTH_5, Pdf, C79Certificate, None),
-        emptyString),
+        emptyString
+      ),
       VatCertificateFile(
         STAT_FILE_NAME_02,
         DOWNLOAD_URL_02,
         SIZE_111L,
         VatCertificateFileMetadata(YEAR_2018, MONTH_6, Csv, C79Certificate, None),
-        emptyString),
+        emptyString
+      ),
       VatCertificateFile(
         STAT_FILE_NAME_01,
         DOWNLOAD_URL_01,
         SIZE_1300000L,
         VatCertificateFileMetadata(YEAR_2018, MONTH_6, Pdf, C79Certificate, None),
-        emptyString)
+        emptyString
+      )
     )
 
     val postponedVatCertificateFiles: List[PostponedVatStatementFile] = List(
@@ -291,37 +310,43 @@ class SdesConnectorSpec extends SpecBase {
         DOWNLOAD_URL_06,
         SIZE_111L,
         PostponedVatStatementFileMetadata(YEAR_2018, MONTH_3, Pdf, PostponedVATStatement, CDS, None),
-        emptyString),
+        emptyString
+      ),
       PostponedVatStatementFile(
         STAT_FILE_NAME_04,
         DOWNLOAD_URL_05,
         SIZE_111L,
         PostponedVatStatementFileMetadata(YEAR_2018, MONTH_4, Csv, PostponedVATStatement, CDS, None),
-        emptyString),
+        emptyString
+      ),
       PostponedVatStatementFile(
         STAT_FILE_NAME_04,
         DOWNLOAD_URL_04,
         SIZE_111L,
         PostponedVatStatementFileMetadata(YEAR_2018, MONTH_4, Pdf, PostponedVATStatement, CDS, None),
-        emptyString),
+        emptyString
+      ),
       PostponedVatStatementFile(
         STAT_FILE_NAME_03,
         DOWNLOAD_URL_03,
         SIZE_111L,
         PostponedVatStatementFileMetadata(YEAR_2018, MONTH_5, Pdf, PostponedVATStatement, CDS, None),
-        emptyString),
+        emptyString
+      ),
       PostponedVatStatementFile(
         STAT_FILE_NAME_02,
         DOWNLOAD_URL_02,
         SIZE_111L,
         PostponedVatStatementFileMetadata(YEAR_2018, MONTH_6, Csv, PostponedVATStatement, CDS, None),
-        emptyString),
+        emptyString
+      ),
       PostponedVatStatementFile(
         STAT_FILE_NAME_01,
         DOWNLOAD_URL_01,
         SIZE_1300000L,
         PostponedVatStatementFileMetadata(YEAR_2018, MONTH_6, Pdf, PostponedVATStatement, CDS, None),
-        emptyString)
+        emptyString
+      )
     )
 
     val filteredPostponedVatCertificateFiles: List[PostponedVatStatementFile] = List(
@@ -330,25 +355,29 @@ class SdesConnectorSpec extends SpecBase {
         DOWNLOAD_URL_06,
         SIZE_111L,
         PostponedVatStatementFileMetadata(YEAR_2018, MONTH_3, Pdf, PostponedVATStatement, CDS, None),
-        emptyString),
+        emptyString
+      ),
       PostponedVatStatementFile(
         STAT_FILE_NAME_04,
         DOWNLOAD_URL_04,
         SIZE_111L,
         PostponedVatStatementFileMetadata(YEAR_2018, MONTH_4, Pdf, PostponedVATStatement, CDS, None),
-        emptyString),
+        emptyString
+      ),
       PostponedVatStatementFile(
         STAT_FILE_NAME_03,
         DOWNLOAD_URL_03,
         SIZE_111L,
         PostponedVatStatementFileMetadata(YEAR_2018, MONTH_5, Pdf, PostponedVATStatement, CDS, None),
-        emptyString),
+        emptyString
+      ),
       PostponedVatStatementFile(
         STAT_FILE_NAME_01,
         DOWNLOAD_URL_01,
         SIZE_1300000L,
         PostponedVatStatementFileMetadata(YEAR_2018, MONTH_6, Pdf, PostponedVATStatement, CDS, None),
-        emptyString)
+        emptyString
+      )
     )
 
     val vatCertificateFilesSdesResponse: List[FileInformation] = List(
@@ -430,17 +459,21 @@ class SdesConnectorSpec extends SpecBase {
     )
 
     val vatCertificateFilesWithUnknownFileTypesSdesResponse: List[FileInformation] =
-      List(FileInformation(
-        STAT_FILE_NAME_04,
-        DOWNLOAD_URL_06,
-        SIZE_111L,
-        Metadata(List(periodStartYear, periodStartMonth, fileTypeFoo, fileRoleC79Cert))
-      )) ++ vatCertificateFilesSdesResponse ++
-        List(FileInformation(
-          STAT_FILE_NAME_01,
-          DOWNLOAD_URL_01,
-          SIZE_1300000L,
-          Metadata(List(periodStartYear, periodStartMonth6, fileType, fileRoleC79Cert)))
+      List(
+        FileInformation(
+          STAT_FILE_NAME_04,
+          DOWNLOAD_URL_06,
+          SIZE_111L,
+          Metadata(List(periodStartYear, periodStartMonth, fileTypeFoo, fileRoleC79Cert))
+        )
+      ) ++ vatCertificateFilesSdesResponse ++
+        List(
+          FileInformation(
+            STAT_FILE_NAME_01,
+            DOWNLOAD_URL_01,
+            SIZE_1300000L,
+            Metadata(List(periodStartYear, periodStartMonth6, fileType, fileRoleC79Cert))
+          )
         )
 
     val postponedVatCertificateFilesWithUnknownFileTypesSdesResponse: List[FileInformation] =
@@ -457,7 +490,8 @@ class SdesConnectorSpec extends SpecBase {
             STAT_FILE_NAME_01,
             DOWNLOAD_URL_01,
             SIZE_1300000L,
-            Metadata(List(periodStartYear, periodStartMonth6, fileType, fileRolePVATStatement, dutyPaymentMethod)))
+            Metadata(List(periodStartYear, periodStartMonth6, fileType, fileRolePVATStatement, dutyPaymentMethod))
+          )
         )
 
     val securityStatementFiles: List[SecurityStatementFile] =
@@ -474,7 +508,12 @@ class SdesConnectorSpec extends SpecBase {
             MONTH_3,
             DAY_23,
             Csv,
-            SecurityStatement, someEori, SIZE_111L, CHECK_SUM_01, None)
+            SecurityStatement,
+            someEori,
+            SIZE_111L,
+            CHECK_SUM_01,
+            None
+          )
         ),
         SecurityStatementFile(
           STAT_FILE_NAME_01,
@@ -488,7 +527,12 @@ class SdesConnectorSpec extends SpecBase {
             MONTH_3,
             DAY_23,
             Pdf,
-            SecurityStatement, someEori, SIZE_111L, CHECK_SUM_01, None)
+            SecurityStatement,
+            someEori,
+            SIZE_111L,
+            CHECK_SUM_01,
+            None
+          )
         )
       )
 
@@ -498,15 +542,43 @@ class SdesConnectorSpec extends SpecBase {
           STAT_FILE_NAME_01,
           DOWNLOAD_URL_01,
           SIZE_111L,
-          Metadata(List(periodStartYear, periodStartMonth, periodStartDay, periodEndYear, periodEndMonth, periodEndDay,
-            fileTypeCsv, fileRole, eoriNumber, fileSize, checksum, issueDate))
+          Metadata(
+            List(
+              periodStartYear,
+              periodStartMonth,
+              periodStartDay,
+              periodEndYear,
+              periodEndMonth,
+              periodEndDay,
+              fileTypeCsv,
+              fileRole,
+              eoriNumber,
+              fileSize,
+              checksum,
+              issueDate
+            )
+          )
         ),
         FileInformation(
           STAT_FILE_NAME_01,
           DOWNLOAD_URL_01,
           SIZE_111L,
-          Metadata(List(periodStartYear, periodStartMonth, periodStartDay, periodEndYear, periodEndMonth, periodEndDay,
-            fileTypePdf, fileRole, eoriNumber, fileSize, checksum, issueDate))
+          Metadata(
+            List(
+              periodStartYear,
+              periodStartMonth,
+              periodStartDay,
+              periodEndYear,
+              periodEndMonth,
+              periodEndDay,
+              fileTypePdf,
+              fileRole,
+              eoriNumber,
+              fileSize,
+              checksum,
+              issueDate
+            )
+          )
         )
       )
 
@@ -516,8 +588,22 @@ class SdesConnectorSpec extends SpecBase {
           STAT_FILE_NAME_01,
           DOWNLOAD_URL_01,
           SIZE_111L,
-          Metadata(List(periodStartYear, periodStartMonth, periodStartDay, periodEndYear, periodEndMonth, periodEndDay,
-            fileTypeFoo, fileRole, eoriNumber, fileSize, checksum, issueDate))
+          Metadata(
+            List(
+              periodStartYear,
+              periodStartMonth,
+              periodStartDay,
+              periodEndYear,
+              periodEndMonth,
+              periodEndDay,
+              fileTypeFoo,
+              fileRole,
+              eoriNumber,
+              fileSize,
+              checksum,
+              issueDate
+            )
+          )
         )
       ) ++ securityStatementFilesSdesResponse ++
         List(
@@ -525,25 +611,41 @@ class SdesConnectorSpec extends SpecBase {
             STAT_FILE_NAME_01,
             DOWNLOAD_URL_01,
             SIZE_111L,
-            Metadata(List(periodStartYear, periodStartMonth, periodStartDay, periodEndYear, periodEndMonth, periodEndDay,
-              fileType, fileRole, eoriNumber, fileSize, checksum, issueDate))
+            Metadata(
+              List(
+                periodStartYear,
+                periodStartMonth,
+                periodStartDay,
+                periodEndYear,
+                periodEndMonth,
+                periodEndDay,
+                fileType,
+                fileRole,
+                eoriNumber,
+                fileSize,
+                checksum,
+                issueDate
+              )
+            )
           )
         )
 
-    val sdesGatekeeperServiceSpy: SdesGatekeeperService = spy(new SdesGatekeeperService())
-    val mockHttp: HttpClientV2 = mock[HttpClientV2]
-    val mockAppConfig: AppConfig = mock[AppConfig]
-    val requestBuilder: RequestBuilder = mock[RequestBuilder]
+    val sdesGatekeeperServiceSpy: SdesGatekeeperService    = spy(new SdesGatekeeperService())
+    val mockHttp: HttpClientV2                             = mock[HttpClientV2]
+    val mockAppConfig: AppConfig                           = mock[AppConfig]
+    val requestBuilder: RequestBuilder                     = mock[RequestBuilder]
     val mockMetricsReporterService: MetricsReporterService = mock[MetricsReporterService]
-    val mockAuditingService: AuditingService = mock[AuditingService]
+    val mockAuditingService: AuditingService               = mock[AuditingService]
 
     val app: Application = application().overrides(inject.bind[HttpClientV2].toInstance(mockHttp)).build()
 
-    private def getVatCertificateFileMetadata(periodStartYear: Int = YEAR_2018,
-                                              periodStartMonth: Int = MONTH_3,
-                                              fileFormat: FileFormat = Pdf,
-                                              fileRole: FileRole = C79Certificate,
-                                              statementRequestId: Option[String] = None) =
+    private def getVatCertificateFileMetadata(
+      periodStartYear: Int = YEAR_2018,
+      periodStartMonth: Int = MONTH_3,
+      fileFormat: FileFormat = Pdf,
+      fileRole: FileRole = C79Certificate,
+      statementRequestId: Option[String] = None
+    ) =
       VatCertificateFileMetadata(periodStartYear, periodStartMonth, fileFormat, fileRole, statementRequestId)
   }
 }
