@@ -39,26 +39,28 @@ import org.scalatest.matchers.must.Matchers.{must, mustBe}
 class AuthActionSpec extends SpecBase {
 
   class Harness(authAction: IdentifierAction) {
-    def onPageLoad(): Action[AnyContent] = authAction { _ => Results.Ok }
+    def onPageLoad(): Action[AnyContent] = authAction(_ => Results.Ok)
   }
 
   implicit class Ops[A](a: A) {
-    def ~[B](b: B): A ~ B = new~(a, b)
+    def ~[B](b: B): A ~ B = new ~(a, b)
   }
 
   "the action" should {
 
     "redirect to the Government Gateway sign-in page when no authenticated user" in {
-      val mockAuditingService = mock[AuditingService]
+      val mockAuditingService    = mock[AuditingService]
       val mockDataStoreConnector = mock[DataStoreConnector]
 
-      val app = application().overrides(
-        inject.bind[AuditingService].toInstance(mockAuditingService),
-        inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
-      ).build()
+      val app = application()
+        .overrides(
+          inject.bind[AuditingService].toInstance(mockAuditingService),
+          inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
+        )
+        .build()
 
-      val config = app.injector.instanceOf[AppConfig]
-      val bodyParsers = app.injector.instanceOf[BodyParsers.Default]
+      val config           = app.injector.instanceOf[AppConfig]
+      val bodyParsers      = app.injector.instanceOf[BodyParsers.Default]
       val authActionHelper = app.injector.instanceOf[AuthActionHelper]
 
       val authAction =
@@ -74,16 +76,18 @@ class AuthActionSpec extends SpecBase {
     }
 
     "redirect the user to login when the user's session has expired" in {
-      val mockAuditingService = mock[AuditingService]
+      val mockAuditingService    = mock[AuditingService]
       val mockDataStoreConnector = mock[DataStoreConnector]
 
-      val app = application().overrides(
-        inject.bind[AuditingService].toInstance(mockAuditingService),
-        inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
-      ).build()
+      val app = application()
+        .overrides(
+          inject.bind[AuditingService].toInstance(mockAuditingService),
+          inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
+        )
+        .build()
 
-      val config = app.injector.instanceOf[AppConfig]
-      val bodyParsers = app.injector.instanceOf[BodyParsers.Default]
+      val config           = app.injector.instanceOf[AppConfig]
+      val bodyParsers      = app.injector.instanceOf[BodyParsers.Default]
       val authActionHelper = app.injector.instanceOf[AuthActionHelper]
 
       val authAction =
@@ -100,16 +104,18 @@ class AuthActionSpec extends SpecBase {
     }
 
     "redirect the user to login when the user has an unexpected Auth provider" in {
-      val mockAuditingService = mock[AuditingService]
+      val mockAuditingService    = mock[AuditingService]
       val mockDataStoreConnector = mock[DataStoreConnector]
 
-      val app = application().overrides(
-        inject.bind[AuditingService].toInstance(mockAuditingService),
-        inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
-      ).build()
+      val app = application()
+        .overrides(
+          inject.bind[AuditingService].toInstance(mockAuditingService),
+          inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
+        )
+        .build()
 
-      val config = app.injector.instanceOf[AppConfig]
-      val bodyParsers = app.injector.instanceOf[BodyParsers.Default]
+      val config           = app.injector.instanceOf[AppConfig]
+      val bodyParsers      = app.injector.instanceOf[BodyParsers.Default]
       val authActionHelper = app.injector.instanceOf[AuthActionHelper]
 
       val authAction =
@@ -126,16 +132,18 @@ class AuthActionSpec extends SpecBase {
     }
 
     "redirect the user to unauthorised controller when has insufficient enrolments" in {
-      val mockAuditingService = mock[AuditingService]
+      val mockAuditingService    = mock[AuditingService]
       val mockDataStoreConnector = mock[DataStoreConnector]
 
-      val app = application().overrides(
-        inject.bind[AuditingService].toInstance(mockAuditingService),
-        inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
-      ).build()
+      val app = application()
+        .overrides(
+          inject.bind[AuditingService].toInstance(mockAuditingService),
+          inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
+        )
+        .build()
 
-      val config = app.injector.instanceOf[AppConfig]
-      val bodyParsers = app.injector.instanceOf[BodyParsers.Default]
+      val config           = app.injector.instanceOf[AppConfig]
+      val bodyParsers      = app.injector.instanceOf[BodyParsers.Default]
       val authActionHelper = app.injector.instanceOf[AuthActionHelper]
 
       val authAction =
@@ -153,10 +161,12 @@ class AuthActionSpec extends SpecBase {
   }
 }
 
-class FakeFailingAuthConnector @Inject()(exceptionToReturn: Throwable) extends AuthConnector {
+class FakeFailingAuthConnector @Inject() (exceptionToReturn: Throwable) extends AuthConnector {
   val serviceUrl: String = emptyString
 
-  override def authorise[A](predicate: Predicate,
-                            retrieval: Retrieval[A])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[A] =
+  override def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[A] =
     Future.failed(exceptionToReturn)
 }

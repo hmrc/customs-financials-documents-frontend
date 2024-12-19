@@ -18,6 +18,5 @@ package models
 
 import play.api.mvc.{Request, WrappedRequest}
 
-final case class AuthenticatedRequest[A](request: Request[A],
-                                         eori: String,
-                                         allEoriHistory: Seq[EoriHistory]) extends WrappedRequest[A](request)
+final case class AuthenticatedRequest[A](request: Request[A], eori: String, allEoriHistory: Seq[EoriHistory])
+    extends WrappedRequest[A](request)

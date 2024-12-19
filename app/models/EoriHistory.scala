@@ -20,9 +20,7 @@ import play.api.libs.json._
 
 import java.time.LocalDate
 
-case class EoriHistory(eori: String,
-                       validFrom: Option[LocalDate],
-                       validUntil: Option[LocalDate])
+case class EoriHistory(eori: String, validFrom: Option[LocalDate], validUntil: Option[LocalDate])
 
 object EoriHistory {
   implicit val format: OFormat[EoriHistory] = Json.format[EoriHistory]

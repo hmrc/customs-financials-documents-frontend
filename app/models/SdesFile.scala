@@ -16,7 +16,9 @@
 
 package models
 
-import models.metadata.{PostponedVatStatementFileMetadata, SdesFileMetadata, SecurityStatementFileMetadata, VatCertificateFileMetadata}
+import models.metadata.{
+  PostponedVatStatementFileMetadata, SdesFileMetadata, SecurityStatementFileMetadata, VatCertificateFileMetadata
+}
 import play.api.i18n.Messages
 import views.helpers.Formatters
 
@@ -27,41 +29,49 @@ trait SdesFile {
 
   def downloadURL: String
 
-  val fileFormat: FileFormat = metadata.fileFormat
+  val fileFormat: FileFormat  = metadata.fileFormat
   val monthAndYear: LocalDate = LocalDate.of(metadata.periodStartYear, metadata.periodStartMonth, 1)
 }
 
-case class SecurityStatementFile(filename: String,
-                                 downloadURL: String,
-                                 size: Long,
-                                 metadata: SecurityStatementFileMetadata
-                                ) extends Ordered[SecurityStatementFile] with SdesFile {
+case class SecurityStatementFile(
+  filename: String,
+  downloadURL: String,
+  size: Long,
+  metadata: SecurityStatementFileMetadata
+) extends Ordered[SecurityStatementFile]
+    with SdesFile {
 
-  val startDate: LocalDate = LocalDate.of(metadata.periodStartYear, metadata.periodStartMonth, metadata.periodStartDay)
-  val endDate: LocalDate = LocalDate.of(metadata.periodEndYear, metadata.periodEndMonth, metadata.periodEndDay)
+  val startDate: LocalDate  = LocalDate.of(metadata.periodStartYear, metadata.periodStartMonth, metadata.periodStartDay)
+  val endDate: LocalDate    = LocalDate.of(metadata.periodEndYear, metadata.periodEndMonth, metadata.periodEndDay)
   val formattedSize: String = Formatters.fileSize(metadata.fileSize)
 
   def compare(that: SecurityStatementFile): Int = startDate.compareTo(that.startDate)
 }
 
-case class VatCertificateFile(filename: String,
-                              downloadURL: String,
-                              size: Long,
-                              metadata: VatCertificateFileMetadata,
-                              eori: String)
-                             (implicit messages: Messages) extends Ordered[VatCertificateFile] with SdesFile {
+case class VatCertificateFile(
+  filename: String,
+  downloadURL: String,
+  size: Long,
+  metadata: VatCertificateFileMetadata,
+  eori: String
+)(implicit messages: Messages)
+    extends Ordered[VatCertificateFile]
+    with SdesFile {
 
-  val formattedSize: String = Formatters.fileSize(size)
+  val formattedSize: String  = Formatters.fileSize(size)
   val formattedMonth: String = Formatters.dateAsMonth(monthAndYear)
 
   def compare(that: VatCertificateFile): Int = that.metadata.fileFormat.compare(metadata.fileFormat)
 }
 
-case class PostponedVatStatementFile(filename: String,
-                                     downloadURL: String,
-                                     size: Long,
-                                     metadata: PostponedVatStatementFileMetadata,
-                                     eori: String) extends Ordered[PostponedVatStatementFile] with SdesFile {
+case class PostponedVatStatementFile(
+  filename: String,
+  downloadURL: String,
+  size: Long,
+  metadata: PostponedVatStatementFileMetadata,
+  eori: String
+) extends Ordered[PostponedVatStatementFile]
+    with SdesFile {
 
   def compare(that: PostponedVatStatementFile): Int = that.metadata.fileFormat.compare(metadata.fileFormat)
 }

@@ -30,8 +30,9 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AuditingService @Inject()(appConfig: AppConfig,
-                                auditConnector: AuditConnector)(implicit executionContext: ExecutionContext) {
+class AuditingService @Inject() (appConfig: AppConfig, auditConnector: AuditConnector)(implicit
+  executionContext: ExecutionContext
+) {
 
   def auditVatCertificates(eori: String)(implicit hc: HeaderCarrier): Future[AuditResult] =
     audit(
@@ -56,16 +57,17 @@ class AuditingService @Inject()(appConfig: AppConfig,
       )
     )
 
-  def auditHistoricEoris(currentEori: String,
-                         allEoriHistory: Seq[EoriHistory])(implicit hc: HeaderCarrier): Future[AuditResult] = {
+  def auditHistoricEoris(currentEori: String, allEoriHistory: Seq[EoriHistory])(implicit
+    hc: HeaderCarrier
+  ): Future[AuditResult] = {
 
-    val eoriHistory = allEoriHistory.filterNot(_.eori == currentEori)
+    val eoriHistory                              = allEoriHistory.filterNot(_.eori == currentEori)
     val historicEoriAuditDetails: Seq[AuditEori] =
       eoriHistory.map(eoriHistory => AuditEori(eoriHistory.eori, isHistoric = true))
 
     val eoriAuditDetails: AuditEori = AuditEori(currentEori, isHistoric = false)
-    val eoriList = eoriAuditDetails +: historicEoriAuditDetails
-    val auditEvent = AuditModel("ViewAccount", "View account", Json.toJson(eoriList))
+    val eoriList                    = eoriAuditDetails +: historicEoriAuditDetails
+    val auditEvent                  = AuditModel("ViewAccount", "View account", Json.toJson(eoriList))
 
     audit(auditEvent)
   }
@@ -77,7 +79,8 @@ class AuditingService @Inject()(appConfig: AppConfig,
       auditSource = appConfig.appName,
       auditType = auditModel.auditType,
       tags = AuditExtensions.auditHeaderCarrier(hc).toAuditTags(auditModel.transactionName, referrer(hc)),
-      detail = auditModel.detail)
+      detail = auditModel.detail
+    )
 
     auditConnector.sendExtendedEvent(dataEvent)
   }

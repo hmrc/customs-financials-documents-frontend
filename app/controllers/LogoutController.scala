@@ -24,14 +24,13 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.Inject
 
-class LogoutController @Inject()(override val authConnector: AuthConnector,
-                                 mcc: MessagesControllerComponents)
-                                (implicit val appConfig: AppConfig)
-  extends FrontendController(mcc)
+class LogoutController @Inject() (override val authConnector: AuthConnector, mcc: MessagesControllerComponents)(implicit
+  val appConfig: AppConfig
+) extends FrontendController(mcc)
     with AuthorisedFunctions {
 
   private val feedbackLink: String = appConfig.feedbackService
-  val log: LoggerLike = Logger(this.getClass)
+  val log: LoggerLike              = Logger(this.getClass)
 
   def logout: Action[AnyContent] = Action {
     Redirect(appConfig.signOutUrl, Map("continue" -> Seq(feedbackLink)))

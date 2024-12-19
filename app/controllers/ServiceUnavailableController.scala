@@ -27,11 +27,13 @@ import views.html.service_unavailable
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class ServiceUnavailableController @Inject()(authenticate: IdentifierAction,
-                                             view: service_unavailable,
-                                             navigator: Navigator)
-                                            (implicit val appConfig: AppConfig, mcc: MessagesControllerComponents)
-  extends FrontendController(mcc) with I18nSupport {
+class ServiceUnavailableController @Inject() (
+  authenticate: IdentifierAction,
+  view: service_unavailable,
+  navigator: Navigator
+)(implicit val appConfig: AppConfig, mcc: MessagesControllerComponents)
+    extends FrontendController(mcc)
+    with I18nSupport {
 
   def onPageLoad(id: String): Action[AnyContent] =
     authenticate async { implicit req =>

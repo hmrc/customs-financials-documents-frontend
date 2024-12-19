@@ -35,9 +35,9 @@ class FinancialsApiConnectorSpec extends SpecBase {
 
   "delete notifications should return a boolean based on the result" in new Setup {
     when(mockMetricsReporterService.withResponseTimeLogging[HttpResponse](any)(any)(any))
-      .thenAnswer((i: InvocationOnMock) => {
+      .thenAnswer { (i: InvocationOnMock) =>
         i.getArgument[Future[HttpResponse]](1)
-      })
+      }
 
     when(mockHttpClient.delete(any)(any)).thenReturn(requestBuilder)
     when(requestBuilder.execute(any, any))
@@ -51,15 +51,17 @@ class FinancialsApiConnectorSpec extends SpecBase {
 
   trait Setup {
     val mockMetricsReporterService: MetricsReporterService = mock[MetricsReporterService]
-    val mockHttpClient: HttpClientV2 = mock[HttpClientV2]
-    val requestBuilder: RequestBuilder = mock[RequestBuilder]
+    val mockHttpClient: HttpClientV2                       = mock[HttpClientV2]
+    val requestBuilder: RequestBuilder                     = mock[RequestBuilder]
 
-    val app: Application = application().overrides(
-      inject.bind[MetricsReporterService].toInstance(mockMetricsReporterService),
-      inject.bind[HttpClientV2].toInstance(mockHttpClient)
-    ).build()
+    val app: Application = application()
+      .overrides(
+        inject.bind[MetricsReporterService].toInstance(mockMetricsReporterService),
+        inject.bind[HttpClientV2].toInstance(mockHttpClient)
+      )
+      .build()
 
-    implicit val hc: HeaderCarrier = HeaderCarrier()
+    implicit val hc: HeaderCarrier        = HeaderCarrier()
     val connector: FinancialsApiConnector = app.injector.instanceOf[FinancialsApiConnector]
   }
 }

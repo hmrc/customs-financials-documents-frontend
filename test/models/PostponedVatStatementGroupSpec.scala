@@ -31,25 +31,29 @@ class PostponedVatStatementGroupSpec extends SpecBase {
 
     "return true if statement date is of previous month and is accessed on or after " +
       "19th day of the current month" in new Setup {
-      val dateOfPreviousMonth: LocalDate = date.minusMonths(ONE_MONTH).withDayOfMonth(DAY_20)
-      val currentDate: LocalDate = LocalDate.of(YEAR_2023, MONTH_10, DAY_20)
+        val dateOfPreviousMonth: LocalDate = date.minusMonths(ONE_MONTH).withDayOfMonth(DAY_20)
+        val currentDate: LocalDate         = LocalDate.of(YEAR_2023, MONTH_10, DAY_20)
 
-      when(mockDateTimeService.systemDateTime()).thenReturn(currentDate.atStartOfDay())
+        when(mockDateTimeService.systemDateTime()).thenReturn(currentDate.atStartOfDay())
 
-      PostponedVatStatementGroup(dateOfPreviousMonth, Seq())(
-        messages(app), mockDateTimeService).isPreviousMonthAndAfter19Th mustBe true
-    }
+        PostponedVatStatementGroup(dateOfPreviousMonth, Seq())(
+          messages(app),
+          mockDateTimeService
+        ).isPreviousMonthAndAfter19Th mustBe true
+      }
 
     "return false if statement date is of previous month and is accessed on or before " +
       "19th day of the current month" in new Setup {
-      val dateOfPreviousMonth: LocalDate = date.minusMonths(ONE_MONTH).withDayOfMonth(DAY_10)
+        val dateOfPreviousMonth: LocalDate = date.minusMonths(ONE_MONTH).withDayOfMonth(DAY_10)
 
-      when(mockDateTimeService.systemDateTime())
-        .thenReturn(date.atStartOfDay())
+        when(mockDateTimeService.systemDateTime())
+          .thenReturn(date.atStartOfDay())
 
-      PostponedVatStatementGroup(dateOfPreviousMonth, Seq())(
-        messages(app), mockDateTimeService).isPreviousMonthAndAfter19Th mustBe false
-    }
+        PostponedVatStatementGroup(dateOfPreviousMonth, Seq())(
+          messages(app),
+          mockDateTimeService
+        ).isPreviousMonthAndAfter19Th mustBe false
+      }
 
     "return true if statement date is not from the previous month" in new Setup {
       val dateOfCurrentMonth: LocalDate = date.withDayOfMonth(DAY_16)
@@ -58,32 +62,37 @@ class PostponedVatStatementGroupSpec extends SpecBase {
         .thenReturn(date.atStartOfDay())
 
       PostponedVatStatementGroup(dateOfCurrentMonth, Seq())(
-        messages(app), mockDateTimeService).isPreviousMonthAndAfter19Th mustBe true
+        messages(app),
+        mockDateTimeService
+      ).isPreviousMonthAndAfter19Th mustBe true
     }
 
     "return true if statement date is not from the previous month and accessed " +
       "before 19th day of current date " in new Setup {
 
-      private val isCurrentDayBefore20 = LocalDate.now.getDayOfMonth < DAY_20
+        private val isCurrentDayBefore20 = LocalDate.now.getDayOfMonth < DAY_20
 
-      if (isCurrentDayBefore20) when(mockDateTimeService.systemDateTime()).thenReturn(date.atStartOfDay())
+        if (isCurrentDayBefore20) when(mockDateTimeService.systemDateTime()).thenReturn(date.atStartOfDay())
 
-      val dateOfCurrentMonthAndBefore20ThDay: LocalDate = date.withDayOfMonth(DAY_17)
+        val dateOfCurrentMonthAndBefore20ThDay: LocalDate = date.withDayOfMonth(DAY_17)
 
-      if (isCurrentDayBefore20) {
-        PostponedVatStatementGroup(
-          dateOfCurrentMonthAndBefore20ThDay,
-          Seq())(messages(app), mockDateTimeService).isPreviousMonthAndAfter19Th mustBe true
+        if (isCurrentDayBefore20) {
+          PostponedVatStatementGroup(dateOfCurrentMonthAndBefore20ThDay, Seq())(
+            messages(app),
+            mockDateTimeService
+          ).isPreviousMonthAndAfter19Th mustBe true
+        }
       }
-    }
   }
 
   trait Setup {
     val mockDateTimeService: DateTimeService = mock[DateTimeService]
-    val date: LocalDate = LocalDate.of(YEAR_2023, MONTH_10, DAY_1)
+    val date: LocalDate                      = LocalDate.of(YEAR_2023, MONTH_10, DAY_1)
 
-    val app: Application = application().overrides(
-      inject.bind[DateTimeService].toInstance(mockDateTimeService)
-    ).build()
+    val app: Application = application()
+      .overrides(
+        inject.bind[DateTimeService].toInstance(mockDateTimeService)
+      )
+      .build()
   }
 }

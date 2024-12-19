@@ -26,13 +26,13 @@ import utils.Utils.{hyphen, singleSpace}
 
 import java.time.LocalDate
 
-case class PostponedVatStatementGroup(startDate: LocalDate,
-                                      files: Seq[PostponedVatStatementFile])(implicit messages: Messages,
-                                                                             dateTimeService: DateTimeService)
-  extends Ordered[PostponedVatStatementGroup] {
+case class PostponedVatStatementGroup(startDate: LocalDate, files: Seq[PostponedVatStatementFile])(implicit
+  messages: Messages,
+  dateTimeService: DateTimeService
+) extends Ordered[PostponedVatStatementGroup] {
 
-  private val periodName = Formatters.dateAsMonthAndYear(startDate).replace(singleSpace, hyphen).toLowerCase
-  val periodId: String = s"""period-$periodName"""
+  private val periodName    = Formatters.dateAsMonthAndYear(startDate).replace(singleSpace, hyphen).toLowerCase
+  val periodId: String      = s"""period-$periodName"""
   val noStatements: Boolean = Seq(CDS, CHIEF).flatMap(source => collectFiles(amended = false, source)).isEmpty
 
   def collectFiles(amended: Boolean, source: String): Seq[PostponedVatStatementFile] = {
@@ -48,11 +48,11 @@ case class PostponedVatStatementGroup(startDate: LocalDate,
   }
 
   def isPreviousMonthAndAfter19Th: Boolean = {
-    val day19 = 19
+    val day19    = 19
     val oneMonth = 1
 
-    val currentDate = dateTimeService.systemDateTime().toLocalDate
-    val previousMonth = currentDate.minusMonths(oneMonth).getMonthValue
+    val currentDate    = dateTimeService.systemDateTime().toLocalDate
+    val previousMonth  = currentDate.minusMonths(oneMonth).getMonthValue
     val pvatGroupMonth = startDate.getMonthValue
 
     previousMonth == pvatGroupMonth && currentDate.getDayOfMonth > day19 || previousMonth != pvatGroupMonth

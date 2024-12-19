@@ -29,7 +29,7 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import scala.concurrent.{ExecutionContext, Future}
 
 trait AuthActionBuilder
-  extends ActionBuilder[AuthenticatedRequest, AnyContent]
+    extends ActionBuilder[AuthenticatedRequest, AnyContent]
     with ActionRefiner[Request, AuthenticatedRequest]
     with AuthorisedFunctions {
 
@@ -45,12 +45,11 @@ trait AuthActionBuilder
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    authorised().retrieve(Retrievals.allEnrolments) {
-      allEnrolments =>
-        allEnrolments.getEnrolment("HMRC-CUS-ORG").flatMap(_.getIdentifier("EORINumber")) match {
-          case Some(eori) => authActionHelper.authenticatedRequest(eori.value)(request).map(Right(_))
-          case None => Future.successful(Left(Redirect(routes.UnauthorisedController.onPageLoad)))
-        }
+    authorised().retrieve(Retrievals.allEnrolments) { allEnrolments =>
+      allEnrolments.getEnrolment("HMRC-CUS-ORG").flatMap(_.getIdentifier("EORINumber")) match {
+        case Some(eori) => authActionHelper.authenticatedRequest(eori.value)(request).map(Right(_))
+        case None       => Future.successful(Left(Redirect(routes.UnauthorisedController.onPageLoad)))
+      }
     }
   } recover {
     case _: NoActiveSession =>

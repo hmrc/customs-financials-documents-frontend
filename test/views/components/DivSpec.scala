@@ -67,19 +67,19 @@ class DivSpec extends SpecBase {
   }
 
   trait Setup {
-    val contentText = "some content"
+    val contentText   = "some content"
     val content: Html = Html(contentText)
-    val testClass = "test-class"
-    val testId = "test-id"
+    val testClass     = "test-class"
+    val testId        = "test-id"
 
-    val app: Application = application().build()
+    val app: Application           = application().build()
     implicit val message: Messages = messages(app)
 
     val instanceOfDiv: div = app.injector.instanceOf[div]
 
-    val divComponent: Document = Jsoup.parse(instanceOfDiv(content).body)
-    val divComponentWithClass: Document = Jsoup.parse(instanceOfDiv(content, classes = Some(testClass)).body)
-    val divComponentWithId: Document = Jsoup.parse(instanceOfDiv(content, id = Some(testId)).body)
+    val divComponent: Document               = Jsoup.parse(instanceOfDiv(content).body)
+    val divComponentWithClass: Document      = Jsoup.parse(instanceOfDiv(content, classes = Some(testClass)).body)
+    val divComponentWithId: Document         = Jsoup.parse(instanceOfDiv(content, id = Some(testId)).body)
     val divComponentWithClassAndId: Document =
       Jsoup.parse(instanceOfDiv(content, classes = Some(testClass), id = Some(testId)).body)
   }

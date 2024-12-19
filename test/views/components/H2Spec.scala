@@ -70,18 +70,18 @@ class H2Spec extends SpecBase {
   }
 
   trait Setup {
-    val msgKey = "messageKey"
+    val msgKey       = "messageKey"
     val defaultClass = "govuk-heading-m"
-    val classes = "custom-class"
-    val id = "custom-id"
+    val classes      = "custom-class"
+    val id           = "custom-id"
 
-    val app: Application = application().build()
+    val app: Application           = application().build()
     implicit val message: Messages = messages(app)
-    val instanceOfH2: h2 = app.injector.instanceOf[h2]
+    val instanceOfH2: h2           = app.injector.instanceOf[h2]
 
-    val h2Component: Document = Jsoup.parse(instanceOfH2(msgKey).body)
-    val h2ComponentWithClass: Document = Jsoup.parse(instanceOfH2(msgKey, classes = classes).body)
-    val h2ComponentWithId: Document = Jsoup.parse(instanceOfH2(msgKey, id = Some(id)).body)
+    val h2Component: Document               = Jsoup.parse(instanceOfH2(msgKey).body)
+    val h2ComponentWithClass: Document      = Jsoup.parse(instanceOfH2(msgKey, classes = classes).body)
+    val h2ComponentWithId: Document         = Jsoup.parse(instanceOfH2(msgKey, id = Some(id)).body)
     val h2ComponentWithClassAndId: Document = Jsoup.parse(instanceOfH2(msgKey, id = Some(id), classes = classes).body)
   }
 }

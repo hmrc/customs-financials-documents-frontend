@@ -38,16 +38,18 @@ class PvatAuthActionSpec extends SpecBase {
   "the action" should {
 
     "redirect to the Government Gateway sign-in page when no authenticated user" in {
-      val mockAuditingService = mock[AuditingService]
+      val mockAuditingService    = mock[AuditingService]
       val mockDataStoreConnector = mock[DataStoreConnector]
 
-      val app = application().overrides(
-        inject.bind[AuditingService].toInstance(mockAuditingService),
-        inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
-      ).build()
+      val app = application()
+        .overrides(
+          inject.bind[AuditingService].toInstance(mockAuditingService),
+          inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
+        )
+        .build()
 
-      val config = app.injector.instanceOf[AppConfig]
-      val bodyParsers = app.injector.instanceOf[Default]
+      val config           = app.injector.instanceOf[AppConfig]
+      val bodyParsers      = app.injector.instanceOf[Default]
       val authActionHelper = app.injector.instanceOf[AuthActionHelper]
 
       val authAction =
@@ -61,21 +63,23 @@ class PvatAuthActionSpec extends SpecBase {
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get mustBe
           "http://localhost:9553/bas-gateway/sign-in?" +
-            "continue_url=http%3A%2F%2Flocalhost%3A9876%2Fcustoms%2Fpayment-records%2Fpostponed-vat"
+          "continue_url=http%3A%2F%2Flocalhost%3A9876%2Fcustoms%2Fpayment-records%2Fpostponed-vat"
       }
     }
 
     "redirect the user to login when the user's session has expired" in {
-      val mockAuditingService = mock[AuditingService]
+      val mockAuditingService    = mock[AuditingService]
       val mockDataStoreConnector = mock[DataStoreConnector]
 
-      val app = application().overrides(
-        inject.bind[AuditingService].toInstance(mockAuditingService),
-        inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
-      ).build()
+      val app = application()
+        .overrides(
+          inject.bind[AuditingService].toInstance(mockAuditingService),
+          inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
+        )
+        .build()
 
-      val config = app.injector.instanceOf[AppConfig]
-      val bodyParsers = app.injector.instanceOf[BodyParsers.Default]
+      val config           = app.injector.instanceOf[AppConfig]
+      val bodyParsers      = app.injector.instanceOf[BodyParsers.Default]
       val authActionHelper = app.injector.instanceOf[AuthActionHelper]
 
       val authAction =
@@ -92,21 +96,27 @@ class PvatAuthActionSpec extends SpecBase {
     }
 
     "redirect the user to login when the user has an unexpected Auth provider" in {
-      val mockAuditingService = mock[AuditingService]
+      val mockAuditingService    = mock[AuditingService]
       val mockDataStoreConnector = mock[DataStoreConnector]
 
-      val app = application().overrides(
-        inject.bind[AuditingService].toInstance(mockAuditingService),
-        inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
-      ).build()
+      val app = application()
+        .overrides(
+          inject.bind[AuditingService].toInstance(mockAuditingService),
+          inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
+        )
+        .build()
 
-      val config = app.injector.instanceOf[AppConfig]
-      val bodyParsers = app.injector.instanceOf[BodyParsers.Default]
+      val config           = app.injector.instanceOf[AppConfig]
+      val bodyParsers      = app.injector.instanceOf[BodyParsers.Default]
       val authActionHelper = app.injector.instanceOf[AuthActionHelper]
 
       val authAction =
         new PvatAuthAction(
-          new FakeFailingAuthConnector(new UnsupportedAuthProvider), config, bodyParsers, authActionHelper)
+          new FakeFailingAuthConnector(new UnsupportedAuthProvider),
+          config,
+          bodyParsers,
+          authActionHelper
+        )
 
       val controller = new Harness(authAction)
 
@@ -119,27 +129,35 @@ class PvatAuthActionSpec extends SpecBase {
     }
 
     "redirect the user to unauthorised controller when has insufficient enrolments" in {
-      val mockAuditingService = mock[AuditingService]
+      val mockAuditingService    = mock[AuditingService]
       val mockDataStoreConnector = mock[DataStoreConnector]
-      val mockAuthConnector = mock[AuthConnector]
+      val mockAuthConnector      = mock[AuthConnector]
 
-      when(mockAuthConnector.authorise[Option[Credentials]
-        ~ Option[Name] ~ Option[Email] ~ Option[AffinityGroup] ~ Option[String] ~ Enrolments](any, any)(any, any))
-        .thenReturn(Future.successful(
-          Some(Credentials("someProviderId", "someProviderType")) ~
-            Some(Name(Some("someName"), Some("someLastName"))) ~
-            Some(Email("some@email.com")) ~
-            Some(AffinityGroup.Individual) ~
-            Some("id") ~
-            Enrolments(Set.empty)))
+      when(
+        mockAuthConnector.authorise[
+          Option[Credentials] ~ Option[Name] ~ Option[Email] ~ Option[AffinityGroup] ~ Option[String] ~ Enrolments
+        ](any, any)(any, any)
+      )
+        .thenReturn(
+          Future.successful(
+            Some(Credentials("someProviderId", "someProviderType")) ~
+              Some(Name(Some("someName"), Some("someLastName"))) ~
+              Some(Email("some@email.com")) ~
+              Some(AffinityGroup.Individual) ~
+              Some("id") ~
+              Enrolments(Set.empty)
+          )
+        )
 
-      val app = application().overrides(
-        inject.bind[AuditingService].toInstance(mockAuditingService),
-        inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
-      ).build()
+      val app = application()
+        .overrides(
+          inject.bind[AuditingService].toInstance(mockAuditingService),
+          inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
+        )
+        .build()
 
-      val config = app.injector.instanceOf[AppConfig]
-      val bodyParsers = app.injector.instanceOf[BodyParsers.Default]
+      val config           = app.injector.instanceOf[AppConfig]
+      val bodyParsers      = app.injector.instanceOf[BodyParsers.Default]
       val authActionHelper = app.injector.instanceOf[AuthActionHelper]
 
       val authAction = new PvatAuthAction(mockAuthConnector, config, bodyParsers, authActionHelper)
@@ -155,10 +173,10 @@ class PvatAuthActionSpec extends SpecBase {
   }
 
   class Harness(authAction: PvatIdentifierAction) {
-    def onPageLoad(): Action[AnyContent] = authAction { _ => Results.Ok }
+    def onPageLoad(): Action[AnyContent] = authAction(_ => Results.Ok)
   }
 
   implicit class Ops[A](a: A) {
-    def ~[B](b: B): A ~ B = new~(a, b)
+    def ~[B](b: B): A ~ B = new ~(a, b)
   }
 }

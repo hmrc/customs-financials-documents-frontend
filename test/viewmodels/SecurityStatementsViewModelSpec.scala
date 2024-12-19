@@ -27,8 +27,7 @@ import play.twirl.api.{Html, HtmlFormat}
 import utils.CommonTestData.{DAY_28, MONTH_11, YEAR_2019}
 import utils.SpecBase
 import utils.Utils.{
-  ddComponent, divComponent, dlComponent, dtComponent,
-  h1Component, linkComponent, pComponent, spanComponent
+  ddComponent, divComponent, dlComponent, dtComponent, h1Component, linkComponent, pComponent, spanComponent
 }
 import views.html.components.{h2Inner, h3Inner, missing_documents_guidance, pInner, requestedStatements}
 
@@ -55,20 +54,16 @@ class SecurityStatementsViewModelSpec extends SpecBase {
 
   trait Setup {
     implicit val appConfig: AppConfig = mock[AppConfig]
-    val app: Application = application().build()
-    implicit val message: Messages = messages(app)
+    val app: Application              = application().build()
+    implicit val message: Messages    = messages(app)
 
     val date: LocalDate = LocalDate.of(YEAR_2019, MONTH_11, DAY_28)
 
-    val currentStatement: SecurityStatementsByPeriod = SecurityStatementsByPeriod(
-      startDate = date,
-      endDate = date,
-      files = Seq())
+    val currentStatement: SecurityStatementsByPeriod =
+      SecurityStatementsByPeriod(startDate = date, endDate = date, files = Seq())
 
-    val requestedStatement: SecurityStatementsByPeriod = SecurityStatementsByPeriod(
-      startDate = date,
-      endDate = date,
-      files = Seq())
+    val requestedStatement: SecurityStatementsByPeriod =
+      SecurityStatementsByPeriod(startDate = date, endDate = date, files = Seq())
 
     when(appConfig.customsFinancialsFrontendHomepage).thenReturn("home-page")
     when(appConfig.historicRequestUrl(SecurityStatement)).thenReturn("request-statement-url")
@@ -80,58 +75,64 @@ class SecurityStatementsViewModelSpec extends SpecBase {
     val expectedRequestedNotification: HtmlFormat.Appendable =
       new requestedStatements(linkComponent).apply("request-statement")
 
-    val expectedCurrentStatements: HtmlFormat.Appendable = HtmlFormat.fill(Seq(
-      dlComponent(
-        content = HtmlFormat.empty,
-        classes = Some("govuk-summary-list statement-list"),
-        id = Some("statements-list-0")),
-      createDetailedList()))
+    val expectedCurrentStatements: HtmlFormat.Appendable = HtmlFormat.fill(
+      Seq(
+        dlComponent(
+          content = HtmlFormat.empty,
+          classes = Some("govuk-summary-list statement-list"),
+          id = Some("statements-list-0")
+        ),
+        createDetailedList()
+      )
+    )
 
-    private def createDetailedList(): HtmlFormat.Appendable = {
+    private def createDetailedList(): HtmlFormat.Appendable =
       dlComponent(
         content = HtmlFormat.fill(Seq(createSummaryListRow())),
         classes = Some("govuk-summary-list statement-list"),
-        id = Some("statements-list-0-csv"))
-    }
+        id = Some("statements-list-0-csv")
+      )
 
-    private def createSummaryListRow(): HtmlFormat.Appendable = {
+    private def createSummaryListRow(): HtmlFormat.Appendable =
       divComponent(
         content = HtmlFormat.fill(Seq(createDateCell(), createUnavailableLinkCell())),
         classes = Some("govuk-summary-list__row"),
-        id = Some("statements-list-0-row-0-csv"))
-    }
+        id = Some("statements-list-0-row-0-csv")
+      )
 
-    private def createDateCell(): HtmlFormat.Appendable = {
+    private def createDateCell(): HtmlFormat.Appendable =
       dtComponent(
         content = Html("November 2019"),
         classes = Some("govuk-summary-list__value"),
-        id = Some("statements-list-0-row-0-date-cell-csv"))
-    }
+        id = Some("statements-list-0-row-0-date-cell-csv")
+      )
 
-    private def createUnavailableLinkCell(): HtmlFormat.Appendable = {
+    private def createUnavailableLinkCell(): HtmlFormat.Appendable =
       ddComponent(
         content = divComponent(
           content = createUnavailableCsvCell(),
           id = Some("statements-list-0-row-0-unavailable-csv")
         ),
         classes = Some("govuk-summary-list__actions"),
-        id = Some("statements-list-0-row-0-link-cell-csv"))
-    }
+        id = Some("statements-list-0-row-0-link-cell-csv")
+      )
 
-    private def createUnavailableCsvCell(): HtmlFormat.Appendable = {
-      HtmlFormat.fill(Seq(
-        spanComponent(key = "CSV for November 2019 unavailable", classes = Some("govuk-visually-hidden")),
-        spanComponent(key = "Unavailable", ariaHidden = Some("true"))))
-    }
+    private def createUnavailableCsvCell(): HtmlFormat.Appendable =
+      HtmlFormat.fill(
+        Seq(
+          spanComponent(key = "CSV for November 2019 unavailable", classes = Some("govuk-visually-hidden")),
+          spanComponent(key = "Unavailable", ariaHidden = Some("true"))
+        )
+      )
 
-    val expectedNoStatementsParagraph: HtmlFormat.Appendable = pComponent(
-      "cf.security-statements.no-statements", "govuk-body")
+    val expectedNoStatementsParagraph: HtmlFormat.Appendable =
+      pComponent("cf.security-statements.no-statements", "govuk-body")
 
-    val expectedMissingGuidance: HtmlFormat.Appendable = new missing_documents_guidance(
-      new h2Inner, new h3Inner, new pInner).apply("statement")
+    val expectedMissingGuidance: HtmlFormat.Appendable =
+      new missing_documents_guidance(new h2Inner, new h3Inner, new pInner).apply("statement")
 
-    val expectedStatementServiceParagraph: HtmlFormat.Appendable = pComponent(
-      "cf.security-statements.historic.description", "govuk-body", Some("historic-statement-request"))
+    val expectedStatementServiceParagraph: HtmlFormat.Appendable =
+      pComponent("cf.security-statements.historic.description", "govuk-body", Some("historic-statement-request"))
 
     val expectedRequestStatementsLink: HtmlFormat.Appendable =
       linkComponent(
@@ -139,12 +140,16 @@ class SecurityStatementsViewModelSpec extends SpecBase {
         location = "request-statement-url",
         pClass = "govuk-body govuk-!-margin-bottom-9",
         linkClass = "govuk-body govuk-link",
-        linkId = Some("historic-statement-request-link"))
+        linkId = Some("historic-statement-request-link")
+      )
 
-    val statementsForAllEoris: Seq[SecurityStatementsForEori] = Seq(SecurityStatementsForEori(
-      currentStatements = Seq(currentStatement),
-      requestedStatements = Seq(requestedStatement),
-      eoriHistory = EoriHistory("GB12345789", None, None)))
+    val statementsForAllEoris: Seq[SecurityStatementsForEori] = Seq(
+      SecurityStatementsForEori(
+        currentStatements = Seq(currentStatement),
+        requestedStatements = Seq(requestedStatement),
+        eoriHistory = EoriHistory("GB12345789", None, None)
+      )
+    )
 
     val result: SecurityStatementsViewModel = SecurityStatementsViewModel(statementsForAllEoris)
   }

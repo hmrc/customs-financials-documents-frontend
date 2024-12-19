@@ -20,5 +20,5 @@ import models.VatCertificatesForEori
 
 case class VatViewModel(certificatesForAllEoris: Seq[VatCertificatesForEori]) {
   val hasRequestedCertificates: Boolean = certificatesForAllEoris.exists(_.requestedCertificates.nonEmpty)
-  val hasCurrentCertificates: Boolean = certificatesForAllEoris.exists(_.currentCertificates.nonEmpty)
+  val hasCurrentCertificates: Boolean   = certificatesForAllEoris.exists(_.currentCertificates.nonEmpty)
 }

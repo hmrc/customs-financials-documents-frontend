@@ -41,13 +41,8 @@ class CollapsibleStatementGroupSpec extends SpecBase {
     "display correct contents" when {
 
       "Postponed Vat Statement files are present and source is only CDS" in new Setup {
-        val viewDoc: Document = view(
-          certificateFiles,
-          downloadLinkMessage,
-          downloadAriaLabel,
-          Some(missingFileMessage),
-          CDS,
-          period)
+        val viewDoc: Document =
+          view(certificateFiles, downloadLinkMessage, downloadAriaLabel, Some(missingFileMessage), CDS, period)
 
         shouldNotContainMissingFileMessageGuidance(viewDoc)
         shouldContainDownloadLinkPVATStatementSection(viewDoc)
@@ -61,20 +56,16 @@ class CollapsibleStatementGroupSpec extends SpecBase {
           Some(missingFileMessage),
           CHIEF,
           period,
-          isCdsOnly = false)
+          isCdsOnly = false
+        )
 
         shouldContainMissingFileMessageGuidance(viewDoc, missingFileMessage, CHIEF, period)
         shouldContainDownloadLinkPVATStatementSection(viewDoc, isCDSOnly = false)
       }
 
       "there are no Postponed Vat Statement files and source is only CDS" in new Setup {
-        val viewDoc: Document = view(
-          Seq(),
-          downloadLinkMessage,
-          downloadAriaLabel,
-          Some(missingFileMessage),
-          CDS,
-          period)
+        val viewDoc: Document =
+          view(Seq(), downloadLinkMessage, downloadAriaLabel, Some(missingFileMessage), CDS, period)
 
         shouldNotDisplayAnyContent(viewDoc)
       }
@@ -87,7 +78,8 @@ class CollapsibleStatementGroupSpec extends SpecBase {
           Some(missingFileMessage),
           CHIEF,
           period,
-          isCdsOnly = false)
+          isCdsOnly = false
+        )
 
         shouldNotDisplayAnyContent(viewDoc)
       }
@@ -100,20 +92,15 @@ class CollapsibleStatementGroupSpec extends SpecBase {
           Some(missingFileMessage),
           CHIEF,
           period,
-          isCdsOnly = false)
+          isCdsOnly = false
+        )
 
         shouldContainMissingFileMessageGuidance(viewDoc, missingFileMessage, CHIEF, period)
       }
 
       "Postponed Vat Statement files are present, source is only CDS and has no missingFileMessage" in new Setup {
-        val viewDoc: Document = view(
-          certificateFiles,
-          downloadLinkMessage,
-          downloadAriaLabel,
-          None,
-          CHIEF,
-          period,
-          isCdsOnly = false)
+        val viewDoc: Document =
+          view(certificateFiles, downloadLinkMessage, downloadAriaLabel, None, CHIEF, period, isCdsOnly = false)
 
         shouldNotContainMissingFileMessageGuidance(viewDoc)
       }
@@ -122,13 +109,14 @@ class CollapsibleStatementGroupSpec extends SpecBase {
 
   private def shouldNotDisplayAnyContent(viewDoc: Document): Assertion = viewDoc.body().text() mustBe empty
 
-  private def shouldContainMissingFileMessageGuidance(viewDoc: Document,
-                                                      missingFileMessage: String,
-                                                      paymentMethodSource: String,
-                                                      period: String)
-                                                     (implicit msgs: Messages): Assertion = {
-    val elements = viewDoc.getElementsByClass("govuk-summary-list__actions")
-    val firstSpanElement = elements.get(0).getElementsByTag("span").get(0).text()
+  private def shouldContainMissingFileMessageGuidance(
+    viewDoc: Document,
+    missingFileMessage: String,
+    paymentMethodSource: String,
+    period: String
+  )(implicit msgs: Messages): Assertion = {
+    val elements          = viewDoc.getElementsByClass("govuk-summary-list__actions")
+    val firstSpanElement  = elements.get(0).getElementsByTag("span").get(0).text()
     val secondSpanElement = elements.get(0).getElementsByTag("span").get(1).text()
 
     val visuallyHiddenElements = viewDoc.getElementsByClass("govuk-visually-hidden")
@@ -145,8 +133,7 @@ class CollapsibleStatementGroupSpec extends SpecBase {
     elements.size() mustBe 1
   }
 
-  private def shouldContainDownloadLinkPVATStatementSection(viewDoc: Document,
-                                                            isCDSOnly: Boolean = true): Assertion = {
+  private def shouldContainDownloadLinkPVATStatementSection(viewDoc: Document, isCDSOnly: Boolean = true): Assertion = {
     val ddElements = viewDoc.getElementsByTag("dd")
 
     val ddElementWithDownloadLink = if (isCDSOnly) ddElements.get(0) else ddElements.get(1)
@@ -164,7 +151,7 @@ class CollapsibleStatementGroupSpec extends SpecBase {
   trait Setup {
     val app: Application = application().build()
 
-    implicit val msg: Messages = messages(app)
+    implicit val msg: Messages                                = messages(app)
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     val certificateFiles: Seq[PostponedVatStatementFile] = Seq(
@@ -173,29 +160,37 @@ class CollapsibleStatementGroupSpec extends SpecBase {
         DOWNLOAD_URL_06,
         SIZE_111L,
         PostponedVatStatementFileMetadata(YEAR_2018, MONTH_3, Pdf, PostponedVATStatement, CDS, None),
-        emptyString)
+        emptyString
+      )
     )
 
     val downloadLinkMessage = "cf.account.pvat.amended-download-link"
-    val downloadAriaLabel = "cf.account.pvat.aria.download-link"
-    val period = "test_period"
-    val missingFileMessage = "cf.common.not-available-screen-reader-cds"
+    val downloadAriaLabel   = "cf.account.pvat.aria.download-link"
+    val period              = "test_period"
+    val missingFileMessage  = "cf.common.not-available-screen-reader-cds"
 
-    def view(certificateFiles: Seq[PostponedVatStatementFile] = Seq(),
-             downloadLinkMessage: String,
-             downloadAriaLabel: String,
-             missingFileMessage: Option[String] = None,
-             dutyPaymentMethodSource: String,
-             period: String,
-             isCdsOnly: Boolean = true): Document = Jsoup.parse(
-      app.injector.instanceOf[collapsible_statement_group].apply(
-        certificateFiles,
-        downloadLinkMessage,
-        downloadAriaLabel,
-        missingFileMessage,
-        dutyPaymentMethodSource,
-        period,
-        isCdsOnly).body)
+    def view(
+      certificateFiles: Seq[PostponedVatStatementFile] = Seq(),
+      downloadLinkMessage: String,
+      downloadAriaLabel: String,
+      missingFileMessage: Option[String] = None,
+      dutyPaymentMethodSource: String,
+      period: String,
+      isCdsOnly: Boolean = true
+    ): Document = Jsoup.parse(
+      app.injector
+        .instanceOf[collapsible_statement_group]
+        .apply(
+          certificateFiles,
+          downloadLinkMessage,
+          downloadAriaLabel,
+          missingFileMessage,
+          dutyPaymentMethodSource,
+          period,
+          isCdsOnly
+        )
+        .body
+    )
   }
 
 }

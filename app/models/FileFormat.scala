@@ -46,7 +46,7 @@ object FileFormat {
   val log: LoggerLike = Logger(this.getClass)
 
   val SdesFileFormats: SortedSet[FileFormat] = SortedSet(Pdf, Csv)
-  val PvatFileFormats: Set[FileFormat] = SortedSet(Pdf)
+  val PvatFileFormats: Set[FileFormat]       = SortedSet(Pdf)
 
   def filterFileFormats[T <: SdesFile](allowedFileFormats: SortedSet[FileFormat])(files: Seq[T]): Seq[T] =
     files.filter(file => allowedFileFormats(file.metadata.fileFormat))
@@ -54,7 +54,7 @@ object FileFormat {
   def apply(name: String): FileFormat = name.toUpperCase match {
     case Pdf.name => Pdf
     case Csv.name => Csv
-    case _ =>
+    case _        =>
       log.warn(s"Unknown file format: $name")
       UnknownFileFormat
   }

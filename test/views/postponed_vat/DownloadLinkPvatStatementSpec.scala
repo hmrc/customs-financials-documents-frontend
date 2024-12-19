@@ -67,34 +67,36 @@ class DownloadLinkPvatStatementSpec extends SpecBase {
   trait Setup {
     val app: Application = application().build()
 
-    val fileFormat: FileFormat = Pdf
+    val fileFormat: FileFormat                           = Pdf
     val certificateFiles: Seq[PostponedVatStatementFile] = Seq(
       PostponedVatStatementFile(
         STAT_FILE_NAME_04,
         DOWNLOAD_URL_06,
         SIZE_111L,
         PostponedVatStatementFileMetadata(YEAR_2018, MONTH_3, Pdf, PostponedVATStatement, CDS, None),
-        emptyString)
+        emptyString
+      )
     )
 
     val downloadLinkMessage = "cf.account.pvat.amended-download-link"
-    val downloadAriaLabel = "cf.account.pvat.aria.download-link"
-    val period = "test_period"
+    val downloadAriaLabel   = "cf.account.pvat.aria.download-link"
+    val period              = "test_period"
 
-    implicit val msg: Messages = messages(app)
+    implicit val msg: Messages                                = messages(app)
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
-    def view(fileFormat: FileFormat,
-             certificateFiles: Seq[PostponedVatStatementFile] = Seq(),
-             downloadLinkMessage: String,
-             downloadAriaLabel: String,
-             period: String): Document = Jsoup.parse(
-      app.injector.instanceOf[download_link_pvat_statement].apply(
-        fileFormat,
-        certificateFiles,
-        downloadLinkMessage,
-        downloadAriaLabel,
-        period).body)
+    def view(
+      fileFormat: FileFormat,
+      certificateFiles: Seq[PostponedVatStatementFile] = Seq(),
+      downloadLinkMessage: String,
+      downloadAriaLabel: String,
+      period: String
+    ): Document = Jsoup.parse(
+      app.injector
+        .instanceOf[download_link_pvat_statement]
+        .apply(fileFormat, certificateFiles, downloadLinkMessage, downloadAriaLabel, period)
+        .body
+    )
   }
 
 }

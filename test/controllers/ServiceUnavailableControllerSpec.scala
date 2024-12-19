@@ -22,8 +22,7 @@ import org.scalatest.matchers.must.Matchers.mustBe
 import play.api.Application
 import play.api.http.Status.OK
 import play.api.test.Helpers.{
-  GET, contentAsString, defaultAwaitTimeout, route, running, status,
-  writeableOf_AnyContentAsEmpty
+  GET, contentAsString, defaultAwaitTimeout, route, running, status, writeableOf_AnyContentAsEmpty
 }
 import utils.SpecBase
 import views.html.service_unavailable
@@ -35,7 +34,7 @@ class ServiceUnavailableControllerSpec extends SpecBase {
     "render service unavailable page" in new Setup {
       running(app) {
         val request = fakeRequest(GET, routes.ServiceUnavailableController.onPageLoad("id-not-defined").url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
         status(result) mustBe OK
         contentAsString(result) mustBe view()(request, messages(app), appConfig).toString()
@@ -45,7 +44,7 @@ class ServiceUnavailableControllerSpec extends SpecBase {
     "render service unavailable page for PVAT statements page" in new Setup {
       running(app) {
         val request = fakeRequest(GET, routes.ServiceUnavailableController.onPageLoad("postponed-vat").url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
         status(result) mustBe OK
 
@@ -57,7 +56,7 @@ class ServiceUnavailableControllerSpec extends SpecBase {
     "render service unavailable page for C79 (Import VAT) statements page" in new Setup {
       running(app) {
         val request = fakeRequest(GET, routes.ServiceUnavailableController.onPageLoad("import-vat").url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
         val backlink = Some(routes.VatController.showVatAccount().url)
 
@@ -71,7 +70,7 @@ class ServiceUnavailableControllerSpec extends SpecBase {
     val app: Application = application().build()
 
     val view: service_unavailable = app.injector.instanceOf[service_unavailable]
-    val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-    val navigator: Navigator = app.injector.instanceOf[Navigator]
+    val appConfig: AppConfig      = app.injector.instanceOf[AppConfig]
+    val navigator: Navigator      = app.injector.instanceOf[Navigator]
   }
 }

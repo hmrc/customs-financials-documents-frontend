@@ -61,10 +61,10 @@ class FormattersSpec extends SpecBase {
 
   trait Setup {
     val belowKbThreshold = 100
-    val kbValue = 30567
-    val mbValue = 20567567
+    val kbValue          = 30567
+    val mbValue          = 20567567
 
-    val kbThreshold = 1024
+    val kbThreshold      = 1024
     val mbThreshold: Int = 1024 * 1024
   }
 }

@@ -59,15 +59,15 @@ class RequestedStatementsSpec extends SpecBase {
     }
   }
 
-  private def shouldContainTheParagraphWithCorrectStyleClass(doc: Document): Assertion = {
+  private def shouldContainTheParagraphWithCorrectStyleClass(doc: Document): Assertion =
     doc.getElementsByClass("govuk-body govuk-!-margin-bottom-1") should not be empty
-  }
 
-  private def shouldContainTheCorrectLinkContents(doc: Document,
-                                                  linkMessageKey: String,
-                                                  preLinkMessage: String,
-                                                  postLinkMessage: String)
-                                                 (implicit msgs: Messages): Assertion = {
+  private def shouldContainTheCorrectLinkContents(
+    doc: Document,
+    linkMessageKey: String,
+    preLinkMessage: String,
+    postLinkMessage: String
+  )(implicit msgs: Messages): Assertion = {
     val docHtml = doc.html()
 
     docHtml.contains(URL_TEST) mustBe true
@@ -77,11 +77,10 @@ class RequestedStatementsSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = application().build()
+    val app: Application        = application().build()
     implicit val msgs: Messages = messages(app)
 
-    protected def view(url: String): Document = {
+    protected def view(url: String): Document =
       Jsoup.parse(app.injector.instanceOf[requestedStatements].apply(url).body)
-    }
   }
 }

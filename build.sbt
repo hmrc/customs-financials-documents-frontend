@@ -40,7 +40,10 @@ lazy val microservice = Project(appName, file("."))
     Test / scalacOptions := scalacOptions.value.diff(Seq("-Wunused:all")),
     libraryDependencies ++= Seq(compilerPlugin(
       "com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.for3Use2_13With("", ".12")),
-      "com.github.ghik" % "silencer-lib" % silencerVersion % Provided cross CrossVersion.for3Use2_13With("", ".12"))
+      "com.github.ghik" % "silencer-lib" % silencerVersion % Provided cross CrossVersion.for3Use2_13With("", ".12")),
+    scalafmtDetailedError := true,
+    scalafmtPrintDiff := true,
+    scalafmtFailOnErrors := true
   )
   .settings(resolvers += Resolver.jcenterRepo)
 
@@ -57,4 +60,5 @@ lazy val scoverageSettings = {
   )
 }
 
-addCommandAlias("runAllChecks", ";clean;compile;coverage;test;it/test;scalastyle;Test/scalastyle;coverageReport")
+addCommandAlias("runAllChecks",
+  ";clean;compile;coverage;test;it/test;scalafmtCheckAll;scalastyle;Test/scalastyle;coverageReport")

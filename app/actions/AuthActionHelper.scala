@@ -25,14 +25,16 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionHelper @Inject()(dataStoreConnector: DataStoreConnector,
-                                 auditingService: AuditingService)(implicit executionContext: ExecutionContext) {
+class AuthActionHelper @Inject() (dataStoreConnector: DataStoreConnector, auditingService: AuditingService)(implicit
+  executionContext: ExecutionContext
+) {
 
-  def authenticatedRequest[A](eori: String)(request: Request[A])
-                             (implicit hc: HeaderCarrier): Future[AuthenticatedRequest[A]] =
+  def authenticatedRequest[A](
+    eori: String
+  )(request: Request[A])(implicit hc: HeaderCarrier): Future[AuthenticatedRequest[A]] =
     for {
       allEoriHistory <- dataStoreConnector.getAllEoriHistory(eori)
-      _ = auditingService.auditHistoricEoris(eori, allEoriHistory)
+      _               = auditingService.auditHistoricEoris(eori, allEoriHistory)
     } yield AuthenticatedRequest(request, eori, allEoriHistory)
 
 }

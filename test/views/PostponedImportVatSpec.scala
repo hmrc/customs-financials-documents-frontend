@@ -48,20 +48,27 @@ class PostponedImportVatSpec extends SpecBase {
       when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
 
       val view: Document = Jsoup.parse(
-        app.injector.instanceOf[postponed_import_vat].apply(
-          PostponedVatViewModel(postponedVatStatementFiles,
-            hasRequestedStatements = true,
-            isCdsOnly = true,
-            Option("some_url"),
-            urls = pvatUrls)).body)
+        app.injector
+          .instanceOf[postponed_import_vat]
+          .apply(
+            PostponedVatViewModel(
+              postponedVatStatementFiles,
+              hasRequestedStatements = true,
+              isCdsOnly = true,
+              Option("some_url"),
+              urls = pvatUrls
+            )
+          )
+          .body
+      )
 
       running(app) {
         view.title() mustBe s"${messages(app)("cf.account.pvat.title")} - ${messages(app)("service.name")} - GOV.UK"
-        view.getElementById("main-content").html() must not contain "h2"
+        view.getElementById("main-content").html()         must not contain "h2"
         view.html().contains("cf.account.vat.available.statement-text")
-        view.getElementsByTag("dl").size() must be > 0
-        view.getElementsByTag("dt").size() must be > 0
-        view.getElementsByTag("dd").size() must be > 0
+        view.getElementsByTag("dl").size()                 must be > 0
+        view.getElementsByTag("dt").size()                 must be > 0
+        view.getElementsByTag("dd").size()                 must be > 0
         view.getElementById("pvat.support.heading").html() must not be empty
         view.getElementById("pvat.support.message").html() must not be empty
         view.html().contains(serviceUnavailbleUrl)
@@ -74,36 +81,48 @@ class PostponedImportVatSpec extends SpecBase {
       when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
 
       val view: Document = Jsoup.parse(
-        app.injector.instanceOf[postponed_import_vat].apply(
-          PostponedVatViewModel(postponedVatStatementFiles,
-            hasRequestedStatements = true,
-            isCdsOnly = true,
-            location = Option("some_url"),
-            urls = pvatUrls.copy(serviceUnavailableUrl = None))
-          ).body)
+        app.injector
+          .instanceOf[postponed_import_vat]
+          .apply(
+            PostponedVatViewModel(
+              postponedVatStatementFiles,
+              hasRequestedStatements = true,
+              isCdsOnly = true,
+              location = Option("some_url"),
+              urls = pvatUrls.copy(serviceUnavailableUrl = None)
+            )
+          )
+          .body
+      )
 
       val expectedSize = 7
 
       running(app) {
         view.html().contains(messages(app)("cf.account.pvat.download-link", "CDS", "PDF", "111KB"))
-        view.html() must not contain messages(app)("cf.account.pvat.download-link", "CHIEF", "PDF", "111KB")
+        view.html()                        must not contain messages(app)("cf.account.pvat.download-link", "CHIEF", "PDF", "111KB")
         view.getElementsByTag("dd").size() must be(expectedSize)
       }
     }
 
     "display 'not available' messages correctly when no statements are present " +
       "and it is after the 19th of the previous month" in new Setup {
-        when(mockDateTimeService.systemDateTime()).
-          thenReturn(LocalDateTime.now().withDayOfMonth(DAY_19).minusMonths(ONE_MONTH))
+        when(mockDateTimeService.systemDateTime())
+          .thenReturn(LocalDateTime.now().withDayOfMonth(DAY_19).minusMonths(ONE_MONTH))
 
         val view: Document = Jsoup.parse(
-          app.injector.instanceOf[postponed_import_vat].apply(
-            PostponedVatViewModel(postponedVatStatementFiles,
-              hasRequestedStatements = true,
-              isCdsOnly = true,
-              Option("some_url"),
-              urls = pvatUrls.copy(serviceUnavailableUrl = None))
-            ).body)
+          app.injector
+            .instanceOf[postponed_import_vat]
+            .apply(
+              PostponedVatViewModel(
+                postponedVatStatementFiles,
+                hasRequestedStatements = true,
+                isCdsOnly = true,
+                Option("some_url"),
+                urls = pvatUrls.copy(serviceUnavailableUrl = None)
+              )
+            )
+            .body
+        )
 
         running(app) {
           val cdsNotAvailableMessage = view.select("dd").text()
@@ -111,41 +130,53 @@ class PostponedImportVatSpec extends SpecBase {
         }
       }
 
-      "display grouped certificates by EORI and format correctly" in new Setup {
-        when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
-          val view: Document = Jsoup.parse(
-            app.injector.instanceOf[postponed_import_vat].apply(
-              PostponedVatViewModel(postponedVatStatementFiles,
-                hasRequestedStatements = true,
-                isCdsOnly = false,
-                Option("some_url"),
-                urls = pvatUrls.copy(serviceUnavailableUrl = None))
-             ).body)
+    "display grouped certificates by EORI and format correctly" in new Setup {
+      when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
+      val view: Document = Jsoup.parse(
+        app.injector
+          .instanceOf[postponed_import_vat]
+          .apply(
+            PostponedVatViewModel(
+              postponedVatStatementFiles,
+              hasRequestedStatements = true,
+              isCdsOnly = false,
+              Option("some_url"),
+              urls = pvatUrls.copy(serviceUnavailableUrl = None)
+            )
+          )
+          .body
+      )
 
-          val expectedSize = 13
+      val expectedSize = 13
 
-          running(app) {
-            view.select("dd.govuk-summary-list__actions").size() mustBe expectedSize
-            view.html() must include(messages(app)("cf.account.pvat.aria.amended-download-link"))
-          }
-        }
+      running(app) {
+        view.select("dd.govuk-summary-list__actions").size() mustBe expectedSize
+        view.html() must include(messages(app)("cf.account.pvat.aria.amended-download-link"))
+      }
+    }
 
-        "handle missing files and display messages appropriately" in new Setup {
-            when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
+    "handle missing files and display messages appropriately" in new Setup {
+      when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
 
-            val view: Document = Jsoup.parse(
-              app.injector.instanceOf[postponed_import_vat].apply(
-                PostponedVatViewModel(Seq.empty,
-                  hasRequestedStatements = true,
-                  isCdsOnly = false,
-                  Option("some_url"),
-                  urls = pvatUrls.copy(serviceUnavailableUrl = None))
-                ).body)
+      val view: Document = Jsoup.parse(
+        app.injector
+          .instanceOf[postponed_import_vat]
+          .apply(
+            PostponedVatViewModel(
+              Seq.empty,
+              hasRequestedStatements = true,
+              isCdsOnly = false,
+              Option("some_url"),
+              urls = pvatUrls.copy(serviceUnavailableUrl = None)
+            )
+          )
+          .body
+      )
 
-            running(app) {
-              view.html() must include(messages(app)("cf.common.not-available"))
-            }
-          }
+      running(app) {
+        view.html() must include(messages(app)("cf.common.not-available"))
+      }
+    }
   }
 
   trait Setup {
@@ -153,41 +184,113 @@ class PostponedImportVatSpec extends SpecBase {
 
     val serviceUnavailbleUrl: String = "service_unavailable_url"
 
-    val postVatStatMetaData1: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(date.getYear,
-      date.minusMonths(MONTH_7).getMonthValue, Csv, PostponedVATStatement, CDS, None)
+    val postVatStatMetaData1: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(
+      date.getYear,
+      date.minusMonths(MONTH_7).getMonthValue,
+      Csv,
+      PostponedVATStatement,
+      CDS,
+      None
+    )
 
-    val postVatStatMetaData2: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(date.getYear,
-      date.minusMonths(MONTH_7).getMonthValue, Pdf, PostponedVATStatement, CDS, None)
+    val postVatStatMetaData2: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(
+      date.getYear,
+      date.minusMonths(MONTH_7).getMonthValue,
+      Pdf,
+      PostponedVATStatement,
+      CDS,
+      None
+    )
 
-    val postVatStatMetaData3: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(date.getYear,
-      date.minusMonths(FOUR_MONTHS).getMonthValue, Pdf, PostponedVATStatement, CDS, None)
+    val postVatStatMetaData3: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(
+      date.getYear,
+      date.minusMonths(FOUR_MONTHS).getMonthValue,
+      Pdf,
+      PostponedVATStatement,
+      CDS,
+      None
+    )
 
-    val postVatStatMetaData4: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(date.getYear,
-      date.minusMonths(FIVE_MONTHS).getMonthValue, Csv, PostponedVATStatement, CDS, None)
+    val postVatStatMetaData4: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(
+      date.getYear,
+      date.minusMonths(FIVE_MONTHS).getMonthValue,
+      Csv,
+      PostponedVATStatement,
+      CDS,
+      None
+    )
 
-    val postVatStatMetaData5: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(date.getYear,
-      date.minusMonths(FIVE_MONTHS).getMonthValue, Pdf, PostponedVATStatement, CDS, None)
+    val postVatStatMetaData5: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(
+      date.getYear,
+      date.minusMonths(FIVE_MONTHS).getMonthValue,
+      Pdf,
+      PostponedVATStatement,
+      CDS,
+      None
+    )
 
-    val postVatStatMetaData6: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(date.getYear,
-      date.minusMonths(TWO_MONTHS).getMonthValue, Pdf, PostponedVATAmendedStatement, CDS, None)
+    val postVatStatMetaData6: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(
+      date.getYear,
+      date.minusMonths(TWO_MONTHS).getMonthValue,
+      Pdf,
+      PostponedVATAmendedStatement,
+      CDS,
+      None
+    )
 
-    val postVatStatMetaData7: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(date.getYear,
-      date.minusMonths(TWO_MONTHS).getMonthValue, Csv, PostponedVATAmendedStatement, CDS, None)
+    val postVatStatMetaData7: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(
+      date.getYear,
+      date.minusMonths(TWO_MONTHS).getMonthValue,
+      Csv,
+      PostponedVATAmendedStatement,
+      CDS,
+      None
+    )
 
-    val postVatStatMetaData8: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(date.getYear,
-      date.minusMonths(THREE_MONTHS).getMonthValue, Pdf, PostponedVATStatement, CDS, None)
+    val postVatStatMetaData8: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(
+      date.getYear,
+      date.minusMonths(THREE_MONTHS).getMonthValue,
+      Pdf,
+      PostponedVATStatement,
+      CDS,
+      None
+    )
 
-    val postVatStatMetaData9: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(date.getYear,
-      date.minusMonths(TWO_MONTHS).getMonthValue, Pdf, PostponedVATStatement, CDS, None)
+    val postVatStatMetaData9: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(
+      date.getYear,
+      date.minusMonths(TWO_MONTHS).getMonthValue,
+      Pdf,
+      PostponedVATStatement,
+      CDS,
+      None
+    )
 
-    val postVatStatMetaData10: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(date.getYear,
-      date.minusMonths(ONE_MONTH).getMonthValue, Csv, PostponedVATStatement, CDS, None)
+    val postVatStatMetaData10: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(
+      date.getYear,
+      date.minusMonths(ONE_MONTH).getMonthValue,
+      Csv,
+      PostponedVATStatement,
+      CDS,
+      None
+    )
 
-    val postVatStatMetaData11: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(date.getYear,
-      date.minusMonths(ONE_MONTH).getMonthValue, Pdf, PostponedVATStatement, CDS, None)
+    val postVatStatMetaData11: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(
+      date.getYear,
+      date.minusMonths(ONE_MONTH).getMonthValue,
+      Pdf,
+      PostponedVATStatement,
+      CDS,
+      None
+    )
 
-    val postVatStatMetaData12: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(date.getYear,
-      date.minusMonths(TWO_MONTHS).getMonthValue, Csv, PostponedVATStatement, CDS, None)
+    val postVatStatMetaData12: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(
+      date.getYear,
+      date.minusMonths(TWO_MONTHS).getMonthValue,
+      Csv,
+      PostponedVATStatement,
+      CDS,
+      None
+    )
 
     val postponedVatStatementFiles: Seq[PostponedVatStatementFile] = List(
       PostponedVatStatementFile(STAT_FILE_NAME_04, DOWNLOAD_URL_00, SIZE_111L, postVatStatMetaData1, EORI_NUMBER),
@@ -206,12 +309,14 @@ class PostponedImportVatSpec extends SpecBase {
 
     implicit val mockDateTimeService: DateTimeService = mock[DateTimeService]
 
-    val app: Application = application().overrides(
-      inject.bind[DateTimeService].toInstance(mockDateTimeService)
-    ).build()
+    val app: Application = application()
+      .overrides(
+        inject.bind[DateTimeService].toInstance(mockDateTimeService)
+      )
+      .build()
 
-    implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-    implicit val msg: Messages = messages(app)
+    implicit val appConfig: AppConfig                         = app.injector.instanceOf[AppConfig]
+    implicit val msg: Messages                                = messages(app)
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     val pvatUrls: PVATUrls = PVATUrls(

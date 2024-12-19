@@ -22,23 +22,23 @@ import views.html.components.{div, h1, h2, inset, link, p, span}
 
 object Utils {
   val emptyString = ""
-  val hyphen = "-"
+  val hyphen      = "-"
   val singleSpace = " "
-  val period = "."
+  val period      = "."
 
   private val questionMark = "?"
 
-  val h1Component = new h1()
-  val h2Component = new h2()
-  val pComponent = new p()
-  val linkComponent = new link()
+  val h1Component    = new h1()
+  val h2Component    = new h2()
+  val pComponent     = new p()
+  val linkComponent  = new link()
   val insetComponent = new inset()
-  val spanComponent = new span()
+  val spanComponent  = new span()
 
   val divComponent = new div()
-  val ddComponent = new dd()
-  val dlComponent = new dl()
-  val dtComponent = new dt()
+  val ddComponent  = new dd()
+  val dlComponent  = new dl()
+  val dtComponent  = new dt()
 
   def referrerUrl(platformHost: Option[String])(implicit request: RequestHeader): Option[String] =
     Some(s"${platformHost.getOrElse(emptyString)}${pathWithQueryString(request)}")

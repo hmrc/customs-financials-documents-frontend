@@ -39,9 +39,9 @@ class DataStoreConnectorSpec extends SpecBase {
 
     "return EoriHistory if any historic EORI's present" in new Setup {
       when(mockMetricsReporterService.withResponseTimeLogging[Seq[EoriHistory]](any)(any)(any))
-        .thenAnswer((i: InvocationOnMock) => {
+        .thenAnswer { (i: InvocationOnMock) =>
           i.getArgument[Future[Seq[EoriHistory]]](1)
-        })
+        }
 
       val historyDate1: LocalDate = LocalDate.of(YEAR_2019, MONTH_3, DAY_1)
       val historyDate2: LocalDate = LocalDate.of(YEAR_2018, MONTH_1, DAY_1)
@@ -69,9 +69,9 @@ class DataStoreConnectorSpec extends SpecBase {
 
     "return the current EORI if no historic EORI's present" in new Setup {
       when(mockMetricsReporterService.withResponseTimeLogging[Seq[EoriHistory]](any)(any)(any))
-        .thenAnswer((i: InvocationOnMock) => {
+        .thenAnswer { (i: InvocationOnMock) =>
           i.getArgument[Future[Seq[EoriHistory]]](1)
-        })
+        }
 
       when(mockHttpClient.get(any)(any)).thenReturn(requestBuilder)
       when(requestBuilder.execute(any, any))
@@ -87,14 +87,16 @@ class DataStoreConnectorSpec extends SpecBase {
   "getEmail" should {
     "return UndeliverableEmail if the undeliverable object present" in new Setup {
       when(mockMetricsReporterService.withResponseTimeLogging[EmailResponse](any)(any)(any))
-        .thenAnswer((i: InvocationOnMock) => {
+        .thenAnswer { (i: InvocationOnMock) =>
           i.getArgument[Future[EmailResponse]](1)
-        })
+        }
 
       when(mockHttpClient.get(any)(any)).thenReturn(requestBuilder)
-      when(requestBuilder.execute(any, any)).thenReturn(Future.successful(
-        EmailResponse(Some("some@email.com"), None, Some(UndeliverableInformation("subject", "eventId", "groupId")))
-      ))
+      when(requestBuilder.execute(any, any)).thenReturn(
+        Future.successful(
+          EmailResponse(Some("some@email.com"), None, Some(UndeliverableInformation("subject", "eventId", "groupId")))
+        )
+      )
 
       running(app) {
         val result = await(connector.getEmail("someEori"))
@@ -104,9 +106,9 @@ class DataStoreConnectorSpec extends SpecBase {
 
     "return Email if the undeliverable object empty" in new Setup {
       when(mockMetricsReporterService.withResponseTimeLogging[EmailResponse](any)(any)(any))
-        .thenAnswer((i: InvocationOnMock) => {
+        .thenAnswer { (i: InvocationOnMock) =>
           i.getArgument[Future[EmailResponse]](1)
-        })
+        }
 
       when(mockHttpClient.get(any)(any)).thenReturn(requestBuilder)
       when(requestBuilder.execute(any, any))
@@ -120,9 +122,9 @@ class DataStoreConnectorSpec extends SpecBase {
 
     "return Unverified if email not present" in new Setup {
       when(mockMetricsReporterService.withResponseTimeLogging[EmailResponse](any)(any)(any))
-        .thenAnswer((i: InvocationOnMock) => {
+        .thenAnswer { (i: InvocationOnMock) =>
           i.getArgument[Future[EmailResponse]](1)
-        })
+        }
 
       when(mockHttpClient.get(any)(any)).thenReturn(requestBuilder)
       when(requestBuilder.execute(any, any)).thenReturn(Future.successful(EmailResponse(None, None, None)))
@@ -135,9 +137,9 @@ class DataStoreConnectorSpec extends SpecBase {
 
     "return Unverified if NOT_FOUND returned from the datastore" in new Setup {
       when(mockMetricsReporterService.withResponseTimeLogging[EmailResponse](any)(any)(any))
-        .thenAnswer((i: InvocationOnMock) => {
+        .thenAnswer { (i: InvocationOnMock) =>
           i.getArgument[Future[EmailResponse]](1)
-        })
+        }
 
       when(mockHttpClient.get(any)(any)).thenReturn(requestBuilder)
       when(requestBuilder.execute(any, any))
@@ -204,15 +206,17 @@ class DataStoreConnectorSpec extends SpecBase {
 
   trait Setup {
     val mockMetricsReporterService: MetricsReporterService = mock[MetricsReporterService]
-    val mockHttpClient: HttpClientV2 = mock[HttpClientV2]
-    val requestBuilder: RequestBuilder = mock[RequestBuilder]
+    val mockHttpClient: HttpClientV2                       = mock[HttpClientV2]
+    val requestBuilder: RequestBuilder                     = mock[RequestBuilder]
 
-    val app: Application = application().overrides(
-      inject.bind[MetricsReporterService].toInstance(mockMetricsReporterService),
-      inject.bind[HttpClientV2].toInstance(mockHttpClient)
-    ).build()
+    val app: Application = application()
+      .overrides(
+        inject.bind[MetricsReporterService].toInstance(mockMetricsReporterService),
+        inject.bind[HttpClientV2].toInstance(mockHttpClient)
+      )
+      .build()
 
-    implicit val hc: HeaderCarrier = HeaderCarrier()
+    implicit val hc: HeaderCarrier    = HeaderCarrier()
     val connector: DataStoreConnector = app.injector.instanceOf[DataStoreConnector]
   }
 }

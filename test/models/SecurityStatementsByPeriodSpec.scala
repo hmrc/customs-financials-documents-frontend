@@ -22,8 +22,7 @@ import utils.SpecBase
 import models.metadata.SecurityStatementFileMetadata
 import org.scalatest.matchers.must.Matchers.mustBe
 import utils.CommonTestData.{
-  CHECK_SUM_000000, DAY_28, DOWNLOAD_URL_00, EORI_NUMBER, ONE_MONTH, SIZE_500L, SIZE_99L,
-  STAT_FILE_NAME_00
+  CHECK_SUM_000000, DAY_28, DOWNLOAD_URL_00, EORI_NUMBER, ONE_MONTH, SIZE_500L, SIZE_99L, STAT_FILE_NAME_00
 }
 
 import java.time.LocalDate
@@ -66,7 +65,10 @@ class SecurityStatementsByPeriodSpec extends SpecBase {
     val date: LocalDate = LocalDate.now().withDayOfMonth(DAY_28)
 
     val securityStatementFilePdf: SecurityStatementFile =
-      SecurityStatementFile(STAT_FILE_NAME_00, DOWNLOAD_URL_00, SIZE_99L,
+      SecurityStatementFile(
+        STAT_FILE_NAME_00,
+        DOWNLOAD_URL_00,
+        SIZE_99L,
         SecurityStatementFileMetadata(
           date.minusMonths(ONE_MONTH).getYear,
           date.minusMonths(ONE_MONTH).getMonthValue,
@@ -79,10 +81,15 @@ class SecurityStatementsByPeriodSpec extends SpecBase {
           EORI_NUMBER,
           SIZE_500L,
           CHECK_SUM_000000,
-          None))
+          None
+        )
+      )
 
     val securityStatementFileCsv: SecurityStatementFile =
-      SecurityStatementFile(STAT_FILE_NAME_00, DOWNLOAD_URL_00, SIZE_99L,
+      SecurityStatementFile(
+        STAT_FILE_NAME_00,
+        DOWNLOAD_URL_00,
+        SIZE_99L,
         SecurityStatementFileMetadata(
           date.minusMonths(ONE_MONTH).getYear,
           date.minusMonths(ONE_MONTH).getMonthValue,
@@ -95,7 +102,9 @@ class SecurityStatementsByPeriodSpec extends SpecBase {
           EORI_NUMBER,
           SIZE_500L,
           CHECK_SUM_000000,
-          None))
+          None
+        )
+      )
 
     val statementsByPeriodForPdf: SecurityStatementsByPeriod =
       SecurityStatementsByPeriod(date.minusMonths(ONE_MONTH), date, Seq(securityStatementFilePdf))

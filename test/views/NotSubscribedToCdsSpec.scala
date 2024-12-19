@@ -60,11 +60,10 @@ class NotSubscribedToCdsSpec extends SpecBase {
 
     val app: Application = application().build()
 
-    implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-    implicit val msg: Messages = messages(app)
+    implicit val appConfig: AppConfig                         = app.injector.instanceOf[AppConfig]
+    implicit val msg: Messages                                = messages(app)
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
-    val view: Document = Jsoup.parse(
-      app.injector.instanceOf[not_subscribed_to_cds].apply().body)
+    val view: Document = Jsoup.parse(app.injector.instanceOf[not_subscribed_to_cds].apply().body)
   }
 }

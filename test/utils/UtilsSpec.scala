@@ -117,15 +117,15 @@ class UtilsSpec extends SpecBase {
 
   "referrerUrl" should {
     "return correct value when platform host has some value" in {
-      val path = "somePath"
-      val platformHost = "localhost"
+      val path                                                     = "somePath"
+      val platformHost                                             = "localhost"
       implicit val reqHeaders: FakeRequest[AnyContentAsEmpty.type] = fakeRequest("GET", path)
 
       referrerUrl(Some(platformHost)) mustBe Option(s"$platformHost$path")
     }
 
     "return correct value when platform host value is empty" in {
-      val path = "somePath"
+      val path                                                     = "somePath"
       implicit val reqHeaders: FakeRequest[AnyContentAsEmpty.type] = fakeRequest("GET", path)
 
       referrerUrl(None) mustBe Option(s"$path")
