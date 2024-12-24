@@ -1,4 +1,4 @@
-import uk.gov.hmrc.DefaultBuildSettings.{targetJvm, itSettings}
+import uk.gov.hmrc.DefaultBuildSettings.itSettings
 import scoverage.ScoverageKeys
 
 val appName = "customs-financials-documents-frontend"
@@ -32,7 +32,6 @@ lazy val microservice = Project(appName, file("."))
   .settings(PlayKeys.playDefaultPort := 9398)
   .settings(scalastyleSettings)
   .settings(
-    targetJvm := "jvm-11",
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
     Assets / pipelineStages := Seq(gzip),
     scalacOptions := scalacOptions.value.diff(Seq("-Wunused:all")),
