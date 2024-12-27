@@ -36,7 +36,7 @@ import utils.CommonTestData.{
 }
 import utils.Utils.emptyString
 import utils.{DateUtils, SpecBase}
-import viewmodels.VatViewModel
+import viewmodels.ImportVatViewModel
 import views.helpers.Formatters
 import views.html.import_vat.{import_vat, import_vat_not_available}
 
@@ -77,7 +77,7 @@ class VatControllerSpec extends SpecBase {
       val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
         Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
 
-      val viewModel: VatViewModel = VatViewModel(vatCertificatesForEoris)
+      val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris)
 
       when(mockSdesConnector.getVatCertificates(any)(any, any))
         .thenReturn(Future.successful(Seq(vatCertificateFile)))
@@ -220,7 +220,7 @@ class VatControllerSpec extends SpecBase {
       val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
         Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
 
-      val viewModel: VatViewModel = VatViewModel(vatCertificatesForEoris)
+      val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris)
 
       when(mockSdesConnector.getVatCertificates(anyString)(any, any))
         .thenReturn(
@@ -283,7 +283,7 @@ class VatControllerSpec extends SpecBase {
         val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
           Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
 
-        val viewModel: VatViewModel = VatViewModel(vatCertificatesForEoris)
+        val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris)
 
         when(mockSdesConnector.getVatCertificates(anyString)(any, any))
           .thenReturn(Future.successful(Seq()))
@@ -335,7 +335,7 @@ class VatControllerSpec extends SpecBase {
 
         val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
           Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
-        val viewModel: VatViewModel                              = VatViewModel(vatCertificatesForEoris)
+        val viewModel: ImportVatViewModel                              = ImportVatViewModel(vatCertificatesForEoris)
 
         when(mockSdesConnector.getVatCertificates(anyString)(any, any))
           .thenReturn(Future.successful(Seq()))
@@ -405,7 +405,7 @@ class VatControllerSpec extends SpecBase {
         val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
           Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
 
-        val viewModel: VatViewModel = VatViewModel(vatCertificatesForEoris)
+        val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris)
 
         when(mockSdesConnector.getVatCertificates(anyString)(any, any))
           .thenReturn(Future.successful(Seq(vatCertificateFile)))
@@ -470,7 +470,7 @@ class VatControllerSpec extends SpecBase {
 
       val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
         Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
-      val viewModel: VatViewModel                              = VatViewModel(vatCertificatesForEoris)
+      val viewModel: ImportVatViewModel                              = ImportVatViewModel(vatCertificatesForEoris)
 
       when(mockSdesConnector.getVatCertificates(anyString)(any, any))
         .thenReturn(Future.successful(Seq(vatCertificateFile)))
@@ -555,7 +555,7 @@ class VatControllerSpec extends SpecBase {
 
         val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
           Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, requestedCertificates))
-        val viewModel: VatViewModel                              = VatViewModel(vatCertificatesForEoris)
+        val viewModel: ImportVatViewModel                              = ImportVatViewModel(vatCertificatesForEoris)
 
         when(mockSdesConnector.getVatCertificates(anyString)(any, any))
           .thenReturn(Future.successful(Seq(vatCertificateFile, vatCertificateFile_2, vatCertificateFile_3)))
