@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import viewmodels.VatViewModel
+@import viewmodels.ImportVatViewModel
 @import views.html.components._
 @import views.html.Layout
 @import models.FileRole.C79Certificate
@@ -35,7 +35,7 @@
 )
 
 @(
-    model: VatViewModel,
+    model: ImportVatViewModel,
     serviceUnavailableUrl: Option[String] = None
 )(
     implicit request: Request[_],

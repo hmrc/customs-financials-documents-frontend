@@ -23,10 +23,15 @@ import models.FileRole.C79Certificate
 import org.scalatest.Assertion
 import play.api.Application
 import play.api.i18n.Messages
-import utils.CommonTestData.{DAY_28, EORI_NUMBER, SIZE_111L, STAT_FILE_NAME_04}
+import utils.CommonTestData.{
+  DAY_28, EORI_NUMBER, FIVE_MONTHS, FOUR_MONTHS, ONE_MONTH, SIX_MONTHS, SIZE_111L, STAT_FILE_NAME_04, THREE_MONTHS,
+  TWO_MONTHS
+}
 import utils.SpecBase
 import org.scalatest.matchers.must.Matchers.mustBe
-import utils.Utils.{h1Component, h2Component, pComponent}
+import utils.Utils.{emptyString, h1Component, h2Component, pComponent}
+import models.FileFormat.Pdf
+import play.twirl.api.HtmlFormat
 
 import java.time.LocalDate
 
@@ -34,16 +39,45 @@ class ImportVatViewModelSpec extends SpecBase {
 
   "apply" should {
 
-    "create view model with correct contents" in new Setup {
-      shouldContainCorrectTitle(viewModel)
-      shouldContainCorrectBackLink(viewModel)
-      shouldContainCorrectHeading(viewModel)
-      shouldContainCorrectCertificateAvailableGuidance(viewModel)
-      shouldContainCorrectLast6MonthsHeading(viewModel)
-      shouldContainCurrentStatements(viewModel)
-      shouldContainCorrectCertsOlderThan6MonthsGuidance(viewModel)
-      shouldContainCorrectChiefDeclarationGuidance(viewModel)
-      shouldContainCorrectHelpAndSupportGuidance(viewModel)
+    "create viewModel with correct contents" when {
+      "model has current certificates only" in new Setup {
+        shouldContainCorrectTitle(viewModel)
+        shouldContainCorrectBackLink(viewModel)
+        shouldContainCorrectHeading(viewModel)
+        shouldContainCorrectCertificateAvailableGuidance(viewModel)
+        shouldContainCorrectLast6MonthsHeading(viewModel)
+        shouldNotContainNotificationPanel(viewModel)
+        shouldContainCurrentStatements(viewModel)
+        shouldContainCorrectCertsOlderThan6MonthsGuidance(viewModel)
+        shouldContainCorrectChiefDeclarationGuidance(viewModel)
+        shouldContainCorrectHelpAndSupportGuidance(viewModel)
+      }
+
+      "model has requested certificates along with current certificates" in new Setup {
+        shouldContainCorrectTitle(viewModel)
+        shouldContainCorrectBackLink(viewModel)
+        shouldContainCorrectHeading(viewModel)
+        shouldContainCorrectCertificateAvailableGuidance(viewModel)
+        shouldContainCorrectLast6MonthsHeading(viewModel)
+        shouldContainNotificationPanel(viewModel)
+        shouldContainCurrentStatements(viewModel)
+        shouldContainCorrectCertsOlderThan6MonthsGuidance(viewModel)
+        shouldContainCorrectChiefDeclarationGuidance(viewModel)
+        shouldContainCorrectHelpAndSupportGuidance(viewModel)
+      }
+
+      "model has neither requested nor current certificates" in new Setup {
+        shouldContainCorrectTitle(viewModel)
+        shouldContainCorrectBackLink(viewModel)
+        shouldContainCorrectHeading(viewModel)
+        shouldContainCorrectCertificateAvailableGuidance(viewModel)
+        shouldContainCorrectLast6MonthsHeading(viewModel)
+        shouldNotContainNotificationPanel(viewModel)
+        shouldNotContainCurrentStatements(viewModel)
+        shouldContainCorrectCertsOlderThan6MonthsGuidance(viewModel)
+        shouldContainCorrectChiefDeclarationGuidance(viewModel)
+        shouldContainCorrectHelpAndSupportGuidance(viewModel)
+      }
     }
   }
 
@@ -53,30 +87,42 @@ class ImportVatViewModelSpec extends SpecBase {
   private def shouldContainCorrectBackLink(viewModel: ImportVatViewModel)(implicit config: AppConfig): Assertion =
     viewModel.backLink mustBe Some(config.customsFinancialsFrontendHomepage)
 
-  private def shouldContainCorrectHeading(viewModel: ImportVatViewModel): Assertion =
+  private def shouldContainCorrectHeading(viewModel: ImportVatViewModel)(implicit msgs: Messages): Assertion =
     viewModel.heading mustBe h1Component(
       "cf.account.vat.title",
       id = Some("import-vat-certificates-heading"),
       classes = "govuk-heading-xl"
     )
 
-  private def shouldContainCorrectCertificateAvailableGuidance(viewModel: ImportVatViewModel): Assertion =
+  private def shouldContainCorrectCertificateAvailableGuidance(viewModel: ImportVatViewModel)(implicit
+    msgs: Messages
+  ): Assertion =
     viewModel.certificateAvailableGuidance mustBe pComponent("cf.account.vat.available-text")
 
-  private def shouldContainCorrectLast6MonthsHeading(viewModel: ImportVatViewModel): Assertion =
+  private def shouldContainCorrectLast6MonthsHeading(viewModel: ImportVatViewModel)(implicit
+    msgs: Messages
+  ): Assertion =
     viewModel.last6MonthsH2Heading mustBe h2Component("cf.account.vat.your-certificates.heading")
 
+  private def shouldContainNotificationPanel(viewModel: ImportVatViewModel) = viewModel.notificationPanel mustBe empty
+
+  private def shouldNotContainNotificationPanel(viewModel: ImportVatViewModel) =
+    viewModel.notificationPanel mustBe empty
+
   private def shouldContainCurrentStatements(viewModel: ImportVatViewModel): Assertion =
-    viewModel.currentStatements mustbe Seq.empty
+    viewModel.currentStatements mustBe Seq.empty
+
+  private def shouldNotContainCurrentStatements(viewModel: ImportVatViewModel): Assertion =
+    viewModel.currentStatements mustBe Seq.empty
 
   private def shouldContainCorrectCertsOlderThan6MonthsGuidance(viewModel: ImportVatViewModel) =
-    viewModel.certsOlderThan6MonthsGuidance mustBe GuidanceRow()
+    viewModel.certsOlderThan6MonthsGuidance mustBe GuidanceRow(HtmlFormat.empty, None)
 
   private def shouldContainCorrectChiefDeclarationGuidance(viewModel: ImportVatViewModel) =
-    viewModel.chiefDeclarationGuidance mustBe GuidanceRow()
+    viewModel.chiefDeclarationGuidance mustBe GuidanceRow(HtmlFormat.empty, None)
 
   private def shouldContainCorrectHelpAndSupportGuidance(viewModel: ImportVatViewModel) =
-    viewModel.helpAndSupportGuidance mustBe GuidanceRow()
+    viewModel.helpAndSupportGuidance mustBe GuidanceRow(HtmlFormat.empty, None)
 
   trait Setup {
     val date: LocalDate = LocalDate.now().withDayOfMonth(DAY_28)
@@ -183,6 +229,6 @@ class ImportVatViewModelSpec extends SpecBase {
     )
 
     val viewModel: ImportVatViewModel = ImportVatViewModel(certificatesForAllEoris)
-    val config: AppConfig             = app.injector.instanceOf[AppConfig]
+    implicit val config: AppConfig    = app.injector.instanceOf[AppConfig]
   }
 }

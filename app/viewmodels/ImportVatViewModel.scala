@@ -20,19 +20,23 @@ import models.VatCertificatesForEori
 import play.twirl.api.HtmlFormat
 import utils.Utils.emptyString
 
-case class GuidanceRow(h2Heading: HtmlFormat.Appendable, link: Option[HtmlFormat.Appendable] = None)
-
 case class ImportVatViewModel(
   title: Option[String],
   backLink: Option[String],
   heading: HtmlFormat.Appendable,
   certificateAvailableGuidance: HtmlFormat.Appendable,
   last6MonthsH2Heading: HtmlFormat.Appendable,
-  currentStatements: Seq[HtmlFormat.Appendable],
+  notificationPanel: Option[HtmlFormat.Appendable] = None,
+  currentStatements: Seq[HtmlFormat.Appendable] = Seq.empty,
   certsOlderThan6MonthsGuidance: GuidanceRow,
   chiefDeclarationGuidance: GuidanceRow,
   helpAndSupportGuidance: GuidanceRow
-)
+) {
+  val hasRequestedCertificates: Boolean = false
+  val hasCurrentCertificates: Boolean   = false
+
+  val certificatesForAllEoris: Seq[VatCertificatesForEori] = Seq.empty
+}
 
 object ImportVatViewModel {
   def apply(certificatesForAllEoris: Seq[VatCertificatesForEori]): ImportVatViewModel =
@@ -46,6 +50,7 @@ object ImportVatViewModel {
       heading = HtmlFormat.empty,
       certificateAvailableGuidance = HtmlFormat.empty,
       last6MonthsH2Heading = HtmlFormat.empty,
+      notificationPanel = None,
       currentStatements = Seq.empty,
       certsOlderThan6MonthsGuidance = GuidanceRow(HtmlFormat.empty, Some(HtmlFormat.empty)),
       chiefDeclarationGuidance = GuidanceRow(HtmlFormat.empty, Some(HtmlFormat.empty)),
