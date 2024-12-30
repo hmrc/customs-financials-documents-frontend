@@ -74,6 +74,7 @@ class ImportVatViewModelSpec extends SpecBase {
         shouldContainCorrectLast6MonthsHeading(viewModel)
         shouldNotContainNotificationPanel(viewModel)
         shouldNotContainCurrentStatements(viewModel)
+        shouldContainCurrentStatementsNotAvailableGuidance(viewModel)
         shouldContainCorrectCertsOlderThan6MonthsGuidance(viewModel)
         shouldContainCorrectChiefDeclarationGuidance(viewModel)
         shouldContainCorrectHelpAndSupportGuidance(viewModel)
@@ -114,6 +115,14 @@ class ImportVatViewModelSpec extends SpecBase {
 
   private def shouldNotContainCurrentStatements(viewModel: ImportVatViewModel): Assertion =
     viewModel.currentStatements mustBe Seq.empty
+
+  private def shouldContainCurrentStatementsNotAvailableGuidance(
+    viewModel: ImportVatViewModel
+  )(implicit msgs: Messages): Assertion =
+    viewModel.currentStatementsNotAvailableGuidance mustBe pComponent(
+      "cf.account.vat.no-certificates-available",
+      id = Some("no-certificates-available-text")
+    )
 
   private def shouldContainCorrectCertsOlderThan6MonthsGuidance(viewModel: ImportVatViewModel) =
     viewModel.certsOlderThan6MonthsGuidance mustBe GuidanceRow(HtmlFormat.empty, None)

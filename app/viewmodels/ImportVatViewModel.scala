@@ -28,6 +28,7 @@ case class ImportVatViewModel(
   last6MonthsH2Heading: HtmlFormat.Appendable,
   notificationPanel: Option[HtmlFormat.Appendable] = None,
   currentStatements: Seq[HtmlFormat.Appendable] = Seq.empty,
+  currentStatementsNotAvailableGuidance: Option[HtmlFormat.Appendable] = None,
   certsOlderThan6MonthsGuidance: GuidanceRow,
   chiefDeclarationGuidance: GuidanceRow,
   helpAndSupportGuidance: GuidanceRow
@@ -52,6 +53,7 @@ object ImportVatViewModel {
       last6MonthsH2Heading = HtmlFormat.empty,
       notificationPanel = None,
       currentStatements = Seq.empty,
+      currentStatementsNotAvailableGuidance = None,
       certsOlderThan6MonthsGuidance = GuidanceRow(HtmlFormat.empty, Some(HtmlFormat.empty)),
       chiefDeclarationGuidance = GuidanceRow(HtmlFormat.empty, Some(HtmlFormat.empty)),
       helpAndSupportGuidance = GuidanceRow(HtmlFormat.empty, Some(HtmlFormat.empty))
