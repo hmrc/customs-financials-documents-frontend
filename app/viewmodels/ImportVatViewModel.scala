@@ -23,11 +23,11 @@ import utils.Utils.emptyString
 case class GuidanceRow(h2Heading: HtmlFormat.Appendable, link: Option[HtmlFormat.Appendable] = None)
 
 case class ImportVatViewModel(
-  title: String,
+  title: Option[String],
   backLink: Option[String],
-  heading: String,
+  heading: HtmlFormat.Appendable,
   certificateAvailableGuidance: HtmlFormat.Appendable,
-  last6MonthsHeading: HtmlFormat.Appendable,
+  last6MonthsH2Heading: HtmlFormat.Appendable,
   currentStatements: Seq[HtmlFormat.Appendable],
   certsOlderThan6MonthsGuidance: GuidanceRow,
   chiefDeclarationGuidance: GuidanceRow,
@@ -41,11 +41,11 @@ object ImportVatViewModel {
     val hasCurrentCertificates: Boolean   = certificatesForAllEoris.exists(_.currentCertificates.nonEmpty)
 
     ImportVatViewModel(
-      title = emptyString,
+      title = Some(emptyString),
       backLink = Some(emptyString),
-      heading = emptyString,
+      heading = HtmlFormat.empty,
       certificateAvailableGuidance = HtmlFormat.empty,
-      last6MonthsHeading = HtmlFormat.empty,
+      last6MonthsH2Heading = HtmlFormat.empty,
       currentStatements = Seq.empty,
       certsOlderThan6MonthsGuidance = GuidanceRow(HtmlFormat.empty, Some(HtmlFormat.empty)),
       chiefDeclarationGuidance = GuidanceRow(HtmlFormat.empty, Some(HtmlFormat.empty)),
