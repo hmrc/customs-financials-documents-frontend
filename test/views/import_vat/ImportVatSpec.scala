@@ -87,7 +87,7 @@ class ImportVatSpec extends SpecBase {
     val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
       Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
 
-    val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris)
+    val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris, None)
 
     val view: Document = Jsoup.parse(app.injector.instanceOf[import_vat].apply(viewModel, serviceUnavailableUrl).body)
   }

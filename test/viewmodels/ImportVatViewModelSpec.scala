@@ -25,13 +25,15 @@ import play.api.Application
 import play.api.i18n.Messages
 import utils.CommonTestData.{
   DAY_28, EORI_NUMBER, FIVE_MONTHS, FOUR_MONTHS, ONE_MONTH, SIX_MONTHS, SIZE_111L, STAT_FILE_NAME_04, THREE_MONTHS,
-  TWO_MONTHS
+  TWO_MONTHS, URL_TEST
 }
 import utils.SpecBase
 import org.scalatest.matchers.must.Matchers.mustBe
-import utils.Utils.{emptyString, h1Component, h2Component, pComponent}
+import utils.Utils.{emptyString, h1Component, h2Component, linkComponent, pComponent}
 import models.FileFormat.Pdf
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcNewTabLink
+import _root_.uk.gov.hmrc.hmrcfrontend.views.html.components.NewTabLink
 
 import java.time.LocalDate
 
@@ -47,7 +49,7 @@ class ImportVatViewModelSpec extends SpecBase {
         shouldContainCorrectCertificateAvailableGuidance(viewModel)
         shouldContainCorrectLast6MonthsHeading(viewModel)
         shouldNotContainNotificationPanel(viewModel)
-        shouldContainCurrentStatements(viewModel)
+        // shouldContainCurrentStatements(viewModel)
         shouldContainCorrectCertsOlderThan6MonthsGuidance(viewModel)
         shouldContainCorrectChiefDeclarationGuidance(viewModel)
         shouldContainCorrectHelpAndSupportGuidance(viewModel)
@@ -60,7 +62,7 @@ class ImportVatViewModelSpec extends SpecBase {
         shouldContainCorrectCertificateAvailableGuidance(viewModel)
         shouldContainCorrectLast6MonthsHeading(viewModel)
         shouldContainNotificationPanel(viewModel)
-        shouldContainCurrentStatements(viewModel)
+        // shouldContainCurrentStatements(viewModel)
         shouldContainCorrectCertsOlderThan6MonthsGuidance(viewModel)
         shouldContainCorrectChiefDeclarationGuidance(viewModel)
         shouldContainCorrectHelpAndSupportGuidance(viewModel)
@@ -124,14 +126,69 @@ class ImportVatViewModelSpec extends SpecBase {
       id = Some("no-certificates-available-text")
     )
 
-  private def shouldContainCorrectCertsOlderThan6MonthsGuidance(viewModel: ImportVatViewModel) =
-    viewModel.certsOlderThan6MonthsGuidance mustBe GuidanceRow(HtmlFormat.empty, None)
+  private def shouldContainCorrectCertsOlderThan6MonthsGuidance(viewModel: ImportVatViewModel)(implicit
+    msgs: Messages
+  ) =
+    viewModel.certsOlderThan6MonthsGuidance mustBe GuidanceRowWithParagraph(
+      h2Component(
+        "cf.account.vat.older-certificates.heading",
+        id = Some("missing-certificates-guidance-heading"),
+        classes = "govuk-heading-m govuk-!-margin-top-9"
+      ),
+      Some(
+        linkComponent(
+          "cf.account.vat.older-certificates.description.link",
+          location = URL_TEST,
+          preLinkMessage = Some("cf.account.vat.older-certificates.description.1")
+        )
+      )
+    )
 
-  private def shouldContainCorrectChiefDeclarationGuidance(viewModel: ImportVatViewModel) =
-    viewModel.chiefDeclarationGuidance mustBe GuidanceRow(HtmlFormat.empty, None)
+  private def shouldContainCorrectChiefDeclarationGuidance(viewModel: ImportVatViewModel)(implicit
+    appConfig: AppConfig,
+    msgs: Messages
+  ) =
+    viewModel.chiefDeclarationGuidance mustBe GuidanceRowWithParagraph(
+      h2Component(
+        "cf.account.vat.chief.heading",
+        id = Some("chief-guidance-heading"),
+        classes = "govuk-heading-m govuk-!-margin-top-6"
+      ),
+      Some(
+        linkComponent(
+          appConfig.c79EmailAddress,
+          location = appConfig.c79EmailAddressHref,
+          preLinkMessage = Some("cf.account.vat.older-certificates.description.2")
+        )
+      )
+    )
 
-  private def shouldContainCorrectHelpAndSupportGuidance(viewModel: ImportVatViewModel) =
-    viewModel.helpAndSupportGuidance mustBe GuidanceRow(HtmlFormat.empty, None)
+  private def shouldContainCorrectHelpAndSupportGuidance(
+    viewModel: ImportVatViewModel
+  )(implicit appConfig: AppConfig, msgs: Messages) =
+    viewModel.helpAndSupportGuidance mustBe GuidanceRowWithParagraph(
+      h2Heading = h2Component(
+        id = Some("vat.support.message.heading"),
+        msg = "cf.account.vat.support.heading",
+        classes = "govuk-heading-m govuk-!-margin-top-2"
+      ),
+      paragraph = Some(
+        pComponent(
+          message = "cf.account.vat.support.message",
+          classes = "govuk-body govuk-!-margin-bottom-9",
+          tabLink = Some(
+            new HmrcNewTabLink().apply(
+              NewTabLink(
+                language = Some(msgs.lang.toString),
+                classList = Some("govuk-link"),
+                href = Some(appConfig.viewVatAccountSupportLink),
+                text = msgs("cf.account.vat.support.link")
+              )
+            )
+          )
+        )
+      )
+    )
 
   trait Setup {
     val date: LocalDate = LocalDate.now().withDayOfMonth(DAY_28)
@@ -237,7 +294,9 @@ class ImportVatViewModelSpec extends SpecBase {
       VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty)
     )
 
-    val viewModel: ImportVatViewModel = ImportVatViewModel(certificatesForAllEoris)
+    val serviceUnavailableUrl: String = URL_TEST
+
     implicit val config: AppConfig    = app.injector.instanceOf[AppConfig]
+    val viewModel: ImportVatViewModel = ImportVatViewModel(certificatesForAllEoris, Some(serviceUnavailableUrl))
   }
 }

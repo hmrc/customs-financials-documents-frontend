@@ -16,9 +16,17 @@
 
 package viewmodels
 
+import config.AppConfig
 import models.VatCertificatesForEori
+import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import utils.Utils.emptyString
+import utils.Utils.{emptyString, h1Component, h2Component, pComponent}
+
+case class GuidanceRowWithParagraph(
+  h2Heading: HtmlFormat.Appendable,
+  link: Option[HtmlFormat.Appendable] = None,
+  paragraph: Option[HtmlFormat.Appendable] = None
+)
 
 case class ImportVatViewModel(
   title: Option[String],
@@ -29,9 +37,9 @@ case class ImportVatViewModel(
   notificationPanel: Option[HtmlFormat.Appendable] = None,
   currentStatements: Seq[HtmlFormat.Appendable] = Seq.empty,
   currentStatementsNotAvailableGuidance: Option[HtmlFormat.Appendable] = None,
-  certsOlderThan6MonthsGuidance: GuidanceRow,
-  chiefDeclarationGuidance: GuidanceRow,
-  helpAndSupportGuidance: GuidanceRow
+  certsOlderThan6MonthsGuidance: GuidanceRowWithParagraph,
+  chiefDeclarationGuidance: GuidanceRowWithParagraph,
+  helpAndSupportGuidance: GuidanceRowWithParagraph
 ) {
   val hasRequestedCertificates: Boolean = false
   val hasCurrentCertificates: Boolean   = false
@@ -40,22 +48,37 @@ case class ImportVatViewModel(
 }
 
 object ImportVatViewModel {
-  def apply(certificatesForAllEoris: Seq[VatCertificatesForEori]): ImportVatViewModel =
+  def apply(
+    certificatesForAllEoris: Seq[VatCertificatesForEori],
+    serviceUnavailableUrl: Option[String]
+  )(implicit messages: Messages, config: AppConfig): ImportVatViewModel =
 
     val hasRequestedCertificates: Boolean = certificatesForAllEoris.exists(_.requestedCertificates.nonEmpty)
     val hasCurrentCertificates: Boolean   = certificatesForAllEoris.exists(_.currentCertificates.nonEmpty)
 
     ImportVatViewModel(
-      title = Some(emptyString),
-      backLink = Some(emptyString),
-      heading = HtmlFormat.empty,
-      certificateAvailableGuidance = HtmlFormat.empty,
-      last6MonthsH2Heading = HtmlFormat.empty,
+      title = Some(messages("cf.account.vat.title")),
+      backLink = Some(config.customsFinancialsFrontendHomepage),
+      heading = populateHeading(),
+      certificateAvailableGuidance = populateCertsAvailableGuidance(),
+      last6MonthsH2Heading = populateLast6MonthsH2Heading(),
       notificationPanel = None,
       currentStatements = Seq.empty,
       currentStatementsNotAvailableGuidance = None,
-      certsOlderThan6MonthsGuidance = GuidanceRow(HtmlFormat.empty, Some(HtmlFormat.empty)),
-      chiefDeclarationGuidance = GuidanceRow(HtmlFormat.empty, Some(HtmlFormat.empty)),
-      helpAndSupportGuidance = GuidanceRow(HtmlFormat.empty, Some(HtmlFormat.empty))
+      certsOlderThan6MonthsGuidance = GuidanceRowWithParagraph(HtmlFormat.empty, Some(HtmlFormat.empty)),
+      chiefDeclarationGuidance = GuidanceRowWithParagraph(HtmlFormat.empty, Some(HtmlFormat.empty)),
+      helpAndSupportGuidance = GuidanceRowWithParagraph(HtmlFormat.empty, Some(HtmlFormat.empty))
     )
+
+  private def populateHeading(implicit messages: Messages): HtmlFormat.Appendable =
+    h1Component("cf.account.vat.title", id = Some("import-vat-certificates-heading"), classes = "govuk-heading-xl")
+
+  private def populateCertsAvailableGuidance(implicit messages: Messages): HtmlFormat.Appendable = pComponent(
+    "cf.account.vat.available-text"
+  )
+
+  private def populateLast6MonthsH2Heading(implicit messages: Messages): HtmlFormat.Appendable = h2Component(
+    "cf.account.vat.your-certificates.heading"
+  )
+
 }

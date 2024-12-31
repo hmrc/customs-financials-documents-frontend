@@ -28,7 +28,8 @@ import org.mockito.ArgumentMatchers.anyString
 import org.scalatest.matchers.must.Matchers.mustBe
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import play.api.test.Helpers._
+import play.api.i18n.Messages
+import play.api.test.Helpers.*
 import play.api.{Application, inject}
 import utils.CommonTestData.{
   DAY_28, DOWNLOAD_URL_06, DOWNLOAD_URL_07, EORI_NUMBER, FIVE_MONTHS, FOUR_MONTHS, ONE_MONTH, SEVEN_MONTHS, SIX_MONTHS,
@@ -49,6 +50,8 @@ class VatControllerSpec extends SpecBase {
     "redirect to certificates unavailable page if getting files fails" in new Setup {
 
       appConfig.historicStatementsEnabled = false
+
+      implicit val config: AppConfig    = appConfig
       val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad(navigator.importVatPageId).url
 
       val vatCertificateFile: VatCertificateFile = VatCertificateFile(
@@ -63,21 +66,21 @@ class VatControllerSpec extends SpecBase {
           None
         ),
         emptyString
-      )(messages(app))
+      )
 
       val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
-        VatCertificatesByMonth(date.minusMonths(ONE_MONTH), Seq(vatCertificateFile))(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(TWO_MONTHS), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(THREE_MONTHS), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(FOUR_MONTHS), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(FIVE_MONTHS), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(SIX_MONTHS), Seq())(messages(app))
+        VatCertificatesByMonth(date.minusMonths(ONE_MONTH), Seq(vatCertificateFile)),
+        VatCertificatesByMonth(date.minusMonths(TWO_MONTHS), Seq()),
+        VatCertificatesByMonth(date.minusMonths(THREE_MONTHS), Seq()),
+        VatCertificatesByMonth(date.minusMonths(FOUR_MONTHS), Seq()),
+        VatCertificatesByMonth(date.minusMonths(FIVE_MONTHS), Seq()),
+        VatCertificatesByMonth(date.minusMonths(SIX_MONTHS), Seq())
       )
 
       val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
         Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
 
-      val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris)
+      val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris, None)
 
       when(mockSdesConnector.getVatCertificates(any)(any, any))
         .thenReturn(Future.successful(Seq(vatCertificateFile)))
@@ -88,7 +91,7 @@ class VatControllerSpec extends SpecBase {
 
         status(result) mustBe OK
         contentAsString(result) mustBe
-          view(viewModel, Some(serviceUnavailableUrl))(request, messages(app), appConfig).toString()
+          view(viewModel, Some(serviceUnavailableUrl))(request, msgs, appConfig).toString()
       }
     }
 
@@ -108,6 +111,8 @@ class VatControllerSpec extends SpecBase {
     "display only last 6 months certs' rows when previous cert files are retrieved in SDES" in new Setup {
 
       appConfig.historicStatementsEnabled = false
+
+      implicit val config: AppConfig    = appConfig
       val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("import-vat").url
 
       val vatCertificateFile1: VatCertificateFile = VatCertificateFile(
@@ -122,7 +127,7 @@ class VatControllerSpec extends SpecBase {
           None
         ),
         emptyString
-      )(messages(app))
+      )
 
       val vatCertificateFile2: VatCertificateFile = VatCertificateFile(
         STAT_FILE_NAME_04,
@@ -136,7 +141,7 @@ class VatControllerSpec extends SpecBase {
           None
         ),
         emptyString
-      )(messages(app))
+      )
 
       val vatCertificateFile3: VatCertificateFile = VatCertificateFile(
         STAT_FILE_NAME_04,
@@ -150,7 +155,7 @@ class VatControllerSpec extends SpecBase {
           None
         ),
         emptyString
-      )(messages(app))
+      )
 
       val vatCertificateFile4: VatCertificateFile = VatCertificateFile(
         STAT_FILE_NAME_04,
@@ -164,7 +169,7 @@ class VatControllerSpec extends SpecBase {
           None
         ),
         emptyString
-      )(messages(app))
+      )
 
       val vatCertificateFile5: VatCertificateFile = VatCertificateFile(
         STAT_FILE_NAME_04,
@@ -178,7 +183,7 @@ class VatControllerSpec extends SpecBase {
           None
         ),
         emptyString
-      )(messages(app))
+      )
 
       val vatCertificateFile6: VatCertificateFile = VatCertificateFile(
         STAT_FILE_NAME_04,
@@ -192,7 +197,7 @@ class VatControllerSpec extends SpecBase {
           None
         ),
         emptyString
-      )(messages(app))
+      )
 
       val vatCertificateFile7: VatCertificateFile = VatCertificateFile(
         STAT_FILE_NAME_04,
@@ -206,21 +211,21 @@ class VatControllerSpec extends SpecBase {
           None
         ),
         emptyString
-      )(messages(app))
+      )
 
       val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
-        VatCertificatesByMonth(date.minusMonths(ONE_MONTH), Seq(vatCertificateFile1))(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(TWO_MONTHS), Seq(vatCertificateFile2))(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(THREE_MONTHS), Seq(vatCertificateFile3))(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(FOUR_MONTHS), Seq(vatCertificateFile4))(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(FIVE_MONTHS), Seq(vatCertificateFile5))(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(SIX_MONTHS), Seq(vatCertificateFile6))(messages(app))
+        VatCertificatesByMonth(date.minusMonths(ONE_MONTH), Seq(vatCertificateFile1)),
+        VatCertificatesByMonth(date.minusMonths(TWO_MONTHS), Seq(vatCertificateFile2)),
+        VatCertificatesByMonth(date.minusMonths(THREE_MONTHS), Seq(vatCertificateFile3)),
+        VatCertificatesByMonth(date.minusMonths(FOUR_MONTHS), Seq(vatCertificateFile4)),
+        VatCertificatesByMonth(date.minusMonths(FIVE_MONTHS), Seq(vatCertificateFile5)),
+        VatCertificatesByMonth(date.minusMonths(SIX_MONTHS), Seq(vatCertificateFile6))
       )
 
       val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
         Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
 
-      val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris)
+      val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris, None)
 
       when(mockSdesConnector.getVatCertificates(anyString)(any, any))
         .thenReturn(
@@ -248,7 +253,7 @@ class VatControllerSpec extends SpecBase {
 
         if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
           contentAsString(result) mustBe
-            view(viewModel, Some(serviceUnavailableUrl))(request, messages(app), appConfig).toString()
+            view(viewModel, Some(serviceUnavailableUrl))(request, msgs, appConfig).toString()
 
           val doc = Jsoup.parse(contentAsString(result))
 
@@ -271,19 +276,21 @@ class VatControllerSpec extends SpecBase {
     "display the cert unavailable text for the relevant month when cert files are retrieved " +
       "after 19th of the month and cert is not available" in new Setup {
 
+        implicit val config: AppConfig = appConfig
+
         val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
-          VatCertificatesByMonth(date.minusMonths(ONE_MONTH), Seq())(messages(app)),
-          VatCertificatesByMonth(date.minusMonths(TWO_MONTHS), Seq())(messages(app)),
-          VatCertificatesByMonth(date.minusMonths(THREE_MONTHS), Seq())(messages(app)),
-          VatCertificatesByMonth(date.minusMonths(FOUR_MONTHS), Seq())(messages(app)),
-          VatCertificatesByMonth(date.minusMonths(FIVE_MONTHS), Seq())(messages(app)),
-          VatCertificatesByMonth(date.minusMonths(SIX_MONTHS), Seq())(messages(app))
+          VatCertificatesByMonth(date.minusMonths(ONE_MONTH), Seq()),
+          VatCertificatesByMonth(date.minusMonths(TWO_MONTHS), Seq()),
+          VatCertificatesByMonth(date.minusMonths(THREE_MONTHS), Seq()),
+          VatCertificatesByMonth(date.minusMonths(FOUR_MONTHS), Seq()),
+          VatCertificatesByMonth(date.minusMonths(FIVE_MONTHS), Seq()),
+          VatCertificatesByMonth(date.minusMonths(SIX_MONTHS), Seq())
         )
 
         val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
           Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
 
-        val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris)
+        val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris, None)
 
         when(mockSdesConnector.getVatCertificates(anyString)(any, any))
           .thenReturn(Future.successful(Seq()))
@@ -300,7 +307,7 @@ class VatControllerSpec extends SpecBase {
           if (!DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
             contentAsString(result) mustBe view(viewModel, Some(appConfig.historicRequestUrl(C79Certificate)))(
               request,
-              messages(app),
+              msgs,
               appConfig
             ).toString()
 
@@ -310,9 +317,9 @@ class VatControllerSpec extends SpecBase {
 
             doc.getElementById("statements-list-0-row-0").children().text() should
               include(
-                messages(app)(
+                msgs(
                   "cf.account.vat.statements.unavailable",
-                  Formatters.dateAsMonth(date.minusMonths(ONE_MONTH))(messages(app))
+                  Formatters.dateAsMonth(date.minusMonths(ONE_MONTH))
                 )
               )
           }
@@ -323,19 +330,21 @@ class VatControllerSpec extends SpecBase {
       "before 20th of the month and cert is not available for immediate previous month" in new Setup {
 
         appConfig.historicStatementsEnabled = false
+        implicit val config: AppConfig    = appConfig
         val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("import-vat").url
 
         val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
-          VatCertificatesByMonth(date.minusMonths(TWO_MONTHS), Seq())(messages(app)),
-          VatCertificatesByMonth(date.minusMonths(THREE_MONTHS), Seq())(messages(app)),
-          VatCertificatesByMonth(date.minusMonths(FOUR_MONTHS), Seq())(messages(app)),
-          VatCertificatesByMonth(date.minusMonths(FIVE_MONTHS), Seq())(messages(app)),
-          VatCertificatesByMonth(date.minusMonths(SIX_MONTHS), Seq())(messages(app))
+          VatCertificatesByMonth(date.minusMonths(TWO_MONTHS), Seq()),
+          VatCertificatesByMonth(date.minusMonths(THREE_MONTHS), Seq()),
+          VatCertificatesByMonth(date.minusMonths(FOUR_MONTHS), Seq()),
+          VatCertificatesByMonth(date.minusMonths(FIVE_MONTHS), Seq()),
+          VatCertificatesByMonth(date.minusMonths(SIX_MONTHS), Seq())
         )
 
         val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
           Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
-        val viewModel: ImportVatViewModel                              = ImportVatViewModel(vatCertificatesForEoris)
+
+        val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris, None)
 
         when(mockSdesConnector.getVatCertificates(anyString)(any, any))
           .thenReturn(Future.successful(Seq()))
@@ -352,7 +361,7 @@ class VatControllerSpec extends SpecBase {
           if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
             contentAsString(result) mustBe view(viewModel, Some(serviceUnavailableUrl))(
               request,
-              messages(app),
+              msgs,
               appConfig
             ).toString()
 
@@ -365,9 +374,9 @@ class VatControllerSpec extends SpecBase {
             Option(doc.getElementById("statements-list-0-row-3")) should not be empty
             Option(doc.getElementById("statements-list-0-row-4")) should not be empty
 
-            doc.getElementById("statements-list-0-row-0").children().text() should not include messages(app)(
+            doc.getElementById("statements-list-0-row-0").children().text() should not include msgs(
               "cf.account.vat.statements.unavailable",
-              Formatters.dateAsMonth(date.minusMonths(ONE_MONTH))(messages(app))
+              Formatters.dateAsMonth(date.minusMonths(ONE_MONTH))
             )
           }
         }
@@ -377,6 +386,7 @@ class VatControllerSpec extends SpecBase {
       "cert is available" in new Setup {
 
         appConfig.historicStatementsEnabled = false
+        implicit val config: AppConfig    = appConfig
         val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("import-vat").url
 
         val vatCertificateFile: VatCertificateFile = VatCertificateFile(
@@ -391,21 +401,21 @@ class VatControllerSpec extends SpecBase {
             None
           ),
           emptyString
-        )(messages(app))
+        )
 
         val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
-          VatCertificatesByMonth(date.minusMonths(ONE_MONTH), Seq(vatCertificateFile))(messages(app)),
-          VatCertificatesByMonth(date.minusMonths(TWO_MONTHS), Seq())(messages(app)),
-          VatCertificatesByMonth(date.minusMonths(THREE_MONTHS), Seq())(messages(app)),
-          VatCertificatesByMonth(date.minusMonths(FOUR_MONTHS), Seq())(messages(app)),
-          VatCertificatesByMonth(date.minusMonths(FIVE_MONTHS), Seq())(messages(app)),
-          VatCertificatesByMonth(date.minusMonths(SIX_MONTHS), Seq())(messages(app))
+          VatCertificatesByMonth(date.minusMonths(ONE_MONTH), Seq(vatCertificateFile)),
+          VatCertificatesByMonth(date.minusMonths(TWO_MONTHS), Seq()),
+          VatCertificatesByMonth(date.minusMonths(THREE_MONTHS), Seq()),
+          VatCertificatesByMonth(date.minusMonths(FOUR_MONTHS), Seq()),
+          VatCertificatesByMonth(date.minusMonths(FIVE_MONTHS), Seq()),
+          VatCertificatesByMonth(date.minusMonths(SIX_MONTHS), Seq())
         )
 
         val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
           Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
 
-        val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris)
+        val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris, None)
 
         when(mockSdesConnector.getVatCertificates(anyString)(any, any))
           .thenReturn(Future.successful(Seq(vatCertificateFile)))
@@ -421,7 +431,7 @@ class VatControllerSpec extends SpecBase {
 
           if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
             contentAsString(result) mustBe
-              view(viewModel, Some(serviceUnavailableUrl))(request, messages(app), appConfig).toString()
+              view(viewModel, Some(serviceUnavailableUrl))(request, msgs, appConfig).toString()
 
             val doc = Jsoup.parse(contentAsString(result))
 
@@ -432,9 +442,9 @@ class VatControllerSpec extends SpecBase {
             Option(doc.getElementById("statements-list-0-row-4")) should not be empty
             Option(doc.getElementById("statements-list-0-row-5")) should not be empty
 
-            doc.getElementById("statements-list-0-row-0").children().text() should not include messages(app)(
+            doc.getElementById("statements-list-0-row-0").children().text() should not include msgs(
               "cf.account.vat.statements.unavailable",
-              Formatters.dateAsMonth(date.minusMonths(ONE_MONTH))(messages(app))
+              Formatters.dateAsMonth(date.minusMonths(ONE_MONTH))
             )
           }
         }
@@ -444,6 +454,7 @@ class VatControllerSpec extends SpecBase {
 
       appConfig.historicStatementsEnabled = true
       val historicRequestUrl: String = appConfig.historicRequestUrl(C79Certificate)
+      implicit val config: AppConfig = appConfig
 
       val vatCertificateFile: VatCertificateFile = VatCertificateFile(
         STAT_FILE_NAME_04,
@@ -457,20 +468,21 @@ class VatControllerSpec extends SpecBase {
           None
         ),
         emptyString
-      )(messages(app))
+      )
 
       val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
-        VatCertificatesByMonth(date.minusMonths(ONE_MONTH), Seq(vatCertificateFile))(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(TWO_MONTHS), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(THREE_MONTHS), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(FOUR_MONTHS), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(FIVE_MONTHS), Seq())(messages(app)),
-        VatCertificatesByMonth(date.minusMonths(SIX_MONTHS), Seq())(messages(app))
+        VatCertificatesByMonth(date.minusMonths(ONE_MONTH), Seq(vatCertificateFile)),
+        VatCertificatesByMonth(date.minusMonths(TWO_MONTHS), Seq()),
+        VatCertificatesByMonth(date.minusMonths(THREE_MONTHS), Seq()),
+        VatCertificatesByMonth(date.minusMonths(FOUR_MONTHS), Seq()),
+        VatCertificatesByMonth(date.minusMonths(FIVE_MONTHS), Seq()),
+        VatCertificatesByMonth(date.minusMonths(SIX_MONTHS), Seq())
       )
 
       val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
         Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
-      val viewModel: ImportVatViewModel                              = ImportVatViewModel(vatCertificatesForEoris)
+
+      val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris, None)
 
       when(mockSdesConnector.getVatCertificates(anyString)(any, any))
         .thenReturn(Future.successful(Seq(vatCertificateFile)))
@@ -486,7 +498,7 @@ class VatControllerSpec extends SpecBase {
 
         if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
           contentAsString(result) mustBe
-            view(viewModel, Some(historicRequestUrl))(request, messages(app), appConfig).toString()
+            view(viewModel, Some(historicRequestUrl))(request, msgs, appConfig).toString()
         }
       }
     }
@@ -495,6 +507,8 @@ class VatControllerSpec extends SpecBase {
       "requested statements are present in the same period" in new Setup {
 
         appConfig.historicStatementsEnabled = true
+
+        implicit val config: AppConfig    = appConfig
         val historicRequestUrl: String    = appConfig.historicRequestUrl(C79Certificate)
         val someRequestId: Option[String] = Some("statement-request-id")
 
@@ -510,7 +524,7 @@ class VatControllerSpec extends SpecBase {
             None
           ),
           emptyString
-        )(messages(app))
+        )
 
         val vatCertificateFile_2: VatCertificateFile = VatCertificateFile(
           STAT_FILE_NAME_05,
@@ -524,7 +538,7 @@ class VatControllerSpec extends SpecBase {
             None
           ),
           emptyString
-        )(messages(app))
+        )
 
         val vatCertificateFile_3: VatCertificateFile = VatCertificateFile(
           STAT_FILE_NAME_05,
@@ -538,24 +552,24 @@ class VatControllerSpec extends SpecBase {
             someRequestId
           ),
           emptyString
-        )(messages(app))
+        )
 
         val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
-          VatCertificatesByMonth(date.minusMonths(ONE_MONTH), Seq(vatCertificateFile))(messages(app)),
-          VatCertificatesByMonth(date.minusMonths(TWO_MONTHS), Seq())(messages(app)),
-          VatCertificatesByMonth(date.minusMonths(THREE_MONTHS), Seq())(messages(app)),
-          VatCertificatesByMonth(date.minusMonths(FOUR_MONTHS), Seq())(messages(app)),
-          VatCertificatesByMonth(date.minusMonths(FIVE_MONTHS), Seq())(messages(app)),
-          VatCertificatesByMonth(date.minusMonths(SIX_MONTHS), Seq())(messages(app))
+          VatCertificatesByMonth(date.minusMonths(ONE_MONTH), Seq(vatCertificateFile)),
+          VatCertificatesByMonth(date.minusMonths(TWO_MONTHS), Seq()),
+          VatCertificatesByMonth(date.minusMonths(THREE_MONTHS), Seq()),
+          VatCertificatesByMonth(date.minusMonths(FOUR_MONTHS), Seq()),
+          VatCertificatesByMonth(date.minusMonths(FIVE_MONTHS), Seq()),
+          VatCertificatesByMonth(date.minusMonths(SIX_MONTHS), Seq())
         )
 
         val requestedCertificates: Seq[VatCertificatesByMonth] = Seq(
-          VatCertificatesByMonth(date.minusMonths(SEVEN_MONTHS), Seq(vatCertificateFile_3))(messages(app))
+          VatCertificatesByMonth(date.minusMonths(SEVEN_MONTHS), Seq(vatCertificateFile_3))
         )
 
         val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
           Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, requestedCertificates))
-        val viewModel: ImportVatViewModel                              = ImportVatViewModel(vatCertificatesForEoris)
+        val viewModel: ImportVatViewModel                        = ImportVatViewModel(vatCertificatesForEoris, None)
 
         when(mockSdesConnector.getVatCertificates(anyString)(any, any))
           .thenReturn(Future.successful(Seq(vatCertificateFile, vatCertificateFile_2, vatCertificateFile_3)))
@@ -571,7 +585,7 @@ class VatControllerSpec extends SpecBase {
 
           if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
             contentAsString(result) mustBe
-              view(viewModel, Some(historicRequestUrl))(request, messages(app), appConfig).toString()
+              view(viewModel, Some(historicRequestUrl))(request, msgs, appConfig).toString()
           }
 
           val doc = Jsoup.parse(contentAsString(result))
@@ -643,7 +657,8 @@ class VatControllerSpec extends SpecBase {
       )
       .build()
 
-    var appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-    val view: import_vat     = app.injector.instanceOf[import_vat]
+    var appConfig: AppConfig    = app.injector.instanceOf[AppConfig]
+    val view: import_vat        = app.injector.instanceOf[import_vat]
+    implicit val msgs: Messages = messages(app)
   }
 }
