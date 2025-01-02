@@ -19,8 +19,12 @@ package viewmodels
 import config.AppConfig
 import models.VatCertificatesForEori
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
-import utils.Utils.{emptyString, h1Component, h2Component, pComponent}
+import play.twirl.api.{Html, HtmlFormat}
+import utils.Utils.{
+  divComponent, emptyString, h1Component, h2Component, hmrcNewTabLinkComponent, linkComponent, pComponent
+}
+import models.FileRole.C79Certificate
+import _root_.uk.gov.hmrc.hmrcfrontend.views.html.components.NewTabLink
 
 case class GuidanceRowWithParagraph(
   h2Heading: HtmlFormat.Appendable,
@@ -51,7 +55,7 @@ object ImportVatViewModel {
   def apply(
     certificatesForAllEoris: Seq[VatCertificatesForEori],
     serviceUnavailableUrl: Option[String]
-  )(implicit messages: Messages, config: AppConfig): ImportVatViewModel =
+  )(implicit messages: Messages, config: AppConfig): ImportVatViewModel = {
 
     val hasRequestedCertificates: Boolean = certificatesForAllEoris.exists(_.requestedCertificates.nonEmpty)
     val hasCurrentCertificates: Boolean   = certificatesForAllEoris.exists(_.currentCertificates.nonEmpty)
@@ -62,13 +66,15 @@ object ImportVatViewModel {
       heading = populateHeading(),
       certificateAvailableGuidance = populateCertsAvailableGuidance(),
       last6MonthsH2Heading = populateLast6MonthsH2Heading(),
-      notificationPanel = None,
+      notificationPanel = if (hasRequestedCertificates) Some(populateNotificationPanel()) else None,
       currentStatements = Seq.empty,
-      currentStatementsNotAvailableGuidance = None,
-      certsOlderThan6MonthsGuidance = GuidanceRowWithParagraph(HtmlFormat.empty, Some(HtmlFormat.empty)),
-      chiefDeclarationGuidance = GuidanceRowWithParagraph(HtmlFormat.empty, Some(HtmlFormat.empty)),
-      helpAndSupportGuidance = GuidanceRowWithParagraph(HtmlFormat.empty, Some(HtmlFormat.empty))
+      currentStatementsNotAvailableGuidance =
+        if (hasCurrentCertificates) Some(populateCurrentStatNotAvailableGuidance) else None,
+      certsOlderThan6MonthsGuidance = populateCertsOlderThan6MonthsGuidance(serviceUnavailableUrl),
+      chiefDeclarationGuidance = populateChiefDeclarationGuidance,
+      helpAndSupportGuidance = populateHelpAndSupportGuidance
     )
+  }
 
   private def populateHeading(implicit messages: Messages): HtmlFormat.Appendable =
     h1Component("cf.account.vat.title", id = Some("import-vat-certificates-heading"), classes = "govuk-heading-xl")
@@ -81,4 +87,91 @@ object ImportVatViewModel {
     "cf.account.vat.your-certificates.heading"
   )
 
+  private def populateNotificationPanel(implicit messages: Messages, appConfig: AppConfig): HtmlFormat.Appendable = {
+    val htmlContent: Html = HtmlFormat.fill(
+      Seq(
+        linkComponent(
+          linkMessage = messages("cf.import-vat.requested-certificates-available-link-text"),
+          location = appConfig.requestedStatements(C79Certificate),
+          preLinkMessage = Some(messages("cf.account.detail.requested-certificates-available-text.pre")),
+          postLinkMessage = Some(messages("cf.account.detail.requested-certificates-available-text.post")),
+          pClass = "govuk-body govuk-!-margin-bottom-1"
+        )
+      )
+    )
+
+    divComponent(
+      content = htmlContent,
+      classes = Some("notifications-panel"),
+      id = Some("notification-panel")
+    )
+  }
+
+  private def populateCurrentStatNotAvailableGuidance(implicit messages: Messages): HtmlFormat.Appendable =
+    pComponent("cf.account.vat.no-certificates-available", id = Some("no-certificates-available-text"))
+
+  private def populateCertsOlderThan6MonthsGuidance(serviceUnavailableUrl: Option[String])(implicit
+    messages: Messages
+  ): GuidanceRowWithParagraph =
+    GuidanceRowWithParagraph(
+      h2Heading = h2Component(
+        "cf.account.vat.older-certificates.heading",
+        id = Some("missing-certificates-guidance-heading"),
+        classes = "govuk-heading-m govuk-!-margin-top-9"
+      ),
+      link = Some(
+        linkComponent(
+          "cf.account.vat.older-certificates.description.link",
+          location = serviceUnavailableUrl.getOrElse(emptyString),
+          preLinkMessage = Some("cf.account.vat.older-certificates.description.1")
+        )
+      )
+    )
+
+  private def populateChiefDeclarationGuidance(implicit
+    messages: Messages,
+    appConfig: AppConfig
+  ): GuidanceRowWithParagraph =
+    GuidanceRowWithParagraph(
+      h2Heading = h2Component(
+        "cf.account.vat.chief.heading",
+        id = Some("chief-guidance-heading"),
+        classes = "govuk-heading-m govuk-!-margin-top-6"
+      ),
+      link = Some(
+        linkComponent(
+          appConfig.c79EmailAddress,
+          location = appConfig.c79EmailAddressHref,
+          preLinkMessage = Some("cf.account.vat.older-certificates.description.2")
+        )
+      )
+    )
+
+  private def populateHelpAndSupportGuidance(implicit
+    messages: Messages,
+    appConfig: AppConfig
+  ): GuidanceRowWithParagraph =
+    GuidanceRowWithParagraph(
+      h2Heading = h2Component(
+        id = Some("vat.support.message.heading"),
+        msg = "cf.account.vat.support.heading",
+        classes = "govuk-heading-m govuk-!-margin-top-2"
+      ),
+      paragraph = Some(
+        pComponent(
+          message = "cf.account.vat.support.message",
+          classes = "govuk-body govuk-!-margin-bottom-9",
+          tabLink = Some(
+            hmrcNewTabLinkComponent(
+              NewTabLink(
+                language = Some(messages.lang.toString),
+                classList = Some("govuk-link"),
+                href = Some(appConfig.viewVatAccountSupportLink),
+                text = messages("cf.account.vat.support.link")
+              )
+            )
+          )
+        )
+      )
+    )
 }

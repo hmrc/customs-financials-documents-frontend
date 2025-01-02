@@ -19,7 +19,8 @@ package utils
 import org.scalatest.matchers.must.Matchers.mustBe
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import utils.Utils._
+import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcNewTabLink
+import utils.Utils.*
 import views.html.components.description_list.{dd, dl, dt}
 import views.html.components.{div, h1, h2, inset, link, p, span}
 
@@ -94,6 +95,12 @@ class UtilsSpec extends SpecBase {
   "divComponent" should {
     "return the correct component type" in {
       divComponent mustBe a[div]
+    }
+  }
+
+  "hmrcNewTabLinkComponent" should {
+    "return the correct component type" in {
+      hmrcNewTabLinkComponent mustBe a[HmrcNewTabLink]
     }
   }
 

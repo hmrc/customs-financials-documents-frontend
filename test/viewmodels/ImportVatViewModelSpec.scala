@@ -121,9 +121,11 @@ class ImportVatViewModelSpec extends SpecBase {
   private def shouldContainCurrentStatementsNotAvailableGuidance(
     viewModel: ImportVatViewModel
   )(implicit msgs: Messages): Assertion =
-    viewModel.currentStatementsNotAvailableGuidance mustBe pComponent(
-      "cf.account.vat.no-certificates-available",
-      id = Some("no-certificates-available-text")
+    viewModel.currentStatementsNotAvailableGuidance mustBe Some(
+      pComponent(
+        "cf.account.vat.no-certificates-available",
+        id = Some("no-certificates-available-text")
+      )
     )
 
   private def shouldContainCorrectCertsOlderThan6MonthsGuidance(viewModel: ImportVatViewModel)(implicit
