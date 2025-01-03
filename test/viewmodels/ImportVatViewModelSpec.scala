@@ -42,6 +42,7 @@ class ImportVatViewModelSpec extends SpecBase {
   "apply" should {
 
     "create viewModel with correct contents" when {
+
       "model has current certificates only" in new Setup {
         shouldContainCorrectTitle(viewModelWithCurrentCerts)
         shouldContainCorrectBackLink(viewModelWithCurrentCerts)
@@ -56,7 +57,7 @@ class ImportVatViewModelSpec extends SpecBase {
         shouldContainCorrectHelpAndSupportGuidance(viewModelWithCurrentCerts)
       }
 
-      "model has requested certificates along with current certificates" in new Setup {
+      "model has both requested and current certificates" in new Setup {
         shouldContainCorrectTitle(viewModel)
         shouldContainCorrectBackLink(viewModel)
         shouldContainCorrectHeading(viewModel)
