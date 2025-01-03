@@ -43,16 +43,17 @@ class ImportVatViewModelSpec extends SpecBase {
 
     "create viewModel with correct contents" when {
       "model has current certificates only" in new Setup {
-        shouldContainCorrectTitle(viewModel)
-        shouldContainCorrectBackLink(viewModel)
-        shouldContainCorrectHeading(viewModel)
-        shouldContainCorrectCertificateAvailableGuidance(viewModel)
-        shouldContainCorrectLast6MonthsHeading(viewModel)
-        shouldNotContainNotificationPanel(viewModel)
+        shouldContainCorrectTitle(viewModelWithCurrentCerts)
+        shouldContainCorrectBackLink(viewModelWithCurrentCerts)
+        shouldContainCorrectHeading(viewModelWithCurrentCerts)
+        shouldContainCorrectCertificateAvailableGuidance(viewModelWithCurrentCerts)
+        shouldContainCorrectLast6MonthsHeading(viewModelWithCurrentCerts)
+        shouldNotContainNotificationPanel(viewModelWithCurrentCerts)
         // shouldContainCurrentStatements(viewModel)
-        shouldContainCorrectCertsOlderThan6MonthsGuidance(viewModel)
-        shouldContainCorrectChiefDeclarationGuidance(viewModel)
-        shouldContainCorrectHelpAndSupportGuidance(viewModel)
+        shouldNotContainCurrentStatementsNotAvailableGuidance(viewModelWithCurrentCerts)
+        shouldContainCorrectCertsOlderThan6MonthsGuidance(viewModelWithCurrentCerts)
+        shouldContainCorrectChiefDeclarationGuidance(viewModelWithCurrentCerts)
+        shouldContainCorrectHelpAndSupportGuidance(viewModelWithCurrentCerts)
       }
 
       "model has requested certificates along with current certificates" in new Setup {
@@ -63,23 +64,24 @@ class ImportVatViewModelSpec extends SpecBase {
         shouldContainCorrectLast6MonthsHeading(viewModel)
         shouldContainNotificationPanel(viewModel)
         // shouldContainCurrentStatements(viewModel)
+        shouldNotContainCurrentStatementsNotAvailableGuidance(viewModel)
         shouldContainCorrectCertsOlderThan6MonthsGuidance(viewModel)
         shouldContainCorrectChiefDeclarationGuidance(viewModel)
         shouldContainCorrectHelpAndSupportGuidance(viewModel)
       }
 
       "model has neither requested nor current certificates" in new Setup {
-        shouldContainCorrectTitle(viewModel)
-        shouldContainCorrectBackLink(viewModel)
-        shouldContainCorrectHeading(viewModel)
-        shouldContainCorrectCertificateAvailableGuidance(viewModel)
-        shouldContainCorrectLast6MonthsHeading(viewModel)
-        shouldNotContainNotificationPanel(viewModel)
-        shouldNotContainCurrentStatements(viewModel)
-        shouldContainCurrentStatementsNotAvailableGuidance(viewModel)
-        shouldContainCorrectCertsOlderThan6MonthsGuidance(viewModel)
-        shouldContainCorrectChiefDeclarationGuidance(viewModel)
-        shouldContainCorrectHelpAndSupportGuidance(viewModel)
+        shouldContainCorrectTitle(viewModelWithNoCerts)
+        shouldContainCorrectBackLink(viewModelWithNoCerts)
+        shouldContainCorrectHeading(viewModelWithNoCerts)
+        shouldContainCorrectCertificateAvailableGuidance(viewModelWithNoCerts)
+        shouldContainCorrectLast6MonthsHeading(viewModelWithNoCerts)
+        shouldNotContainNotificationPanel(viewModelWithNoCerts)
+        shouldNotContainCurrentStatements(viewModelWithNoCerts)
+        shouldContainCurrentStatementsNotAvailableGuidance(viewModelWithNoCerts)
+        shouldContainCorrectCertsOlderThan6MonthsGuidance(viewModelWithNoCerts)
+        shouldContainCorrectChiefDeclarationGuidance(viewModelWithNoCerts)
+        shouldContainCorrectHelpAndSupportGuidance(viewModelWithNoCerts)
       }
     }
   }
@@ -117,6 +119,9 @@ class ImportVatViewModelSpec extends SpecBase {
 
   private def shouldNotContainCurrentStatements(viewModel: ImportVatViewModel): Assertion =
     viewModel.currentStatements mustBe Seq.empty
+
+  private def shouldNotContainCurrentStatementsNotAvailableGuidance(viewModel: ImportVatViewModel): Assertion =
+    viewModel.currentStatementsNotAvailableGuidance mustBe empty
 
   private def shouldContainCurrentStatementsNotAvailableGuidance(
     viewModel: ImportVatViewModel
@@ -298,7 +303,13 @@ class ImportVatViewModelSpec extends SpecBase {
 
     val serviceUnavailableUrl: String = URL_TEST
 
-    implicit val config: AppConfig    = app.injector.instanceOf[AppConfig]
+    implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
+
     val viewModel: ImportVatViewModel = ImportVatViewModel(certificatesForAllEoris, Some(serviceUnavailableUrl))
+
+    val viewModelWithCurrentCerts: ImportVatViewModel =
+      ImportVatViewModel(certificatesForAllEoris, Some(serviceUnavailableUrl))
+
+    val viewModelWithNoCerts: ImportVatViewModel = ImportVatViewModel(Seq.empty, Some(serviceUnavailableUrl))
   }
 }

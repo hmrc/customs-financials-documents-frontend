@@ -69,7 +69,7 @@ object ImportVatViewModel {
       notificationPanel = if (hasRequestedCertificates) Some(populateNotificationPanel()) else None,
       currentStatements = Seq.empty,
       currentStatementsNotAvailableGuidance =
-        if (hasCurrentCertificates) Some(populateCurrentStatNotAvailableGuidance) else None,
+        if (hasCurrentCertificates) None else Some(populateCurrentStatNotAvailableGuidance),
       certsOlderThan6MonthsGuidance = populateCertsOlderThan6MonthsGuidance(serviceUnavailableUrl),
       chiefDeclarationGuidance = populateChiefDeclarationGuidance,
       helpAndSupportGuidance = populateHelpAndSupportGuidance
