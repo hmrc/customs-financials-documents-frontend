@@ -67,7 +67,7 @@ object ImportVatViewModel {
       certificateAvailableGuidance = populateCertsAvailableGuidance(),
       last6MonthsH2Heading = populateLast6MonthsH2Heading(),
       notificationPanel = if (hasRequestedCertificates) Some(populateNotificationPanel()) else None,
-      currentStatements = Seq.empty,
+      currentStatements = if (hasCurrentCertificates) populateCurrentStatements(certificatesForAllEoris) else Seq.empty,
       currentStatementsNotAvailableGuidance =
         if (hasCurrentCertificates) None else Some(populateCurrentStatNotAvailableGuidance),
       certsOlderThan6MonthsGuidance = populateCertsOlderThan6MonthsGuidance(serviceUnavailableUrl),
@@ -106,6 +106,9 @@ object ImportVatViewModel {
       id = Some("notification-panel")
     )
   }
+
+  private def populateCurrentStatements(certificatesForAllEoris: Seq[VatCertificatesForEori]) =
+    Seq.empty
 
   private def populateCurrentStatNotAvailableGuidance(implicit messages: Messages): HtmlFormat.Appendable =
     pComponent("cf.account.vat.no-certificates-available", id = Some("no-certificates-available-text"))
@@ -174,4 +177,22 @@ object ImportVatViewModel {
         )
       )
     )
+}
+
+case class DivComponentRow(
+  dateAndYear: HtmlFormat.Appendable,
+  downloadLinks: Option[HtmlFormat.Appendable] = None,
+  certUnavailableGuidance: Option[HtmlFormat.Appendable] = None
+)
+
+case class DateAndFileLinksRow(content: DivComponentRow)
+
+case class CurrentStatementRowViewModel(
+  eoriHeading: Option[HtmlFormat.Appendable] = None,
+  dateAndFileLinksRow: Seq[DateAndFileLinksRow]
+)
+
+object CurrentStatementRowViewModel {
+  def apply(certificatesForAllEoris: Seq[VatCertificatesForEori]): CurrentStatementRowViewModel =
+    CurrentStatementRowViewModel(None, Seq.empty)
 }
