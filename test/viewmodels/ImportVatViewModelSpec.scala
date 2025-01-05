@@ -39,7 +39,7 @@ import java.time.LocalDate
 
 class ImportVatViewModelSpec extends SpecBase {
 
-  "apply" should {
+  "ImportVatViewModel.apply" should {
 
     "create viewModel with correct contents" when {
 
@@ -83,6 +83,26 @@ class ImportVatViewModelSpec extends SpecBase {
         shouldContainCorrectCertsOlderThan6MonthsGuidance(viewModelWithNoCerts)
         shouldContainCorrectChiefDeclarationGuidance(viewModelWithNoCerts)
         shouldContainCorrectHelpAndSupportGuidance(viewModelWithNoCerts)
+      }
+    }
+  }
+
+  "ImportVatCurrentStatementRowsViewModel.apply" should {
+
+    "create view model with correct contents" when {
+
+      "current certs are not present" ignore new Setup {
+        val currentRowsViewModel: ImportVatCurrentStatementRowsViewModel =
+          ImportVatCurrentStatementRowsViewModel(Seq.empty)
+
+        currentRowsViewModel.statementRows mustBe empty
+      }
+
+      "current certs are present" in new Setup {
+        val currentRowsViewModel: ImportVatCurrentStatementRowsViewModel =
+          ImportVatCurrentStatementRowsViewModel(certificatesForAllEoris)
+
+        currentRowsViewModel.statementRows mustBe empty
       }
     }
   }

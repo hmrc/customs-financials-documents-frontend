@@ -21,10 +21,14 @@ import models.VatCertificatesForEori
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import utils.Utils.{
-  divComponent, emptyString, h1Component, h2Component, hmrcNewTabLinkComponent, linkComponent, pComponent
+  ddComponent, divComponent, dlComponent, dtComponent, emptyString, h1Component, h2Component, hmrcNewTabLinkComponent,
+  linkComponent, pComponent
 }
+import views.html.components.download_link
 import models.FileRole.C79Certificate
 import _root_.uk.gov.hmrc.hmrcfrontend.views.html.components.NewTabLink
+import utils.Utils
+import models.FileFormat.{Csv, Pdf}
 
 case class GuidanceRowWithParagraph(
   h2Heading: HtmlFormat.Appendable,
@@ -179,20 +183,98 @@ object ImportVatViewModel {
     )
 }
 
-case class DivComponentRow(
-  dateAndYear: HtmlFormat.Appendable,
-  downloadLinks: Option[HtmlFormat.Appendable] = None,
-  certUnavailableGuidance: Option[HtmlFormat.Appendable] = None
+case class ImportVatCurrentStatementRow(
+  eoriHeading: Option[HtmlFormat.Appendable] = Some(HtmlFormat.empty),
+  dlComponentRow: HtmlFormat.Appendable = HtmlFormat.empty
 )
 
-case class DateAndFileLinksRow(content: DivComponentRow)
+case class ImportVatCurrentStatementRowsViewModel(statementRows: List[ImportVatCurrentStatementRow])
 
-case class CurrentStatementRowViewModel(
-  eoriHeading: Option[HtmlFormat.Appendable] = None,
-  dateAndFileLinksRow: Seq[DateAndFileLinksRow]
-)
+object ImportVatCurrentStatementRowsViewModel {
+  def apply(certsForAllEoris: Seq[VatCertificatesForEori])(implicit
+    messages: Messages
+  ): ImportVatCurrentStatementRowsViewModel =
+    ImportVatCurrentStatementRowsViewModel(statementRows = if (certsForAllEoris.isEmpty) {
+      List.empty
+    } else {
+      populateStatementRows(certsForAllEoris).filterNot(_.eoriHeading.contains(HtmlFormat.empty))
+    })
 
-object CurrentStatementRowViewModel {
-  def apply(certificatesForAllEoris: Seq[VatCertificatesForEori]): CurrentStatementRowViewModel =
-    CurrentStatementRowViewModel(None, Seq.empty)
+  private def populateStatementRows(
+    certsForAllEoris: Seq[VatCertificatesForEori]
+  )(implicit msgs: Messages): List[ImportVatCurrentStatementRow] =
+    certsForAllEoris.indices.map { historyIndex =>
+      if (certsForAllEoris(historyIndex).currentCertificates.nonEmpty) {
+
+        val eoriHeading: Option[HtmlFormat.Appendable] = if (historyIndex > 0) {
+          Some(
+            h2Component(
+              msg = msgs("cf.account.details.previous-eori", certsForAllEoris(historyIndex).eoriHistory.eori),
+              id = Some(s"historic-eori-$historyIndex"),
+              classes = "govuk-heading-s"
+            )
+          )
+        } else {
+          None
+        }
+
+        val divContentRows: Seq[HtmlFormat.Appendable] =
+          certsForAllEoris(historyIndex).currentCertificates.sorted.reverse.zipWithIndex.map {
+            (statementsOfOneMonth, index) =>
+
+              val dt = dtComponent(
+                content = Html(statementsOfOneMonth.formattedMonthYear),
+                classes = Some(s"statements-list-$historyIndex-row-$index-date-cell"),
+                id = Some("govuk-summary-list__value")
+              )
+
+              val dd = if (statementsOfOneMonth.files.nonEmpty) {
+                ddComponent(
+                  content = HtmlFormat.fill(
+                    Seq(
+                      download_link(
+                        statementsOfOneMonth.pdf,
+                        Pdf,
+                        s"statements-list-$historyIndex-row-$index-pdf-download-link",
+                        statementsOfOneMonth.formattedMonthYear
+                      ),
+                      download_link(
+                        statementsOfOneMonth.csv,
+                        Csv,
+                        s"statements-list-$historyIndex-row-$index-csv-download-link",
+                        statementsOfOneMonth.formattedMonthYear
+                      )
+                    )
+                  ),
+                  classes = Some("govuk-summary-list__actions")
+                )
+              } else {
+                ddComponent(
+                  content = Html(msgs("cf.account.vat.statements.unavailable", statementsOfOneMonth.formattedMonth)),
+                  classes = Some("govuk-summary-list__actions")
+                )
+              }
+
+              val divContent = HtmlFormat.fill(Seq(dt, dd))
+
+              divComponent(
+                content = divContent,
+                classes = Some("govuk-summary-list__row"),
+                id = Some(s"statements-list-$historyIndex-row-$index")
+              )
+
+          }
+
+        val dlComponentRowContent = dlComponent(
+          content = HtmlFormat.fill(divContentRows.map(x => Html(x.body))),
+          classes = Some("govuk-summary-list statement-list c79-statements"),
+          id = Some(s"statements-list-$historyIndex")
+        )
+
+        ImportVatCurrentStatementRow(eoriHeading = eoriHeading, dlComponentRow = dlComponentRowContent)
+      } else {
+        ImportVatCurrentStatementRow()
+      }
+    }.toList
+
 }

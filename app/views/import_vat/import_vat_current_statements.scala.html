@@ -20,22 +20,13 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcNewTabLink
 @import uk.gov.hmrc.hmrcfrontend.views.Aliases.NewTabLink
 @import utils.Utils.emptyString
+@import viewmodels.ImportVatCurrentStatementRowsViewModel
 
-@this(
-    layout: Layout,
-    h1: components.h1,
-    h2: components.h2,
-    hmrcNewTabLink: HmrcNewTabLink,
-    link: components.link,
-    p: components.p,
-    p2: components.p2,
-    missing_guidance: components.missing_documents_guidance
-)
+@this()
 
-@(
-    viewModel: CurrentStatementRowViewModel
-)(
-    implicit request: Request[_],
-    messages: Messages,
-    appConfig: config.AppConfig
-)
+@(viewModel: ImportVatCurrentStatementRowsViewModel)
+
+@viewModel.statementRows.map { statementRow =>
+    statementRow.eoriHeading
+    statementRow.dlComponentRow
+}
