@@ -206,64 +206,9 @@ object ImportVatCurrentStatementRowsViewModel {
     certsForAllEoris.indices.map { historyIndex =>
       if (certsForAllEoris(historyIndex).currentCertificates.nonEmpty) {
 
-        val eoriHeading: Option[HtmlFormat.Appendable] = if (historyIndex > 0) {
-          Some(
-            h2Component(
-              msg = msgs("cf.account.details.previous-eori", certsForAllEoris(historyIndex).eoriHistory.eori),
-              id = Some(s"historic-eori-$historyIndex"),
-              classes = "govuk-heading-s"
-            )
-          )
-        } else {
-          None
-        }
+        val eoriHeading: Option[HtmlFormat.Appendable] = populateEoriHeading(certsForAllEoris, historyIndex)
 
-        val divContentRows: Seq[HtmlFormat.Appendable] =
-          certsForAllEoris(historyIndex).currentCertificates.sorted.reverse.zipWithIndex.map {
-            (statementsOfOneMonth, index) =>
-
-              val dt = dtComponent(
-                content = Html(statementsOfOneMonth.formattedMonthYear),
-                classes = Some(s"statements-list-$historyIndex-row-$index-date-cell"),
-                id = Some("govuk-summary-list__value")
-              )
-
-              val dd = if (statementsOfOneMonth.files.nonEmpty) {
-                ddComponent(
-                  content = HtmlFormat.fill(
-                    Seq(
-                      download_link(
-                        statementsOfOneMonth.pdf,
-                        Pdf,
-                        s"statements-list-$historyIndex-row-$index-pdf-download-link",
-                        statementsOfOneMonth.formattedMonthYear
-                      ),
-                      download_link(
-                        statementsOfOneMonth.csv,
-                        Csv,
-                        s"statements-list-$historyIndex-row-$index-csv-download-link",
-                        statementsOfOneMonth.formattedMonthYear
-                      )
-                    )
-                  ),
-                  classes = Some("govuk-summary-list__actions")
-                )
-              } else {
-                ddComponent(
-                  content = Html(msgs("cf.account.vat.statements.unavailable", statementsOfOneMonth.formattedMonth)),
-                  classes = Some("govuk-summary-list__actions")
-                )
-              }
-
-              val divContent = HtmlFormat.fill(Seq(dt, dd))
-
-              divComponent(
-                content = divContent,
-                classes = Some("govuk-summary-list__row"),
-                id = Some(s"statements-list-$historyIndex-row-$index")
-              )
-
-          }
+        val divContentRows: Seq[HtmlFormat.Appendable] = populateDivComponent(certsForAllEoris, historyIndex)
 
         val dlComponentRowContent = dlComponent(
           content = HtmlFormat.fill(divContentRows.map(x => Html(x.body))),
@@ -276,5 +221,69 @@ object ImportVatCurrentStatementRowsViewModel {
         ImportVatCurrentStatementRow()
       }
     }.toList
+
+  private def populateEoriHeading(certsForAllEoris: Seq[VatCertificatesForEori], historyIndex: Int)(implicit
+    msgs: Messages
+  ) =
+    if (historyIndex > 0) {
+      Some(
+        h2Component(
+          msg = msgs("cf.account.details.previous-eori", certsForAllEoris(historyIndex).eoriHistory.eori),
+          id = Some(s"historic-eori-$historyIndex"),
+          classes = "govuk-heading-s"
+        )
+      )
+    } else {
+      None
+    }
+
+  private def populateDivComponent(certsForAllEoris: Seq[VatCertificatesForEori], historyIndex: Int)(implicit
+    msgs: Messages
+  ) =
+    certsForAllEoris(historyIndex).currentCertificates.sorted.reverse.zipWithIndex.map {
+      (statementsOfOneMonth, index) =>
+
+        val dt = dtComponent(
+          content = Html(statementsOfOneMonth.formattedMonthYear),
+          classes = Some(s"statements-list-$historyIndex-row-$index-date-cell"),
+          id = Some("govuk-summary-list__value")
+        )
+
+        val dd = if (statementsOfOneMonth.files.nonEmpty) {
+          ddComponent(
+            content = HtmlFormat.fill(
+              Seq(
+                download_link(
+                  statementsOfOneMonth.pdf,
+                  Pdf,
+                  s"statements-list-$historyIndex-row-$index-pdf-download-link",
+                  statementsOfOneMonth.formattedMonthYear
+                ),
+                download_link(
+                  statementsOfOneMonth.csv,
+                  Csv,
+                  s"statements-list-$historyIndex-row-$index-csv-download-link",
+                  statementsOfOneMonth.formattedMonthYear
+                )
+              )
+            ),
+            classes = Some("govuk-summary-list__actions")
+          )
+        } else {
+          ddComponent(
+            content = Html(msgs("cf.account.vat.statements.unavailable", statementsOfOneMonth.formattedMonth)),
+            classes = Some("govuk-summary-list__actions")
+          )
+        }
+
+        val divContent = HtmlFormat.fill(Seq(dt, dd))
+
+        divComponent(
+          content = divContent,
+          classes = Some("govuk-summary-list__row"),
+          id = Some(s"statements-list-$historyIndex-row-$index")
+        )
+
+    }
 
 }
