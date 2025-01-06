@@ -108,7 +108,6 @@ object ImportVatViewModel {
         if (certsForAllEoris(historyIndex).currentCertificates.nonEmpty) {
 
           val eoriHeading: Option[HtmlFormat.Appendable] = populateEoriHeading(certsForAllEoris, historyIndex)
-
           val divContentRows: Seq[HtmlFormat.Appendable] = populateDivComponent(certsForAllEoris, historyIndex)
 
           val dlComponentRowContent = dlComponent(
