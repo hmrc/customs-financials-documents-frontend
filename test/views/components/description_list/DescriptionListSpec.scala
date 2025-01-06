@@ -45,6 +45,7 @@ class DescriptionListSpec extends SpecBase {
 
         dd.text() mustBe contentText
         dd.first().classNames() must contain(testClass)
+        dd.first().classNames() must contain(testClass)
         dd.first().hasAttr("id") mustBe false
       }
 
@@ -74,7 +75,7 @@ class DescriptionListSpec extends SpecBase {
         val dl: Elements = dlComponent.select("dl")
 
         dl.html() mustBe contentText
-        dl.first().hasAttr("class") mustBe false
+        dl.first().hasAttr("class") mustBe true
         dl.first().hasAttr("id") mustBe false
       }
 
@@ -83,6 +84,8 @@ class DescriptionListSpec extends SpecBase {
 
         dl.html() mustBe contentText
         dl.first().classNames() must contain(testClass)
+        dl.first().classNames() must contain(testClass1)
+
         dl.first().hasAttr("id") mustBe false
       }
 
@@ -90,7 +93,7 @@ class DescriptionListSpec extends SpecBase {
         val dl: Elements = dlComponentWithId.select("dl")
 
         dl.html() mustBe contentText
-        dl.first().hasAttr("class") mustBe false
+        dl.first().hasAttr("class") mustBe true
         dl.first().attr("id") mustBe testId
       }
 
@@ -143,10 +146,12 @@ class DescriptionListSpec extends SpecBase {
   }
 
   trait Setup {
-    val contentText   = "some content"
-    val content: Html = Html(contentText)
-    val testClass     = "test-class"
-    val testId        = "test-id"
+    val contentText        = "some content"
+    val content: Html      = Html(contentText)
+    val testClass          = "test-class"
+    val testClass1         = "test-new1"
+    val testMultipleClasss = "test-class test-new1 test-new2"
+    val testId             = "test-id"
 
     val app: Application           = application().build()
     implicit val message: Messages = messages(app)
@@ -162,10 +167,10 @@ class DescriptionListSpec extends SpecBase {
       Jsoup.parse(instanceOfDd(content, classes = Some(testClass), id = Some(testId)).body)
 
     val dlComponent: Document               = Jsoup.parse(instanceOfDl(content).body)
-    val dlComponentWithClass: Document      = Jsoup.parse(instanceOfDl(content, classes = Some(testClass)).body)
+    val dlComponentWithClass: Document      = Jsoup.parse(instanceOfDl(content, classes = testMultipleClasss).body)
     val dlComponentWithId: Document         = Jsoup.parse(instanceOfDl(content, id = Some(testId)).body)
     val dlComponentWithClassAndId: Document =
-      Jsoup.parse(instanceOfDl(content, classes = Some(testClass), id = Some(testId)).body)
+      Jsoup.parse(instanceOfDl(content, classes = testClass, id = Some(testId)).body)
 
     val dtComponent: Document               = Jsoup.parse(instanceOfDt(content).body)
     val dtComponentWithClass: Document      = Jsoup.parse(instanceOfDt(content, classes = Some(testClass)).body)

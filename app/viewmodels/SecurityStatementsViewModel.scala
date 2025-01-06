@@ -129,7 +129,6 @@ object SecurityStatementsViewModel {
 
     dlComponent(
       content = HtmlFormat.fill(statementContent),
-      classes = Some("govuk-summary-list statement-list"),
       id = Some(s"statements-list-$historyIndex${if (isCsv) "-csv" else emptyString}")
     )
   }

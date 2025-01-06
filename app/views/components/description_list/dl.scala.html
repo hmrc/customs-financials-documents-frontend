@@ -16,6 +16,6 @@
 
 @this()
 
-@(content: Html, classes: Option[String] = None, id: Option[String] = None)
+@(content: Html, classes: String = "govuk-summary-list statement-list", id: Option[String] = None)
 
-<dl @id.map(i => s"id=$i") @classes.map(c => s"class=$c")>@content</dl>
+<dl @id.map(i => s"id=$i") class="@classes">@content</dl>

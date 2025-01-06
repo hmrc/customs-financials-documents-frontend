@@ -80,7 +80,7 @@ class VatControllerSpec extends SpecBase {
       val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
         Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
 
-      val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris, None)
+      val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris, Some(serviceUnavailableUrl))
 
       when(mockSdesConnector.getVatCertificates(any)(any, any))
         .thenReturn(Future.successful(Seq(vatCertificateFile)))
@@ -225,7 +225,7 @@ class VatControllerSpec extends SpecBase {
       val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
         Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
 
-      val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris, None)
+      val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris, Some(serviceUnavailableUrl))
 
       when(mockSdesConnector.getVatCertificates(anyString)(any, any))
         .thenReturn(
@@ -290,7 +290,8 @@ class VatControllerSpec extends SpecBase {
         val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
           Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
 
-        val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris, None)
+        val viewModel: ImportVatViewModel =
+          ImportVatViewModel(vatCertificatesForEoris, Some(appConfig.historicRequestUrl(C79Certificate)))
 
         when(mockSdesConnector.getVatCertificates(anyString)(any, any))
           .thenReturn(Future.successful(Seq()))
@@ -344,7 +345,7 @@ class VatControllerSpec extends SpecBase {
         val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
           Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
 
-        val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris, None)
+        val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris, Some(serviceUnavailableUrl))
 
         when(mockSdesConnector.getVatCertificates(anyString)(any, any))
           .thenReturn(Future.successful(Seq()))
@@ -415,7 +416,7 @@ class VatControllerSpec extends SpecBase {
         val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
           Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
 
-        val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris, None)
+        val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris, Some(serviceUnavailableUrl))
 
         when(mockSdesConnector.getVatCertificates(anyString)(any, any))
           .thenReturn(Future.successful(Seq(vatCertificateFile)))
@@ -482,7 +483,7 @@ class VatControllerSpec extends SpecBase {
       val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
         Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
 
-      val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris, None)
+      val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris, Some(historicRequestUrl))
 
       when(mockSdesConnector.getVatCertificates(anyString)(any, any))
         .thenReturn(Future.successful(Seq(vatCertificateFile)))
@@ -569,7 +570,8 @@ class VatControllerSpec extends SpecBase {
 
         val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
           Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, requestedCertificates))
-        val viewModel: ImportVatViewModel                        = ImportVatViewModel(vatCertificatesForEoris, None)
+
+        val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris, Some(historicRequestUrl))
 
         when(mockSdesConnector.getVatCertificates(anyString)(any, any))
           .thenReturn(Future.successful(Seq(vatCertificateFile, vatCertificateFile_2, vatCertificateFile_3)))

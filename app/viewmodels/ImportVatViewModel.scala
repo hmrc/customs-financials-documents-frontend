@@ -53,12 +53,7 @@ case class ImportVatViewModel(
   certsOlderThan6MonthsGuidance: GuidanceRowWithParagraph,
   chiefDeclarationGuidance: GuidanceRowWithParagraph,
   helpAndSupportGuidance: GuidanceRowWithParagraph
-) {
-  val hasRequestedCertificates: Boolean = false
-  val hasCurrentCertificates: Boolean   = false
-
-  val certificatesForAllEoris: Seq[VatCertificatesForEori] = Seq.empty
-}
+)
 
 object ImportVatViewModel {
   def apply(
@@ -129,7 +124,7 @@ object ImportVatViewModel {
 
           val dlComponentRowContent = dlComponent(
             content = HtmlFormat.fill(divContentRows.map(htmlFormat => Html(htmlFormat.body))),
-            classes = Some("govuk-summary-list statement-list c79-statements"),
+            classes = "govuk-summary-list statement-list c79-statements",
             id = Some(s"statements-list-$historyIndex")
           )
 

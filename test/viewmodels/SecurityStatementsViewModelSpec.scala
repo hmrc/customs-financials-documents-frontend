@@ -79,7 +79,6 @@ class SecurityStatementsViewModelSpec extends SpecBase {
       Seq(
         dlComponent(
           content = HtmlFormat.empty,
-          classes = Some("govuk-summary-list statement-list"),
           id = Some("statements-list-0")
         ),
         createDetailedList()
@@ -89,7 +88,6 @@ class SecurityStatementsViewModelSpec extends SpecBase {
     private def createDetailedList(): HtmlFormat.Appendable =
       dlComponent(
         content = HtmlFormat.fill(Seq(createSummaryListRow())),
-        classes = Some("govuk-summary-list statement-list"),
         id = Some("statements-list-0-csv")
       )
 

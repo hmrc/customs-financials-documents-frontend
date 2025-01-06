@@ -43,129 +43,44 @@
     appConfig: config.AppConfig
 )
 
-@layout(pageTitle = Some(messages("cf.account.vat.title")),
-        backLinkUrl = Some(appConfig.customsFinancialsFrontendHomepage)) {
+@layout(pageTitle =  model.title, backLinkUrl = model.backLink) {
 
-    @h1("cf.account.vat.title", id = Some("import-vat-certificates-heading"), classes = "govuk-heading-xl")
+    @model.heading
 
-    @p("cf.account.vat.available-text")
+    @model.certificateAvailableGuidance
 
-    @h2("cf.account.vat.your-certificates.heading")
+    @model.last6MonthsH2Heading
 
-    @if(model.hasRequestedCertificates) {
-        <div id="notification-panel" class="notifications-panel">
-            <p class="govuk-body govuk-!-margin-bottom-1">
-                @messages("cf.account.detail.requested-certificates-available-text.pre")
-                <a href="@{appConfig.requestedStatements(C79Certificate)}"
-                   class="govuk-link">@messages("cf.import-vat.requested-certificates-available-link-text")
-                </a>
-                @messages("cf.account.detail.requested-certificates-available-text.post")
-            </p>
-        </div>
+    @model.notificationPanel.map(identity)
+
+    @model.currentStatements.map { statementRow =>
+        @statementRow.eoriHeading.map(identity)
+        @statementRow.dlComponentRow
     }
 
-    @if(model.hasCurrentCertificates) {
+    @model.currentStatementsNotAvailableGuidance.map(identity)
 
-        @for(historyIndex <- model.certificatesForAllEoris.indices) {
-
-            @if(model.certificatesForAllEoris(historyIndex).currentCertificates.nonEmpty) {
-
-                @if(historyIndex > 0) {
-                    <h2 class="govuk-heading-s" id="historic-eori-@{historyIndex}">
-                        @messages(
-                        "cf.account.details.previous-eori",
-                        model.certificatesForAllEoris(historyIndex).eoriHistory.eori)
-                    </h2>
-                }
-
-                <dl class="govuk-summary-list statement-list c79-statements" id="statements-list-@{historyIndex}">
-
-                @for((statementsOfOneMonth, index) <- model.certificatesForAllEoris(historyIndex)
-                    .currentCertificates.sorted.reverse.zipWithIndex) {
-
-                    <div class="govuk-summary-list__row" id="statements-list-@{historyIndex}-row-@{index}">
-
-                        <dt id="statements-list-@{historyIndex}-row-@{index}-date-cell" class="govuk-summary-list__value">
-                            @{statementsOfOneMonth.formattedMonthYear}
-                        </dt>
-                        @if(statementsOfOneMonth.files.nonEmpty) {
-                            <dd class="govuk-summary-list__actions">
-                                @download_link(
-                                    statementsOfOneMonth.pdf,
-                                    Pdf,
-                                    s"statements-list-${historyIndex}-row-${index}-pdf-download-link",
-                                    statementsOfOneMonth.formattedMonthYear
-                                )
-
-                                @download_link(
-                                    statementsOfOneMonth.csv,
-                                    Csv,
-                                    s"statements-list-${historyIndex}-row-${index}-csv-download-link",
-                                    statementsOfOneMonth.formattedMonthYear
-                                )
-                            </dd>
-                        } else {
-                            <dd class="govuk-summary-list__actions">
-                                 @messages("cf.account.vat.statements.unavailable",statementsOfOneMonth.formattedMonth)
-                            </dd>
-                        }
-
-                    </div>
-                }
-                </dl>
-            }
-        }
-    } else {
-        @p("cf.account.vat.no-certificates-available", id = Some("no-certificates-available-text"))
-    }
 
 <div id="missing-certificates-guidance" class="govuk-!-padding-top-2">
-    @h2(
-        "cf.account.vat.older-certificates.heading",
-        id = Some("missing-certificates-guidance-heading"),
-        classes = "govuk-heading-m govuk-!-margin-top-9"
-    )
+    @defining(model.certsOlderThan6MonthsGuidance) { certsOlderThan6Months =>
+        @certsOlderThan6Months.h2Heading
+        @certsOlderThan6Months.link.map(identity)
+        @certsOlderThan6Months.paragraph.map(identity)
+    }
 
-    @link(
-        "cf.account.vat.older-certificates.description.link",
-        location = serviceUnavailableUrl.getOrElse(emptyString),
-        preLinkMessage = Some("cf.account.vat.older-certificates.description.1")
-    )
-
-    @h2(
-        "cf.account.vat.chief.heading",
-        id = Some("chief-guidance-heading"),
-        classes = "govuk-heading-m govuk-!-margin-top-6"
-    )
-
-    @link(
-        appConfig.c79EmailAddress,
-        location = appConfig.c79EmailAddressHref,
-        preLinkMessage = Some("cf.account.vat.older-certificates.description.2")
-    )
-
+    @defining(model.chiefDeclarationGuidance) { chiefDeclaration =>
+        @chiefDeclaration.h2Heading
+        @chiefDeclaration.link.map(identity)
+        @chiefDeclaration.paragraph.map(identity)
+    }
 </div>
 
 <div id="vat.support.heading" class="govuk-!-padding-top-2">
-    @h2(
-        id = Some("vat.support.message.heading"),
-        msg = "cf.account.vat.support.heading",
-        classes = "govuk-heading-m govuk-!-margin-top-2"
-    )
-
-    @p(
-        message = "cf.account.vat.support.message",
-        classes = "govuk-body govuk-!-margin-bottom-9",
-        tabLink = Some(hmrcNewTabLink(
-                NewTabLink(
-                    language = Some(messages.lang.toString),
-                    classList = Some("govuk-link"),
-                    href=Some(appConfig.viewVatAccountSupportLink),
-                    text=messages("cf.account.vat.support.link")
-                )
-            )
-        )
-    )
+    @defining(model.helpAndSupportGuidance) { helpAndSupport =>
+        @helpAndSupport.h2Heading
+        @helpAndSupport.link.map(identity)
+        @helpAndSupport.paragraph.map(identity)
+    }
 </div>
 
 }
