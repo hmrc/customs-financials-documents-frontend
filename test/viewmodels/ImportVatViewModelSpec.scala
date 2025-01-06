@@ -29,11 +29,14 @@ import utils.CommonTestData.{
 }
 import utils.SpecBase
 import org.scalatest.matchers.must.Matchers.mustBe
-import utils.Utils.{emptyString, h1Component, h2Component, linkComponent, pComponent}
-import models.FileFormat.Pdf
-import play.twirl.api.HtmlFormat
+import utils.Utils.{
+  ddComponent, divComponent, dlComponent, dtComponent, emptyString, h1Component, h2Component, linkComponent, pComponent
+}
+import models.FileFormat.{Csv, Pdf}
+import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcNewTabLink
 import _root_.uk.gov.hmrc.hmrcfrontend.views.html.components.NewTabLink
+import views.html.components.download_link
 
 import java.time.LocalDate
 
@@ -91,7 +94,7 @@ class ImportVatViewModelSpec extends SpecBase {
 
     "create view model with correct contents" when {
 
-      "current certs are not present" ignore new Setup {
+      "current certs are not present" in new Setup {
         val currentRowsViewModel: ImportVatCurrentStatementRowsViewModel =
           ImportVatCurrentStatementRowsViewModel(Seq.empty)
 
@@ -102,7 +105,7 @@ class ImportVatViewModelSpec extends SpecBase {
         val currentRowsViewModel: ImportVatCurrentStatementRowsViewModel =
           ImportVatCurrentStatementRowsViewModel(certificatesForAllEoris)
 
-        currentRowsViewModel.statementRows mustBe empty
+        currentRowsViewModel.statementRows mustBe populateImportVatCurrentStatements(certificatesForAllEoris)
       }
     }
   }
@@ -217,6 +220,62 @@ class ImportVatViewModelSpec extends SpecBase {
         )
       )
     )
+
+  private def populateImportVatCurrentStatements(
+    certsForAllEoris: Seq[VatCertificatesForEori]
+  )(implicit msgs: Messages): List[ImportVatCurrentStatementRow] = {
+
+    val divContentRows = certsForAllEoris.head.currentCertificates.sorted.reverse.zipWithIndex.map {
+      (statementsOfOneMonth, index) =>
+
+        val dt = dtComponent(
+          content = Html(statementsOfOneMonth.formattedMonthYear),
+          classes = Some(s"statements-list-0-row-$index-date-cell"),
+          id = Some("govuk-summary-list__value")
+        )
+
+        val dd = if (statementsOfOneMonth.files.nonEmpty) {
+          ddComponent(
+            content = HtmlFormat.fill(
+              Seq(
+                download_link(
+                  statementsOfOneMonth.pdf,
+                  Pdf,
+                  s"statements-list-0-row-$index-pdf-download-link",
+                  statementsOfOneMonth.formattedMonthYear
+                ),
+                download_link(
+                  statementsOfOneMonth.csv,
+                  Csv,
+                  s"statements-list-0-row-$index-csv-download-link",
+                  statementsOfOneMonth.formattedMonthYear
+                )
+              )
+            ),
+            classes = Some("govuk-summary-list__actions")
+          )
+        } else {
+          ddComponent(
+            content = Html(msgs("cf.account.vat.statements.unavailable", statementsOfOneMonth.formattedMonth)),
+            classes = Some("govuk-summary-list__actions")
+          )
+        }
+
+        divComponent(
+          content = HtmlFormat.fill(Seq(dt, dd)),
+          classes = Some("govuk-summary-list__row"),
+          id = Some(s"statements-list-0-row-$index")
+        )
+    }
+
+    val dlComponentRow = dlComponent(
+      content = HtmlFormat.fill(divContentRows.map(x => Html(x.body))),
+      classes = Some("govuk-summary-list statement-list c79-statements"),
+      id = Some(s"statements-list-0")
+    )
+
+    List(ImportVatCurrentStatementRow(eoriHeading = None, dlComponentRow = dlComponentRow))
+  }
 
   trait Setup {
     val date: LocalDate = LocalDate.now().withDayOfMonth(DAY_28)
