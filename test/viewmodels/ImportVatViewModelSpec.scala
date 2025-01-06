@@ -234,32 +234,7 @@ class ImportVatViewModelSpec extends SpecBase {
           id = Some("govuk-summary-list__value")
         )
 
-        val dd = if (statementsOfOneMonth.files.nonEmpty) {
-          ddComponent(
-            content = HtmlFormat.fill(
-              Seq(
-                download_link(
-                  statementsOfOneMonth.pdf,
-                  Pdf,
-                  s"statements-list-0-row-$index-pdf-download-link",
-                  statementsOfOneMonth.formattedMonthYear
-                ),
-                download_link(
-                  statementsOfOneMonth.csv,
-                  Csv,
-                  s"statements-list-0-row-$index-csv-download-link",
-                  statementsOfOneMonth.formattedMonthYear
-                )
-              )
-            ),
-            classes = Some("govuk-summary-list__actions")
-          )
-        } else {
-          ddComponent(
-            content = Html(msgs("cf.account.vat.statements.unavailable", statementsOfOneMonth.formattedMonth)),
-            classes = Some("govuk-summary-list__actions")
-          )
-        }
+        val dd = populateDDComponentForImportVatStatement(statementsOfOneMonth, index)
 
         divComponent(
           content = HtmlFormat.fill(Seq(dt, dd)),
@@ -276,6 +251,37 @@ class ImportVatViewModelSpec extends SpecBase {
 
     List(ImportVatCurrentStatementRow(eoriHeading = None, dlComponentRow = dlComponentRow))
   }
+
+  private def populateDDComponentForImportVatStatement(
+    statementsOfOneMonth: VatCertificatesByMonth,
+    index: Int
+  )(implicit msgs: Messages) =
+    if (statementsOfOneMonth.files.nonEmpty) {
+      ddComponent(
+        content = HtmlFormat.fill(
+          Seq(
+            download_link(
+              statementsOfOneMonth.pdf,
+              Pdf,
+              s"statements-list-0-row-$index-pdf-download-link",
+              statementsOfOneMonth.formattedMonthYear
+            ),
+            download_link(
+              statementsOfOneMonth.csv,
+              Csv,
+              s"statements-list-0-row-$index-csv-download-link",
+              statementsOfOneMonth.formattedMonthYear
+            )
+          )
+        ),
+        classes = Some("govuk-summary-list__actions")
+      )
+    } else {
+      ddComponent(
+        content = Html(msgs("cf.account.vat.statements.unavailable", statementsOfOneMonth.formattedMonth)),
+        classes = Some("govuk-summary-list__actions")
+      )
+    }
 
   trait Setup {
     val date: LocalDate = LocalDate.now().withDayOfMonth(DAY_28)
