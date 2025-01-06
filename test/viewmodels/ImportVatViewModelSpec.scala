@@ -53,7 +53,7 @@ class ImportVatViewModelSpec extends SpecBase {
         shouldContainCorrectCertificateAvailableGuidance(viewModelWithCurrentCerts)
         shouldContainCorrectLast6MonthsHeading(viewModelWithCurrentCerts)
         shouldNotContainNotificationPanel(viewModelWithCurrentCerts)
-        // shouldContainCurrentStatements(viewModel)
+        shouldContainCurrentStatements(viewModelWithCurrentCerts, certificatesForAllEoris)
         shouldNotContainCurrentStatementsNotAvailableGuidance(viewModelWithCurrentCerts)
         shouldContainCorrectCertsOlderThan6MonthsGuidance(viewModelWithCurrentCerts)
         shouldContainCorrectChiefDeclarationGuidance(viewModelWithCurrentCerts)
@@ -67,7 +67,7 @@ class ImportVatViewModelSpec extends SpecBase {
         shouldContainCorrectCertificateAvailableGuidance(viewModel)
         shouldContainCorrectLast6MonthsHeading(viewModel)
         shouldContainNotificationPanel(viewModel)
-        // shouldContainCurrentStatements(viewModel)
+        shouldContainCurrentStatements(viewModel, certificatesForAllEoris)
         shouldNotContainCurrentStatementsNotAvailableGuidance(viewModel)
         shouldContainCorrectCertsOlderThan6MonthsGuidance(viewModel)
         shouldContainCorrectChiefDeclarationGuidance(viewModel)
@@ -86,26 +86,6 @@ class ImportVatViewModelSpec extends SpecBase {
         shouldContainCorrectCertsOlderThan6MonthsGuidance(viewModelWithNoCerts)
         shouldContainCorrectChiefDeclarationGuidance(viewModelWithNoCerts)
         shouldContainCorrectHelpAndSupportGuidance(viewModelWithNoCerts)
-      }
-    }
-  }
-
-  "ImportVatCurrentStatementRowsViewModel.apply" should {
-
-    "create view model with correct contents" when {
-
-      "current certs are not present" in new Setup {
-        val currentRowsViewModel: ImportVatCurrentStatementRowsViewModel =
-          ImportVatCurrentStatementRowsViewModel(Seq.empty)
-
-        currentRowsViewModel.statementRows mustBe empty
-      }
-
-      "current certs are present" in new Setup {
-        val currentRowsViewModel: ImportVatCurrentStatementRowsViewModel =
-          ImportVatCurrentStatementRowsViewModel(certificatesForAllEoris)
-
-        currentRowsViewModel.statementRows mustBe expectedImportVatCurrentStatements(certificatesForAllEoris)
       }
     }
   }
@@ -138,8 +118,11 @@ class ImportVatViewModelSpec extends SpecBase {
   private def shouldNotContainNotificationPanel(viewModel: ImportVatViewModel) =
     viewModel.notificationPanel mustBe empty
 
-  private def shouldContainCurrentStatements(viewModel: ImportVatViewModel): Assertion =
-    viewModel.currentStatements mustBe Seq.empty
+  private def shouldContainCurrentStatements(
+    viewModel: ImportVatViewModel,
+    certificatesForAllEoris: Seq[VatCertificatesForEori]
+  )(implicit msgs: Messages): Assertion =
+    viewModel.currentStatements mustBe expectedImportVatCurrentStatements(certificatesForAllEoris)
 
   private def shouldNotContainCurrentStatements(viewModel: ImportVatViewModel): Assertion =
     viewModel.currentStatements mustBe Seq.empty

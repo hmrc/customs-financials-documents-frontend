@@ -36,6 +36,11 @@ case class GuidanceRowWithParagraph(
   paragraph: Option[HtmlFormat.Appendable] = None
 )
 
+case class ImportVatCurrentStatementRow(
+  eoriHeading: Option[HtmlFormat.Appendable] = Some(HtmlFormat.empty),
+  dlComponentRow: HtmlFormat.Appendable = HtmlFormat.empty
+)
+
 case class ImportVatViewModel(
   title: Option[String],
   backLink: Option[String],
@@ -43,7 +48,7 @@ case class ImportVatViewModel(
   certificateAvailableGuidance: HtmlFormat.Appendable,
   last6MonthsH2Heading: HtmlFormat.Appendable,
   notificationPanel: Option[HtmlFormat.Appendable] = None,
-  currentStatements: Seq[HtmlFormat.Appendable] = Seq.empty,
+  currentStatements: Seq[ImportVatCurrentStatementRow] = Seq.empty,
   currentStatementsNotAvailableGuidance: Option[HtmlFormat.Appendable] = None,
   certsOlderThan6MonthsGuidance: GuidanceRowWithParagraph,
   chiefDeclarationGuidance: GuidanceRowWithParagraph,
@@ -111,8 +116,29 @@ object ImportVatViewModel {
     )
   }
 
-  private def populateCurrentStatements(certificatesForAllEoris: Seq[VatCertificatesForEori]) =
-    Seq.empty
+  private def populateCurrentStatements(
+    certsForAllEoris: Seq[VatCertificatesForEori]
+  )(implicit msgs: Messages): Seq[ImportVatCurrentStatementRow] =
+    certsForAllEoris.indices
+      .map { historyIndex =>
+        if (certsForAllEoris(historyIndex).currentCertificates.nonEmpty) {
+
+          val eoriHeading: Option[HtmlFormat.Appendable] = populateEoriHeading(certsForAllEoris, historyIndex)
+
+          val divContentRows: Seq[HtmlFormat.Appendable] = populateDivComponent(certsForAllEoris, historyIndex)
+
+          val dlComponentRowContent = dlComponent(
+            content = HtmlFormat.fill(divContentRows.map(htmlFormat => Html(htmlFormat.body))),
+            classes = Some("govuk-summary-list statement-list c79-statements"),
+            id = Some(s"statements-list-$historyIndex")
+          )
+
+          ImportVatCurrentStatementRow(eoriHeading = eoriHeading, dlComponentRow = dlComponentRowContent)
+        } else {
+          ImportVatCurrentStatementRow()
+        }
+      }
+      .filterNot(_.eoriHeading.contains(HtmlFormat.empty))
 
   private def populateCurrentStatNotAvailableGuidance(implicit messages: Messages): HtmlFormat.Appendable =
     pComponent("cf.account.vat.no-certificates-available", id = Some("no-certificates-available-text"))
@@ -181,54 +207,10 @@ object ImportVatViewModel {
         )
       )
     )
-}
-
-case class ImportVatCurrentStatementRow(
-  eoriHeading: Option[HtmlFormat.Appendable] = Some(HtmlFormat.empty),
-  dlComponentRow: HtmlFormat.Appendable = HtmlFormat.empty
-)
-
-case class ImportVatCurrentStatementRowsViewModel(statementRows: List[ImportVatCurrentStatementRow])
-
-object ImportVatCurrentStatementRowsViewModel {
-  def apply(certsForAllEoris: Seq[VatCertificatesForEori])(implicit
-    messages: Messages
-  ): ImportVatCurrentStatementRowsViewModel = {
-
-    val statementRows = if (certsForAllEoris.isEmpty) {
-      List.empty
-    } else {
-      populateStatementRows(certsForAllEoris).filterNot(_.eoriHeading.contains(HtmlFormat.empty))
-    }
-
-    ImportVatCurrentStatementRowsViewModel(statementRows)
-  }
-
-  private def populateStatementRows(
-    certsForAllEoris: Seq[VatCertificatesForEori]
-  )(implicit msgs: Messages): List[ImportVatCurrentStatementRow] =
-    certsForAllEoris.indices.map { historyIndex =>
-      if (certsForAllEoris(historyIndex).currentCertificates.nonEmpty) {
-
-        val eoriHeading: Option[HtmlFormat.Appendable] = populateEoriHeading(certsForAllEoris, historyIndex)
-
-        val divContentRows: Seq[HtmlFormat.Appendable] = populateDivComponent(certsForAllEoris, historyIndex)
-
-        val dlComponentRowContent = dlComponent(
-          content = HtmlFormat.fill(divContentRows.map(htmlFormat => Html(htmlFormat.body))),
-          classes = Some("govuk-summary-list statement-list c79-statements"),
-          id = Some(s"statements-list-$historyIndex")
-        )
-
-        ImportVatCurrentStatementRow(eoriHeading = eoriHeading, dlComponentRow = dlComponentRowContent)
-      } else {
-        ImportVatCurrentStatementRow()
-      }
-    }.toList
 
   private def populateEoriHeading(certsForAllEoris: Seq[VatCertificatesForEori], historyIndex: Int)(implicit
     msgs: Messages
-  ) =
+  ): Option[HtmlFormat.Appendable] =
     if (historyIndex > 0) {
       Some(
         h2Component(
@@ -243,7 +225,7 @@ object ImportVatCurrentStatementRowsViewModel {
 
   private def populateDivComponent(certsForAllEoris: Seq[VatCertificatesForEori], historyIndex: Int)(implicit
     msgs: Messages
-  ) =
+  ): Seq[HtmlFormat.Appendable] =
     certsForAllEoris(historyIndex).currentCertificates.sorted.reverse.zipWithIndex.map {
       (statementsOfOneMonth, index) =>
 
@@ -286,5 +268,4 @@ object ImportVatCurrentStatementRowsViewModel {
           id = Some(s"statements-list-$historyIndex-row-$index")
         )
     }
-
 }
