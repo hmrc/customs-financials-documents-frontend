@@ -105,7 +105,7 @@ class ImportVatViewModelSpec extends SpecBase {
         val currentRowsViewModel: ImportVatCurrentStatementRowsViewModel =
           ImportVatCurrentStatementRowsViewModel(certificatesForAllEoris)
 
-        currentRowsViewModel.statementRows mustBe populateImportVatCurrentStatements(certificatesForAllEoris)
+        currentRowsViewModel.statementRows mustBe expectedImportVatCurrentStatements(certificatesForAllEoris)
       }
     }
   }
@@ -221,7 +221,7 @@ class ImportVatViewModelSpec extends SpecBase {
       )
     )
 
-  private def populateImportVatCurrentStatements(
+  private def expectedImportVatCurrentStatements(
     certsForAllEoris: Seq[VatCertificatesForEori]
   )(implicit msgs: Messages): List[ImportVatCurrentStatementRow] = {
 
@@ -269,7 +269,7 @@ class ImportVatViewModelSpec extends SpecBase {
     }
 
     val dlComponentRow = dlComponent(
-      content = HtmlFormat.fill(divContentRows.map(x => Html(x.body))),
+      content = HtmlFormat.fill(divContentRows.map(htmlFormat => Html(htmlFormat.body))),
       classes = Some("govuk-summary-list statement-list c79-statements"),
       id = Some(s"statements-list-0")
     )

@@ -193,12 +193,16 @@ case class ImportVatCurrentStatementRowsViewModel(statementRows: List[ImportVatC
 object ImportVatCurrentStatementRowsViewModel {
   def apply(certsForAllEoris: Seq[VatCertificatesForEori])(implicit
     messages: Messages
-  ): ImportVatCurrentStatementRowsViewModel =
-    ImportVatCurrentStatementRowsViewModel(statementRows = if (certsForAllEoris.isEmpty) {
+  ): ImportVatCurrentStatementRowsViewModel = {
+
+    val statementRows = if (certsForAllEoris.isEmpty) {
       List.empty
     } else {
       populateStatementRows(certsForAllEoris).filterNot(_.eoriHeading.contains(HtmlFormat.empty))
-    })
+    }
+
+    ImportVatCurrentStatementRowsViewModel(statementRows)
+  }
 
   private def populateStatementRows(
     certsForAllEoris: Seq[VatCertificatesForEori]
@@ -211,7 +215,7 @@ object ImportVatCurrentStatementRowsViewModel {
         val divContentRows: Seq[HtmlFormat.Appendable] = populateDivComponent(certsForAllEoris, historyIndex)
 
         val dlComponentRowContent = dlComponent(
-          content = HtmlFormat.fill(divContentRows.map(x => Html(x.body))),
+          content = HtmlFormat.fill(divContentRows.map(htmlFormat => Html(htmlFormat.body))),
           classes = Some("govuk-summary-list statement-list c79-statements"),
           id = Some(s"statements-list-$historyIndex")
         )
@@ -276,14 +280,11 @@ object ImportVatCurrentStatementRowsViewModel {
           )
         }
 
-        val divContent = HtmlFormat.fill(Seq(dt, dd))
-
         divComponent(
-          content = divContent,
+          content = HtmlFormat.fill(Seq(dt, dd)),
           classes = Some("govuk-summary-list__row"),
           id = Some(s"statements-list-$historyIndex-row-$index")
         )
-
     }
 
 }
