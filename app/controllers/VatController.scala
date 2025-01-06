@@ -58,17 +58,11 @@ class VatController @Inject() (
 
       financialsApiConnector.deleteNotification(req.eori, C79Certificate)
 
-      val historicUrl = if (appConfig.historicStatementsEnabled) {
-        appConfig.historicRequestUrl(C79Certificate)
-      } else {
-        routes.ServiceUnavailableController.onPageLoad(navigator.importVatPageId).url
-      }
-
       (
         for {
           allCertificates <- Future.sequence(req.allEoriHistory.map(getCertificates(_)))
-          viewModel        = ImportVatViewModel(allCertificates.sorted, Some(historicUrl))
-        } yield Ok(importVatView(viewModel, Some(historicUrl)))
+          viewModel        = ImportVatViewModel(allCertificates.sorted, Some(retrieveHistoricUrl))
+        } yield Ok(importVatView(viewModel))
       ).recover { case e =>
         log.error(s"Unable to retrieve VAT certificates :${e.getMessage}")
         Redirect(routes.VatController.certificatesUnavailablePage())
@@ -146,4 +140,11 @@ class VatController @Inject() (
     val sevenMonthsAgo = LocalDate.now().minusMonths(sevenMonths)
     currentCerts.filter(_.date.isAfter(sevenMonthsAgo))
   }
+
+  private def retrieveHistoricUrl =
+    if (appConfig.historicStatementsEnabled) {
+      appConfig.historicRequestUrl(C79Certificate)
+    } else {
+      routes.ServiceUnavailableController.onPageLoad(navigator.importVatPageId).url
+    }
 }

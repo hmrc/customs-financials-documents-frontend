@@ -91,7 +91,7 @@ class VatControllerSpec extends SpecBase {
 
         status(result) mustBe OK
         contentAsString(result) mustBe
-          view(viewModel, Some(serviceUnavailableUrl))(request, msgs, appConfig).toString()
+          view(viewModel)(request, msgs, appConfig).toString()
       }
     }
 
@@ -253,7 +253,7 @@ class VatControllerSpec extends SpecBase {
 
         if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
           contentAsString(result) mustBe
-            view(viewModel, Some(serviceUnavailableUrl))(request, msgs, appConfig).toString()
+            view(viewModel)(request, msgs, appConfig).toString()
 
           val doc = Jsoup.parse(contentAsString(result))
 
@@ -306,7 +306,7 @@ class VatControllerSpec extends SpecBase {
           status(result) mustBe OK
 
           if (!DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
-            contentAsString(result) mustBe view(viewModel, Some(appConfig.historicRequestUrl(C79Certificate)))(
+            contentAsString(result) mustBe view(viewModel)(
               request,
               msgs,
               appConfig
@@ -360,7 +360,7 @@ class VatControllerSpec extends SpecBase {
           status(result) mustBe OK
 
           if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
-            contentAsString(result) mustBe view(viewModel, Some(serviceUnavailableUrl))(
+            contentAsString(result) mustBe view(viewModel)(
               request,
               msgs,
               appConfig
@@ -432,7 +432,7 @@ class VatControllerSpec extends SpecBase {
 
           if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
             contentAsString(result) mustBe
-              view(viewModel, Some(serviceUnavailableUrl))(request, msgs, appConfig).toString()
+              view(viewModel)(request, msgs, appConfig).toString()
 
             val doc = Jsoup.parse(contentAsString(result))
 
@@ -499,7 +499,7 @@ class VatControllerSpec extends SpecBase {
 
         if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
           contentAsString(result) mustBe
-            view(viewModel, Some(historicRequestUrl))(request, msgs, appConfig).toString()
+            view(viewModel)(request, msgs, appConfig).toString()
         }
       }
     }
@@ -587,7 +587,7 @@ class VatControllerSpec extends SpecBase {
 
           if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
             contentAsString(result) mustBe
-              view(viewModel, Some(historicRequestUrl))(request, msgs, appConfig).toString()
+              view(viewModel)(request, msgs, appConfig).toString()
           }
 
           val doc = Jsoup.parse(contentAsString(result))
