@@ -15,24 +15,9 @@
  *@
 
 @import viewmodels.ImportVatViewModel
-@import views.html.components._
 @import views.html.Layout
-@import models.FileRole.C79Certificate
-@import models.FileFormat.Pdf
-@import models.FileFormat.Csv
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcNewTabLink
-@import uk.gov.hmrc.hmrcfrontend.views.Aliases.NewTabLink
-@import utils.Utils.emptyString
 
-@this(
-    layout: Layout,
-    hmrcNewTabLink: HmrcNewTabLink,
-    h1: components.h1,
-    h2: components.h2,
-    link: components.link,
-    p: components.p,
-    missing_guidance: components.missing_documents_guidance
-)
+@this(layout: Layout)
 
 @(
     model: ImportVatViewModel,
@@ -60,27 +45,25 @@
 
     @model.currentStatementsNotAvailableGuidance.map(identity)
 
+    <div id="missing-certificates-guidance" class="govuk-!-padding-top-2">
+        @defining(model.certsOlderThan6MonthsGuidance) { certsOlderThan6Months =>
+            @certsOlderThan6Months.h2Heading
+            @certsOlderThan6Months.link.map(identity)
+            @certsOlderThan6Months.paragraph.map(identity)
+        }
 
-<div id="missing-certificates-guidance" class="govuk-!-padding-top-2">
-    @defining(model.certsOlderThan6MonthsGuidance) { certsOlderThan6Months =>
-        @certsOlderThan6Months.h2Heading
-        @certsOlderThan6Months.link.map(identity)
-        @certsOlderThan6Months.paragraph.map(identity)
-    }
+        @defining(model.chiefDeclarationGuidance) { chiefDeclaration =>
+            @chiefDeclaration.h2Heading
+            @chiefDeclaration.link.map(identity)
+            @chiefDeclaration.paragraph.map(identity)
+        }
+    </div>
 
-    @defining(model.chiefDeclarationGuidance) { chiefDeclaration =>
-        @chiefDeclaration.h2Heading
-        @chiefDeclaration.link.map(identity)
-        @chiefDeclaration.paragraph.map(identity)
-    }
-</div>
-
-<div id="vat.support.heading" class="govuk-!-padding-top-2">
-    @defining(model.helpAndSupportGuidance) { helpAndSupport =>
-        @helpAndSupport.h2Heading
-        @helpAndSupport.link.map(identity)
-        @helpAndSupport.paragraph.map(identity)
-    }
-</div>
-
+    <div id="vat.support.heading" class="govuk-!-padding-top-2">
+        @defining(model.helpAndSupportGuidance) { helpAndSupport =>
+            @helpAndSupport.h2Heading
+            @helpAndSupport.link.map(identity)
+            @helpAndSupport.paragraph.map(identity)
+        }
+    </div>
 }

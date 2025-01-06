@@ -30,17 +30,6 @@ import _root_.uk.gov.hmrc.hmrcfrontend.views.html.components.NewTabLink
 import utils.Utils
 import models.FileFormat.{Csv, Pdf}
 
-case class GuidanceRowWithParagraph(
-  h2Heading: HtmlFormat.Appendable,
-  link: Option[HtmlFormat.Appendable] = None,
-  paragraph: Option[HtmlFormat.Appendable] = None
-)
-
-case class ImportVatCurrentStatementRow(
-  eoriHeading: Option[HtmlFormat.Appendable] = Some(HtmlFormat.empty),
-  dlComponentRow: HtmlFormat.Appendable = HtmlFormat.empty
-)
-
 case class ImportVatViewModel(
   title: Option[String],
   backLink: Option[String],
@@ -264,3 +253,14 @@ object ImportVatViewModel {
         )
     }
 }
+
+case class GuidanceRowWithParagraph(
+  h2Heading: HtmlFormat.Appendable,
+  link: Option[HtmlFormat.Appendable] = None,
+  paragraph: Option[HtmlFormat.Appendable] = None
+)
+
+case class ImportVatCurrentStatementRow(
+  eoriHeading: Option[HtmlFormat.Appendable] = Some(HtmlFormat.empty),
+  dlComponentRow: HtmlFormat.Appendable = HtmlFormat.empty
+)
