@@ -228,7 +228,7 @@ class ImportVatViewModelSpec extends SpecBase {
 
     val dlComponentRow = dlComponent(
       content = HtmlFormat.fill(divContentRows.map(htmlFormat => Html(htmlFormat.body))),
-      classes = "govuk-summary-list statement-list c79-statements",
+      classes = Some("govuk-summary-list statement-list c79-statements"),
       id = Some(s"statements-list-0")
     )
 
