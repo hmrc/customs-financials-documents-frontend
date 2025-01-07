@@ -253,12 +253,6 @@ object ImportVatViewModel {
     }
 }
 
-case class GuidanceRowWithParagraph(
-  h2Heading: HtmlFormat.Appendable,
-  link: Option[HtmlFormat.Appendable] = None,
-  paragraph: Option[HtmlFormat.Appendable] = None
-)
-
 case class ImportVatCurrentStatementRow(
   eoriHeading: Option[HtmlFormat.Appendable] = Some(HtmlFormat.empty),
   dlComponentRow: HtmlFormat.Appendable = HtmlFormat.empty
