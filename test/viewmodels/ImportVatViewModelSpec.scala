@@ -39,6 +39,7 @@ import _root_.uk.gov.hmrc.hmrcfrontend.views.html.components.NewTabLink
 import views.html.components.download_link
 
 import java.time.LocalDate
+import viewmodels.common.GuidanceRow
 
 class ImportVatViewModelSpec extends SpecBase {
 
@@ -143,7 +144,7 @@ class ImportVatViewModelSpec extends SpecBase {
   private def shouldContainCorrectCertsOlderThan6MonthsGuidance(viewModel: ImportVatViewModel)(implicit
     msgs: Messages
   ) =
-    viewModel.certsOlderThan6MonthsGuidance mustBe GuidanceRowWithParagraph(
+    viewModel.certsOlderThan6MonthsGuidance mustBe GuidanceRow(
       h2Component(
         "cf.account.vat.older-certificates.heading",
         id = Some("missing-certificates-guidance-heading"),
@@ -162,7 +163,7 @@ class ImportVatViewModelSpec extends SpecBase {
     appConfig: AppConfig,
     msgs: Messages
   ) =
-    viewModel.chiefDeclarationGuidance mustBe GuidanceRowWithParagraph(
+    viewModel.chiefDeclarationGuidance mustBe GuidanceRow(
       h2Component(
         "cf.account.vat.chief.heading",
         id = Some("chief-guidance-heading"),
@@ -180,7 +181,7 @@ class ImportVatViewModelSpec extends SpecBase {
   private def shouldContainCorrectHelpAndSupportGuidance(
     viewModel: ImportVatViewModel
   )(implicit appConfig: AppConfig, msgs: Messages) =
-    viewModel.helpAndSupportGuidance mustBe GuidanceRowWithParagraph(
+    viewModel.helpAndSupportGuidance mustBe GuidanceRow(
       h2Heading = h2Component(
         id = Some("vat.support.message.heading"),
         msg = "cf.account.vat.support.heading",

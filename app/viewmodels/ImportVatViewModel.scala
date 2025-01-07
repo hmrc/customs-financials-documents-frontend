@@ -29,6 +29,7 @@ import models.FileRole.C79Certificate
 import _root_.uk.gov.hmrc.hmrcfrontend.views.html.components.NewTabLink
 import utils.Utils
 import models.FileFormat.{Csv, Pdf}
+import common.GuidanceRow
 
 case class ImportVatViewModel(
   title: Option[String],
@@ -39,9 +40,9 @@ case class ImportVatViewModel(
   notificationPanel: Option[HtmlFormat.Appendable] = None,
   currentStatements: Seq[ImportVatCurrentStatementRow] = Seq.empty,
   currentStatementsNotAvailableGuidance: Option[HtmlFormat.Appendable] = None,
-  certsOlderThan6MonthsGuidance: GuidanceRowWithParagraph,
-  chiefDeclarationGuidance: GuidanceRowWithParagraph,
-  helpAndSupportGuidance: GuidanceRowWithParagraph
+  certsOlderThan6MonthsGuidance: GuidanceRow,
+  chiefDeclarationGuidance: GuidanceRow,
+  helpAndSupportGuidance: GuidanceRow
 )
 
 object ImportVatViewModel {
@@ -128,8 +129,8 @@ object ImportVatViewModel {
 
   private def populateCertsOlderThan6MonthsGuidance(serviceUnavailableUrl: Option[String])(implicit
     messages: Messages
-  ): GuidanceRowWithParagraph =
-    GuidanceRowWithParagraph(
+  ): GuidanceRow =
+    GuidanceRow(
       h2Heading = h2Component(
         "cf.account.vat.older-certificates.heading",
         id = Some("missing-certificates-guidance-heading"),
@@ -147,8 +148,8 @@ object ImportVatViewModel {
   private def populateChiefDeclarationGuidance(implicit
     messages: Messages,
     appConfig: AppConfig
-  ): GuidanceRowWithParagraph =
-    GuidanceRowWithParagraph(
+  ): GuidanceRow =
+    GuidanceRow(
       h2Heading = h2Component(
         "cf.account.vat.chief.heading",
         id = Some("chief-guidance-heading"),
@@ -166,8 +167,8 @@ object ImportVatViewModel {
   private def populateHelpAndSupportGuidance(implicit
     messages: Messages,
     appConfig: AppConfig
-  ): GuidanceRowWithParagraph =
-    GuidanceRowWithParagraph(
+  ): GuidanceRow =
+    GuidanceRow(
       h2Heading = h2Component(
         id = Some("vat.support.message.heading"),
         msg = "cf.account.vat.support.heading",
