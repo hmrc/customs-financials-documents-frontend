@@ -17,6 +17,7 @@
 package utils
 
 import play.api.mvc.RequestHeader
+import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcNewTabLink
 import views.html.components.description_list.{dd, dl, dt}
 import views.html.components.{div, h1, h2, inset, link, p, span}
 
@@ -34,6 +35,8 @@ object Utils {
   val linkComponent  = new link()
   val insetComponent = new inset()
   val spanComponent  = new span()
+
+  val hmrcNewTabLinkComponent = new HmrcNewTabLink()
 
   val divComponent = new div()
   val ddComponent  = new dd()

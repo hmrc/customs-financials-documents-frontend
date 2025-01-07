@@ -25,6 +25,7 @@ import play.api.i18n.Messages
 import play.twirl.api.Html
 import utils.SpecBase
 import views.html.components.description_list.{dd, dl, dt}
+import utils.Utils.singleSpace
 
 class DescriptionListSpec extends SpecBase {
 
@@ -83,6 +84,8 @@ class DescriptionListSpec extends SpecBase {
 
         dl.html() mustBe contentText
         dl.first().classNames() must contain(testClass)
+        dl.first().classNames() must contain(testClass1)
+        dl.first().classNames() must contain(testClass2)
         dl.first().hasAttr("id") mustBe false
       }
 
@@ -143,10 +146,13 @@ class DescriptionListSpec extends SpecBase {
   }
 
   trait Setup {
-    val contentText   = "some content"
-    val content: Html = Html(contentText)
-    val testClass     = "test-class"
-    val testId        = "test-id"
+    val contentText          = "some content"
+    val content: Html        = Html(contentText)
+    val testClass            = "test-class"
+    val testClass1           = "test-class-1"
+    val testClass2           = "test-class-2"
+    val testMultipleClassses = s"$testClass$singleSpace$testClass1$singleSpace$testClass2"
+    val testId               = "test-id"
 
     val app: Application           = application().build()
     implicit val message: Messages = messages(app)
@@ -162,7 +168,7 @@ class DescriptionListSpec extends SpecBase {
       Jsoup.parse(instanceOfDd(content, classes = Some(testClass), id = Some(testId)).body)
 
     val dlComponent: Document               = Jsoup.parse(instanceOfDl(content).body)
-    val dlComponentWithClass: Document      = Jsoup.parse(instanceOfDl(content, classes = Some(testClass)).body)
+    val dlComponentWithClass: Document      = Jsoup.parse(instanceOfDl(content, classes = Some(testMultipleClassses)).body)
     val dlComponentWithId: Document         = Jsoup.parse(instanceOfDl(content, id = Some(testId)).body)
     val dlComponentWithClassAndId: Document =
       Jsoup.parse(instanceOfDl(content, classes = Some(testClass), id = Some(testId)).body)

@@ -29,7 +29,7 @@ import services.DateTimeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Constants.{MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE, sevenMonths}
 import utils.DateUtils._
-import viewmodels.VatViewModel
+import viewmodels.ImportVatViewModel
 import views.html.import_vat.{import_vat, import_vat_not_available}
 
 import java.time.LocalDate
@@ -61,14 +61,8 @@ class VatController @Inject() (
       (
         for {
           allCertificates <- Future.sequence(req.allEoriHistory.map(getCertificates(_)))
-          viewModel        = VatViewModel(allCertificates.sorted)
-
-          historicUrl = if (appConfig.historicStatementsEnabled) {
-                          appConfig.historicRequestUrl(C79Certificate)
-                        } else {
-                          routes.ServiceUnavailableController.onPageLoad(navigator.importVatPageId).url
-                        }
-        } yield Ok(importVatView(viewModel, Some(historicUrl)))
+          viewModel        = ImportVatViewModel(allCertificates.sorted, Some(retrieveHistoricUrl))
+        } yield Ok(importVatView(viewModel))
       ).recover { case e =>
         log.error(s"Unable to retrieve VAT certificates :${e.getMessage}")
         Redirect(routes.VatController.certificatesUnavailablePage())
@@ -146,4 +140,11 @@ class VatController @Inject() (
     val sevenMonthsAgo = LocalDate.now().minusMonths(sevenMonths)
     currentCerts.filter(_.date.isAfter(sevenMonthsAgo))
   }
+
+  private def retrieveHistoricUrl =
+    if (appConfig.historicStatementsEnabled) {
+      appConfig.historicRequestUrl(C79Certificate)
+    } else {
+      routes.ServiceUnavailableController.onPageLoad(navigator.importVatPageId).url
+    }
 }

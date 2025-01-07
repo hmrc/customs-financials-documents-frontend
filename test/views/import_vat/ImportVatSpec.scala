@@ -25,7 +25,7 @@ import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.SpecBase
-import viewmodels.VatViewModel
+import viewmodels.ImportVatViewModel
 import views.html.import_vat.import_vat
 import models.{VatCertificatesByMonth, VatCertificatesForEori}
 import org.scalatest.matchers.must.Matchers.mustBe
@@ -87,8 +87,8 @@ class ImportVatSpec extends SpecBase {
     val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
       Seq(VatCertificatesForEori(eoriHistory.head, currentCertificates, Seq.empty))
 
-    val viewModel: VatViewModel = VatViewModel(vatCertificatesForEoris)
+    val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris, serviceUnavailableUrl)
 
-    val view: Document = Jsoup.parse(app.injector.instanceOf[import_vat].apply(viewModel, serviceUnavailableUrl).body)
+    val view: Document = Jsoup.parse(app.injector.instanceOf[import_vat].apply(viewModel).body)
   }
 }

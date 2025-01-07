@@ -26,6 +26,7 @@ import utils.Utils._
 import views.helpers.Formatters
 import views.html.components._
 import views.html.postponed_vat.{collapsible_statement_group, current_statement_row, download_link_pvat_statement}
+import common.GuidanceRow
 
 case class PvEmail(emailAddress: String, emailAddressHref: String)
 
@@ -43,8 +44,6 @@ case class CollapsibleStatementGroupRow(
   collapsiblePVATAmendedStatement: Option[HtmlFormat.Appendable] = None,
   collapsiblePVATStatement: Option[HtmlFormat.Appendable] = None
 )
-
-case class GuidanceRow(h2Heading: HtmlFormat.Appendable, link: Option[HtmlFormat.Appendable] = None)
 
 case class CurrentStatementRow(
   periodId: String,

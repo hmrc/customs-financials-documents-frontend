@@ -18,4 +18,4 @@
 
 @(content: Html, classes: Option[String] = None, id: Option[String] = None)
 
-<dl @id.map(i => s"id=$i") @classes.map(c => s"class=$c")>@content</dl>
+<dl @id.map(i => s"id=$i") @classes.map{c => class="@c"}>@content</dl>

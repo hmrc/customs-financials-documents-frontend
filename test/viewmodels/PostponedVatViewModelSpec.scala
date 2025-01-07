@@ -33,6 +33,7 @@ import utils.Utils.{emptyString, h1Component, h2Component, linkComponent, pCompo
 import views.helpers.Formatters
 import views.html.components._
 import views.html.postponed_vat.{collapsible_statement_group, current_statement_row, download_link_pvat_statement}
+import common.GuidanceRow
 
 import java.time.{LocalDate, LocalDateTime}
 

@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package viewmodels
+package viewmodels.common
 
-import models.VatCertificatesForEori
+import play.twirl.api.HtmlFormat
 
-case class VatViewModel(certificatesForAllEoris: Seq[VatCertificatesForEori]) {
-  val hasRequestedCertificates: Boolean = certificatesForAllEoris.exists(_.requestedCertificates.nonEmpty)
-  val hasCurrentCertificates: Boolean   = certificatesForAllEoris.exists(_.currentCertificates.nonEmpty)
-}
+case class GuidanceRow(
+  h2Heading: HtmlFormat.Appendable,
+  link: Option[HtmlFormat.Appendable] = None,
+  paragraph: Option[HtmlFormat.Appendable] = None
+)
