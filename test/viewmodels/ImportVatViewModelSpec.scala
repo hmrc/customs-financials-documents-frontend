@@ -214,8 +214,8 @@ class ImportVatViewModelSpec extends SpecBase {
 
         val dt = dtComponent(
           content = Html(statementsOfOneMonth.formattedMonthYear),
-          classes = Some(s"statements-list-0-row-$index-date-cell"),
-          id = Some("govuk-summary-list__value")
+          classes = Some("govuk-summary-list__value"),
+          id = Some(s"statements-list-0-row-$index-date-cell")
         )
 
         val dd = populateDDComponentForImportVatStatement(statementsOfOneMonth, index)

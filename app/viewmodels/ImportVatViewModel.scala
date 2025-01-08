@@ -215,8 +215,8 @@ object ImportVatViewModel {
 
         val dt = dtComponent(
           content = Html(statementsOfOneMonth.formattedMonthYear),
-          classes = Some(s"statements-list-$historyIndex-row-$index-date-cell"),
-          id = Some("govuk-summary-list__value")
+          classes = Some("govuk-summary-list__value"),
+          id = Some(s"statements-list-$historyIndex-row-$index-date-cell")
         )
 
         val dd = if (statementsOfOneMonth.files.nonEmpty) {
