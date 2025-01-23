@@ -20,7 +20,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import org.scalatest.matchers.must.Matchers.{must, mustBe}
-import play.api.Application
+
 import play.api.i18n.Messages
 import utils.SpecBase
 import views.html.components.h1
@@ -32,7 +32,7 @@ class H1Spec extends SpecBase {
     "display correct contents" when {
 
       "only message key has been provided" in new Setup {
-        h1Component.text() mustBe message(msgKey)
+        h1Component.text() mustBe messages(msgKey)
 
         val h1: Elements = h1Component.select("h1")
 
@@ -43,7 +43,7 @@ class H1Spec extends SpecBase {
       }
 
       "class has been provided along with message key" in new Setup {
-        h1ComponentWithClass.text() mustBe message(msgKey)
+        h1ComponentWithClass.text() mustBe messages(msgKey)
 
         val h1: Elements = h1ComponentWithClass.select("h1")
 
@@ -51,7 +51,7 @@ class H1Spec extends SpecBase {
       }
 
       "id has been provided along with message key" in new Setup {
-        h1ComponentWithId.text() mustBe message(msgKey)
+        h1ComponentWithId.text() mustBe messages(msgKey)
 
         val h1: Elements = h1ComponentWithId.select("h1")
 
@@ -59,7 +59,7 @@ class H1Spec extends SpecBase {
       }
 
       "classes and id have been provided along with message key" in new Setup {
-        h1ComponentWithClassAndId.text() mustBe message(msgKey)
+        h1ComponentWithClassAndId.text() mustBe messages(msgKey)
 
         val h1: Elements = h1ComponentWithClassAndId.select("h1")
 
@@ -75,9 +75,7 @@ class H1Spec extends SpecBase {
     val classes      = "custom-class"
     val id           = "custom-id"
 
-    val app: Application           = application().build()
-    implicit val message: Messages = messages(app)
-    val instanceOfH1: h1           = app.injector.instanceOf[h1]
+    val instanceOfH1: h1 = application.injector.instanceOf[h1]
 
     val h1Component: Document               = Jsoup.parse(instanceOfH1(msgKey).body)
     val h1ComponentWithClass: Document      = Jsoup.parse(instanceOfH1(msgKey, classes = classes).body)

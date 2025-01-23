@@ -18,7 +18,7 @@ package controllers
 
 import connectors.DataStoreConnector
 import models.{EmailUnverifiedResponse, EmailVerifiedResponse}
-import play.api.Application
+
 import play.api.inject._
 import play.api.test.Helpers._
 import services.MetricsReporterService
@@ -27,6 +27,7 @@ import utils.SpecBase
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import scala.concurrent.Future
+import play.api.Application
 
 class EmailControllerSpec extends SpecBase {
 
@@ -82,7 +83,7 @@ class EmailControllerSpec extends SpecBase {
     val emailUnverifiedResponseWithNoEmailId: EmailUnverifiedResponse = EmailUnverifiedResponse(None)
     val emailVerifiedResponse: EmailVerifiedResponse                  = EmailVerifiedResponse(Some("test@test.com"))
 
-    val app: Application = application()
+    val app: Application = applicationBuilder()
       .overrides(
         bind[MetricsReporterService].toInstance(mockMetricsReporterService),
         bind[DataStoreConnector].toInstance(mockConnector)

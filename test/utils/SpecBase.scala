@@ -19,6 +19,7 @@ package utils
 import actions.{IdentifierAction, PvatIdentifierAction}
 import org.apache.pekko.stream.testkit.NoMaterializer
 import com.codahale.metrics.MetricRegistry
+import config.AppConfig
 import models.EoriHistory
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.OptionValues
@@ -53,10 +54,7 @@ class SpecBase
       .asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
       .withHeaders(newHeaders = "X-Session-Id" -> "someSessionId")
 
-  def messages(app: Application): Messages =
-    app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
-
-  def application(allEoriHistory: Seq[EoriHistory] = Seq.empty): GuiceApplicationBuilder =
+  def applicationBuilder(allEoriHistory: Seq[EoriHistory] = Seq.empty): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
         bind[IdentifierAction]
@@ -70,4 +68,11 @@ class SpecBase
         "auditing.enabled"               -> "false",
         "metrics.enabled"                -> "false"
       )
+
+  val application: Application = applicationBuilder().build()
+
+  implicit lazy val messages: Messages =
+    application.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
+
+  implicit lazy val appConfig: AppConfig = application.injector.instanceOf[AppConfig]
 }

@@ -23,7 +23,6 @@ import models.metadata.PostponedVatStatementFileMetadata
 import models.{PostponedVatStatementFile, PostponedVatStatementGroup}
 import org.scalatest.matchers.must.Matchers.mustBe
 import org.mockito.Mockito.when
-import play.api.Application
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import services.DateTimeService
@@ -74,7 +73,7 @@ class PostponedVatViewModelSpec extends SpecBase {
 
         val expectedResult: CurrentStatementRow = CurrentStatementRow(
           pvatStatementGroup.periodId,
-          msgs(Formatters.dateAsMonthAndYear(dateOfPreviousMonthAndAfter19th)),
+          messages(Formatters.dateAsMonthAndYear(dateOfPreviousMonthAndAfter19th)),
           cdsDDRow = None,
           chiefDDRow = None,
           collapsibleStatementGroupRows = Seq(collapStatGroupRowForSourceCDS, collapStatGroupRowForSourceCHIEF)
@@ -113,7 +112,7 @@ class PostponedVatViewModelSpec extends SpecBase {
 
         val expectedResult: CurrentStatementRow = CurrentStatementRow(
           pvatStatementGroup.periodId,
-          msgs(Formatters.dateAsMonthAndYear(dateOfPreviousMonthAndAfter19th)),
+          messages(Formatters.dateAsMonthAndYear(dateOfPreviousMonthAndAfter19th)),
           cdsDDRow = None,
           chiefDDRow = None,
           collapsibleStatementGroupRows = Seq(collapStatGroupRowForSourceCDS, collapStatGroupRowForSourceCHIEF)
@@ -133,8 +132,8 @@ class PostponedVatViewModelSpec extends SpecBase {
             PostponedVatStatementGroup(dateOfPreviousMonthAndAfter19th, Seq())
 
           val cdsDDRow: DDRow = DDRow(
-            msgs("cf.common.not-available"),
-            msgs(
+            messages("cf.common.not-available"),
+            messages(
               "cf.common.not-available-screen-reader-cds",
               Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate)
             )
@@ -142,7 +141,7 @@ class PostponedVatViewModelSpec extends SpecBase {
 
           val expectedResult: CurrentStatementRow = CurrentStatementRow(
             pvatStatementGroup.periodId,
-            msgs(Formatters.dateAsMonthAndYear(dateOfPreviousMonthAndAfter19th)),
+            messages(Formatters.dateAsMonthAndYear(dateOfPreviousMonthAndAfter19th)),
             cdsDDRow = Some(cdsDDRow),
             chiefDDRow = None,
             collapsibleStatementGroupRows = Seq()
@@ -162,16 +161,16 @@ class PostponedVatViewModelSpec extends SpecBase {
             PostponedVatStatementGroup(dateOfPreviousMonthAndAfter19th, Seq())
 
           val cdsDDRow: DDRow = DDRow(
-            msgs("cf.common.not-available"),
-            msgs(
+            messages("cf.common.not-available"),
+            messages(
               "cf.common.not-available-screen-reader-cds",
               Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate)
             )
           )
 
           val chiefDDRow: DDRow = DDRow(
-            msgs("cf.common.not-available"),
-            msgs(
+            messages("cf.common.not-available"),
+            messages(
               "cf.common.not-available-screen-reader-chief",
               Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate)
             )
@@ -179,7 +178,7 @@ class PostponedVatViewModelSpec extends SpecBase {
 
           val expectedResult: CurrentStatementRow = CurrentStatementRow(
             pvatStatementGroup.periodId,
-            msgs(Formatters.dateAsMonthAndYear(dateOfPreviousMonthAndAfter19th)),
+            messages(Formatters.dateAsMonthAndYear(dateOfPreviousMonthAndAfter19th)),
             cdsDDRow = Some(cdsDDRow),
             chiefDDRow = Some(chiefDDRow),
             collapsibleStatementGroupRows = Seq()
@@ -213,7 +212,7 @@ class PostponedVatViewModelSpec extends SpecBase {
           )
         )
 
-        actualPVatModel.pageTitle mustBe msgs("cf.account.pvat.title")
+        actualPVatModel.pageTitle mustBe messages("cf.account.pvat.title")
         actualPVatModel.backLink mustBe Some(customsFinancialsHomePageUrl)
 
         actualPVatModel.pageH1Heading mustBe expectedHeading
@@ -258,7 +257,7 @@ class PostponedVatViewModelSpec extends SpecBase {
           )
         )
 
-        actualPVatModel.pageTitle mustBe msgs("cf.account.pvat.title")
+        actualPVatModel.pageTitle mustBe messages("cf.account.pvat.title")
         actualPVatModel.backLink mustBe Some(customsFinancialsHomePageUrl)
 
         actualPVatModel.pageH1Heading mustBe expectedHeading
@@ -324,9 +323,6 @@ class PostponedVatViewModelSpec extends SpecBase {
     val dutyPaymentMethodSource: Seq[String] = Seq(CDS, CHIEF)
     val linkInner                            = new linkInner()
     val downloadLinkPvatStatement            = new download_link_pvat_statement(linkInner)
-
-    val app: Application        = application().build()
-    implicit val msgs: Messages = messages(app)
 
     implicit val mockDateTimeService: DateTimeService = mock[DateTimeService]
 
@@ -466,7 +462,7 @@ class PostponedVatViewModelSpec extends SpecBase {
       ),
       link = Some(
         linkComponent.apply(
-          msgs("cf.account.pvat.support.link"),
+          messages("cf.account.pvat.support.link"),
           location = viewVatAccountSupportLink,
           preLinkMessage = Some("cf.account.pvat.support.message"),
           postLinkMessage = Some(period),
@@ -482,6 +478,8 @@ class PostponedVatViewModelSpec extends SpecBase {
       preLinkMessageKey: String,
       postLinkMessageKey: String
     )(implicit msgs: Messages): HtmlFormat.Appendable =
-      app.injector.instanceOf[requestedStatements].apply(url, linkMessageKey, preLinkMessageKey, postLinkMessageKey)
+      application.injector
+        .instanceOf[requestedStatements]
+        .apply(url, linkMessageKey, preLinkMessageKey, postLinkMessageKey)
   }
 }

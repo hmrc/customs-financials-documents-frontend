@@ -25,7 +25,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import org.scalatest.matchers.must.Matchers.mustBe
-import play.api.Application
+
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -144,9 +144,6 @@ class CurrentStatementRowSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = application().build()
-
-    implicit val msg: Messages                                = messages(app)
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     val periodId     = "test_id"
@@ -156,7 +153,7 @@ class CurrentStatementRowSpec extends SpecBase {
     val visuallyHiddenMsg = "Not available visually hidden"
 
     def view(currentStatementRow: CurrentStatementRow): Document =
-      Jsoup.parse(app.injector.instanceOf[current_statement_row].apply(currentStatementRow).body)
+      Jsoup.parse(application.injector.instanceOf[current_statement_row].apply(currentStatementRow).body)
 
     implicit val mockDateTimeService: DateTimeService = mock[DateTimeService]
 

@@ -20,7 +20,7 @@ import config.AppConfig
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.matchers.must.Matchers.{must, mustBe}
-import play.api.Application
+
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -33,16 +33,16 @@ class ServiceUnavailableSpec extends SpecBase {
 
     "display correct title and guidance" in new Setup {
       view.title() mustBe
-        s"${messages(app)("cf.service-unavailable.title")} - ${messages(app)("service.name")} - GOV.UK"
+        s"${messages("cf.service-unavailable.title")} - ${messages("service.name")} - GOV.UK"
       view.getElementById("service-unavailable.heading").html() mustBe
-        messages(app)("cf.service-unavailable.heading")
+        messages("cf.service-unavailable.heading")
 
       view.getElementById("older-statement-guidance-text").text() must not be empty
       view.getElementById("older-statement-guidance-text").text() mustBe
-        s"${messages(app)("cf.service-unavailable.description.1")} ${messages(app)("cf.service-unavailable.description.2")}"
+        s"${messages("cf.service-unavailable.description.1")} ${messages("cf.service-unavailable.description.2")}"
 
       view.html().contains(backLinkUrl)
-      view.html().contains(messages(app)("cf.service-unavailable.description.3"))
+      view.html().contains(messages("cf.service-unavailable.description.3"))
       view.html().contains(deskProLink)
     }
   }
@@ -52,12 +52,9 @@ class ServiceUnavailableSpec extends SpecBase {
     val deskProLink: String = "http://localhost:9250" +
       "/contact/report-technical-problem?newTab=true&amp;service=CDS%20FinancialsreferrerUrl=test_Path"
 
-    val app: Application = application().build()
-
-    implicit val appConfig: AppConfig                         = app.injector.instanceOf[AppConfig]
-    implicit val msg: Messages                                = messages(app)
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
-    val view: Document = Jsoup.parse(app.injector.instanceOf[service_unavailable].apply(Option(backLinkUrl)).body)
+    val view: Document =
+      Jsoup.parse(application.injector.instanceOf[service_unavailable].apply(Option(backLinkUrl)).body)
   }
 }

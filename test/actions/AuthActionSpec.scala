@@ -52,26 +52,25 @@ class AuthActionSpec extends SpecBase {
       val mockAuditingService    = mock[AuditingService]
       val mockDataStoreConnector = mock[DataStoreConnector]
 
-      val app = application()
+      val app = applicationBuilder()
         .overrides(
           inject.bind[AuditingService].toInstance(mockAuditingService),
           inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
         )
         .build()
 
-      val config           = app.injector.instanceOf[AppConfig]
       val bodyParsers      = app.injector.instanceOf[BodyParsers.Default]
       val authActionHelper = app.injector.instanceOf[AuthActionHelper]
 
       val authAction =
-        new AuthAction(new FakeFailingAuthConnector(new MissingBearerToken), config, bodyParsers, authActionHelper)
+        new AuthAction(new FakeFailingAuthConnector(new MissingBearerToken), appConfig, bodyParsers, authActionHelper)
 
       val controller = new Harness(authAction)
 
       running(app) {
         val result = controller.onPageLoad()(fakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get must startWith(config.loginUrl)
+        redirectLocation(result).get must startWith(appConfig.loginUrl)
       }
     }
 
@@ -79,19 +78,18 @@ class AuthActionSpec extends SpecBase {
       val mockAuditingService    = mock[AuditingService]
       val mockDataStoreConnector = mock[DataStoreConnector]
 
-      val app = application()
+      val app = applicationBuilder()
         .overrides(
           inject.bind[AuditingService].toInstance(mockAuditingService),
           inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
         )
         .build()
 
-      val config           = app.injector.instanceOf[AppConfig]
       val bodyParsers      = app.injector.instanceOf[BodyParsers.Default]
       val authActionHelper = app.injector.instanceOf[AuthActionHelper]
 
       val authAction =
-        new AuthAction(new FakeFailingAuthConnector(new BearerTokenExpired), config, bodyParsers, authActionHelper)
+        new AuthAction(new FakeFailingAuthConnector(new BearerTokenExpired), appConfig, bodyParsers, authActionHelper)
 
       val controller = new Harness(authAction)
 
@@ -99,7 +97,7 @@ class AuthActionSpec extends SpecBase {
         val result = controller.onPageLoad()(fakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get must startWith(config.loginUrl)
+        redirectLocation(result).get must startWith(appConfig.loginUrl)
       }
     }
 
@@ -107,19 +105,23 @@ class AuthActionSpec extends SpecBase {
       val mockAuditingService    = mock[AuditingService]
       val mockDataStoreConnector = mock[DataStoreConnector]
 
-      val app = application()
+      val app = applicationBuilder()
         .overrides(
           inject.bind[AuditingService].toInstance(mockAuditingService),
           inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
         )
         .build()
 
-      val config           = app.injector.instanceOf[AppConfig]
       val bodyParsers      = app.injector.instanceOf[BodyParsers.Default]
       val authActionHelper = app.injector.instanceOf[AuthActionHelper]
 
       val authAction =
-        new AuthAction(new FakeFailingAuthConnector(new UnsupportedAuthProvider), config, bodyParsers, authActionHelper)
+        new AuthAction(
+          new FakeFailingAuthConnector(new UnsupportedAuthProvider),
+          appConfig,
+          bodyParsers,
+          authActionHelper
+        )
 
       val controller = new Harness(authAction)
 
@@ -135,19 +137,23 @@ class AuthActionSpec extends SpecBase {
       val mockAuditingService    = mock[AuditingService]
       val mockDataStoreConnector = mock[DataStoreConnector]
 
-      val app = application()
+      val app = applicationBuilder()
         .overrides(
           inject.bind[AuditingService].toInstance(mockAuditingService),
           inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
         )
         .build()
 
-      val config           = app.injector.instanceOf[AppConfig]
       val bodyParsers      = app.injector.instanceOf[BodyParsers.Default]
       val authActionHelper = app.injector.instanceOf[AuthActionHelper]
 
       val authAction =
-        new AuthAction(new FakeFailingAuthConnector(new InsufficientEnrolments), config, bodyParsers, authActionHelper)
+        new AuthAction(
+          new FakeFailingAuthConnector(new InsufficientEnrolments),
+          appConfig,
+          bodyParsers,
+          authActionHelper
+        )
 
       val controller = new Harness(authAction)
 

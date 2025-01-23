@@ -41,19 +41,19 @@ class PvatAuthActionSpec extends SpecBase {
       val mockAuditingService    = mock[AuditingService]
       val mockDataStoreConnector = mock[DataStoreConnector]
 
-      val app = application()
+      val app = applicationBuilder()
         .overrides(
           inject.bind[AuditingService].toInstance(mockAuditingService),
           inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
         )
         .build()
 
-      val config           = app.injector.instanceOf[AppConfig]
+
       val bodyParsers      = app.injector.instanceOf[Default]
       val authActionHelper = app.injector.instanceOf[AuthActionHelper]
 
       val authAction =
-        new PvatAuthAction(new FakeFailingAuthConnector(new MissingBearerToken), config, bodyParsers, authActionHelper)
+        new PvatAuthAction(new FakeFailingAuthConnector(new MissingBearerToken), appConfig, bodyParsers, authActionHelper)
 
       val controller = new Harness(authAction)
 
@@ -71,19 +71,19 @@ class PvatAuthActionSpec extends SpecBase {
       val mockAuditingService    = mock[AuditingService]
       val mockDataStoreConnector = mock[DataStoreConnector]
 
-      val app = application()
+      val app = applicationBuilder()
         .overrides(
           inject.bind[AuditingService].toInstance(mockAuditingService),
           inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
         )
         .build()
 
-      val config           = app.injector.instanceOf[AppConfig]
+
       val bodyParsers      = app.injector.instanceOf[BodyParsers.Default]
       val authActionHelper = app.injector.instanceOf[AuthActionHelper]
 
       val authAction =
-        new PvatAuthAction(new FakeFailingAuthConnector(new BearerTokenExpired), config, bodyParsers, authActionHelper)
+        new PvatAuthAction(new FakeFailingAuthConnector(new BearerTokenExpired), appConfig, bodyParsers, authActionHelper)
 
       val controller = new Harness(authAction)
 
@@ -91,7 +91,7 @@ class PvatAuthActionSpec extends SpecBase {
         val result = controller.onPageLoad()(fakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get must startWith(config.loginUrl)
+        redirectLocation(result).get must startWith(appConfig.loginUrl)
       }
     }
 
@@ -99,21 +99,21 @@ class PvatAuthActionSpec extends SpecBase {
       val mockAuditingService    = mock[AuditingService]
       val mockDataStoreConnector = mock[DataStoreConnector]
 
-      val app = application()
+      val app = applicationBuilder()
         .overrides(
           inject.bind[AuditingService].toInstance(mockAuditingService),
           inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
         )
         .build()
 
-      val config           = app.injector.instanceOf[AppConfig]
+
       val bodyParsers      = app.injector.instanceOf[BodyParsers.Default]
       val authActionHelper = app.injector.instanceOf[AuthActionHelper]
 
       val authAction =
         new PvatAuthAction(
           new FakeFailingAuthConnector(new UnsupportedAuthProvider),
-          config,
+          appConfig,
           bodyParsers,
           authActionHelper
         )
@@ -149,18 +149,18 @@ class PvatAuthActionSpec extends SpecBase {
           )
         )
 
-      val app = application()
+      val app = applicationBuilder()
         .overrides(
           inject.bind[AuditingService].toInstance(mockAuditingService),
           inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
         )
         .build()
 
-      val config           = app.injector.instanceOf[AppConfig]
+
       val bodyParsers      = app.injector.instanceOf[BodyParsers.Default]
       val authActionHelper = app.injector.instanceOf[AuthActionHelper]
 
-      val authAction = new PvatAuthAction(mockAuthConnector, config, bodyParsers, authActionHelper)
+      val authAction = new PvatAuthAction(mockAuthConnector, appConfig, bodyParsers, authActionHelper)
       val controller = new Harness(authAction)
 
       running(app) {

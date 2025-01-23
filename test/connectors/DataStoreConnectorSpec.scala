@@ -209,7 +209,7 @@ class DataStoreConnectorSpec extends SpecBase {
     val mockHttpClient: HttpClientV2                       = mock[HttpClientV2]
     val requestBuilder: RequestBuilder                     = mock[RequestBuilder]
 
-    val app: Application = application()
+    val app: Application = applicationBuilder()
       .overrides(
         inject.bind[MetricsReporterService].toInstance(mockMetricsReporterService),
         inject.bind[HttpClientV2].toInstance(mockHttpClient)

@@ -20,7 +20,6 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import org.scalatest.matchers.must.Matchers.{must, mustBe}
-import play.api.Application
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import utils.SpecBase
@@ -154,12 +153,9 @@ class DescriptionListSpec extends SpecBase {
     val testMultipleClassses = s"$testClass$singleSpace$testClass1$singleSpace$testClass2"
     val testId               = "test-id"
 
-    val app: Application           = application().build()
-    implicit val message: Messages = messages(app)
-
-    val instanceOfDd: dd = app.injector.instanceOf[dd]
-    val instanceOfDl: dl = app.injector.instanceOf[dl]
-    val instanceOfDt: dt = app.injector.instanceOf[dt]
+    val instanceOfDd: dd = application.injector.instanceOf[dd]
+    val instanceOfDl: dl = application.injector.instanceOf[dl]
+    val instanceOfDt: dt = application.injector.instanceOf[dt]
 
     val ddComponent: Document               = Jsoup.parse(instanceOfDd(content).body)
     val ddComponentWithClass: Document      = Jsoup.parse(instanceOfDd(content, classes = Some(testClass)).body)

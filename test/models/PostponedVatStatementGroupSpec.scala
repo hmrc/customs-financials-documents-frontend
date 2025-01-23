@@ -37,7 +37,7 @@ class PostponedVatStatementGroupSpec extends SpecBase {
         when(mockDateTimeService.systemDateTime()).thenReturn(currentDate.atStartOfDay())
 
         PostponedVatStatementGroup(dateOfPreviousMonth, Seq())(
-          messages(app),
+          messages,
           mockDateTimeService
         ).isPreviousMonthAndAfter19Th mustBe true
       }
@@ -50,7 +50,7 @@ class PostponedVatStatementGroupSpec extends SpecBase {
           .thenReturn(date.atStartOfDay())
 
         PostponedVatStatementGroup(dateOfPreviousMonth, Seq())(
-          messages(app),
+          messages,
           mockDateTimeService
         ).isPreviousMonthAndAfter19Th mustBe false
       }
@@ -62,7 +62,7 @@ class PostponedVatStatementGroupSpec extends SpecBase {
         .thenReturn(date.atStartOfDay())
 
       PostponedVatStatementGroup(dateOfCurrentMonth, Seq())(
-        messages(app),
+        messages,
         mockDateTimeService
       ).isPreviousMonthAndAfter19Th mustBe true
     }
@@ -78,7 +78,7 @@ class PostponedVatStatementGroupSpec extends SpecBase {
 
         if (isCurrentDayBefore20) {
           PostponedVatStatementGroup(dateOfCurrentMonthAndBefore20ThDay, Seq())(
-            messages(app),
+            messages,
             mockDateTimeService
           ).isPreviousMonthAndAfter19Th mustBe true
         }
@@ -89,7 +89,7 @@ class PostponedVatStatementGroupSpec extends SpecBase {
     val mockDateTimeService: DateTimeService = mock[DateTimeService]
     val date: LocalDate                      = LocalDate.of(YEAR_2023, MONTH_10, DAY_1)
 
-    val app: Application = application()
+    val app: Application = applicationBuilder()
       .overrides(
         inject.bind[DateTimeService].toInstance(mockDateTimeService)
       )

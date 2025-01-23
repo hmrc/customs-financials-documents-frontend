@@ -25,7 +25,6 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import org.scalatest.matchers.must.Matchers.mustBe
-import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -65,8 +64,6 @@ class DownloadLinkPvatStatementSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = application().build()
-
     val fileFormat: FileFormat                           = Pdf
     val certificateFiles: Seq[PostponedVatStatementFile] = Seq(
       PostponedVatStatementFile(
@@ -82,7 +79,6 @@ class DownloadLinkPvatStatementSpec extends SpecBase {
     val downloadAriaLabel   = "cf.account.pvat.aria.download-link"
     val period              = "test_period"
 
-    implicit val msg: Messages                                = messages(app)
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     def view(
@@ -92,7 +88,7 @@ class DownloadLinkPvatStatementSpec extends SpecBase {
       downloadAriaLabel: String,
       period: String
     ): Document = Jsoup.parse(
-      app.injector
+      application.injector
         .instanceOf[download_link_pvat_statement]
         .apply(fileFormat, certificateFiles, downloadLinkMessage, downloadAriaLabel, period)
         .body

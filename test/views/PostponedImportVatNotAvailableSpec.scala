@@ -20,7 +20,7 @@ import config.AppConfig
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.matchers.must.Matchers.{must, mustBe}
-import play.api.Application
+
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -33,39 +33,39 @@ class PostponedImportVatNotAvailableSpec extends SpecBase {
 
     "display correct title and guidance" in new Setup {
       view.title() mustBe
-        s"${messages(app)("cf.account.pvat.title")} - ${messages(app)("service.name")} - GOV.UK"
+        s"${messages("cf.account.pvat.title")} - ${messages("service.name")} - GOV.UK"
 
-      view.getElementById("no-statements").text() mustBe messages(app)("cf.security-statements.unavailable")
+      view.getElementById("no-statements").text() mustBe messages("cf.security-statements.unavailable")
 
       view.getElementById("missing-documents-guidance-heading").text() mustBe
-        messages(app)("cf.account.pvat.older-statements.heading")
+        messages("cf.account.pvat.older-statements.heading")
 
       view.getElementById("pvat.support.message.heading").text() mustBe
-        messages(app)("cf.account.pvat.support.heading")
+        messages("cf.account.pvat.support.heading")
 
       view.getElementById("pvat.support.heading").text() must not be empty
 
       view.html().contains(tradeAndExciseEnquiryLink)
       view.getElementById("chief-guidance-heading").html() mustBe
-        messages(app)("cf.account.vat.chief.heading")
-      view.html().contains(messages(app)("cf.account.pvat.older-statements.description.3"))
+        messages("cf.account.vat.chief.heading")
+      view.html().contains(messages("cf.account.pvat.older-statements.description.3"))
       view.html().contains(serviceUnavailableUrl)
     }
   }
 
   trait Setup {
-    val app: Application              = application().build()
     val serviceUnavailableUrl: String = "service_unavailable_url"
     val eori                          = "test_eori"
     val hmrcDomainUrl                 = "https://www.gov.uk/government/organisations/hm-revenue-customs"
     val tradeAndExciseEnquiryLink     = s"$hmrcDomainUrl/contact/customs-international-trade-and-excise-enquiries"
 
-    implicit val appConfig: AppConfig                         = app.injector.instanceOf[AppConfig]
-    implicit val msg: Messages                                = messages(app)
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     val view: Document = Jsoup.parse(
-      app.injector.instanceOf[postponed_import_vat_not_available].apply(eori, Option(serviceUnavailableUrl)).body
+      application.injector
+        .instanceOf[postponed_import_vat_not_available]
+        .apply(eori, Option(serviceUnavailableUrl))
+        .body
     )
   }
 }

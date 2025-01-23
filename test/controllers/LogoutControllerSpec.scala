@@ -16,9 +16,7 @@
 
 package controllers
 
-import config.AppConfig
 import org.scalatest.matchers.must.Matchers.mustBe
-import play.api.Application
 import play.api.test.Helpers._
 import utils.SpecBase
 
@@ -28,34 +26,29 @@ class LogoutControllerSpec extends SpecBase {
 
   "logout" should {
 
-    "redirect to logout link with survey continue" in new Setup {
-      running(app) {
+    "redirect to logout link with survey continue" in {
+      running(application) {
         val request = fakeRequest(GET, routes.LogoutController.logout.url)
-        val result  = route(app, request).value
+        val result  = route(application, request).value
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe
-          s"${config.signOutUrl}?continue=${URLEncoder.encode(config.feedbackService, "UTF-8")}"
+          s"${appConfig.signOutUrl}?continue=${URLEncoder.encode(appConfig.feedbackService, "UTF-8")}"
       }
     }
   }
 
   "logoutNoSurvey" should {
 
-    "redirect to logout link without survey continue" in new Setup {
-      running(app) {
+    "redirect to logout link without survey continue" in {
+      running(application) {
         val request = fakeRequest(GET, routes.LogoutController.logoutNoSurvey.url)
-        val result  = route(app, request).value
+        val result  = route(application, request).value
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe
-          s"${config.signOutUrl}?continue=${URLEncoder.encode(config.loginContinueUrl, "UTF-8")}"
+          s"${appConfig.signOutUrl}?continue=${URLEncoder.encode(appConfig.loginContinueUrl, "UTF-8")}"
       }
     }
-  }
-
-  trait Setup {
-    val app: Application  = application().build()
-    val config: AppConfig = app.injector.instanceOf[AppConfig]
   }
 }

@@ -20,7 +20,6 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import org.scalatest.matchers.must.Matchers.{must, mustBe}
-import play.api.Application
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import utils.SpecBase
@@ -72,10 +71,7 @@ class DivSpec extends SpecBase {
     val testClass     = "test-class"
     val testId        = "test-id"
 
-    val app: Application           = application().build()
-    implicit val message: Messages = messages(app)
-
-    val instanceOfDiv: div = app.injector.instanceOf[div]
+    val instanceOfDiv: div = application.injector.instanceOf[div]
 
     val divComponent: Document               = Jsoup.parse(instanceOfDiv(content).body)
     val divComponentWithClass: Document      = Jsoup.parse(instanceOfDiv(content, classes = Some(testClass)).body)

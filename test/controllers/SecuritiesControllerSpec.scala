@@ -140,16 +140,14 @@ class SecuritiesControllerSpec extends SpecBase {
   "statementsUnavailablePage" should {
 
     "render correctly" in {
-      val app: Application = application().build()
-      val appConfig        = app.injector.instanceOf[AppConfig]
-      val unavailableView  = app.injector.instanceOf[security_statements_not_available]
+      val unavailableView = application.injector.instanceOf[security_statements_not_available]
 
-      running(app) {
+      running(application) {
         val request = fakeRequest(GET, routes.SecuritiesController.statementsUnavailablePage().url)
-        val result  = route(app, request).value
+        val result  = route(application, request).value
 
         status(result) mustBe OK
-        contentAsString(result) mustBe unavailableView()(request, messages(app), appConfig).toString()
+        contentAsString(result) mustBe unavailableView()(request, messages, appConfig).toString()
       }
     }
   }
@@ -160,7 +158,7 @@ class SecuritiesControllerSpec extends SpecBase {
 
     val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory(EORI_NUMBER, None, None))
 
-    val app: Application = application(eoriHistory)
+    val app: Application = applicationBuilder(eoriHistory)
       .overrides(
         inject.bind[FinancialsApiConnector].toInstance(mockFinancialsApiConnector),
         inject.bind[SdesConnector].toInstance(mockSdesConnector)
@@ -169,8 +167,6 @@ class SecuritiesControllerSpec extends SpecBase {
 
     implicit val request: FakeRequest[AnyContentAsEmpty.type] =
       fakeRequest(GET, routes.SecuritiesController.showSecurityStatements().url)
-    implicit val appConfig: AppConfig                         = app.injector.instanceOf[AppConfig]
-    implicit val msg: Messages                                = messages(app)
 
     val result: Future[Result]    = route(app, request).value
     val view: security_statements = app.injector.instanceOf[security_statements]

@@ -96,7 +96,7 @@ class SdesConnectorSpec extends SpecBase {
 
         when(sdesGatekeeperServiceSpy.convertTo(any())).thenCallRealMethod()
 
-        override val app: Application = application()
+        override val app: Application = applicationBuilder()
           .overrides(
             inject.bind[HttpClientV2].toInstance(mockHttp),
             inject.bind[SdesGatekeeperService].toInstance(sdesGatekeeperServiceSpy)
@@ -150,7 +150,7 @@ class SdesConnectorSpec extends SpecBase {
 
         when(sdesGatekeeperServiceSpy.convertTo(any())).thenCallRealMethod()
 
-        override val app: Application = application()
+        override val app: Application = applicationBuilder()
           .overrides(
             inject.bind[HttpClientV2].toInstance(mockHttp),
             inject.bind[SdesGatekeeperService].toInstance(sdesGatekeeperServiceSpy)
@@ -207,7 +207,7 @@ class SdesConnectorSpec extends SpecBase {
 
         when(sdesGatekeeperServiceSpy.convertTo(any())).thenCallRealMethod()
 
-        override val app: Application = application()
+        override val app: Application = applicationBuilder()
           .overrides(
             inject.bind[HttpClientV2].toInstance(mockHttp),
             inject.bind[SdesGatekeeperService].toInstance(sdesGatekeeperServiceSpy)
@@ -637,7 +637,7 @@ class SdesConnectorSpec extends SpecBase {
     val mockMetricsReporterService: MetricsReporterService = mock[MetricsReporterService]
     val mockAuditingService: AuditingService               = mock[AuditingService]
 
-    val app: Application = application().overrides(inject.bind[HttpClientV2].toInstance(mockHttp)).build()
+    val app: Application = applicationBuilder().overrides(inject.bind[HttpClientV2].toInstance(mockHttp)).build()
 
     private def getVatCertificateFileMetadata(
       periodStartYear: Int = YEAR_2018,

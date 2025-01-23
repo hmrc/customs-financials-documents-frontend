@@ -20,7 +20,6 @@ import config.AppConfig
 import models.EoriHistory
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -42,15 +41,15 @@ class ImportVatSpec extends SpecBase {
 
     "display the correct title and guidance" in new Setup {
       view.title() mustBe
-        s"${messages(app)("cf.account.vat.title")} - ${messages(app)("service.name")} - GOV.UK"
+        s"${messages("cf.account.vat.title")} - ${messages("service.name")} - GOV.UK"
 
-      view.getElementById("import-vat-certificates-heading").text() mustBe messages(app)("cf.account.vat.title")
+      view.getElementById("import-vat-certificates-heading").text() mustBe messages("cf.account.vat.title")
       view.getElementById("missing-certificates-guidance-heading").text() mustBe
-        messages(app)("cf.account.vat.older-certificates.heading")
+        messages("cf.account.vat.older-certificates.heading")
       view.getElementById("chief-guidance-heading").text() mustBe
-        messages(app)("cf.account.vat.chief.heading")
+        messages("cf.account.vat.chief.heading")
       view.getElementById("vat.support.message.heading").text() mustBe
-        messages(app)("cf.account.vat.support.heading")
+        messages("cf.account.vat.support.heading")
 
       view.html().contains("cf.account.vat.available-text")
       view.html().contains("cf.account.vat.your-certificates.heading")
@@ -65,23 +64,20 @@ class ImportVatSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application                      = application().build()
     val serviceUnavailableUrl: Option[String] = Option("service_unavailable_url")
 
-    implicit val appConfig: AppConfig                         = app.injector.instanceOf[AppConfig]
-    implicit val msg: Messages                                = messages(app)
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory(EORI_NUMBER, None, None))
     val date: LocalDate               = LocalDate.now().withDayOfMonth(DAY_28)
 
     val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
-      VatCertificatesByMonth(date.minusMonths(ONE_MONTH), Seq())(messages(app)),
-      VatCertificatesByMonth(date.minusMonths(TWO_MONTHS), Seq())(messages(app)),
-      VatCertificatesByMonth(date.minusMonths(THREE_MONTHS), Seq())(messages(app)),
-      VatCertificatesByMonth(date.minusMonths(FOUR_MONTHS), Seq())(messages(app)),
-      VatCertificatesByMonth(date.minusMonths(FIVE_MONTHS), Seq())(messages(app)),
-      VatCertificatesByMonth(date.minusMonths(SIX_MONTHS), Seq())(messages(app))
+      VatCertificatesByMonth(date.minusMonths(ONE_MONTH), Seq())(messages),
+      VatCertificatesByMonth(date.minusMonths(TWO_MONTHS), Seq())(messages),
+      VatCertificatesByMonth(date.minusMonths(THREE_MONTHS), Seq())(messages),
+      VatCertificatesByMonth(date.minusMonths(FOUR_MONTHS), Seq())(messages),
+      VatCertificatesByMonth(date.minusMonths(FIVE_MONTHS), Seq())(messages),
+      VatCertificatesByMonth(date.minusMonths(SIX_MONTHS), Seq())(messages)
     )
 
     val vatCertificatesForEoris: Seq[VatCertificatesForEori] =
@@ -89,6 +85,6 @@ class ImportVatSpec extends SpecBase {
 
     val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris, serviceUnavailableUrl)
 
-    val view: Document = Jsoup.parse(app.injector.instanceOf[import_vat].apply(viewModel).body)
+    val view: Document = Jsoup.parse(application.injector.instanceOf[import_vat].apply(viewModel).body)
   }
 }

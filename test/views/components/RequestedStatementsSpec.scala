@@ -20,7 +20,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import org.scalatest.matchers.must.Matchers.mustBe
-import play.api.Application
+
 import play.api.i18n.Messages
 import utils.CommonTestData.URL_TEST
 import utils.SpecBase
@@ -71,16 +71,14 @@ class RequestedStatementsSpec extends SpecBase {
     val docHtml = doc.html()
 
     docHtml.contains(URL_TEST) mustBe true
-    docHtml.contains(msgs(linkMessageKey)) mustBe true
-    docHtml.contains(msgs(preLinkMessage)) mustBe true
-    docHtml.contains(msgs(postLinkMessage)) mustBe true
+    docHtml.contains(messages(linkMessageKey)) mustBe true
+    docHtml.contains(messages(preLinkMessage)) mustBe true
+    docHtml.contains(messages(postLinkMessage)) mustBe true
   }
 
   trait Setup {
-    val app: Application        = application().build()
-    implicit val msgs: Messages = messages(app)
 
     protected def view(url: String): Document =
-      Jsoup.parse(app.injector.instanceOf[requestedStatements].apply(url).body)
+      Jsoup.parse(application.injector.instanceOf[requestedStatements].apply(url).body)
   }
 }

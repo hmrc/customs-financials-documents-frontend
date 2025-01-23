@@ -25,7 +25,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import org.scalatest.matchers.must.Matchers.mustBe
-import play.api.Application
+
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -121,8 +121,8 @@ class CollapsibleStatementGroupSpec extends SpecBase {
 
     val visuallyHiddenElements = viewDoc.getElementsByClass("govuk-visually-hidden")
 
-    firstSpanElement mustBe msgs(missingFileMessage, paymentMethodSource)
-    secondSpanElement mustBe msgs("cf.common.not-available-screen-reader-cds", period)
+    firstSpanElement mustBe messages(missingFileMessage, paymentMethodSource)
+    secondSpanElement mustBe messages("cf.common.not-available-screen-reader-cds", period)
 
     visuallyHiddenElements.size() mustBe 2
   }
@@ -149,9 +149,7 @@ class CollapsibleStatementGroupSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = application().build()
 
-    implicit val msg: Messages                                = messages(app)
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     val certificateFiles: Seq[PostponedVatStatementFile] = Seq(
@@ -178,7 +176,7 @@ class CollapsibleStatementGroupSpec extends SpecBase {
       period: String,
       isCdsOnly: Boolean = true
     ): Document = Jsoup.parse(
-      app.injector
+      application.injector
         .instanceOf[collapsible_statement_group]
         .apply(
           certificateFiles,

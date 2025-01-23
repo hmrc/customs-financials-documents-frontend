@@ -80,7 +80,7 @@ class EmailActionSpec extends SpecBase {
   trait Setup {
     val mockDataStoreConnector: DataStoreConnector = mock[DataStoreConnector]
 
-    val app: Application = application()
+    val app: Application = applicationBuilder()
       .overrides(
         inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
       )
