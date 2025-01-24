@@ -494,7 +494,7 @@ class VatControllerSpec extends SpecBase {
 
         if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
           contentAsString(result) mustBe
-            view(viewModel)(request, messages, appConfig).toString()
+            view(viewModel)(request, messages, appConfig1).toString()
         }
       }
     }
@@ -614,15 +614,17 @@ class VatControllerSpec extends SpecBase {
     }
 
     "display historic request url when feature is enabled" in {
-      val view = application.injector.instanceOf[import_vat_not_available]
+      val app = applicationBuilder.build()
+
+      val view = app.injector.instanceOf[import_vat_not_available]
 
       appConfig.historicStatementsEnabled = true
 
       val historicRequestUrl: String = appConfig.historicRequestUrl(C79Certificate)
 
-      running(application) {
+      running(app) {
         val request = fakeRequest(GET, routes.VatController.certificatesUnavailablePage().url)
-        val result  = route(application, request).value
+        val result  = route(app, request).value
 
         status(result) mustBe OK
         contentAsString(result) mustBe
@@ -649,7 +651,7 @@ class VatControllerSpec extends SpecBase {
       )
       .build()
 
-    var appConfig1: AppConfig = appConfig
+    var appConfig1: AppConfig = app.injector.instanceOf[AppConfig]
 
     val view: import_vat = app.injector.instanceOf[import_vat]
   }

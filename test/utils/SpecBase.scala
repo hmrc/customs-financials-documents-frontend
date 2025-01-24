@@ -36,12 +36,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.stubPlayBodyParsers
 import utils.Utils.emptyString
 
-class FakeMetrics extends MetricRegistry {
-  val defaultRegistry: MetricRegistry = new MetricRegistry
-  val toJson: String                  = "{}"
-}
-
-class SpecBase
+trait SpecBase
     extends AnyWordSpecLike
     with MockitoSugar
     with OptionValues
@@ -54,6 +49,9 @@ class SpecBase
       .asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
       .withHeaders(newHeaders = "X-Session-Id" -> "someSessionId")
 
+  val guiceBuilderConfigValues: Seq[(String, String)] =
+    Seq("play.filters.csp.nonce.enabled" -> "false", "auditing.enabled" -> "false", "metrics.enabled" -> "false")
+
   def applicationBuilder(allEoriHistory: Seq[EoriHistory] = Seq.empty): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
@@ -63,16 +61,26 @@ class SpecBase
           .toInstance(new PvatFakeIdentifierAction(stubPlayBodyParsers(NoMaterializer))(allEoriHistory)),
         bind[MetricRegistry].toInstance(new FakeMetrics)
       )
-      .configure(
-        "play.filters.csp.nonce.enabled" -> "false",
-        "auditing.enabled"               -> "false",
-        "metrics.enabled"                -> "false"
-      )
+      .configure(guiceBuilderConfigValues: _*)
+
+  lazy val applicationBuilder: GuiceApplicationBuilder = new GuiceApplicationBuilder()
+    .overrides(
+      bind[IdentifierAction]
+        .toInstance(new FakeIdentifierAction(stubPlayBodyParsers(NoMaterializer))(Seq.empty)),
+      bind[PvatIdentifierAction]
+        .toInstance(new PvatFakeIdentifierAction(stubPlayBodyParsers(NoMaterializer))(Seq.empty)),
+      bind[MetricRegistry].toInstance(new FakeMetrics)
+    )
+    .configure(guiceBuilderConfigValues: _*)
 
   val application: Application = applicationBuilder().build()
 
-  implicit lazy val messages: Messages =
-    application.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
+  implicit lazy val messages: Messages = application.injector.instanceOf[MessagesApi].preferred(fakeRequest())
 
   implicit lazy val appConfig: AppConfig = application.injector.instanceOf[AppConfig]
+}
+
+class FakeMetrics extends MetricRegistry {
+  val defaultRegistry: MetricRegistry = new MetricRegistry
+  val toJson: String                  = "{}"
 }
