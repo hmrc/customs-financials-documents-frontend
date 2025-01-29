@@ -88,8 +88,7 @@ class DownloadLinkPvatStatementSpec extends SpecBase {
       downloadAriaLabel: String,
       period: String
     ): Document = Jsoup.parse(
-      application.injector
-        .instanceOf[download_link_pvat_statement]
+      instanceOf[download_link_pvat_statement](application)
         .apply(fileFormat, certificateFiles, downloadLinkMessage, downloadAriaLabel, period)
         .body
     )

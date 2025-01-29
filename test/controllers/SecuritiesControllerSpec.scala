@@ -140,7 +140,7 @@ class SecuritiesControllerSpec extends SpecBase {
   "statementsUnavailablePage" should {
 
     "render correctly" in {
-      val unavailableView = application.injector.instanceOf[security_statements_not_available]
+      val unavailableView = instanceOf[security_statements_not_available](application)
 
       running(application) {
         val request = fakeRequest(GET, routes.SecuritiesController.statementsUnavailablePage().url)
@@ -169,7 +169,7 @@ class SecuritiesControllerSpec extends SpecBase {
       fakeRequest(GET, routes.SecuritiesController.showSecurityStatements().url)
 
     val result: Future[Result]    = route(app, request).value
-    val view: security_statements = app.injector.instanceOf[security_statements]
+    val view: security_statements = instanceOf[security_statements](app)
 
     val date: LocalDate               = LocalDate.now().withDayOfMonth(DAY_28)
     val someRequestId: Option[String] = Some("statement-request-id")

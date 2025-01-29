@@ -66,9 +66,9 @@ class UndeliverableEmailSpec extends SpecBase {
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     val view: Document =
-      Jsoup.parse(application.injector.instanceOf[undeliverable_email].apply(nextPageUrl, email).body)
+      Jsoup.parse(instanceOf[undeliverable_email](application).apply(nextPageUrl, email).body)
 
     val viewWithNoEmail: Document =
-      Jsoup.parse(application.injector.instanceOf[undeliverable_email].apply(nextPageUrl).body)
+      Jsoup.parse(instanceOf[undeliverable_email](application).apply(nextPageUrl).body)
   }
 }

@@ -62,6 +62,6 @@ class FinancialsApiConnectorSpec extends SpecBase {
       .build()
 
     implicit val hc: HeaderCarrier        = HeaderCarrier()
-    val connector: FinancialsApiConnector = app.injector.instanceOf[FinancialsApiConnector]
+    val connector: FinancialsApiConnector = instanceOf[FinancialsApiConnector](app)
   }
 }

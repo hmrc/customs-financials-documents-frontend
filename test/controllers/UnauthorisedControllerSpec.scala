@@ -83,6 +83,6 @@ class UnauthorisedControllerSpec extends SpecBase {
       )
       .build()
 
-    val view: not_subscribed_to_cds = app.injector.instanceOf[not_subscribed_to_cds]
+    val view: not_subscribed_to_cds = instanceOf[not_subscribed_to_cds](app)
   }
 }

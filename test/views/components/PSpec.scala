@@ -30,7 +30,7 @@ class PSpec extends SpecBase {
   "P component" should {
 
     "render the default class name when classes is not defined" in {
-      val pView                         = application.injector.instanceOf[p]
+      val pView                         = instanceOf[p](application)
       val output: HtmlFormat.Appendable = pView(
         message = "Hello, world!"
       )(messages)
@@ -41,7 +41,7 @@ class PSpec extends SpecBase {
     }
 
     "render the message and classes correctly without id, link, and tabLink" in {
-      val pView                         = application.injector.instanceOf[p]
+      val pView                         = instanceOf[p](application)
       val output: HtmlFormat.Appendable = pView(
         message = "Hello, world!",
         classes = "custom-class"
@@ -55,7 +55,7 @@ class PSpec extends SpecBase {
     "render the message, classes, and id correctly with link and tabLink" in {
       val linkContent = Html("<a href='/link'>Link</a>")
       val tabContent  = Html("<a href='/tabLink'>Tab Link</a>")
-      val pView       = application.injector.instanceOf[p]
+      val pView       = instanceOf[p](application)
 
       val output: HtmlFormat.Appendable = pView(
         message = "Hello, world!",

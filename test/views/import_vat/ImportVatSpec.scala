@@ -85,6 +85,6 @@ class ImportVatSpec extends SpecBase {
 
     val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris, serviceUnavailableUrl)
 
-    val view: Document = Jsoup.parse(application.injector.instanceOf[import_vat].apply(viewModel).body)
+    val view: Document = Jsoup.parse(instanceOf[import_vat](application).apply(viewModel).body)
   }
 }

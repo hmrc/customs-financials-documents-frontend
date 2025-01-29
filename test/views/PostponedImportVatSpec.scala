@@ -48,8 +48,7 @@ class PostponedImportVatSpec extends SpecBase {
       when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
 
       val view: Document = Jsoup.parse(
-        app.injector
-          .instanceOf[postponed_import_vat]
+        instanceOf[postponed_import_vat](app)
           .apply(
             PostponedVatViewModel(
               postponedVatStatementFiles,
@@ -79,8 +78,7 @@ class PostponedImportVatSpec extends SpecBase {
       when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
 
       val view: Document = Jsoup.parse(
-        app.injector
-          .instanceOf[postponed_import_vat]
+        instanceOf[postponed_import_vat](app)
           .apply(
             PostponedVatViewModel(
               postponedVatStatementFiles,
@@ -106,8 +104,7 @@ class PostponedImportVatSpec extends SpecBase {
           .thenReturn(LocalDateTime.now().withDayOfMonth(DAY_19).minusMonths(ONE_MONTH))
 
         val view: Document = Jsoup.parse(
-          app.injector
-            .instanceOf[postponed_import_vat]
+          instanceOf[postponed_import_vat](app)
             .apply(
               PostponedVatViewModel(
                 postponedVatStatementFiles,
@@ -128,8 +125,7 @@ class PostponedImportVatSpec extends SpecBase {
       when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
 
       val view: Document = Jsoup.parse(
-        app.injector
-          .instanceOf[postponed_import_vat]
+        instanceOf[postponed_import_vat](app)
           .apply(
             PostponedVatViewModel(
               postponedVatStatementFiles,
@@ -152,8 +148,7 @@ class PostponedImportVatSpec extends SpecBase {
       when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
 
       val view: Document = Jsoup.parse(
-        app.injector
-          .instanceOf[postponed_import_vat]
+        instanceOf[postponed_import_vat](app)
           .apply(
             PostponedVatViewModel(
               Seq.empty,

@@ -55,6 +55,6 @@ class ServiceUnavailableSpec extends SpecBase {
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     val view: Document =
-      Jsoup.parse(application.injector.instanceOf[service_unavailable].apply(Option(backLinkUrl)).body)
+      Jsoup.parse(instanceOf[service_unavailable](application).apply(Option(backLinkUrl)).body)
   }
 }

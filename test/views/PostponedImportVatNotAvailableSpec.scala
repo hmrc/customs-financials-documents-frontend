@@ -62,8 +62,7 @@ class PostponedImportVatNotAvailableSpec extends SpecBase {
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     val view: Document = Jsoup.parse(
-      application.injector
-        .instanceOf[postponed_import_vat_not_available]
+      instanceOf[postponed_import_vat_not_available](application)
         .apply(eori, Option(serviceUnavailableUrl))
         .body
     )

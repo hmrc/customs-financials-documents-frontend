@@ -36,6 +36,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.stubPlayBodyParsers
 import utils.Utils.emptyString
 
+import scala.reflect.ClassTag
+
 trait SpecBase
     extends AnyWordSpecLike
     with MockitoSugar
@@ -78,6 +80,8 @@ trait SpecBase
   implicit lazy val messages: Messages = application.injector.instanceOf[MessagesApi].preferred(fakeRequest())
 
   implicit lazy val appConfig: AppConfig = application.injector.instanceOf[AppConfig]
+
+  def instanceOf[T: ClassTag](app: Application): T = app.injector.instanceOf[T]
 }
 
 class FakeMetrics extends MetricRegistry {

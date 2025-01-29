@@ -153,9 +153,9 @@ class DescriptionListSpec extends SpecBase {
     val testMultipleClassses = s"$testClass$singleSpace$testClass1$singleSpace$testClass2"
     val testId               = "test-id"
 
-    val instanceOfDd: dd = application.injector.instanceOf[dd]
-    val instanceOfDl: dl = application.injector.instanceOf[dl]
-    val instanceOfDt: dt = application.injector.instanceOf[dt]
+    val instanceOfDd: dd = instanceOf[dd](application)
+    val instanceOfDl: dl = instanceOf[dl](application)
+    val instanceOfDt: dt = instanceOf[dt](application)
 
     val ddComponent: Document               = Jsoup.parse(instanceOfDd(content).body)
     val ddComponentWithClass: Document      = Jsoup.parse(instanceOfDd(content, classes = Some(testClass)).body)

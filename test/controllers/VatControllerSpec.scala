@@ -594,11 +594,11 @@ class VatControllerSpec extends SpecBase {
   "certificatesUnavailablePage" should {
 
     "render correctly" in {
-      val view = application.injector.instanceOf[import_vat_not_available]
+      val view = instanceOf[import_vat_not_available](application)
 
       appConfig.historicStatementsEnabled = false
 
-      val navigator = application.injector.instanceOf[Navigator]
+      val navigator = instanceOf[Navigator](application)
 
       val serviceUnavailableUrl: String =
         routes.ServiceUnavailableController.onPageLoad(navigator.importVatNotAvailablePageId).url
@@ -636,9 +636,10 @@ class VatControllerSpec extends SpecBase {
   trait Setup {
     val mockFinancialsApiConnector: FinancialsApiConnector = mock[FinancialsApiConnector]
     val mockSdesConnector: SdesConnector                   = mock[SdesConnector]
-    val eoriHistory: Seq[EoriHistory]                      = Seq(EoriHistory(EORI_NUMBER, None, None))
-    val date: LocalDate                                    = LocalDate.now().withDayOfMonth(DAY_28)
-    val navigator                                          = new Navigator()
+
+    val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory(EORI_NUMBER, None, None))
+    val date: LocalDate               = LocalDate.now().withDayOfMonth(DAY_28)
+    val navigator                     = new Navigator()
 
     when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
       .thenReturn(Future.successful(true))
@@ -651,8 +652,8 @@ class VatControllerSpec extends SpecBase {
       )
       .build()
 
-    var appConfig1: AppConfig = app.injector.instanceOf[AppConfig]
+    var appConfig1: AppConfig = instanceOf[AppConfig](app)
 
-    val view: import_vat = app.injector.instanceOf[import_vat]
+    val view: import_vat = instanceOf[import_vat](app)
   }
 }

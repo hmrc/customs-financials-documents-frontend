@@ -75,7 +75,7 @@ class SpanSpec extends SpecBase {
     val classes    = "custom-class"
     val ariaHidden = "true"
 
-    val instanceOfSpan: span = application.injector.instanceOf[span]
+    val instanceOfSpan: span = instanceOf[span](application)
 
     val spanComponent: Document               = Jsoup.parse(instanceOfSpan(msgKey).body)
     val spanComponentWithClass: Document      = Jsoup.parse(instanceOfSpan(msgKey, classes = Some(classes)).body)

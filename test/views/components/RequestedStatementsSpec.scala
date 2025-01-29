@@ -79,6 +79,6 @@ class RequestedStatementsSpec extends SpecBase {
   trait Setup {
 
     protected def view(url: String): Document =
-      Jsoup.parse(application.injector.instanceOf[requestedStatements].apply(url).body)
+      Jsoup.parse(instanceOf[requestedStatements](application).apply(url).body)
   }
 }

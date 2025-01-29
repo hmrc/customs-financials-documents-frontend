@@ -153,7 +153,7 @@ class CurrentStatementRowSpec extends SpecBase {
     val visuallyHiddenMsg = "Not available visually hidden"
 
     def view(currentStatementRow: CurrentStatementRow): Document =
-      Jsoup.parse(application.injector.instanceOf[current_statement_row].apply(currentStatementRow).body)
+      Jsoup.parse(instanceOf[current_statement_row](application).apply(currentStatementRow).body)
 
     implicit val mockDateTimeService: DateTimeService = mock[DateTimeService]
 

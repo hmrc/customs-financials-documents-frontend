@@ -289,8 +289,8 @@ class PostponedVatControllerSpec extends SpecBase {
   "statementsUnavailablePage" should {
     "display the view correctly" in {
 
-      val view      = application.injector.instanceOf[postponed_import_vat_not_available]
-      val navigator = application.injector.instanceOf[Navigator]
+      val view      = instanceOf[postponed_import_vat_not_available](application)
+      val navigator = instanceOf[Navigator](application)
 
       val serviceUnavailableUrl: String =
         routes.ServiceUnavailableController.onPageLoad(navigator.postponedVatNotAvailablePageId).url
@@ -712,9 +712,9 @@ class PostponedVatControllerSpec extends SpecBase {
         )
         .build()
 
-    val appConfig1: AppConfig = app.injector.instanceOf[AppConfig]
+    val appConfig1: AppConfig = instanceOf[AppConfig](app)
 
-    val view: postponed_import_vat = app.injector.instanceOf[postponed_import_vat]
+    val view: postponed_import_vat = instanceOf[postponed_import_vat](app)
 
     private def monthValueOfCurrentDate(monthValueToSubtract: Int): Int =
       LocalDate.now().minusMonths(monthValueToSubtract).getMonthValue

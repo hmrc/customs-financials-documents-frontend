@@ -59,8 +59,8 @@ class AuthActionSpec extends SpecBase {
         )
         .build()
 
-      val bodyParsers      = app.injector.instanceOf[BodyParsers.Default]
-      val authActionHelper = app.injector.instanceOf[AuthActionHelper]
+      val bodyParsers      = instanceOf[BodyParsers.Default](app)
+      val authActionHelper = instanceOf[AuthActionHelper](app)
 
       val authAction =
         new AuthAction(new FakeFailingAuthConnector(new MissingBearerToken), appConfig, bodyParsers, authActionHelper)
@@ -85,8 +85,8 @@ class AuthActionSpec extends SpecBase {
         )
         .build()
 
-      val bodyParsers      = app.injector.instanceOf[BodyParsers.Default]
-      val authActionHelper = app.injector.instanceOf[AuthActionHelper]
+      val bodyParsers      = instanceOf[BodyParsers.Default](app)
+      val authActionHelper = instanceOf[AuthActionHelper](app)
 
       val authAction =
         new AuthAction(new FakeFailingAuthConnector(new BearerTokenExpired), appConfig, bodyParsers, authActionHelper)
@@ -112,8 +112,8 @@ class AuthActionSpec extends SpecBase {
         )
         .build()
 
-      val bodyParsers      = app.injector.instanceOf[BodyParsers.Default]
-      val authActionHelper = app.injector.instanceOf[AuthActionHelper]
+      val bodyParsers      = instanceOf[BodyParsers.Default](app)
+      val authActionHelper = instanceOf[AuthActionHelper](app)
 
       val authAction =
         new AuthAction(
@@ -144,8 +144,8 @@ class AuthActionSpec extends SpecBase {
         )
         .build()
 
-      val bodyParsers      = app.injector.instanceOf[BodyParsers.Default]
-      val authActionHelper = app.injector.instanceOf[AuthActionHelper]
+      val bodyParsers      = instanceOf[BodyParsers.Default](app)
+      val authActionHelper = instanceOf[AuthActionHelper](app)
 
       val authAction =
         new AuthAction(

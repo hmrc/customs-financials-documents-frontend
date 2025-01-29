@@ -68,7 +68,7 @@ class ServiceUnavailableControllerSpec extends SpecBase {
 
   trait Setup {
     val app: Application          = applicationBuilder.build()
-    val view: service_unavailable = app.injector.instanceOf[service_unavailable]
+    val view: service_unavailable = instanceOf[service_unavailable](app)
 
     val navigator: Navigator = new Navigator()
   }

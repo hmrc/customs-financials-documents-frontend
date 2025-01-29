@@ -49,7 +49,7 @@ class SecurityStatementsSpec extends SpecBase {
 
       "statements are available" in new Setup {
         val view: Document =
-          Jsoup.parse(application.injector.instanceOf[security_statements].apply(viewModelWithStatements).body)
+          Jsoup.parse(instanceOf[security_statements](application).apply(viewModelWithStatements).body)
 
         commonGuidanceText(view, application)
 
@@ -61,7 +61,7 @@ class SecurityStatementsSpec extends SpecBase {
 
       "statements are empty" in new Setup {
         val view: Document =
-          Jsoup.parse(application.injector.instanceOf[security_statements].apply(viewModelWithNoStatements).body)
+          Jsoup.parse(instanceOf[security_statements](application).apply(viewModelWithNoStatements).body)
 
         commonGuidanceText(view, application)
 
@@ -70,7 +70,7 @@ class SecurityStatementsSpec extends SpecBase {
 
       "current statements are empty" in new Setup {
         val view: Document =
-          Jsoup.parse(application.injector.instanceOf[security_statements].apply(viewModelWithNoCurrentStatements).body)
+          Jsoup.parse(instanceOf[security_statements](application).apply(viewModelWithNoCurrentStatements).body)
 
         commonGuidanceText(view, application)
 
@@ -82,7 +82,7 @@ class SecurityStatementsSpec extends SpecBase {
 
       "statements have Pdfs but not Csvs" in new Setup {
         val view: Document =
-          Jsoup.parse(application.injector.instanceOf[security_statements].apply(viewModelWithPdfStatementsOnly).body)
+          Jsoup.parse(instanceOf[security_statements](application).apply(viewModelWithPdfStatementsOnly).body)
 
         commonGuidanceText(view, application)
 
@@ -104,7 +104,7 @@ class SecurityStatementsSpec extends SpecBase {
 
       "statements have Csvs but not Pdfs" in new Setup {
         val view: Document =
-          Jsoup.parse(application.injector.instanceOf[security_statements].apply(viewModelWithCsvStatementsOnly).body)
+          Jsoup.parse(instanceOf[security_statements](application).apply(viewModelWithCsvStatementsOnly).body)
 
         commonGuidanceText(view, application)
 
@@ -130,8 +130,7 @@ class SecurityStatementsSpec extends SpecBase {
       "statements have Csv(with Unknown file type) but not Pdfs" in new Setup {
         val view: Document =
           Jsoup.parse(
-            application.injector
-              .instanceOf[security_statements]
+            instanceOf[security_statements](application)
               .apply(viewModelWithCsvStatementsOnlyWithUnknownFileType)
               .body
           )
@@ -160,7 +159,7 @@ class SecurityStatementsSpec extends SpecBase {
         )
 
         val viewModel: SecurityStatementsViewModel = SecurityStatementsViewModel(multipleEoris)
-        val view: Document                         = Jsoup.parse(application.injector.instanceOf[security_statements].apply(viewModel).body)
+        val view: Document                         = Jsoup.parse(instanceOf[security_statements](application).apply(viewModel).body)
 
         view.text().contains(messages("cf.account.details.previous-eori", "testEori"))
       }
@@ -173,7 +172,7 @@ class SecurityStatementsSpec extends SpecBase {
       )
 
       val viewModel: SecurityStatementsViewModel = SecurityStatementsViewModel(statementsWithMixedCurrent)
-      val view: Document                         = Jsoup.parse(application.injector.instanceOf[security_statements].apply(viewModel).body)
+      val view: Document                         = Jsoup.parse(instanceOf[security_statements](application).apply(viewModel).body)
 
       view.text().contains("PDF") mustBe true
       view.text().contains("CSV") mustBe false

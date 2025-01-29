@@ -86,7 +86,7 @@ class LinkSpec extends SpecBase {
     val linkId        = "custom-id"
     val ariaLabelText = "visually hidden label"
 
-    val instanceOfLink: link = application.injector.instanceOf[link]
+    val instanceOfLink: link = instanceOf[link](application)
 
     val linkComponent: Document          = Jsoup.parse(instanceOfLink(linkMessage, location).body)
     val linkComponentWithClass: Document = Jsoup.parse(instanceOfLink(linkMessage, location, linkClass = classes).body)

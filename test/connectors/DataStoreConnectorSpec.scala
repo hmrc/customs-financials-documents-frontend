@@ -217,6 +217,6 @@ class DataStoreConnectorSpec extends SpecBase {
       .build()
 
     implicit val hc: HeaderCarrier    = HeaderCarrier()
-    val connector: DataStoreConnector = app.injector.instanceOf[DataStoreConnector]
+    val connector: DataStoreConnector = instanceOf[DataStoreConnector](app)
   }
 }

@@ -478,8 +478,7 @@ class PostponedVatViewModelSpec extends SpecBase {
       preLinkMessageKey: String,
       postLinkMessageKey: String
     )(implicit msgs: Messages): HtmlFormat.Appendable =
-      application.injector
-        .instanceOf[requestedStatements]
+      instanceOf[requestedStatements](application)
         .apply(url, linkMessageKey, preLinkMessageKey, postLinkMessageKey)
   }
 }

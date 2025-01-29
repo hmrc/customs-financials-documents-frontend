@@ -75,7 +75,7 @@ class H1Spec extends SpecBase {
     val classes      = "custom-class"
     val id           = "custom-id"
 
-    val instanceOfH1: h1 = application.injector.instanceOf[h1]
+    val instanceOfH1: h1 = instanceOf[h1](application)
 
     val h1Component: Document               = Jsoup.parse(instanceOfH1(msgKey).body)
     val h1ComponentWithClass: Document      = Jsoup.parse(instanceOfH1(msgKey, classes = classes).body)

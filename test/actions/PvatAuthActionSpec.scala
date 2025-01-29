@@ -48,12 +48,16 @@ class PvatAuthActionSpec extends SpecBase {
         )
         .build()
 
-
-      val bodyParsers      = app.injector.instanceOf[Default]
-      val authActionHelper = app.injector.instanceOf[AuthActionHelper]
+      val bodyParsers      = instanceOf[Default](app)
+      val authActionHelper = instanceOf[AuthActionHelper](app)
 
       val authAction =
-        new PvatAuthAction(new FakeFailingAuthConnector(new MissingBearerToken), appConfig, bodyParsers, authActionHelper)
+        new PvatAuthAction(
+          new FakeFailingAuthConnector(new MissingBearerToken),
+          appConfig,
+          bodyParsers,
+          authActionHelper
+        )
 
       val controller = new Harness(authAction)
 
@@ -78,12 +82,16 @@ class PvatAuthActionSpec extends SpecBase {
         )
         .build()
 
-
-      val bodyParsers      = app.injector.instanceOf[BodyParsers.Default]
-      val authActionHelper = app.injector.instanceOf[AuthActionHelper]
+      val bodyParsers      = instanceOf[BodyParsers.Default](app)
+      val authActionHelper = instanceOf[AuthActionHelper](app)
 
       val authAction =
-        new PvatAuthAction(new FakeFailingAuthConnector(new BearerTokenExpired), appConfig, bodyParsers, authActionHelper)
+        new PvatAuthAction(
+          new FakeFailingAuthConnector(new BearerTokenExpired),
+          appConfig,
+          bodyParsers,
+          authActionHelper
+        )
 
       val controller = new Harness(authAction)
 
@@ -106,9 +114,8 @@ class PvatAuthActionSpec extends SpecBase {
         )
         .build()
 
-
-      val bodyParsers      = app.injector.instanceOf[BodyParsers.Default]
-      val authActionHelper = app.injector.instanceOf[AuthActionHelper]
+      val bodyParsers      = instanceOf[BodyParsers.Default](app)
+      val authActionHelper = instanceOf[AuthActionHelper](app)
 
       val authAction =
         new PvatAuthAction(
@@ -156,9 +163,8 @@ class PvatAuthActionSpec extends SpecBase {
         )
         .build()
 
-
-      val bodyParsers      = app.injector.instanceOf[BodyParsers.Default]
-      val authActionHelper = app.injector.instanceOf[AuthActionHelper]
+      val bodyParsers      = instanceOf[BodyParsers.Default](app)
+      val authActionHelper = instanceOf[AuthActionHelper](app)
 
       val authAction = new PvatAuthAction(mockAuthConnector, appConfig, bodyParsers, authActionHelper)
       val controller = new Harness(authAction)

@@ -86,7 +86,7 @@ class EmailActionSpec extends SpecBase {
       )
       .build()
 
-    val emailAction: EmailAction = app.injector.instanceOf[EmailAction]
+    val emailAction: EmailAction = instanceOf[EmailAction](app)
 
     val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
       AuthenticatedRequest(FakeRequest("GET", "/"), "someEori", Seq.empty)

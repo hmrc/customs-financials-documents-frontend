@@ -176,8 +176,7 @@ class CollapsibleStatementGroupSpec extends SpecBase {
       period: String,
       isCdsOnly: Boolean = true
     ): Document = Jsoup.parse(
-      application.injector
-        .instanceOf[collapsible_statement_group]
+      instanceOf[collapsible_statement_group](application)
         .apply(
           certificateFiles,
           downloadLinkMessage,

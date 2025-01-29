@@ -71,7 +71,7 @@ class DivSpec extends SpecBase {
     val testClass     = "test-class"
     val testId        = "test-id"
 
-    val instanceOfDiv: div = application.injector.instanceOf[div]
+    val instanceOfDiv: div = instanceOf[div](application)
 
     val divComponent: Document               = Jsoup.parse(instanceOfDiv(content).body)
     val divComponentWithClass: Document      = Jsoup.parse(instanceOfDiv(content, classes = Some(testClass)).body)

@@ -50,7 +50,7 @@ class SdesConnectorSpec extends SpecBase {
       "make a GET request to sdesSecurityStatementsUrl" in new Setup {
 
         val urlLink: URL               = url"$sdesSecurityStatementsUrl"
-        val sdesService: SdesConnector = app.injector.instanceOf[SdesConnector]
+        val sdesService: SdesConnector = instanceOf[SdesConnector](app)
 
         when(requestBuilder.setHeader(any[(String, String)]())).thenReturn(requestBuilder)
         when(mockHttp.get(any)(any)).thenReturn(requestBuilder)
@@ -64,7 +64,7 @@ class SdesConnectorSpec extends SpecBase {
       "filter out unknown file types" in new Setup {
 
         val urlLink: URL               = url"$sdesSecurityStatementsUrl"
-        val sdesService: SdesConnector = app.injector.instanceOf[SdesConnector]
+        val sdesService: SdesConnector = instanceOf[SdesConnector](app)
 
         when(requestBuilder.setHeader(any[(String, String)]())).thenReturn(requestBuilder)
         when(mockHttp.get(any)(any)).thenReturn(requestBuilder)
@@ -103,7 +103,7 @@ class SdesConnectorSpec extends SpecBase {
           )
           .build()
 
-        val sdesService: SdesConnector = app.injector.instanceOf[SdesConnector]
+        val sdesService: SdesConnector = instanceOf[SdesConnector](app)
 
         await(sdesService.getSecurityStatements(someEori)(hc))
 
@@ -117,7 +117,7 @@ class SdesConnectorSpec extends SpecBase {
       "filter out unknown file types" in new Setup {
 
         val urlLink                    = url"$sdesVatCertificatesUrl"
-        val sdesService: SdesConnector = app.injector.instanceOf[SdesConnector]
+        val sdesService: SdesConnector = instanceOf[SdesConnector](app)
 
         when(requestBuilder.setHeader(any[(String, String)]())).thenReturn(requestBuilder)
         when(mockHttp.get(any)(any)).thenReturn(requestBuilder)
@@ -157,7 +157,7 @@ class SdesConnectorSpec extends SpecBase {
           )
           .build()
 
-        val sdesService: SdesConnector = app.injector.instanceOf[SdesConnector]
+        val sdesService: SdesConnector = instanceOf[SdesConnector](app)
 
         await(sdesService.getVatCertificates(someEori)(hc, messages))
 
@@ -170,7 +170,7 @@ class SdesConnectorSpec extends SpecBase {
 
       "filter out unknown file types" in new Setup {
         val urlLink: URL               = url"$sdesPostponedVatStatementsUrl"
-        val sdesService: SdesConnector = app.injector.instanceOf[SdesConnector]
+        val sdesService: SdesConnector = instanceOf[SdesConnector](app)
 
         when(requestBuilder.setHeader(any[(String, String)]())).thenReturn(requestBuilder)
         when(mockHttp.get(any)(any)).thenReturn(requestBuilder)
@@ -214,7 +214,7 @@ class SdesConnectorSpec extends SpecBase {
           )
           .build()
 
-        val sdesService: SdesConnector = app.injector.instanceOf[SdesConnector]
+        val sdesService: SdesConnector = instanceOf[SdesConnector](app)
 
         await(sdesService.getPostponedVatStatements(someEori)(hc))
 

@@ -58,6 +58,6 @@ class ImportVatNotAvailableSpec extends SpecBase {
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     val view: Document =
-      Jsoup.parse(application.injector.instanceOf[import_vat_not_available].apply(Option(serviceUnavailableUrl)).body)
+      Jsoup.parse(instanceOf[import_vat_not_available](application).apply(Option(serviceUnavailableUrl)).body)
   }
 }
