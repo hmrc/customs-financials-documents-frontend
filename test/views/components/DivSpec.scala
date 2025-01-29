@@ -20,18 +20,21 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import org.scalatest.matchers.must.Matchers.{must, mustBe}
-import play.api.i18n.Messages
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.twirl.api.Html
 import utils.SpecBase
 import views.html.components.div
+import play.api.Application
 
-class DivSpec extends SpecBase {
+class DivSpec extends SpecBase with GuiceOneAppPerSuite {
+
+  import Setup.*
 
   "div component" should {
 
     "display correct contents" when {
 
-      "only content has been provided" in new Setup {
+      "only content has been provided" in {
         val div: Elements = divComponent.select("div")
 
         div.text() mustBe contentText
@@ -39,7 +42,7 @@ class DivSpec extends SpecBase {
         div.first().hasAttr("id") mustBe false
       }
 
-      "class has been provided along with content" in new Setup {
+      "class has been provided along with content" in {
         val div: Elements = divComponentWithClass.select("div")
 
         div.text() mustBe contentText
@@ -47,7 +50,7 @@ class DivSpec extends SpecBase {
         div.first().hasAttr("id") mustBe false
       }
 
-      "id has been provided along with content" in new Setup {
+      "id has been provided along with content" in {
         val div: Elements = divComponentWithId.select("div")
 
         div.text() mustBe contentText
@@ -55,7 +58,7 @@ class DivSpec extends SpecBase {
         div.first().attr("id") mustBe testId
       }
 
-      "both class and id have been provided along with content" in new Setup {
+      "both class and id have been provided along with content" in {
         val div: Elements = divComponentWithClassAndId.select("div")
 
         div.text() mustBe contentText
@@ -65,13 +68,15 @@ class DivSpec extends SpecBase {
     }
   }
 
-  trait Setup {
+  override def fakeApplication(): Application = applicationBuilder.build()
+
+  object Setup {
     val contentText   = "some content"
     val content: Html = Html(contentText)
     val testClass     = "test-class"
     val testId        = "test-id"
 
-    val instanceOfDiv: div = instanceOf[div](application)
+    val instanceOfDiv: div = instanceOf[div](app)
 
     val divComponent: Document               = Jsoup.parse(instanceOfDiv(content).body)
     val divComponentWithClass: Document      = Jsoup.parse(instanceOfDiv(content, classes = Some(testClass)).body)

@@ -20,19 +20,22 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import org.scalatest.matchers.must.Matchers.mustBe
-
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Application
 import play.api.i18n.Messages
 import utils.CommonTestData.URL_TEST
 import utils.SpecBase
 import views.html.components.requestedStatements
 
-class RequestedStatementsSpec extends SpecBase {
+class RequestedStatementsSpec extends SpecBase with GuiceOneAppPerSuite {
+
+  import Setup.*
 
   "view" should {
 
     "display correct contents" when {
 
-      "only url is provided" in new Setup {
+      "only url is provided" in {
 
         val viewDoc: Document = view(URL_TEST)
 
@@ -45,7 +48,7 @@ class RequestedStatementsSpec extends SpecBase {
         )
       }
 
-      "all the arguments' value are provided" in new Setup {
+      "all the arguments' value are provided" in {
         val viewDoc: Document = view(URL_TEST)
 
         shouldContainTheParagraphWithCorrectStyleClass(viewDoc)
@@ -76,9 +79,11 @@ class RequestedStatementsSpec extends SpecBase {
     docHtml.contains(messages(postLinkMessage)) mustBe true
   }
 
-  trait Setup {
+  override def fakeApplication(): Application = applicationBuilder.build()
 
-    protected def view(url: String): Document =
-      Jsoup.parse(instanceOf[requestedStatements](application).apply(url).body)
+  object Setup {
+
+    def view(url: String): Document =
+      Jsoup.parse(instanceOf[requestedStatements](app).apply(url).body)
   }
 }

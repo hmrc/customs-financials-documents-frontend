@@ -25,21 +25,25 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import org.scalatest.matchers.must.Matchers.mustBe
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import utils.CommonTestData._
+import utils.CommonTestData.*
 import utils.SpecBase
 import utils.Utils.emptyString
 import views.html.postponed_vat.download_link_pvat_statement
 
-class DownloadLinkPvatStatementSpec extends SpecBase {
+class DownloadLinkPvatStatementSpec extends SpecBase with GuiceOneAppPerSuite {
+
+  import Setup.*
 
   "view" should {
 
     "display correct contents" when {
 
-      "Postponed Vat statement files are present" in new Setup {
+      "Postponed Vat statement files are present" in {
         val viewDoc: Document = view(Pdf, certificateFiles, downloadLinkMessage, downloadAriaLabel, period)
 
         val elements: Elements = viewDoc.getElementsByAttribute("href")
@@ -52,7 +56,7 @@ class DownloadLinkPvatStatementSpec extends SpecBase {
           "test_period CDS statement - PDF (1KB)"
       }
 
-      "there is no Postponed Vat statement files" in new Setup {
+      "there is no Postponed Vat statement files" in {
         val viewDoc: Document = view(Pdf, Seq(), downloadLinkMessage, downloadAriaLabel, period)
 
         viewDoc.body().html() mustBe empty
@@ -63,7 +67,9 @@ class DownloadLinkPvatStatementSpec extends SpecBase {
     }
   }
 
-  trait Setup {
+  override def fakeApplication(): Application = applicationBuilder.build()
+
+  object Setup {
     val fileFormat: FileFormat                           = Pdf
     val certificateFiles: Seq[PostponedVatStatementFile] = Seq(
       PostponedVatStatementFile(
@@ -88,7 +94,7 @@ class DownloadLinkPvatStatementSpec extends SpecBase {
       downloadAriaLabel: String,
       period: String
     ): Document = Jsoup.parse(
-      instanceOf[download_link_pvat_statement](application)
+      instanceOf[download_link_pvat_statement](app)
         .apply(fileFormat, certificateFiles, downloadLinkMessage, downloadAriaLabel, period)
         .body
     )

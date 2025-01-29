@@ -20,18 +20,21 @@ import config.AppConfig
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.matchers.must.Matchers.mustBe
-
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.SpecBase
 import views.html.import_vat.import_vat_not_available
 
-class ImportVatNotAvailableSpec extends SpecBase {
+class ImportVatNotAvailableSpec extends SpecBase with GuiceOneAppPerSuite {
 
   "ImportVatNotAvailable view" should {
 
-    "display correct title and guidance" in new Setup {
+    "display correct title and guidance" in {
+      import Setup.*
+
       view.title() mustBe
         s"${messages("cf.account.vat.title")} - ${messages("service.name")} - GOV.UK"
 
@@ -52,12 +55,14 @@ class ImportVatNotAvailableSpec extends SpecBase {
     }
   }
 
-  trait Setup {
+  override def fakeApplication(): Application = applicationBuilder.build()
+
+  object Setup {
     val serviceUnavailableUrl: String = "service_unavailable_url"
 
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     val view: Document =
-      Jsoup.parse(instanceOf[import_vat_not_available](application).apply(Option(serviceUnavailableUrl)).body)
+      Jsoup.parse(instanceOf[import_vat_not_available](app).apply(Option(serviceUnavailableUrl)).body)
   }
 }

@@ -19,18 +19,19 @@ package views.components
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.matchers.must.Matchers.{must, mustBe}
-
-import play.api.test.Helpers._
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Application
+import play.api.test.Helpers.*
 import play.twirl.api.{Html, HtmlFormat}
 import utils.SpecBase
 import views.html.components.p
 
-class PSpec extends SpecBase {
+class PSpec extends SpecBase with GuiceOneAppPerSuite {
 
   "P component" should {
 
     "render the default class name when classes is not defined" in {
-      val pView                         = instanceOf[p](application)
+      val pView                         = instanceOf[p](app)
       val output: HtmlFormat.Appendable = pView(
         message = "Hello, world!"
       )(messages)
@@ -41,7 +42,7 @@ class PSpec extends SpecBase {
     }
 
     "render the message and classes correctly without id, link, and tabLink" in {
-      val pView                         = instanceOf[p](application)
+      val pView                         = instanceOf[p](app)
       val output: HtmlFormat.Appendable = pView(
         message = "Hello, world!",
         classes = "custom-class"
@@ -55,7 +56,7 @@ class PSpec extends SpecBase {
     "render the message, classes, and id correctly with link and tabLink" in {
       val linkContent = Html("<a href='/link'>Link</a>")
       val tabContent  = Html("<a href='/tabLink'>Tab Link</a>")
-      val pView       = instanceOf[p](application)
+      val pView       = instanceOf[p](app)
 
       val output: HtmlFormat.Appendable = pView(
         message = "Hello, world!",
@@ -72,4 +73,6 @@ class PSpec extends SpecBase {
       html.getElementById("test-id").select("a").get(1).text() mustBe "Tab Link"
     }
   }
+
+  override def fakeApplication(): Application = applicationBuilder.build()
 }

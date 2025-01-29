@@ -28,6 +28,8 @@ import viewmodels.ImportVatViewModel
 import views.html.import_vat.import_vat
 import models.{VatCertificatesByMonth, VatCertificatesForEori}
 import org.scalatest.matchers.must.Matchers.mustBe
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Application
 import utils.CommonTestData.{
   DAY_28, EORI_NUMBER, FIVE_MONTHS, FOUR_MONTHS, ONE_MONTH, SIX_MONTHS, THREE_MONTHS, TWO_MONTHS
 }
@@ -35,11 +37,13 @@ import utils.Utils.emptyString
 
 import java.time.LocalDate
 
-class ImportVatSpec extends SpecBase {
+class ImportVatSpec extends SpecBase with GuiceOneAppPerSuite {
 
   "ImportVat view" should {
 
-    "display the correct title and guidance" in new Setup {
+    "display the correct title and guidance" in {
+      import Setup.*
+
       view.title() mustBe
         s"${messages("cf.account.vat.title")} - ${messages("service.name")} - GOV.UK"
 
@@ -63,7 +67,9 @@ class ImportVatSpec extends SpecBase {
     }
   }
 
-  trait Setup {
+  override def fakeApplication(): Application = applicationBuilder.build()
+
+  object Setup {
     val serviceUnavailableUrl: Option[String] = Option("service_unavailable_url")
 
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
@@ -85,6 +91,6 @@ class ImportVatSpec extends SpecBase {
 
     val viewModel: ImportVatViewModel = ImportVatViewModel(vatCertificatesForEoris, serviceUnavailableUrl)
 
-    val view: Document = Jsoup.parse(instanceOf[import_vat](application).apply(viewModel).body)
+    val view: Document = Jsoup.parse(instanceOf[import_vat](app).apply(viewModel).body)
   }
 }

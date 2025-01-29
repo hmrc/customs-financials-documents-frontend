@@ -25,26 +25,26 @@ import models.metadata.PostponedVatStatementFileMetadata
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.matchers.must.Matchers.{must, mustBe}
-import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import play.api.test.Helpers.running
 import play.api.{Application, inject}
 import services.DateTimeService
-import utils.CommonTestData._
+import utils.CommonTestData.*
 import utils.SpecBase
 import viewmodels.{PVATUrls, PostponedVatViewModel, PvEmail}
 import views.html.postponed_import_vat
-
 import org.mockito.Mockito.when
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 
 import java.time.{LocalDate, LocalDateTime}
 
-class PostponedImportVatSpec extends SpecBase {
+class PostponedImportVatSpec extends SpecBase with GuiceOneAppPerSuite {
+
+  import Setup.*
 
   "PostponedImportVatView" should {
 
-    "display the correct title and guidance" in new Setup {
+    "display the correct title and guidance" in {
       when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
 
       val view: Document = Jsoup.parse(
@@ -74,7 +74,7 @@ class PostponedImportVatSpec extends SpecBase {
         messages("cf.account.vat.chief.heading")
     }
 
-    "not display CHIEF doc column when there are no CHIEF doc" in new Setup {
+    "not display CHIEF doc column when there are no CHIEF doc" in {
       when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
 
       val view: Document = Jsoup.parse(
@@ -99,7 +99,7 @@ class PostponedImportVatSpec extends SpecBase {
     }
 
     "display 'not available' messages correctly when no statements are present " +
-      "and it is after the 19th of the previous month" in new Setup {
+      "and it is after the 19th of the previous month" in {
         when(mockDateTimeService.systemDateTime())
           .thenReturn(LocalDateTime.now().withDayOfMonth(DAY_19).minusMonths(ONE_MONTH))
 
@@ -121,7 +121,7 @@ class PostponedImportVatSpec extends SpecBase {
         cdsNotAvailableMessage must include(messages("cf.common.not-available"))
       }
 
-    "display grouped certificates by EORI and format correctly" in new Setup {
+    "display grouped certificates by EORI and format correctly" in {
       when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
 
       val view: Document = Jsoup.parse(
@@ -144,7 +144,7 @@ class PostponedImportVatSpec extends SpecBase {
       view.html() must include(messages("cf.account.pvat.aria.amended-download-link"))
     }
 
-    "handle missing files and display messages appropriately" in new Setup {
+    "handle missing files and display messages appropriately" in {
       when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
 
       val view: Document = Jsoup.parse(
@@ -165,7 +165,14 @@ class PostponedImportVatSpec extends SpecBase {
     }
   }
 
-  trait Setup {
+  override def fakeApplication(): Application =
+    applicationBuilder()
+      .overrides(
+        inject.bind[DateTimeService].toInstance(mockDateTimeService)
+      )
+      .build()
+
+  object Setup {
     val date: LocalDate = LocalDate.now()
 
     val serviceUnavailableUrl: String = "service_unavailable_url"
@@ -293,14 +300,7 @@ class PostponedImportVatSpec extends SpecBase {
       PostponedVatStatementFile(STAT_FILE_NAME_02, DOWNLOAD_URL_00, SIZE_111L, postVatStatMetaData12, EORI_NUMBER)
     )
 
-    implicit val mockDateTimeService: DateTimeService = mock[DateTimeService]
-
-    val app: Application = applicationBuilder()
-      .overrides(
-        inject.bind[DateTimeService].toInstance(mockDateTimeService)
-      )
-      .build()
-
+    implicit val mockDateTimeService: DateTimeService         = mock[DateTimeService]
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     val pvatUrls: PVATUrls = PVATUrls(

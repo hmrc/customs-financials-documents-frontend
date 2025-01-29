@@ -19,15 +19,14 @@ package views.securities
 import config.AppConfig
 import models.FileFormat.{Csv, Pdf, UnknownFileFormat}
 import models.FileRole.SecurityStatement
-import models._
+import models.*
 import models.metadata.SecurityStatementFileMetadata
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import org.scalatest.Assertion
 import org.scalatest.matchers.must.Matchers.mustBe
-
-import play.api.i18n.Messages
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.CommonTestData.{
@@ -41,17 +40,18 @@ import play.api.Application
 
 import java.time.LocalDate
 
-class SecurityStatementsSpec extends SpecBase {
+class SecurityStatementsSpec extends SpecBase with GuiceOneAppPerSuite {
+  import Setup.*
 
   "view" should {
 
     "display correct title and guidance" when {
 
-      "statements are available" in new Setup {
+      "statements are available" in {
         val view: Document =
-          Jsoup.parse(instanceOf[security_statements](application).apply(viewModelWithStatements).body)
+          Jsoup.parse(instanceOf[security_statements](app).apply(viewModelWithStatements).body)
 
-        commonGuidanceText(view, application)
+        commonGuidanceText(view, app)
 
         view.text().contains("PDF") mustBe true
         view.text().contains("CSV") mustBe true
@@ -59,20 +59,20 @@ class SecurityStatementsSpec extends SpecBase {
         view.text().contains(messages("cf.security-statements.eom")) mustBe true
       }
 
-      "statements are empty" in new Setup {
+      "statements are empty" in {
         val view: Document =
-          Jsoup.parse(instanceOf[security_statements](application).apply(viewModelWithNoStatements).body)
+          Jsoup.parse(instanceOf[security_statements](app).apply(viewModelWithNoStatements).body)
 
-        commonGuidanceText(view, application)
+        commonGuidanceText(view, app)
 
         view.text().contains(messages("cf.security-statements.eom")) mustBe false
       }
 
-      "current statements are empty" in new Setup {
+      "current statements are empty" in {
         val view: Document =
-          Jsoup.parse(instanceOf[security_statements](application).apply(viewModelWithNoCurrentStatements).body)
+          Jsoup.parse(instanceOf[security_statements](app).apply(viewModelWithNoCurrentStatements).body)
 
-        commonGuidanceText(view, application)
+        commonGuidanceText(view, app)
 
         view.getElementById("no-statements").text() mustBe messages("cf.security-statements.no-statements")
         view.text().contains(messages("cf.security-statements.eom")) mustBe false
@@ -80,11 +80,11 @@ class SecurityStatementsSpec extends SpecBase {
         view.text().contains("CSV") mustBe false
       }
 
-      "statements have Pdfs but not Csvs" in new Setup {
+      "statements have Pdfs but not Csvs" in {
         val view: Document =
-          Jsoup.parse(instanceOf[security_statements](application).apply(viewModelWithPdfStatementsOnly).body)
+          Jsoup.parse(instanceOf[security_statements](app).apply(viewModelWithPdfStatementsOnly).body)
 
-        commonGuidanceText(view, application)
+        commonGuidanceText(view, app)
 
         view.text().contains(messages("cf.security-statements.eom")) mustBe false
 
@@ -102,11 +102,11 @@ class SecurityStatementsSpec extends SpecBase {
           ) mustBe true
       }
 
-      "statements have Csvs but not Pdfs" in new Setup {
+      "statements have Csvs but not Pdfs" in {
         val view: Document =
-          Jsoup.parse(instanceOf[security_statements](application).apply(viewModelWithCsvStatementsOnly).body)
+          Jsoup.parse(instanceOf[security_statements](app).apply(viewModelWithCsvStatementsOnly).body)
 
-        commonGuidanceText(view, application)
+        commonGuidanceText(view, app)
 
         view.text().contains(messages("cf.security-statements.eom")) mustBe true
 
@@ -127,15 +127,15 @@ class SecurityStatementsSpec extends SpecBase {
           ) mustBe true
       }
 
-      "statements have Csv(with Unknown file type) but not Pdfs" in new Setup {
+      "statements have Csv(with Unknown file type) but not Pdfs" in {
         val view: Document =
           Jsoup.parse(
-            instanceOf[security_statements](application)
+            instanceOf[security_statements](app)
               .apply(viewModelWithCsvStatementsOnlyWithUnknownFileType)
               .body
           )
 
-        commonGuidanceText(view, application)
+        commonGuidanceText(view, app)
 
         view.text().contains("CSV") mustBe true
         val unavailableCsvElem: Element   = view.getElementById("statements-list-0-row-0-unavailable-csv")
@@ -152,27 +152,27 @@ class SecurityStatementsSpec extends SpecBase {
         view.text().contains(messages("cf.unavailable")) mustBe true
       }
 
-      "statements are available and EORI header is present" in new Setup {
+      "statements are available and EORI header is present" in {
         val multipleEoris: Seq[SecurityStatementsForEori] = Seq(
           securityStatementsForEori,
           securityStatementsForEori.copy(eoriHistory = EoriHistory("testEori", None, None))
         )
 
         val viewModel: SecurityStatementsViewModel = SecurityStatementsViewModel(multipleEoris)
-        val view: Document                         = Jsoup.parse(instanceOf[security_statements](application).apply(viewModel).body)
+        val view: Document                         = Jsoup.parse(instanceOf[security_statements](app).apply(viewModel).body)
 
         view.text().contains(messages("cf.account.details.previous-eori", "testEori"))
       }
     }
 
-    "return PDF statements when CSV statements are empty" in new Setup {
+    "return PDF statements when CSV statements are empty" in {
       val statementsWithMixedCurrent: Seq[SecurityStatementsForEori] = Seq(
         securityStatementsForEori.copy(currentStatements = Seq.empty),
         securityStatementsForEori.copy(currentStatements = Seq(statementsByPeriodForPdf))
       )
 
       val viewModel: SecurityStatementsViewModel = SecurityStatementsViewModel(statementsWithMixedCurrent)
-      val view: Document                         = Jsoup.parse(instanceOf[security_statements](application).apply(viewModel).body)
+      val view: Document                         = Jsoup.parse(instanceOf[security_statements](app).apply(viewModel).body)
 
       view.text().contains("PDF") mustBe true
       view.text().contains("CSV") mustBe false
@@ -221,7 +221,9 @@ class SecurityStatementsSpec extends SpecBase {
       messages("cf.security-statements.historic.request")
   }
 
-  trait Setup {
+  override def fakeApplication(): Application = applicationBuilder.build()
+
+  object Setup {
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     val date: LocalDate = LocalDate.now().withDayOfMonth(DAY_28)

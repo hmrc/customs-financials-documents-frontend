@@ -16,22 +16,23 @@
 
 package views.email
 
-import config.AppConfig
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.matchers.must.Matchers.mustBe
-
-import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.SpecBase
 import views.html.email.undeliverable_email
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Application
 
-class UndeliverableEmailSpec extends SpecBase {
+class UndeliverableEmailSpec extends SpecBase with GuiceOneAppPerSuite {
+
+  import Setup.*
 
   "view" should {
 
-    "display correct guidance and text" in new Setup {
+    "display correct guidance and text" in {
 
       view.title() mustBe
         s"${messages("cf.undeliverable.email.title")} - ${messages("service.name")} - GOV.UK"
@@ -54,21 +55,23 @@ class UndeliverableEmailSpec extends SpecBase {
       view.text().contains(email.get) mustBe true
     }
 
-    "not display the email paragraph if there is no email" in new Setup {
+    "not display the email paragraph if there is no email" in {
       viewWithNoEmail.text().contains(email.get) mustBe false
     }
   }
 
-  trait Setup {
+  override def fakeApplication(): Application = applicationBuilder.build()
+
+  object Setup {
     val nextPageUrl           = "test_url"
     val email: Option[String] = Some("test@test.com")
 
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     val view: Document =
-      Jsoup.parse(instanceOf[undeliverable_email](application).apply(nextPageUrl, email).body)
+      Jsoup.parse(instanceOf[undeliverable_email](app).apply(nextPageUrl, email).body)
 
     val viewWithNoEmail: Document =
-      Jsoup.parse(instanceOf[undeliverable_email](application).apply(nextPageUrl).body)
+      Jsoup.parse(instanceOf[undeliverable_email](app).apply(nextPageUrl).body)
   }
 }

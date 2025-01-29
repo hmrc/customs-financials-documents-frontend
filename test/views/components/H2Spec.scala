@@ -20,17 +20,20 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import org.scalatest.matchers.must.Matchers.{must, mustBe}
-import play.api.i18n.Messages
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Application
 import utils.SpecBase
 import views.html.components.h2
 
-class H2Spec extends SpecBase {
+class H2Spec extends SpecBase with GuiceOneAppPerSuite {
+
+  import Setup.*
 
   "h2 component" should {
 
     "display correct contents" when {
 
-      "only message key has been provided" in new Setup {
+      "only message key has been provided" in {
         h2Component.text() mustBe messages(msgKey)
 
         val h2: Elements = h2Component.select("h2")
@@ -41,7 +44,7 @@ class H2Spec extends SpecBase {
         h2.first().hasAttr("id") mustBe false
       }
 
-      "class has been provided along with message key" in new Setup {
+      "class has been provided along with message key" in {
         h2ComponentWithClass.text() mustBe messages(msgKey)
 
         val h2: Elements = h2ComponentWithClass.select("h2")
@@ -49,7 +52,7 @@ class H2Spec extends SpecBase {
         h2.first().classNames() must contain(classes)
       }
 
-      "id has been provided along with message key" in new Setup {
+      "id has been provided along with message key" in {
         h2ComponentWithId.text() mustBe messages(msgKey)
 
         val h2: Elements = h2ComponentWithId.select("h2")
@@ -57,7 +60,7 @@ class H2Spec extends SpecBase {
         h2.first().attr("id") mustBe id
       }
 
-      "classes and id have been provided along with message key" in new Setup {
+      "classes and id have been provided along with message key" in {
         h2ComponentWithClassAndId.text() mustBe messages(msgKey)
 
         val h2: Elements = h2ComponentWithClassAndId.select("h2")
@@ -68,13 +71,15 @@ class H2Spec extends SpecBase {
     }
   }
 
-  trait Setup {
+  override def fakeApplication(): Application = applicationBuilder.build()
+
+  object Setup {
     val msgKey       = "messageKey"
     val defaultClass = "govuk-heading-m"
     val classes      = "custom-class"
     val id           = "custom-id"
 
-    val instanceOfH2: h2 = instanceOf[h2](application)
+    val instanceOfH2: h2 = instanceOf[h2](app)
 
     val h2Component: Document               = Jsoup.parse(instanceOfH2(msgKey).body)
     val h2ComponentWithClass: Document      = Jsoup.parse(instanceOfH2(msgKey, classes = classes).body)

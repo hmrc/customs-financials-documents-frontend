@@ -20,17 +20,20 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import org.scalatest.matchers.must.Matchers.{must, mustBe}
-import play.api.i18n.Messages
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Application
 import utils.SpecBase
 import views.html.components.link
 
-class LinkSpec extends SpecBase {
+class LinkSpec extends SpecBase with GuiceOneAppPerSuite {
+
+  import Setup.*
 
   "link component" should {
 
     "display correct contents" when {
 
-      "only link message and location have been provided" in new Setup {
+      "only link message and location have been provided" in {
         linkComponent.text() mustBe messages(linkMessage)
 
         val link: Elements = linkComponent.select("a")
@@ -42,7 +45,7 @@ class LinkSpec extends SpecBase {
         link.first().hasAttr("id") mustBe false
       }
 
-      "class has been provided along with link message and location" in new Setup {
+      "class has been provided along with link message and location" in {
         linkComponentWithClass.text() mustBe messages(linkMessage)
 
         val link: Elements = linkComponentWithClass.select("a")
@@ -50,7 +53,7 @@ class LinkSpec extends SpecBase {
         link.first().classNames() must contain(classes)
       }
 
-      "id has been provided along with link message and location" in new Setup {
+      "id has been provided along with link message and location" in {
         linkComponentWithId.text() mustBe messages(linkMessage)
 
         val link: Elements = linkComponentWithId.select("a")
@@ -58,7 +61,7 @@ class LinkSpec extends SpecBase {
         link.first().attr("id") mustBe linkId
       }
 
-      "classes and id have been provided along with link message and location" in new Setup {
+      "classes and id have been provided along with link message and location" in {
         linkComponentWithClassAndId.text() mustBe messages(linkMessage)
 
         val link: Elements = linkComponentWithClassAndId.select("a")
@@ -67,7 +70,7 @@ class LinkSpec extends SpecBase {
         link.first().attr("id") mustBe linkId
       }
 
-      "aria-label has been provided along with link message and location" in new Setup {
+      "aria-label has been provided along with link message and location" in {
         linkComponentWithAriaLabel.text() must include(messages(linkMessage))
         linkComponentWithAriaLabel.text() must include(ariaLabelText)
 
@@ -78,7 +81,9 @@ class LinkSpec extends SpecBase {
     }
   }
 
-  trait Setup {
+  override def fakeApplication(): Application = applicationBuilder.build()
+
+  object Setup {
     val linkMessage   = "linkMessage"
     val location      = "jackie-chan.com"
     val defaultClass  = "govuk-link"
@@ -86,7 +91,7 @@ class LinkSpec extends SpecBase {
     val linkId        = "custom-id"
     val ariaLabelText = "visually hidden label"
 
-    val instanceOfLink: link = instanceOf[link](application)
+    val instanceOfLink: link = instanceOf[link](app)
 
     val linkComponent: Document          = Jsoup.parse(instanceOfLink(linkMessage, location).body)
     val linkComponentWithClass: Document = Jsoup.parse(instanceOfLink(linkMessage, location, linkClass = classes).body)
