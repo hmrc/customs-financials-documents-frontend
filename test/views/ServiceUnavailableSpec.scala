@@ -22,7 +22,6 @@ import org.jsoup.nodes.Document
 import org.scalatest.matchers.must.Matchers.{must, mustBe}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
-import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.SpecBase

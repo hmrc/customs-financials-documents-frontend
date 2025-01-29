@@ -17,7 +17,6 @@
 package actions
 
 import com.google.inject.Inject
-import config.AppConfig
 import connectors.DataStoreConnector
 import play.api.{Application, inject}
 import play.api.mvc.{Action, AnyContent, BodyParsers, Results}
