@@ -31,9 +31,7 @@ class PostponedImportVatNotAvailableSpec extends SpecBase with GuiceOneAppPerSui
 
   "PostponedImportVatNotAvailable view" should {
 
-    "display correct title and guidance" in {
-      import Setup.*
-
+    "display correct title and guidance" in new Setup {
       view.title() mustBe
         s"${messages("cf.account.pvat.title")} - ${messages("service.name")} - GOV.UK"
 
@@ -57,7 +55,7 @@ class PostponedImportVatNotAvailableSpec extends SpecBase with GuiceOneAppPerSui
 
   override def fakeApplication(): Application = applicationBuilder.build()
 
-  object Setup {
+  trait Setup {
     val serviceUnavailableUrl: String = "service_unavailable_url"
     val eori                          = "test_eori"
     val hmrcDomainUrl                 = "https://www.gov.uk/government/organisations/hm-revenue-customs"

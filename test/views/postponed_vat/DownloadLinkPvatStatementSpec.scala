@@ -37,13 +37,11 @@ import views.html.postponed_vat.download_link_pvat_statement
 
 class DownloadLinkPvatStatementSpec extends SpecBase with GuiceOneAppPerSuite {
 
-  import Setup.*
-
   "view" should {
 
     "display correct contents" when {
 
-      "Postponed Vat statement files are present" in {
+      "Postponed Vat statement files are present" in new Setup {
         val viewDoc: Document = view(Pdf, certificateFiles, downloadLinkMessage, downloadAriaLabel, period)
 
         val elements: Elements = viewDoc.getElementsByAttribute("href")
@@ -56,7 +54,7 @@ class DownloadLinkPvatStatementSpec extends SpecBase with GuiceOneAppPerSuite {
           "test_period CDS statement - PDF (1KB)"
       }
 
-      "there is no Postponed Vat statement files" in {
+      "there is no Postponed Vat statement files" in new Setup {
         val viewDoc: Document = view(Pdf, Seq(), downloadLinkMessage, downloadAriaLabel, period)
 
         viewDoc.body().html() mustBe empty
@@ -69,7 +67,7 @@ class DownloadLinkPvatStatementSpec extends SpecBase with GuiceOneAppPerSuite {
 
   override def fakeApplication(): Application = applicationBuilder.build()
 
-  object Setup {
+  trait Setup {
     val fileFormat: FileFormat                           = Pdf
     val certificateFiles: Seq[PostponedVatStatementFile] = Seq(
       PostponedVatStatementFile(

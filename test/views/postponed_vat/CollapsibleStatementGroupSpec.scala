@@ -37,13 +37,11 @@ import views.html.postponed_vat.collapsible_statement_group
 
 class CollapsibleStatementGroupSpec extends SpecBase with GuiceOneAppPerSuite {
 
-  import Setup.*
-
   "view" should {
 
     "display correct contents" when {
 
-      "Postponed Vat Statement files are present and source is only CDS" in {
+      "Postponed Vat Statement files are present and source is only CDS" in new Setup {
         val viewDoc: Document =
           view(certificateFiles, downloadLinkMessage, downloadAriaLabel, Some(missingFileMessage), CDS, period)
 
@@ -51,7 +49,7 @@ class CollapsibleStatementGroupSpec extends SpecBase with GuiceOneAppPerSuite {
         shouldContainDownloadLinkPVATStatementSection(viewDoc)
       }
 
-      "Postponed Vat Statement files are present and source include CHIEF" in {
+      "Postponed Vat Statement files are present and source include CHIEF" in new Setup {
         val viewDoc: Document = view(
           certificateFiles,
           downloadLinkMessage,
@@ -66,14 +64,14 @@ class CollapsibleStatementGroupSpec extends SpecBase with GuiceOneAppPerSuite {
         shouldContainDownloadLinkPVATStatementSection(viewDoc, isCDSOnly = false)
       }
 
-      "there are no Postponed Vat Statement files and source is only CDS" in {
+      "there are no Postponed Vat Statement files and source is only CDS" in new Setup {
         val viewDoc: Document =
           view(Seq(), downloadLinkMessage, downloadAriaLabel, Some(missingFileMessage), CDS, period)
 
         shouldNotDisplayAnyContent(viewDoc)
       }
 
-      "there are no Postponed Vat Statement files and source include CHIEF" in {
+      "there are no Postponed Vat Statement files and source include CHIEF" in new Setup {
         val viewDoc: Document = view(
           Seq(),
           downloadLinkMessage,
@@ -87,7 +85,7 @@ class CollapsibleStatementGroupSpec extends SpecBase with GuiceOneAppPerSuite {
         shouldNotDisplayAnyContent(viewDoc)
       }
 
-      "Postponed Vat Statement files are present, source is only CDS and contains missingFileMessage" in {
+      "Postponed Vat Statement files are present, source is only CDS and contains missingFileMessage" in new Setup {
         val viewDoc: Document = view(
           certificateFiles,
           downloadLinkMessage,
@@ -101,7 +99,7 @@ class CollapsibleStatementGroupSpec extends SpecBase with GuiceOneAppPerSuite {
         shouldContainMissingFileMessageGuidance(viewDoc, missingFileMessage, CHIEF, period)
       }
 
-      "Postponed Vat Statement files are present, source is only CDS and has no missingFileMessage" in {
+      "Postponed Vat Statement files are present, source is only CDS and has no missingFileMessage" in new Setup {
         val viewDoc: Document =
           view(certificateFiles, downloadLinkMessage, downloadAriaLabel, None, CHIEF, period, isCdsOnly = false)
 
@@ -153,7 +151,7 @@ class CollapsibleStatementGroupSpec extends SpecBase with GuiceOneAppPerSuite {
 
   override def fakeApplication(): Application = applicationBuilder.build()
 
-  object Setup {
+  trait Setup {
 
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 

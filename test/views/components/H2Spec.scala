@@ -27,13 +27,11 @@ import views.html.components.h2
 
 class H2Spec extends SpecBase with GuiceOneAppPerSuite {
 
-  import Setup.*
-
   "h2 component" should {
 
     "display correct contents" when {
 
-      "only message key has been provided" in {
+      "only message key has been provided" in new Setup {
         h2Component.text() mustBe messages(msgKey)
 
         val h2: Elements = h2Component.select("h2")
@@ -44,7 +42,7 @@ class H2Spec extends SpecBase with GuiceOneAppPerSuite {
         h2.first().hasAttr("id") mustBe false
       }
 
-      "class has been provided along with message key" in {
+      "class has been provided along with message key" in new Setup {
         h2ComponentWithClass.text() mustBe messages(msgKey)
 
         val h2: Elements = h2ComponentWithClass.select("h2")
@@ -52,7 +50,7 @@ class H2Spec extends SpecBase with GuiceOneAppPerSuite {
         h2.first().classNames() must contain(classes)
       }
 
-      "id has been provided along with message key" in {
+      "id has been provided along with message key" in new Setup {
         h2ComponentWithId.text() mustBe messages(msgKey)
 
         val h2: Elements = h2ComponentWithId.select("h2")
@@ -60,7 +58,7 @@ class H2Spec extends SpecBase with GuiceOneAppPerSuite {
         h2.first().attr("id") mustBe id
       }
 
-      "classes and id have been provided along with message key" in {
+      "classes and id have been provided along with message key" in new Setup {
         h2ComponentWithClassAndId.text() mustBe messages(msgKey)
 
         val h2: Elements = h2ComponentWithClassAndId.select("h2")
@@ -73,7 +71,7 @@ class H2Spec extends SpecBase with GuiceOneAppPerSuite {
 
   override def fakeApplication(): Application = applicationBuilder.build()
 
-  object Setup {
+  trait Setup {
     val msgKey       = "messageKey"
     val defaultClass = "govuk-heading-m"
     val classes      = "custom-class"

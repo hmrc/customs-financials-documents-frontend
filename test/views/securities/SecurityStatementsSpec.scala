@@ -41,13 +41,12 @@ import play.api.Application
 import java.time.LocalDate
 
 class SecurityStatementsSpec extends SpecBase with GuiceOneAppPerSuite {
-  import Setup.*
 
   "view" should {
 
     "display correct title and guidance" when {
 
-      "statements are available" in {
+      "statements are available" in new Setup {
         val view: Document =
           Jsoup.parse(instanceOf[security_statements](app).apply(viewModelWithStatements).body)
 
@@ -59,7 +58,7 @@ class SecurityStatementsSpec extends SpecBase with GuiceOneAppPerSuite {
         view.text().contains(messages("cf.security-statements.eom")) mustBe true
       }
 
-      "statements are empty" in {
+      "statements are empty" in new Setup {
         val view: Document =
           Jsoup.parse(instanceOf[security_statements](app).apply(viewModelWithNoStatements).body)
 
@@ -68,7 +67,7 @@ class SecurityStatementsSpec extends SpecBase with GuiceOneAppPerSuite {
         view.text().contains(messages("cf.security-statements.eom")) mustBe false
       }
 
-      "current statements are empty" in {
+      "current statements are empty" in new Setup {
         val view: Document =
           Jsoup.parse(instanceOf[security_statements](app).apply(viewModelWithNoCurrentStatements).body)
 
@@ -80,7 +79,7 @@ class SecurityStatementsSpec extends SpecBase with GuiceOneAppPerSuite {
         view.text().contains("CSV") mustBe false
       }
 
-      "statements have Pdfs but not Csvs" in {
+      "statements have Pdfs but not Csvs" in new Setup {
         val view: Document =
           Jsoup.parse(instanceOf[security_statements](app).apply(viewModelWithPdfStatementsOnly).body)
 
@@ -102,7 +101,7 @@ class SecurityStatementsSpec extends SpecBase with GuiceOneAppPerSuite {
           ) mustBe true
       }
 
-      "statements have Csvs but not Pdfs" in {
+      "statements have Csvs but not Pdfs" in new Setup {
         val view: Document =
           Jsoup.parse(instanceOf[security_statements](app).apply(viewModelWithCsvStatementsOnly).body)
 
@@ -127,7 +126,7 @@ class SecurityStatementsSpec extends SpecBase with GuiceOneAppPerSuite {
           ) mustBe true
       }
 
-      "statements have Csv(with Unknown file type) but not Pdfs" in {
+      "statements have Csv(with Unknown file type) but not Pdfs" in new Setup {
         val view: Document =
           Jsoup.parse(
             instanceOf[security_statements](app)
@@ -152,7 +151,7 @@ class SecurityStatementsSpec extends SpecBase with GuiceOneAppPerSuite {
         view.text().contains(messages("cf.unavailable")) mustBe true
       }
 
-      "statements are available and EORI header is present" in {
+      "statements are available and EORI header is present" in new Setup {
         val multipleEoris: Seq[SecurityStatementsForEori] = Seq(
           securityStatementsForEori,
           securityStatementsForEori.copy(eoriHistory = EoriHistory("testEori", None, None))
@@ -165,7 +164,7 @@ class SecurityStatementsSpec extends SpecBase with GuiceOneAppPerSuite {
       }
     }
 
-    "return PDF statements when CSV statements are empty" in {
+    "return PDF statements when CSV statements are empty" in new Setup {
       val statementsWithMixedCurrent: Seq[SecurityStatementsForEori] = Seq(
         securityStatementsForEori.copy(currentStatements = Seq.empty),
         securityStatementsForEori.copy(currentStatements = Seq(statementsByPeriodForPdf))
@@ -223,7 +222,7 @@ class SecurityStatementsSpec extends SpecBase with GuiceOneAppPerSuite {
 
   override def fakeApplication(): Application = applicationBuilder.build()
 
-  object Setup {
+  trait Setup {
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     val date: LocalDate = LocalDate.now().withDayOfMonth(DAY_28)

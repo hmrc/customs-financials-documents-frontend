@@ -41,9 +41,7 @@ class ImportVatSpec extends SpecBase with GuiceOneAppPerSuite {
 
   "ImportVat view" should {
 
-    "display the correct title and guidance" in {
-      import Setup.*
-
+    "display the correct title and guidance" in new Setup {
       view.title() mustBe
         s"${messages("cf.account.vat.title")} - ${messages("service.name")} - GOV.UK"
 
@@ -69,7 +67,7 @@ class ImportVatSpec extends SpecBase with GuiceOneAppPerSuite {
 
   override def fakeApplication(): Application = applicationBuilder.build()
 
-  object Setup {
+  trait Setup {
     val serviceUnavailableUrl: Option[String] = Option("service_unavailable_url")
 
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")

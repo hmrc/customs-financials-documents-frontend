@@ -32,8 +32,7 @@ class ServiceUnavailableSpec extends SpecBase with GuiceOneAppPerSuite {
 
   "ServiceUnavailable view" should {
 
-    "display correct title and guidance" in {
-      import Setup.*
+    "display correct title and guidance" in new Setup {
 
       view.title() mustBe
         s"${messages("cf.service-unavailable.title")} - ${messages("service.name")} - GOV.UK"
@@ -52,7 +51,7 @@ class ServiceUnavailableSpec extends SpecBase with GuiceOneAppPerSuite {
 
   override def fakeApplication(): Application = applicationBuilder.build()
 
-  object Setup {
+  trait Setup {
     val backLinkUrl         = "test_url"
     val deskProLink: String = "http://localhost:9250" +
       "/contact/report-technical-problem?newTab=true&amp;service=CDS%20FinancialsreferrerUrl=test_Path"

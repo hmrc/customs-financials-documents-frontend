@@ -26,23 +26,27 @@ import org.mockito.Mockito.when
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import services.DateTimeService
-import utils.CommonTestData._
+import utils.CommonTestData.*
 import utils.SpecBase
 import utils.Utils.{emptyString, h1Component, h2Component, linkComponent, pComponent, period}
 import views.helpers.Formatters
-import views.html.components._
+import views.html.components.*
 import views.html.postponed_vat.{collapsible_statement_group, current_statement_row, download_link_pvat_statement}
 import common.GuidanceRow
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Application
 
 import java.time.{LocalDate, LocalDateTime}
 
-class PostponedVatViewModelSpec extends SpecBase {
+class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
+
+  import Setup.*
 
   "CurrentStatementRow.apply" should {
 
     "produce CurrentStatementRow with correct contents" when {
 
-      "isCdsOnly is true and PostponedVatStatementGroup has statements" in new Setup {
+      "isCdsOnly is true and PostponedVatStatementGroup has statements" in {
 
         val isCdsOnly = true
 
@@ -82,7 +86,7 @@ class PostponedVatViewModelSpec extends SpecBase {
         CurrentStatementRow(pvatStatementGroup, dutyPaymentMethodSource, isCdsOnly) mustBe expectedResult
       }
 
-      "isCdsOnly is false and PostponedVatStatementGroup has statements" in new Setup {
+      "isCdsOnly is false and PostponedVatStatementGroup has statements" in {
         val isCdsOnly = false
 
         val pvatStatementGroup: PostponedVatStatementGroup =
@@ -122,7 +126,7 @@ class PostponedVatViewModelSpec extends SpecBase {
       }
 
       "PostponedVatStatementGroup has no statements, startDate is of the previous month (after 19th) " +
-        "and isCdsOnly is true" in new Setup {
+        "and isCdsOnly is true" in {
 
           val isCdsOnly = true
 
@@ -151,7 +155,7 @@ class PostponedVatViewModelSpec extends SpecBase {
         }
 
       "PostponedVatStatementGroup has no statements, startDate is of the previous month (after 19th) " +
-        "and isCdsOnly is false" in new Setup {
+        "and isCdsOnly is false" in {
 
           val isCdsOnly = false
 
@@ -194,7 +198,7 @@ class PostponedVatViewModelSpec extends SpecBase {
 
     "produce PostponedVatViewModel with correct contents" when {
 
-      "PostponedVatStatementFile records are present" in new Setup {
+      "PostponedVatStatementFile records are present" in {
 
         when(mockDateTimeService.systemDateTime()).thenReturn(date)
 
@@ -239,7 +243,7 @@ class PostponedVatViewModelSpec extends SpecBase {
         actualPVatModel.helpAndSupportGuidance mustBe expectedHelpAndSupportGuidance
       }
 
-      "there are no PostponedVatStatementFile records" in new Setup {
+      "there are no PostponedVatStatementFile records" in {
 
         when(mockDateTimeService.systemDateTime()).thenReturn(date)
 
@@ -296,7 +300,9 @@ class PostponedVatViewModelSpec extends SpecBase {
     expectedCurrentRows
   }
 
-  trait Setup {
+  override def fakeApplication(): Application = applicationBuilder.build()
+
+  object Setup {
     val certificateFiles: Seq[PostponedVatStatementFile] = Seq(
       PostponedVatStatementFile(
         STAT_FILE_NAME_04,
@@ -478,7 +484,7 @@ class PostponedVatViewModelSpec extends SpecBase {
       preLinkMessageKey: String,
       postLinkMessageKey: String
     )(implicit msgs: Messages): HtmlFormat.Appendable =
-      instanceOf[requestedStatements](application)
+      instanceOf[requestedStatements](app)
         .apply(url, linkMessageKey, preLinkMessageKey, postLinkMessageKey)
   }
 }

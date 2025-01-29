@@ -27,13 +27,11 @@ import views.html.components.link
 
 class LinkSpec extends SpecBase with GuiceOneAppPerSuite {
 
-  import Setup.*
-
   "link component" should {
 
     "display correct contents" when {
 
-      "only link message and location have been provided" in {
+      "only link message and location have been provided" in new Setup {
         linkComponent.text() mustBe messages(linkMessage)
 
         val link: Elements = linkComponent.select("a")
@@ -45,7 +43,7 @@ class LinkSpec extends SpecBase with GuiceOneAppPerSuite {
         link.first().hasAttr("id") mustBe false
       }
 
-      "class has been provided along with link message and location" in {
+      "class has been provided along with link message and location" in new Setup {
         linkComponentWithClass.text() mustBe messages(linkMessage)
 
         val link: Elements = linkComponentWithClass.select("a")
@@ -53,7 +51,7 @@ class LinkSpec extends SpecBase with GuiceOneAppPerSuite {
         link.first().classNames() must contain(classes)
       }
 
-      "id has been provided along with link message and location" in {
+      "id has been provided along with link message and location" in new Setup {
         linkComponentWithId.text() mustBe messages(linkMessage)
 
         val link: Elements = linkComponentWithId.select("a")
@@ -61,7 +59,7 @@ class LinkSpec extends SpecBase with GuiceOneAppPerSuite {
         link.first().attr("id") mustBe linkId
       }
 
-      "classes and id have been provided along with link message and location" in {
+      "classes and id have been provided along with link message and location" in new Setup {
         linkComponentWithClassAndId.text() mustBe messages(linkMessage)
 
         val link: Elements = linkComponentWithClassAndId.select("a")
@@ -70,7 +68,7 @@ class LinkSpec extends SpecBase with GuiceOneAppPerSuite {
         link.first().attr("id") mustBe linkId
       }
 
-      "aria-label has been provided along with link message and location" in {
+      "aria-label has been provided along with link message and location" in new Setup {
         linkComponentWithAriaLabel.text() must include(messages(linkMessage))
         linkComponentWithAriaLabel.text() must include(ariaLabelText)
 
@@ -83,7 +81,7 @@ class LinkSpec extends SpecBase with GuiceOneAppPerSuite {
 
   override def fakeApplication(): Application = applicationBuilder.build()
 
-  object Setup {
+  trait Setup {
     val linkMessage   = "linkMessage"
     val location      = "jackie-chan.com"
     val defaultClass  = "govuk-link"

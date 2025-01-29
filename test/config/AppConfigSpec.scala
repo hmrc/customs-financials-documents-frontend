@@ -18,64 +18,50 @@ package config
 
 import models.FileRole
 import org.scalatest.matchers.must.Matchers.{must, mustBe}
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.SpecBase
 import play.api.test.Helpers.running
 
-class AppConfigSpec extends SpecBase {
+class AppConfigSpec extends SpecBase with GuiceOneAppPerSuite {
 
   "FrontendAppConfig" should {
 
     "include the app name" in {
-      running(application) {
-        appConfig.appName mustBe "customs-financials-documents-frontend"
-      }
+      appConfig.appName mustBe "customs-financials-documents-frontend"
     }
 
     "historic request url" should {
       "contain 'adjustments'" in {
-        running(application) {
-          appConfig.historicRequestUrl(FileRole.SecurityStatement) must include("adjustments")
-        }
+        appConfig.historicRequestUrl(FileRole.SecurityStatement) must include("adjustments")
       }
 
       "contain 'import-vat'" in {
-        running(application) {
-          appConfig.historicRequestUrl(FileRole.C79Certificate) must include("import-vat")
-        }
+        appConfig.historicRequestUrl(FileRole.C79Certificate) must include("import-vat")
       }
 
       "return empty string for invalid filerole" in {
-        running(application) {
-          appConfig.historicRequestUrl(FileRole.PostponedVATAmendedStatement) mustBe empty
-        }
+        appConfig.historicRequestUrl(FileRole.PostponedVATAmendedStatement) mustBe empty
       }
     }
 
     "requested statements url" should {
       "contain adjustments" in {
-        running(application) {
-          appConfig.requestedStatements(FileRole.SecurityStatement) must include("adjustments")
-        }
+        appConfig.requestedStatements(FileRole.SecurityStatement) must include("adjustments")
       }
 
       "contain import-vat" in {
-        running(application) {
-          appConfig.requestedStatements(FileRole.C79Certificate) must include("import-vat")
-        }
+        appConfig.requestedStatements(FileRole.C79Certificate) must include("import-vat")
       }
 
       "return empty string for invalid filerole" in {
-        running(application) {
-          appConfig.requestedStatements(FileRole.PostponedVATAmendedStatement) mustBe empty
-        }
+        appConfig.requestedStatements(FileRole.PostponedVATAmendedStatement) mustBe empty
       }
     }
 
     "contain correct subscribeCdsUrl" in {
-      appConfig.subscribeCdsUrl mustBe
-        "https://www.tax.service.gov.uk/customs-enrolment-services/cds/subscribe"
+      appConfig.subscribeCdsUrl mustBe "https://www.tax.service.gov.uk/customs-enrolment-services/cds/subscribe"
     }
 
     "contain correct contactFrontEndServiceId" in {

@@ -40,11 +40,11 @@ import java.time.{LocalDate, LocalDateTime}
 
 class PostponedImportVatSpec extends SpecBase with GuiceOneAppPerSuite {
 
-  import Setup.*
+  implicit val mockDateTimeService: DateTimeService = mock[DateTimeService]
 
   "PostponedImportVatView" should {
 
-    "display the correct title and guidance" in {
+    "display the correct title and guidance" in new Setup {
       when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
 
       val view: Document = Jsoup.parse(
@@ -74,7 +74,7 @@ class PostponedImportVatSpec extends SpecBase with GuiceOneAppPerSuite {
         messages("cf.account.vat.chief.heading")
     }
 
-    "not display CHIEF doc column when there are no CHIEF doc" in {
+    "not display CHIEF doc column when there are no CHIEF doc" in new Setup {
       when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
 
       val view: Document = Jsoup.parse(
@@ -99,7 +99,7 @@ class PostponedImportVatSpec extends SpecBase with GuiceOneAppPerSuite {
     }
 
     "display 'not available' messages correctly when no statements are present " +
-      "and it is after the 19th of the previous month" in {
+      "and it is after the 19th of the previous month" in new Setup {
         when(mockDateTimeService.systemDateTime())
           .thenReturn(LocalDateTime.now().withDayOfMonth(DAY_19).minusMonths(ONE_MONTH))
 
@@ -121,7 +121,7 @@ class PostponedImportVatSpec extends SpecBase with GuiceOneAppPerSuite {
         cdsNotAvailableMessage must include(messages("cf.common.not-available"))
       }
 
-    "display grouped certificates by EORI and format correctly" in {
+    "display grouped certificates by EORI and format correctly" in new Setup {
       when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
 
       val view: Document = Jsoup.parse(
@@ -144,7 +144,7 @@ class PostponedImportVatSpec extends SpecBase with GuiceOneAppPerSuite {
       view.html() must include(messages("cf.account.pvat.aria.amended-download-link"))
     }
 
-    "handle missing files and display messages appropriately" in {
+    "handle missing files and display messages appropriately" in new Setup {
       when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
 
       val view: Document = Jsoup.parse(
@@ -172,7 +172,7 @@ class PostponedImportVatSpec extends SpecBase with GuiceOneAppPerSuite {
       )
       .build()
 
-  object Setup {
+  trait Setup {
     val date: LocalDate = LocalDate.now()
 
     val serviceUnavailableUrl: String = "service_unavailable_url"
@@ -300,7 +300,6 @@ class PostponedImportVatSpec extends SpecBase with GuiceOneAppPerSuite {
       PostponedVatStatementFile(STAT_FILE_NAME_02, DOWNLOAD_URL_00, SIZE_111L, postVatStatMetaData12, EORI_NUMBER)
     )
 
-    implicit val mockDateTimeService: DateTimeService         = mock[DateTimeService]
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     val pvatUrls: PVATUrls = PVATUrls(

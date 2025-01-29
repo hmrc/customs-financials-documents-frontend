@@ -43,13 +43,11 @@ import java.time.{LocalDate, LocalDateTime}
 
 class CurrentStatementRowSpec extends SpecBase with GuiceOneAppPerSuite {
 
-  import Setup.*
-
   "view" should {
 
     "display correct contents" when {
 
-      "collapsibleStatementGroupRows are empty but contains dd row for CDS and CHIEF" in {
+      "collapsibleStatementGroupRows are empty but contains dd row for CDS and CHIEF" in new Setup {
 
         val cdsDDRow: DDRow   = DDRow(notAvailableMsg = notAvailableMsg, visuallyHiddenMsg = visuallyHiddenMsg)
         val chiefDDRow: DDRow = DDRow(notAvailableMsg = notAvailableMsg, visuallyHiddenMsg = visuallyHiddenMsg)
@@ -65,7 +63,7 @@ class CurrentStatementRowSpec extends SpecBase with GuiceOneAppPerSuite {
         shouldDisplayCHIEFDDRow(viewDoc, notAvailableMsg, visuallyHiddenMsg)
       }
 
-      "collapsibleStatementGroupRows are present but no dd row for CDS and CHIEF" in {
+      "collapsibleStatementGroupRows are present but no dd row for CDS and CHIEF" in new Setup {
 
         val statementRow: CurrentStatementRow = CurrentStatementRow(
           periodId,
@@ -148,7 +146,7 @@ class CurrentStatementRowSpec extends SpecBase with GuiceOneAppPerSuite {
 
   override def fakeApplication(): Application = applicationBuilder.build()
 
-  object Setup {
+  trait Setup {
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     val periodId     = "test_id"

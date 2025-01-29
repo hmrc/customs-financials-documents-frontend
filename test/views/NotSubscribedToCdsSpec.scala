@@ -31,8 +31,7 @@ class NotSubscribedToCdsSpec extends SpecBase with GuiceOneAppPerSuite {
 
   "NotSubscribedToCds view" should {
 
-    "display correct title and guidance" in {
-      import Setup.*
+    "display correct title and guidance" in new Setup {
 
       view.title() mustBe
         s"${messages("cf.not-subscribed-to-cds.detail.title")} - ${messages("service.name")} - GOV.UK"
@@ -57,7 +56,7 @@ class NotSubscribedToCdsSpec extends SpecBase with GuiceOneAppPerSuite {
 
   override def fakeApplication(): Application = applicationBuilder.build()
 
-  object Setup {
+  trait Setup {
     val deskProLinkText = "Is this page not working properly? (opens in new tab)"
     val cdsSubscribeUrl = "https://www.tax.service.gov.uk/customs-enrolment-services/cds/subscribe"
 

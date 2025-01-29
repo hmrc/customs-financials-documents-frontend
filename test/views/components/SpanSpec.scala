@@ -27,13 +27,11 @@ import views.html.components.span
 
 class SpanSpec extends SpecBase with GuiceOneAppPerSuite {
 
-  import Setup.*
-
   "span component" should {
 
     "display correct contents" when {
 
-      "only message key has been provided" in {
+      "only message key has been provided" in new Setup {
         spanComponent.text() mustBe messages(msgKey)
 
         val span: Elements = spanComponent.select("span")
@@ -43,7 +41,7 @@ class SpanSpec extends SpecBase with GuiceOneAppPerSuite {
         span.first().hasAttr("aria-hidden") mustBe false
       }
 
-      "class has been provided along with message key" in {
+      "class has been provided along with message key" in new Setup {
         spanComponentWithClass.text() mustBe messages(msgKey)
 
         val span: Elements = spanComponentWithClass.select("span")
@@ -52,7 +50,7 @@ class SpanSpec extends SpecBase with GuiceOneAppPerSuite {
         span.first().classNames() must contain(classes)
       }
 
-      "ariaHidden has been provided along with message key" in {
+      "ariaHidden has been provided along with message key" in new Setup {
         spanComponentWithAriaHidden.text() mustBe messages(msgKey)
 
         val span: Elements = spanComponentWithAriaHidden.select("span")
@@ -61,7 +59,7 @@ class SpanSpec extends SpecBase with GuiceOneAppPerSuite {
         span.first().attr("aria-hidden") mustBe ariaHidden
       }
 
-      "classes and ariaHidden have been provided along with message key" in {
+      "classes and ariaHidden have been provided along with message key" in new Setup {
         spanComponentWithClassAndAriaHidden.text() mustBe messages(msgKey)
 
         val span: Elements = spanComponentWithClassAndAriaHidden.select("span")
@@ -75,7 +73,7 @@ class SpanSpec extends SpecBase with GuiceOneAppPerSuite {
 
   override def fakeApplication(): Application = applicationBuilder.build()
 
-  object Setup {
+  trait Setup {
     val msgKey     = "messageKey"
     val classes    = "custom-class"
     val ariaHidden = "true"

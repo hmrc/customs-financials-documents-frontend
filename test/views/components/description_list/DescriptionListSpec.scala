@@ -29,13 +29,11 @@ import utils.Utils.singleSpace
 
 class DescriptionListSpec extends SpecBase with GuiceOneAppPerSuite {
 
-  import Setup.*
-
   "dd component" should {
 
     "display correct contents" when {
 
-      "only content has been provided" in {
+      "only content has been provided" in new Setup {
         val dd: Elements = ddComponent.select("dd")
 
         dd.text() mustBe contentText
@@ -43,7 +41,7 @@ class DescriptionListSpec extends SpecBase with GuiceOneAppPerSuite {
         dd.first().hasAttr("id") mustBe false
       }
 
-      "class has been provided along with content" in {
+      "class has been provided along with content" in new Setup {
         val dd: Elements = ddComponentWithClass.select("dd")
 
         dd.text() mustBe contentText
@@ -51,7 +49,7 @@ class DescriptionListSpec extends SpecBase with GuiceOneAppPerSuite {
         dd.first().hasAttr("id") mustBe false
       }
 
-      "id has been provided along with content" in {
+      "id has been provided along with content" in new Setup {
         val dd: Elements = ddComponentWithId.select("dd")
 
         dd.text() mustBe contentText
@@ -59,7 +57,7 @@ class DescriptionListSpec extends SpecBase with GuiceOneAppPerSuite {
         dd.first().attr("id") mustBe testId
       }
 
-      "both class and id have been provided along with content" in {
+      "both class and id have been provided along with content" in new Setup {
         val dd: Elements = ddComponentWithClassAndId.select("dd")
 
         dd.text() mustBe contentText
@@ -73,7 +71,7 @@ class DescriptionListSpec extends SpecBase with GuiceOneAppPerSuite {
 
     "display correct contents" when {
 
-      "only content has been provided" in {
+      "only content has been provided" in new Setup {
         val dl: Elements = dlComponent.select("dl")
 
         dl.html() mustBe contentText
@@ -81,7 +79,7 @@ class DescriptionListSpec extends SpecBase with GuiceOneAppPerSuite {
         dl.first().hasAttr("id") mustBe false
       }
 
-      "class has been provided along with content" in {
+      "class has been provided along with content" in new Setup {
         val dl: Elements = dlComponentWithClass.select("dl")
 
         dl.html() mustBe contentText
@@ -91,7 +89,7 @@ class DescriptionListSpec extends SpecBase with GuiceOneAppPerSuite {
         dl.first().hasAttr("id") mustBe false
       }
 
-      "id has been provided along with content" in {
+      "id has been provided along with content" in new Setup {
         val dl: Elements = dlComponentWithId.select("dl")
 
         dl.html() mustBe contentText
@@ -99,7 +97,7 @@ class DescriptionListSpec extends SpecBase with GuiceOneAppPerSuite {
         dl.first().attr("id") mustBe testId
       }
 
-      "both class and id have been provided along with content" in {
+      "both class and id have been provided along with content" in new Setup {
         val dl: Elements = dlComponentWithClassAndId.select("dl")
 
         dl.html() mustBe contentText
@@ -113,7 +111,7 @@ class DescriptionListSpec extends SpecBase with GuiceOneAppPerSuite {
 
     "display correct contents" when {
 
-      "only content has been provided" in {
+      "only content has been provided" in new Setup {
         val dt: Elements = dtComponent.select("dt")
 
         dt.text() mustBe contentText
@@ -121,7 +119,7 @@ class DescriptionListSpec extends SpecBase with GuiceOneAppPerSuite {
         dt.first().hasAttr("id") mustBe false
       }
 
-      "class has been provided along with content" in {
+      "class has been provided along with content" in new Setup {
         val dt: Elements = dtComponentWithClass.select("dt")
 
         dt.text() mustBe contentText
@@ -129,7 +127,7 @@ class DescriptionListSpec extends SpecBase with GuiceOneAppPerSuite {
         dt.first().hasAttr("id") mustBe false
       }
 
-      "id has been provided along with content" in {
+      "id has been provided along with content" in new Setup {
         val dt: Elements = dtComponentWithId.select("dt")
 
         dt.text() mustBe contentText
@@ -137,7 +135,7 @@ class DescriptionListSpec extends SpecBase with GuiceOneAppPerSuite {
         dt.first().attr("id") mustBe testId
       }
 
-      "both class and id have been provided along with content" in {
+      "both class and id have been provided along with content" in new Setup {
         val dt: Elements = dtComponentWithClassAndId.select("dt")
 
         dt.text() mustBe contentText
@@ -149,7 +147,7 @@ class DescriptionListSpec extends SpecBase with GuiceOneAppPerSuite {
 
   override def fakeApplication(): Application = applicationBuilder.build()
 
-  object Setup {
+  trait Setup {
     val contentText          = "some content"
     val content: Html        = Html(contentText)
     val testClass            = "test-class"

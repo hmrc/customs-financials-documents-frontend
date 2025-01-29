@@ -29,13 +29,11 @@ import views.html.components.requestedStatements
 
 class RequestedStatementsSpec extends SpecBase with GuiceOneAppPerSuite {
 
-  import Setup.*
-
   "view" should {
 
     "display correct contents" when {
 
-      "only url is provided" in {
+      "only url is provided" in new Setup {
 
         val viewDoc: Document = view(URL_TEST)
 
@@ -48,7 +46,7 @@ class RequestedStatementsSpec extends SpecBase with GuiceOneAppPerSuite {
         )
       }
 
-      "all the arguments' value are provided" in {
+      "all the arguments' value are provided" in new Setup {
         val viewDoc: Document = view(URL_TEST)
 
         shouldContainTheParagraphWithCorrectStyleClass(viewDoc)
@@ -81,7 +79,7 @@ class RequestedStatementsSpec extends SpecBase with GuiceOneAppPerSuite {
 
   override def fakeApplication(): Application = applicationBuilder.build()
 
-  object Setup {
+  trait Setup {
 
     def view(url: String): Document =
       Jsoup.parse(instanceOf[requestedStatements](app).apply(url).body)

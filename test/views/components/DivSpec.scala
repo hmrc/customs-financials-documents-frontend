@@ -28,13 +28,11 @@ import play.api.Application
 
 class DivSpec extends SpecBase with GuiceOneAppPerSuite {
 
-  import Setup.*
-
   "div component" should {
 
     "display correct contents" when {
 
-      "only content has been provided" in {
+      "only content has been provided" in new Setup {
         val div: Elements = divComponent.select("div")
 
         div.text() mustBe contentText
@@ -42,7 +40,7 @@ class DivSpec extends SpecBase with GuiceOneAppPerSuite {
         div.first().hasAttr("id") mustBe false
       }
 
-      "class has been provided along with content" in {
+      "class has been provided along with content" in new Setup {
         val div: Elements = divComponentWithClass.select("div")
 
         div.text() mustBe contentText
@@ -50,7 +48,7 @@ class DivSpec extends SpecBase with GuiceOneAppPerSuite {
         div.first().hasAttr("id") mustBe false
       }
 
-      "id has been provided along with content" in {
+      "id has been provided along with content" in new Setup {
         val div: Elements = divComponentWithId.select("div")
 
         div.text() mustBe contentText
@@ -58,7 +56,7 @@ class DivSpec extends SpecBase with GuiceOneAppPerSuite {
         div.first().attr("id") mustBe testId
       }
 
-      "both class and id have been provided along with content" in {
+      "both class and id have been provided along with content" in new Setup {
         val div: Elements = divComponentWithClassAndId.select("div")
 
         div.text() mustBe contentText
@@ -70,7 +68,7 @@ class DivSpec extends SpecBase with GuiceOneAppPerSuite {
 
   override def fakeApplication(): Application = applicationBuilder.build()
 
-  object Setup {
+  trait Setup {
     val contentText   = "some content"
     val content: Html = Html(contentText)
     val testClass     = "test-class"

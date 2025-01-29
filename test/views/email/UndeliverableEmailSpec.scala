@@ -28,11 +28,9 @@ import play.api.Application
 
 class UndeliverableEmailSpec extends SpecBase with GuiceOneAppPerSuite {
 
-  import Setup.*
-
   "view" should {
 
-    "display correct guidance and text" in {
+    "display correct guidance and text" in new Setup {
 
       view.title() mustBe
         s"${messages("cf.undeliverable.email.title")} - ${messages("service.name")} - GOV.UK"
@@ -55,14 +53,14 @@ class UndeliverableEmailSpec extends SpecBase with GuiceOneAppPerSuite {
       view.text().contains(email.get) mustBe true
     }
 
-    "not display the email paragraph if there is no email" in {
+    "not display the email paragraph if there is no email" in new Setup {
       viewWithNoEmail.text().contains(email.get) mustBe false
     }
   }
 
   override def fakeApplication(): Application = applicationBuilder.build()
 
-  object Setup {
+  trait Setup {
     val nextPageUrl           = "test_url"
     val email: Option[String] = Some("test@test.com")
 
