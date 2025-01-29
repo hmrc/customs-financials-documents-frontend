@@ -19,46 +19,27 @@ package actions
 import com.google.inject.Inject
 import config.AppConfig
 import connectors.DataStoreConnector
-
-import play.api.inject
+import play.api.{Application, inject}
 import play.api.mvc.{Action, AnyContent, BodyParsers, Results}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.AuditingService
-import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve._
+import uk.gov.hmrc.auth.core.retrieve.*
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.SpecBase
 import utils.Utils.emptyString
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
-
 import org.scalatest.matchers.must.Matchers.{must, mustBe}
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 
-class AuthActionSpec extends SpecBase {
-
-  class Harness(authAction: IdentifierAction) {
-    def onPageLoad(): Action[AnyContent] = authAction(_ => Results.Ok)
-  }
-
-  implicit class Ops[A](a: A) {
-    def ~[B](b: B): A ~ B = new ~(a, b)
-  }
+class AuthActionSpec extends SpecBase with GuiceOneAppPerSuite {
 
   "the action" should {
 
     "redirect to the Government Gateway sign-in page when no authenticated user" in {
-      val mockAuditingService    = mock[AuditingService]
-      val mockDataStoreConnector = mock[DataStoreConnector]
-
-      val app = applicationBuilder()
-        .overrides(
-          inject.bind[AuditingService].toInstance(mockAuditingService),
-          inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
-        )
-        .build()
-
       val bodyParsers      = instanceOf[BodyParsers.Default](app)
       val authActionHelper = instanceOf[AuthActionHelper](app)
 
@@ -67,24 +48,12 @@ class AuthActionSpec extends SpecBase {
 
       val controller = new Harness(authAction)
 
-      running(app) {
-        val result = controller.onPageLoad()(fakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).get must startWith(appConfig.loginUrl)
-      }
+      val result = controller.onPageLoad()(fakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result).get must startWith(appConfig.loginUrl)
     }
 
     "redirect the user to login when the user's session has expired" in {
-      val mockAuditingService    = mock[AuditingService]
-      val mockDataStoreConnector = mock[DataStoreConnector]
-
-      val app = applicationBuilder()
-        .overrides(
-          inject.bind[AuditingService].toInstance(mockAuditingService),
-          inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
-        )
-        .build()
-
       val bodyParsers      = instanceOf[BodyParsers.Default](app)
       val authActionHelper = instanceOf[AuthActionHelper](app)
 
@@ -93,25 +62,13 @@ class AuthActionSpec extends SpecBase {
 
       val controller = new Harness(authAction)
 
-      running(app) {
-        val result = controller.onPageLoad()(fakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
+      val result = controller.onPageLoad()(fakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).get must startWith(appConfig.loginUrl)
-      }
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result).get must startWith(appConfig.loginUrl)
     }
 
     "redirect the user to login when the user has an unexpected Auth provider" in {
-      val mockAuditingService    = mock[AuditingService]
-      val mockDataStoreConnector = mock[DataStoreConnector]
-
-      val app = applicationBuilder()
-        .overrides(
-          inject.bind[AuditingService].toInstance(mockAuditingService),
-          inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
-        )
-        .build()
-
       val bodyParsers      = instanceOf[BodyParsers.Default](app)
       val authActionHelper = instanceOf[AuthActionHelper](app)
 
@@ -125,25 +82,13 @@ class AuthActionSpec extends SpecBase {
 
       val controller = new Harness(authAction)
 
-      running(app) {
-        val result = controller.onPageLoad()(fakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
+      val result = controller.onPageLoad()(fakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).get must startWith("/customs/documents/not-subscribed-for-cds")
-      }
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result).get must startWith("/customs/documents/not-subscribed-for-cds")
     }
 
     "redirect the user to unauthorised controller when has insufficient enrolments" in {
-      val mockAuditingService    = mock[AuditingService]
-      val mockDataStoreConnector = mock[DataStoreConnector]
-
-      val app = applicationBuilder()
-        .overrides(
-          inject.bind[AuditingService].toInstance(mockAuditingService),
-          inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
-        )
-        .build()
-
       val bodyParsers      = instanceOf[BodyParsers.Default](app)
       val authActionHelper = instanceOf[AuthActionHelper](app)
 
@@ -157,13 +102,31 @@ class AuthActionSpec extends SpecBase {
 
       val controller = new Harness(authAction)
 
-      running(app) {
-        val result = controller.onPageLoad()(fakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
+      val result = controller.onPageLoad()(fakeRequest().withHeaders("X-Session-Id" -> "someSessionId"))
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).get must startWith("/customs/documents/not-subscribed-for-cds")
-      }
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result).get must startWith("/customs/documents/not-subscribed-for-cds")
     }
+  }
+
+  override def fakeApplication(): Application = {
+    val mockAuditingService    = mock[AuditingService]
+    val mockDataStoreConnector = mock[DataStoreConnector]
+
+    applicationBuilder()
+      .overrides(
+        inject.bind[AuditingService].toInstance(mockAuditingService),
+        inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector)
+      )
+      .build()
+  }
+
+  class Harness(authAction: IdentifierAction) {
+    def onPageLoad(): Action[AnyContent] = authAction(_ => Results.Ok)
+  }
+
+  implicit class Ops[A](a: A) {
+    def ~[B](b: B): A ~ B = new ~(a, b)
   }
 }
 
