@@ -40,13 +40,11 @@ import java.time.{LocalDate, LocalDateTime}
 
 class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
 
-  import Setup.*
-
   "CurrentStatementRow.apply" should {
 
     "produce CurrentStatementRow with correct contents" when {
 
-      "isCdsOnly is true and PostponedVatStatementGroup has statements" in {
+      "isCdsOnly is true and PostponedVatStatementGroup has statements" in new Setup {
 
         val isCdsOnly = true
 
@@ -86,7 +84,7 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
         CurrentStatementRow(pvatStatementGroup, dutyPaymentMethodSource, isCdsOnly) mustBe expectedResult
       }
 
-      "isCdsOnly is false and PostponedVatStatementGroup has statements" in {
+      "isCdsOnly is false and PostponedVatStatementGroup has statements" in new Setup {
         val isCdsOnly = false
 
         val pvatStatementGroup: PostponedVatStatementGroup =
@@ -126,7 +124,7 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
       }
 
       "PostponedVatStatementGroup has no statements, startDate is of the previous month (after 19th) " +
-        "and isCdsOnly is true" in {
+        "and isCdsOnly is true" in new Setup {
 
           val isCdsOnly = true
 
@@ -155,7 +153,7 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
         }
 
       "PostponedVatStatementGroup has no statements, startDate is of the previous month (after 19th) " +
-        "and isCdsOnly is false" in {
+        "and isCdsOnly is false" in new Setup {
 
           val isCdsOnly = false
 
@@ -198,7 +196,7 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
 
     "produce PostponedVatViewModel with correct contents" when {
 
-      "PostponedVatStatementFile records are present" in {
+      "PostponedVatStatementFile records are present" in new Setup {
 
         when(mockDateTimeService.systemDateTime()).thenReturn(date)
 
@@ -243,7 +241,7 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
         actualPVatModel.helpAndSupportGuidance mustBe expectedHelpAndSupportGuidance
       }
 
-      "there are no PostponedVatStatementFile records" in {
+      "there are no PostponedVatStatementFile records" in new Setup {
 
         when(mockDateTimeService.systemDateTime()).thenReturn(date)
 
@@ -302,7 +300,7 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
 
   override def fakeApplication(): Application = applicationBuilder.build()
 
-  object Setup {
+  trait Setup {
     val certificateFiles: Seq[PostponedVatStatementFile] = Seq(
       PostponedVatStatementFile(
         STAT_FILE_NAME_04,

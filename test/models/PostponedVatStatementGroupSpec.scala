@@ -18,21 +18,18 @@ package models
 
 import org.scalatest.matchers.must.Matchers.mustBe
 import org.mockito.Mockito.when
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.{Application, inject}
 import services.DateTimeService
 import utils.CommonTestData.*
 import utils.SpecBase
 
 import java.time.*
 
-class PostponedVatStatementGroupSpec extends SpecBase with GuiceOneAppPerSuite {
-  import Setup.*
+class PostponedVatStatementGroupSpec extends SpecBase {
 
   "isPreviousMonthAndAfter19Th" should {
 
     "return true if statement date is of previous month and is accessed on or after " +
-      "19th day of the current month" in {
+      "19th day of the current month" in new Setup {
         val dateOfPreviousMonth: LocalDate = date.minusMonths(ONE_MONTH).withDayOfMonth(DAY_20)
         val currentDate: LocalDate         = LocalDate.of(YEAR_2023, MONTH_10, DAY_20)
 
@@ -45,7 +42,7 @@ class PostponedVatStatementGroupSpec extends SpecBase with GuiceOneAppPerSuite {
       }
 
     "return false if statement date is of previous month and is accessed on or before " +
-      "19th day of the current month" in {
+      "19th day of the current month" in new Setup {
         val dateOfPreviousMonth: LocalDate = date.minusMonths(ONE_MONTH).withDayOfMonth(DAY_10)
 
         when(mockDateTimeService.systemDateTime())
@@ -57,7 +54,7 @@ class PostponedVatStatementGroupSpec extends SpecBase with GuiceOneAppPerSuite {
         ).isPreviousMonthAndAfter19Th mustBe false
       }
 
-    "return true if statement date is not from the previous month" in {
+    "return true if statement date is not from the previous month" in new Setup {
       val dateOfCurrentMonth: LocalDate = date.withDayOfMonth(DAY_16)
 
       when(mockDateTimeService.systemDateTime())
@@ -70,9 +67,9 @@ class PostponedVatStatementGroupSpec extends SpecBase with GuiceOneAppPerSuite {
     }
 
     "return true if statement date is not from the previous month and accessed " +
-      "before 19th day of current date " in {
+      "before 19th day of current date " in new Setup {
 
-        val isCurrentDayBefore20 = LocalDate.now.getDayOfMonth < DAY_20
+        val isCurrentDayBefore20: Boolean = LocalDate.now.getDayOfMonth < DAY_20
 
         if (isCurrentDayBefore20) when(mockDateTimeService.systemDateTime()).thenReturn(date.atStartOfDay())
 
@@ -87,14 +84,8 @@ class PostponedVatStatementGroupSpec extends SpecBase with GuiceOneAppPerSuite {
       }
   }
 
-  override def fakeApplication(): Application = applicationBuilder()
-    .overrides(
-      inject.bind[DateTimeService].toInstance(mockDateTimeService)
-    )
-    .build()
-
-  object Setup {
-    val mockDateTimeService: DateTimeService = mock[DateTimeService]
+  trait Setup {
     val date: LocalDate                      = LocalDate.of(YEAR_2023, MONTH_10, DAY_1)
+    val mockDateTimeService: DateTimeService = mock[DateTimeService]
   }
 }
