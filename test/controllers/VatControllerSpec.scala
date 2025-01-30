@@ -49,7 +49,7 @@ class VatControllerSpec extends SpecBase {
   "showVatAccount" should {
     "redirect to certificates unavailable page if getting files fails" in new Setup {
 
-      appConfig1.historicStatementsEnabled = false
+      appConfigForSetup.historicStatementsEnabled = false
 
       val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad(navigator.importVatPageId).url
 
@@ -90,7 +90,7 @@ class VatControllerSpec extends SpecBase {
 
         status(result) mustBe OK
         contentAsString(result) mustBe
-          view(viewModel)(request, messages, appConfig1).toString()
+          view(viewModel)(request, messages, appConfigForSetup).toString()
       }
     }
 
@@ -109,7 +109,7 @@ class VatControllerSpec extends SpecBase {
 
     "display only last 6 months certs' rows when previous cert files are retrieved in SDES" in new Setup {
 
-      appConfig1.historicStatementsEnabled = false
+      appConfigForSetup.historicStatementsEnabled = false
 
       val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("import-vat").url
 
@@ -251,7 +251,7 @@ class VatControllerSpec extends SpecBase {
 
         if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
           contentAsString(result) mustBe
-            view(viewModel)(request, messages, appConfig1).toString()
+            view(viewModel)(request, messages, appConfigForSetup).toString()
 
           val doc = Jsoup.parse(contentAsString(result))
 
@@ -305,7 +305,7 @@ class VatControllerSpec extends SpecBase {
             contentAsString(result) mustBe view(viewModel)(
               request,
               messages,
-              appConfig1
+              appConfigForSetup
             ).toString()
 
             val doc = Jsoup.parse(contentAsString(result))
@@ -326,7 +326,7 @@ class VatControllerSpec extends SpecBase {
     "not display the cert row for the immediate previous month when cert files are retrieved " +
       "before 20th of the month and cert is not available for immediate previous month" in new Setup {
 
-        appConfig1.historicStatementsEnabled = false
+        appConfigForSetup.historicStatementsEnabled = false
 
         val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("import-vat").url
 
@@ -359,7 +359,7 @@ class VatControllerSpec extends SpecBase {
             contentAsString(result) mustBe view(viewModel)(
               request,
               messages,
-              appConfig1
+              appConfigForSetup
             ).toString()
 
             val doc = Jsoup.parse(contentAsString(result))
@@ -382,7 +382,7 @@ class VatControllerSpec extends SpecBase {
     "display all the certs' row when cert files are retrieved before 20th of the month and " +
       "cert is available" in new Setup {
 
-        appConfig1.historicStatementsEnabled = false
+        appConfigForSetup.historicStatementsEnabled = false
 
         val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("import-vat").url
 
@@ -428,7 +428,7 @@ class VatControllerSpec extends SpecBase {
 
           if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
             contentAsString(result) mustBe
-              view(viewModel)(request, messages, appConfig1).toString()
+              view(viewModel)(request, messages, appConfigForSetup).toString()
 
             val doc = Jsoup.parse(contentAsString(result))
 
@@ -449,8 +449,8 @@ class VatControllerSpec extends SpecBase {
 
     "display historic statements Url when feature is enabled" in new Setup {
 
-      appConfig1.historicStatementsEnabled = true
-      val historicRequestUrl: String = appConfig1.historicRequestUrl(C79Certificate)
+      appConfigForSetup.historicStatementsEnabled = true
+      val historicRequestUrl: String = appConfigForSetup.historicRequestUrl(C79Certificate)
 
       val vatCertificateFile: VatCertificateFile = VatCertificateFile(
         STAT_FILE_NAME_04,
@@ -494,7 +494,7 @@ class VatControllerSpec extends SpecBase {
 
         if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
           contentAsString(result) mustBe
-            view(viewModel)(request, messages, appConfig1).toString()
+            view(viewModel)(request, messages, appConfigForSetup).toString()
         }
       }
     }
@@ -502,9 +502,9 @@ class VatControllerSpec extends SpecBase {
     "display requested statements Url when regular and " +
       "requested statements are present in the same period" in new Setup {
 
-        appConfig1.historicStatementsEnabled = true
+        appConfigForSetup.historicStatementsEnabled = true
 
-        val historicRequestUrl: String    = appConfig1.historicRequestUrl(C79Certificate)
+        val historicRequestUrl: String    = appConfigForSetup.historicRequestUrl(C79Certificate)
         val someRequestId: Option[String] = Some("statement-request-id")
 
         val vatCertificateFile: VatCertificateFile = VatCertificateFile(
@@ -581,7 +581,7 @@ class VatControllerSpec extends SpecBase {
 
           if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
             contentAsString(result) mustBe
-              view(viewModel)(request, messages, appConfig1).toString()
+              view(viewModel)(request, messages, appConfigForSetup).toString()
           }
 
           val doc = Jsoup.parse(contentAsString(result))
@@ -652,7 +652,7 @@ class VatControllerSpec extends SpecBase {
       )
       .build()
 
-    var appConfig1: AppConfig = instanceOf[AppConfig](app)
+    var appConfigForSetup: AppConfig = instanceOf[AppConfig](app)
 
     val view: import_vat = instanceOf[import_vat](app)
   }
