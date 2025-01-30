@@ -288,16 +288,17 @@ class PostponedVatControllerSpec extends SpecBase {
 
   "statementsUnavailablePage" should {
     "display the view correctly" in {
+      val app = applicationBuilder().build()
 
-      val view      = instanceOf[postponed_import_vat_not_available](application)
-      val navigator = instanceOf[Navigator](application)
+      val view      = instanceOf[postponed_import_vat_not_available](app)
+      val navigator = instanceOf[Navigator](app)
 
       val serviceUnavailableUrl: String =
         routes.ServiceUnavailableController.onPageLoad(navigator.postponedVatNotAvailablePageId).url
 
-      running(application) {
+      running(app) {
         val request = fakeRequest(GET, routes.PostponedVatController.statementsUnavailablePage().url)
-        val result  = route(application, request).value
+        val result  = route(app, request).value
 
         status(result) mustBe OK
         contentAsString(result) mustBe

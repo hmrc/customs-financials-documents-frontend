@@ -138,11 +138,13 @@ class SecuritiesControllerSpec extends SpecBase {
   "statementsUnavailablePage" should {
 
     "render correctly" in {
-      val unavailableView = instanceOf[security_statements_not_available](application)
+      val app = applicationBuilder().build()
 
-      running(application) {
+      val unavailableView = instanceOf[security_statements_not_available](app)
+
+      running(app) {
         val request = fakeRequest(GET, routes.SecuritiesController.statementsUnavailablePage().url)
-        val result  = route(application, request).value
+        val result  = route(app, request).value
 
         status(result) mustBe OK
         contentAsString(result) mustBe unavailableView()(request, messages, appConfig).toString()
