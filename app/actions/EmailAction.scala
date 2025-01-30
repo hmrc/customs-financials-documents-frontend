@@ -38,7 +38,7 @@ class EmailAction @Inject() (dataStoreConnector: DataStoreConnector)(implicit
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     dataStoreConnector
-      .getEmail(request.eori)
+      .getEmail
       .map {
         case Left(value) => checkEmailResponseAndRedirect(value)
         case Right(_)    => None

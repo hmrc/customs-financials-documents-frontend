@@ -52,7 +52,7 @@ class PostponedVatControllerSpec extends SpecBase {
 
       val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("postponed-vat").url
 
-      when(mockDataStoreConnector.getEmail(any)(any))
+      when(mockDataStoreConnector.getEmail(any))
         .thenReturn(Future.successful(Right(Email(emailValue))))
 
       when(mockSdesConnector.getPostponedVatStatements(eqTo(eori))(any))
@@ -93,7 +93,7 @@ class PostponedVatControllerSpec extends SpecBase {
 
       val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("postponed-vat").url
 
-      when(mockDataStoreConnector.getEmail(any)(any))
+      when(mockDataStoreConnector.getEmail(any))
         .thenReturn(Future.successful(Right(Email(emailValue))))
 
       when(mockSdesConnector.getPostponedVatStatements(eqTo(eori))(any))
@@ -125,7 +125,7 @@ class PostponedVatControllerSpec extends SpecBase {
 
         val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("postponed-vat").url
 
-        when(mockDataStoreConnector.getEmail(any)(any))
+        when(mockDataStoreConnector.getEmail(any))
           .thenReturn(Future.successful(Right(Email(emailValue))))
 
         when(mockSdesConnector.getPostponedVatStatements(eqTo(eori))(any))
@@ -156,7 +156,7 @@ class PostponedVatControllerSpec extends SpecBase {
 
         val currentDate: LocalDate = LocalDate.of(date.getYear, date.getMonthValue, DAY_20)
 
-        when(mockDataStoreConnector.getEmail(any)(any))
+        when(mockDataStoreConnector.getEmail(any))
           .thenReturn(Future.successful(Right(Email(emailValue))))
 
         when(mockSdesConnector.getPostponedVatStatements(eqTo(eori))(any))
@@ -207,7 +207,7 @@ class PostponedVatControllerSpec extends SpecBase {
 
         val currentDate: LocalDate = LocalDate.of(date.getYear, date.getMonthValue, DAY_12)
 
-        when(mockDataStoreConnector.getEmail(any)(any))
+        when(mockDataStoreConnector.getEmail(any))
           .thenReturn(Future.successful(Right(Email(emailValue))))
 
         when(mockSdesConnector.getPostponedVatStatements(eqTo(eori))(any))
@@ -253,7 +253,7 @@ class PostponedVatControllerSpec extends SpecBase {
       val historicRequestUrl: String = config.historicRequestUrl(PostponedVATStatement)
       val currentDate: LocalDate     = LocalDate.of(date.getYear, date.getMonthValue, DAY_12)
 
-      when(mockDataStoreConnector.getEmail(any)(any))
+      when(mockDataStoreConnector.getEmail(any))
         .thenReturn(Future.successful(Right(Email(emailValue))))
 
       when(mockSdesConnector.getPostponedVatStatements(eqTo(eori))(any))
@@ -315,7 +315,7 @@ class PostponedVatControllerSpec extends SpecBase {
       config.historicStatementsEnabled = false
       val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("postponed-vat").url
 
-      when(mockDataStoreConnector.getEmail(any)(any))
+      when(mockDataStoreConnector.getEmail(any))
         .thenReturn(Future.successful(Right(Email(emailValue))))
 
       when(mockSdesConnector.getPostponedVatStatements(any)(any))
