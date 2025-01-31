@@ -48,7 +48,7 @@ class PostponedVatControllerSpec extends SpecBase {
   "show" should {
 
     "display the PostponedVat page with one column(CDS) for statements" in new Setup {
-      config.historicStatementsEnabled = false
+      appConfigForSetup.historicStatementsEnabled = false
 
       val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("postponed-vat").url
 
@@ -80,8 +80,8 @@ class PostponedVatControllerSpec extends SpecBase {
             isCdsOnly = true,
             location = Some(cdsLocation),
             urls = pvatUrls
-          )(messages(app), mockDateTimeService)
-        )(request, messages(app), config).toString()
+          )(messages, mockDateTimeService)
+        )(request, messages, appConfig).toString()
 
         contentAsString(result).contains(serviceUnavailableUrl)
         contentAsString(result) should not include "CHIEF statement -"
@@ -89,7 +89,7 @@ class PostponedVatControllerSpec extends SpecBase {
     }
 
     "display the PostponedVat page with two columns (CHIEF and CDS) for last 6 months" in new Setup {
-      config.historicStatementsEnabled = false
+      appConfigForSetup.historicStatementsEnabled = false
 
       val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("postponed-vat").url
 
@@ -121,7 +121,7 @@ class PostponedVatControllerSpec extends SpecBase {
 
     "display the PostponedVat page with one column(CDS) " +
       "and Ignore historic CHIEF statements older than 6 months" in new Setup {
-        config.historicStatementsEnabled = false
+        appConfigForSetup.historicStatementsEnabled = false
 
         val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("postponed-vat").url
 
@@ -182,20 +182,21 @@ class PostponedVatControllerSpec extends SpecBase {
               hasRequestedStatements = true,
               isCdsOnly = true,
               location = Some(cdsLocation),
-              urls = pvatUrls.copy(serviceUnavailableUrl = Some(config.historicRequestUrl(PostponedVATStatement)))
-            )(messages(app), mockDateTimeService)
-          )(request, messages(app), config).toString()
+              urls =
+                pvatUrls.copy(serviceUnavailableUrl = Some(appConfigForSetup.historicRequestUrl(PostponedVATStatement)))
+            )(messages, mockDateTimeService)
+          )(request, messages, appConfig).toString()
 
           val doc           = Jsoup.parse(contentAsString(result))
           val periodElement = Formatters
-            .dateAsMonthAndYear(date.minusMonths(ONE_MONTH))(messages(app))
+            .dateAsMonthAndYear(date.minusMonths(ONE_MONTH))(messages)
             .replace(singleSpace, hyphen)
             .toLowerCase
 
           doc.getElementById(s"period-$periodElement").children().text() should include(
-            messages(app)(
+            messages(
               "cf.common.not-available",
-              Formatters.dateAsMonth(date.minusMonths(ONE_MONTH))(messages(app))
+              Formatters.dateAsMonth(date.minusMonths(ONE_MONTH))(messages)
             )
           )
         }
@@ -203,7 +204,7 @@ class PostponedVatControllerSpec extends SpecBase {
 
     "not display the immediate previous month statement on PostponedVat page when accessed " +
       "before 20th day of the month and statement is not available" in new Setup {
-        config.historicStatementsEnabled = false
+        appConfigForSetup.historicStatementsEnabled = false
 
         val currentDate: LocalDate = LocalDate.of(date.getYear, date.getMonthValue, DAY_12)
 
@@ -234,12 +235,12 @@ class PostponedVatControllerSpec extends SpecBase {
               isCdsOnly = true,
               location = Some(cdsLocation),
               urls = pvatUrls
-            )(messages(app), mockDateTimeService)
-          )(request, messages(app), config).toString()
+            )(messages, mockDateTimeService)
+          )(request, messages, appConfig).toString()
 
           val doc           = Jsoup.parse(contentAsString(result))
           val periodElement = Formatters
-            .dateAsMonthAndYear(date.minusMonths(ONE_MONTH))(messages(app))
+            .dateAsMonthAndYear(date.minusMonths(ONE_MONTH))(messages)
             .replace(singleSpace, hyphen)
             .toLowerCase
 
@@ -248,9 +249,9 @@ class PostponedVatControllerSpec extends SpecBase {
       }
 
     "display historic statements Url when feature is enabled" in new Setup {
-      config.historicStatementsEnabled = true
+      appConfigForSetup.historicStatementsEnabled = true
 
-      val historicRequestUrl: String = config.historicRequestUrl(PostponedVATStatement)
+      val historicRequestUrl: String = appConfigForSetup.historicRequestUrl(PostponedVATStatement)
       val currentDate: LocalDate     = LocalDate.of(date.getYear, date.getMonthValue, DAY_12)
 
       when(mockDataStoreConnector.getEmail(any)(any))
@@ -280,19 +281,18 @@ class PostponedVatControllerSpec extends SpecBase {
             isCdsOnly = true,
             location = Some(cdsLocation),
             urls = pvatUrls.copy(serviceUnavailableUrl = Some(historicRequestUrl))
-          )(messages(app), mockDateTimeService)
-        )(request, messages(app), config).toString()
+          )(messages, mockDateTimeService)
+        )(request, messages, appConfig).toString()
       }
     }
   }
 
   "statementsUnavailablePage" should {
     "display the view correctly" in {
+      val app = applicationBuilder().build()
 
-      val app       = application().build()
-      val view      = app.injector.instanceOf[postponed_import_vat_not_available]
-      val appConfig = app.injector.instanceOf[AppConfig]
-      val navigator = app.injector.instanceOf[Navigator]
+      val view      = instanceOf[postponed_import_vat_not_available](app)
+      val navigator = instanceOf[Navigator](app)
 
       val serviceUnavailableUrl: String =
         routes.ServiceUnavailableController.onPageLoad(navigator.postponedVatNotAvailablePageId).url
@@ -303,7 +303,7 @@ class PostponedVatControllerSpec extends SpecBase {
 
         status(result) mustBe OK
         contentAsString(result) mustBe
-          view(EORI_NUMBER, Some(serviceUnavailableUrl))(request, messages(app), appConfig).toString()
+          view(EORI_NUMBER, Some(serviceUnavailableUrl))(request, messages, appConfig).toString()
       }
     }
   }
@@ -312,7 +312,7 @@ class PostponedVatControllerSpec extends SpecBase {
 
     "when exception occurs in get postponedVAT statements api" in new Setup {
 
-      config.historicStatementsEnabled = false
+      appConfigForSetup.historicStatementsEnabled = false
       val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("postponed-vat").url
 
       when(mockDataStoreConnector.getEmail(any)(any))
@@ -703,7 +703,9 @@ class PostponedVatControllerSpec extends SpecBase {
     )
 
     val app: Application =
-      application(Seq(EoriHistory(historicEori, Some(date.minusYears(ONE_YEAR)), Some(date.minusMonths(SIX_MONTHS)))))
+      applicationBuilder(
+        Seq(EoriHistory(historicEori, Some(date.minusYears(ONE_YEAR)), Some(date.minusMonths(SIX_MONTHS))))
+      )
         .overrides(
           inject.bind[FinancialsApiConnector].toInstance(mockFinancialsApiConnector),
           inject.bind[SdesConnector].toInstance(mockSdesConnector),
@@ -712,8 +714,9 @@ class PostponedVatControllerSpec extends SpecBase {
         )
         .build()
 
-    val view: postponed_import_vat = app.injector.instanceOf[postponed_import_vat]
-    val config: AppConfig          = app.injector.instanceOf[AppConfig]
+    val appConfigForSetup: AppConfig = instanceOf[AppConfig](app)
+
+    val view: postponed_import_vat = instanceOf[postponed_import_vat](app)
 
     private def monthValueOfCurrentDate(monthValueToSubtract: Int): Int =
       LocalDate.now().minusMonths(monthValueToSubtract).getMonthValue
@@ -722,10 +725,10 @@ class PostponedVatControllerSpec extends SpecBase {
       LocalDate.now().minusMonths(monthValueToSubtract).getYear
 
     val pvatUrls: PVATUrls = PVATUrls(
-      customsFinancialsHomePageUrl = config.customsFinancialsFrontendHomepage,
-      requestStatementsUrl = config.requestedStatements(PostponedVATStatement),
-      pvEmail = PvEmail(config.pvEmailEmailAddress, config.pvEmailEmailAddressHref),
-      viewVatAccountSupportLink = config.viewVatAccountSupportLink,
+      customsFinancialsHomePageUrl = appConfigForSetup.customsFinancialsFrontendHomepage,
+      requestStatementsUrl = appConfigForSetup.requestedStatements(PostponedVATStatement),
+      pvEmail = PvEmail(appConfigForSetup.pvEmailEmailAddress, appConfigForSetup.pvEmailEmailAddressHref),
+      viewVatAccountSupportLink = appConfigForSetup.viewVatAccountSupportLink,
       serviceUnavailableUrl = Some(routes.ServiceUnavailableController.onPageLoad("postponed-vat").url)
     )
   }

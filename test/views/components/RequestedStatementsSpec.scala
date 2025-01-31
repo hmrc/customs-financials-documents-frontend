@@ -20,13 +20,14 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import org.scalatest.matchers.must.Matchers.mustBe
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.i18n.Messages
 import utils.CommonTestData.URL_TEST
 import utils.SpecBase
 import views.html.components.requestedStatements
 
-class RequestedStatementsSpec extends SpecBase {
+class RequestedStatementsSpec extends SpecBase with GuiceOneAppPerSuite {
 
   "view" should {
 
@@ -71,16 +72,16 @@ class RequestedStatementsSpec extends SpecBase {
     val docHtml = doc.html()
 
     docHtml.contains(URL_TEST) mustBe true
-    docHtml.contains(msgs(linkMessageKey)) mustBe true
-    docHtml.contains(msgs(preLinkMessage)) mustBe true
-    docHtml.contains(msgs(postLinkMessage)) mustBe true
+    docHtml.contains(messages(linkMessageKey)) mustBe true
+    docHtml.contains(messages(preLinkMessage)) mustBe true
+    docHtml.contains(messages(postLinkMessage)) mustBe true
   }
 
-  trait Setup {
-    val app: Application        = application().build()
-    implicit val msgs: Messages = messages(app)
+  override def fakeApplication(): Application = applicationBuilder.build()
 
-    protected def view(url: String): Document =
-      Jsoup.parse(app.injector.instanceOf[requestedStatements].apply(url).body)
+  trait Setup {
+
+    def view(url: String): Document =
+      Jsoup.parse(instanceOf[requestedStatements](app).apply(url).body)
   }
 }

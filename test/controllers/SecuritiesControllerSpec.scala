@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.AppConfig
 import connectors.{FinancialsApiConnector, SdesConnector}
 import models.FileFormat.{Csv, Pdf}
 import models.FileRole.SecurityStatement
@@ -26,7 +25,6 @@ import org.jsoup.Jsoup
 import org.scalatest.matchers.must.Matchers.mustBe
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import play.api.i18n.Messages
 import play.api.mvc.{AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -140,16 +138,16 @@ class SecuritiesControllerSpec extends SpecBase {
   "statementsUnavailablePage" should {
 
     "render correctly" in {
-      val app: Application = application().build()
-      val appConfig        = app.injector.instanceOf[AppConfig]
-      val unavailableView  = app.injector.instanceOf[security_statements_not_available]
+      val app = applicationBuilder().build()
+
+      val unavailableView = instanceOf[security_statements_not_available](app)
 
       running(app) {
         val request = fakeRequest(GET, routes.SecuritiesController.statementsUnavailablePage().url)
         val result  = route(app, request).value
 
         status(result) mustBe OK
-        contentAsString(result) mustBe unavailableView()(request, messages(app), appConfig).toString()
+        contentAsString(result) mustBe unavailableView()(request, messages, appConfig).toString()
       }
     }
   }
@@ -160,7 +158,7 @@ class SecuritiesControllerSpec extends SpecBase {
 
     val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory(EORI_NUMBER, None, None))
 
-    val app: Application = application(eoriHistory)
+    val app: Application = applicationBuilder(eoriHistory)
       .overrides(
         inject.bind[FinancialsApiConnector].toInstance(mockFinancialsApiConnector),
         inject.bind[SdesConnector].toInstance(mockSdesConnector)
@@ -169,11 +167,9 @@ class SecuritiesControllerSpec extends SpecBase {
 
     implicit val request: FakeRequest[AnyContentAsEmpty.type] =
       fakeRequest(GET, routes.SecuritiesController.showSecurityStatements().url)
-    implicit val appConfig: AppConfig                         = app.injector.instanceOf[AppConfig]
-    implicit val msg: Messages                                = messages(app)
 
     val result: Future[Result]    = route(app, request).value
-    val view: security_statements = app.injector.instanceOf[security_statements]
+    val view: security_statements = instanceOf[security_statements](app)
 
     val date: LocalDate               = LocalDate.now().withDayOfMonth(DAY_28)
     val someRequestId: Option[String] = Some("statement-request-id")

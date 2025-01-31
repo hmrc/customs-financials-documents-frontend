@@ -21,7 +21,6 @@ import models.{EoriHistory, VatCertificateFile, VatCertificatesByMonth, VatCerti
 import models.metadata.VatCertificateFileMetadata
 import models.FileRole.C79Certificate
 import org.scalatest.Assertion
-import play.api.Application
 import play.api.i18n.Messages
 import utils.CommonTestData.{
   DAY_28, EORI_NUMBER, FIVE_MONTHS, FOUR_MONTHS, ONE_MONTH, SIX_MONTHS, SIZE_111L, STAT_FILE_NAME_04, THREE_MONTHS,
@@ -92,10 +91,10 @@ class ImportVatViewModelSpec extends SpecBase {
   }
 
   private def shouldContainCorrectTitle(viewModel: ImportVatViewModel)(implicit msgs: Messages): Assertion =
-    viewModel.title mustBe Some(msgs("cf.account.vat.title"))
+    viewModel.title mustBe Some(messages("cf.account.vat.title"))
 
   private def shouldContainCorrectBackLink(viewModel: ImportVatViewModel)(implicit config: AppConfig): Assertion =
-    viewModel.backLink mustBe Some(config.customsFinancialsFrontendHomepage)
+    viewModel.backLink mustBe Some(appConfig.customsFinancialsFrontendHomepage)
 
   private def shouldContainCorrectHeading(viewModel: ImportVatViewModel)(implicit msgs: Messages): Assertion =
     viewModel.heading mustBe h1Component(
@@ -194,10 +193,10 @@ class ImportVatViewModelSpec extends SpecBase {
           tabLink = Some(
             new HmrcNewTabLink().apply(
               NewTabLink(
-                language = Some(msgs.lang.toString),
+                language = Some(messages.lang.toString),
                 classList = Some("govuk-link"),
                 href = Some(appConfig.viewVatAccountSupportLink),
-                text = msgs("cf.account.vat.support.link")
+                text = messages("cf.account.vat.support.link")
               )
             )
           )
@@ -262,16 +261,13 @@ class ImportVatViewModelSpec extends SpecBase {
       )
     } else {
       ddComponent(
-        content = Html(msgs("cf.account.vat.statements.unavailable", statementsOfOneMonth.formattedMonth)),
+        content = Html(messages("cf.account.vat.statements.unavailable", statementsOfOneMonth.formattedMonth)),
         classes = Some("govuk-summary-list__actions")
       )
     }
 
   trait Setup {
     val date: LocalDate = LocalDate.now().withDayOfMonth(DAY_28)
-
-    val app: Application        = application().build()
-    implicit val msgs: Messages = messages(app)
 
     val vatCertificateFile1: VatCertificateFile = VatCertificateFile(
       STAT_FILE_NAME_04,
@@ -372,8 +368,6 @@ class ImportVatViewModelSpec extends SpecBase {
     )
 
     val serviceUnavailableUrl: String = URL_TEST
-
-    implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
 
     val viewModel: ImportVatViewModel = ImportVatViewModel(certificatesForAllEoris, Some(serviceUnavailableUrl))
 

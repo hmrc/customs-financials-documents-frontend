@@ -20,19 +20,19 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import org.scalatest.matchers.must.Matchers.{must, mustBe}
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
-import play.api.i18n.Messages
 import utils.SpecBase
 import views.html.components.link
 
-class LinkSpec extends SpecBase {
+class LinkSpec extends SpecBase with GuiceOneAppPerSuite {
 
   "link component" should {
 
     "display correct contents" when {
 
       "only link message and location have been provided" in new Setup {
-        linkComponent.text() mustBe message(linkMessage)
+        linkComponent.text() mustBe messages(linkMessage)
 
         val link: Elements = linkComponent.select("a")
 
@@ -44,7 +44,7 @@ class LinkSpec extends SpecBase {
       }
 
       "class has been provided along with link message and location" in new Setup {
-        linkComponentWithClass.text() mustBe message(linkMessage)
+        linkComponentWithClass.text() mustBe messages(linkMessage)
 
         val link: Elements = linkComponentWithClass.select("a")
 
@@ -52,7 +52,7 @@ class LinkSpec extends SpecBase {
       }
 
       "id has been provided along with link message and location" in new Setup {
-        linkComponentWithId.text() mustBe message(linkMessage)
+        linkComponentWithId.text() mustBe messages(linkMessage)
 
         val link: Elements = linkComponentWithId.select("a")
 
@@ -60,7 +60,7 @@ class LinkSpec extends SpecBase {
       }
 
       "classes and id have been provided along with link message and location" in new Setup {
-        linkComponentWithClassAndId.text() mustBe message(linkMessage)
+        linkComponentWithClassAndId.text() mustBe messages(linkMessage)
 
         val link: Elements = linkComponentWithClassAndId.select("a")
 
@@ -69,7 +69,7 @@ class LinkSpec extends SpecBase {
       }
 
       "aria-label has been provided along with link message and location" in new Setup {
-        linkComponentWithAriaLabel.text() must include(message(linkMessage))
+        linkComponentWithAriaLabel.text() must include(messages(linkMessage))
         linkComponentWithAriaLabel.text() must include(ariaLabelText)
 
         val link: Elements = linkComponentWithAriaLabel.select("a")
@@ -79,6 +79,8 @@ class LinkSpec extends SpecBase {
     }
   }
 
+  override def fakeApplication(): Application = applicationBuilder.build()
+
   trait Setup {
     val linkMessage   = "linkMessage"
     val location      = "jackie-chan.com"
@@ -87,9 +89,7 @@ class LinkSpec extends SpecBase {
     val linkId        = "custom-id"
     val ariaLabelText = "visually hidden label"
 
-    val app: Application           = application().build()
-    implicit val message: Messages = messages(app)
-    val instanceOfLink: link       = app.injector.instanceOf[link]
+    val instanceOfLink: link = instanceOf[link](app)
 
     val linkComponent: Document          = Jsoup.parse(instanceOfLink(linkMessage, location).body)
     val linkComponentWithClass: Document = Jsoup.parse(instanceOfLink(linkMessage, location, linkClass = classes).body)
@@ -97,7 +97,8 @@ class LinkSpec extends SpecBase {
 
     val linkComponentWithClassAndId: Document =
       Jsoup.parse(instanceOfLink(linkMessage, location, linkId = Some(linkId), linkClass = classes).body)
-    val linkComponentWithAriaLabel: Document  =
+
+    val linkComponentWithAriaLabel: Document =
       Jsoup.parse(instanceOfLink(linkMessage, location, ariaLabel = Some(ariaLabelText)).body)
   }
 }

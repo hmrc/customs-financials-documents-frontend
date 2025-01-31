@@ -25,12 +25,13 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import org.scalatest.matchers.must.Matchers.mustBe
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import services.DateTimeService
-import utils.CommonTestData._
+import utils.CommonTestData.*
 import utils.SpecBase
 import utils.Utils.emptyString
 import viewmodels.{CollapsibleStatementGroupRow, CurrentStatementRow, DDRow}
@@ -40,7 +41,7 @@ import views.html.postponed_vat.{collapsible_statement_group, current_statement_
 
 import java.time.{LocalDate, LocalDateTime}
 
-class CurrentStatementRowSpec extends SpecBase {
+class CurrentStatementRowSpec extends SpecBase with GuiceOneAppPerSuite {
 
   "view" should {
 
@@ -143,10 +144,9 @@ class CurrentStatementRowSpec extends SpecBase {
       "September 2023 CDS statement - PDF (1KB)"
   }
 
-  trait Setup {
-    val app: Application = application().build()
+  override def fakeApplication(): Application = applicationBuilder.build()
 
-    implicit val msg: Messages                                = messages(app)
+  trait Setup {
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     val periodId     = "test_id"
@@ -156,7 +156,7 @@ class CurrentStatementRowSpec extends SpecBase {
     val visuallyHiddenMsg = "Not available visually hidden"
 
     def view(currentStatementRow: CurrentStatementRow): Document =
-      Jsoup.parse(app.injector.instanceOf[current_statement_row].apply(currentStatementRow).body)
+      Jsoup.parse(instanceOf[current_statement_row](app).apply(currentStatementRow).body)
 
     implicit val mockDateTimeService: DateTimeService = mock[DateTimeService]
 

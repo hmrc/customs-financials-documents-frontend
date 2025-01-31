@@ -20,6 +20,7 @@ import config.AppConfig
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.matchers.must.Matchers.mustBe
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
@@ -27,40 +28,40 @@ import play.api.test.FakeRequest
 import utils.SpecBase
 import views.html.import_vat.import_vat_not_available
 
-class ImportVatNotAvailableSpec extends SpecBase {
+class ImportVatNotAvailableSpec extends SpecBase with GuiceOneAppPerSuite {
 
   "ImportVatNotAvailable view" should {
 
     "display correct title and guidance" in new Setup {
+
       view.title() mustBe
-        s"${messages(app)("cf.account.vat.title")} - ${messages(app)("service.name")} - GOV.UK"
+        s"${messages("cf.account.vat.title")} - ${messages("service.name")} - GOV.UK"
 
       view.getElementById("missing-certificates-guidance-heading").html() mustBe
-        messages(app)("cf.account.vat.older-certificates.heading")
+        messages("cf.account.vat.older-certificates.heading")
 
       view.getElementById("chief-guidance-heading").html() mustBe
-        messages(app)("cf.account.vat.chief.heading")
+        messages("cf.account.vat.chief.heading")
 
       view.getElementById("vat.support.message.heading").html() mustBe
-        messages(app)("cf.account.vat.support.heading")
+        messages("cf.account.vat.support.heading")
 
-      view.html().contains(messages(app)("cf.account.vat.older-certificates.description.link"))
-      view.html().contains(messages(app)("cf.account.vat.older-certificates.description.1"))
-      view.html().contains(messages(app)("cf.account.vat.older-certificates.description.2"))
-      view.html().contains(messages(app)("cf.account.vat.support.link"))
+      view.html().contains(messages("cf.account.vat.older-certificates.description.link"))
+      view.html().contains(messages("cf.account.vat.older-certificates.description.1"))
+      view.html().contains(messages("cf.account.vat.older-certificates.description.2"))
+      view.html().contains(messages("cf.account.vat.support.link"))
       view.html().contains(serviceUnavailableUrl)
     }
   }
 
+  override def fakeApplication(): Application = applicationBuilder.build()
+
   trait Setup {
-    val app: Application              = application().build()
     val serviceUnavailableUrl: String = "service_unavailable_url"
 
-    implicit val appConfig: AppConfig                         = app.injector.instanceOf[AppConfig]
-    implicit val msg: Messages                                = messages(app)
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     val view: Document =
-      Jsoup.parse(app.injector.instanceOf[import_vat_not_available].apply(Option(serviceUnavailableUrl)).body)
+      Jsoup.parse(instanceOf[import_vat_not_available](app).apply(Option(serviceUnavailableUrl)).body)
   }
 }

@@ -52,7 +52,7 @@ class UnauthorisedControllerSpec extends SpecBase {
         val result  = route(app, request).value
 
         status(result) mustBe OK
-        contentAsString(result) mustBe view()(request, messages(app), appConfig).toString()
+        contentAsString(result) mustBe view()(request, messages, appConfig).toString()
       }
     }
 
@@ -77,13 +77,12 @@ class UnauthorisedControllerSpec extends SpecBase {
 
   trait Setup {
     val mockAuthConnector: AuthConnector = mock[AuthConnector]
-    val app: Application                 = application()
+    val app: Application                 = applicationBuilder()
       .overrides(
         inject.bind[AuthConnector].toInstance(mockAuthConnector)
       )
       .build()
 
-    val view: not_subscribed_to_cds = app.injector.instanceOf[not_subscribed_to_cds]
-    val appConfig: AppConfig        = app.injector.instanceOf[AppConfig]
+    val view: not_subscribed_to_cds = instanceOf[not_subscribed_to_cds](app)
   }
 }

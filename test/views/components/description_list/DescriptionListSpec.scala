@@ -20,14 +20,14 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import org.scalatest.matchers.must.Matchers.{must, mustBe}
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
-import play.api.i18n.Messages
 import play.twirl.api.Html
 import utils.SpecBase
 import views.html.components.description_list.{dd, dl, dt}
 import utils.Utils.singleSpace
 
-class DescriptionListSpec extends SpecBase {
+class DescriptionListSpec extends SpecBase with GuiceOneAppPerSuite {
 
   "dd component" should {
 
@@ -145,6 +145,8 @@ class DescriptionListSpec extends SpecBase {
     }
   }
 
+  override def fakeApplication(): Application = applicationBuilder.build()
+
   trait Setup {
     val contentText          = "some content"
     val content: Html        = Html(contentText)
@@ -154,12 +156,9 @@ class DescriptionListSpec extends SpecBase {
     val testMultipleClassses = s"$testClass$singleSpace$testClass1$singleSpace$testClass2"
     val testId               = "test-id"
 
-    val app: Application           = application().build()
-    implicit val message: Messages = messages(app)
-
-    val instanceOfDd: dd = app.injector.instanceOf[dd]
-    val instanceOfDl: dl = app.injector.instanceOf[dl]
-    val instanceOfDt: dt = app.injector.instanceOf[dt]
+    val instanceOfDd: dd = instanceOf[dd](app)
+    val instanceOfDl: dl = instanceOf[dl](app)
+    val instanceOfDt: dt = instanceOf[dt](app)
 
     val ddComponent: Document               = Jsoup.parse(instanceOfDd(content).body)
     val ddComponentWithClass: Document      = Jsoup.parse(instanceOfDd(content, classes = Some(testClass)).body)

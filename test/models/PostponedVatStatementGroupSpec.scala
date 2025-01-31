@@ -18,12 +18,11 @@ package models
 
 import org.scalatest.matchers.must.Matchers.mustBe
 import org.mockito.Mockito.when
-import play.api.{Application, inject}
 import services.DateTimeService
-import utils.CommonTestData._
+import utils.CommonTestData.*
 import utils.SpecBase
 
-import java.time._
+import java.time.*
 
 class PostponedVatStatementGroupSpec extends SpecBase {
 
@@ -37,7 +36,7 @@ class PostponedVatStatementGroupSpec extends SpecBase {
         when(mockDateTimeService.systemDateTime()).thenReturn(currentDate.atStartOfDay())
 
         PostponedVatStatementGroup(dateOfPreviousMonth, Seq())(
-          messages(app),
+          messages,
           mockDateTimeService
         ).isPreviousMonthAndAfter19Th mustBe true
       }
@@ -50,7 +49,7 @@ class PostponedVatStatementGroupSpec extends SpecBase {
           .thenReturn(date.atStartOfDay())
 
         PostponedVatStatementGroup(dateOfPreviousMonth, Seq())(
-          messages(app),
+          messages,
           mockDateTimeService
         ).isPreviousMonthAndAfter19Th mustBe false
       }
@@ -62,7 +61,7 @@ class PostponedVatStatementGroupSpec extends SpecBase {
         .thenReturn(date.atStartOfDay())
 
       PostponedVatStatementGroup(dateOfCurrentMonth, Seq())(
-        messages(app),
+        messages,
         mockDateTimeService
       ).isPreviousMonthAndAfter19Th mustBe true
     }
@@ -70,7 +69,7 @@ class PostponedVatStatementGroupSpec extends SpecBase {
     "return true if statement date is not from the previous month and accessed " +
       "before 19th day of current date " in new Setup {
 
-        private val isCurrentDayBefore20 = LocalDate.now.getDayOfMonth < DAY_20
+        val isCurrentDayBefore20: Boolean = LocalDate.now.getDayOfMonth < DAY_20
 
         if (isCurrentDayBefore20) when(mockDateTimeService.systemDateTime()).thenReturn(date.atStartOfDay())
 
@@ -78,7 +77,7 @@ class PostponedVatStatementGroupSpec extends SpecBase {
 
         if (isCurrentDayBefore20) {
           PostponedVatStatementGroup(dateOfCurrentMonthAndBefore20ThDay, Seq())(
-            messages(app),
+            messages,
             mockDateTimeService
           ).isPreviousMonthAndAfter19Th mustBe true
         }
@@ -86,13 +85,7 @@ class PostponedVatStatementGroupSpec extends SpecBase {
   }
 
   trait Setup {
-    val mockDateTimeService: DateTimeService = mock[DateTimeService]
     val date: LocalDate                      = LocalDate.of(YEAR_2023, MONTH_10, DAY_1)
-
-    val app: Application = application()
-      .overrides(
-        inject.bind[DateTimeService].toInstance(mockDateTimeService)
-      )
-      .build()
+    val mockDateTimeService: DateTimeService = mock[DateTimeService]
   }
 }

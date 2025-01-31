@@ -25,16 +25,17 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import org.scalatest.matchers.must.Matchers.mustBe
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import utils.CommonTestData._
+import utils.CommonTestData.*
 import utils.SpecBase
 import utils.Utils.emptyString
 import views.html.postponed_vat.collapsible_statement_group
 
-class CollapsibleStatementGroupSpec extends SpecBase {
+class CollapsibleStatementGroupSpec extends SpecBase with GuiceOneAppPerSuite {
 
   "view" should {
 
@@ -121,8 +122,8 @@ class CollapsibleStatementGroupSpec extends SpecBase {
 
     val visuallyHiddenElements = viewDoc.getElementsByClass("govuk-visually-hidden")
 
-    firstSpanElement mustBe msgs(missingFileMessage, paymentMethodSource)
-    secondSpanElement mustBe msgs("cf.common.not-available-screen-reader-cds", period)
+    firstSpanElement mustBe messages(missingFileMessage, paymentMethodSource)
+    secondSpanElement mustBe messages("cf.common.not-available-screen-reader-cds", period)
 
     visuallyHiddenElements.size() mustBe 2
   }
@@ -148,10 +149,10 @@ class CollapsibleStatementGroupSpec extends SpecBase {
     if (isCDSOnly) ddElements.size() mustBe 1 else ddElements.size() mustBe 2
   }
 
-  trait Setup {
-    val app: Application = application().build()
+  override def fakeApplication(): Application = applicationBuilder.build()
 
-    implicit val msg: Messages                                = messages(app)
+  trait Setup {
+
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     val certificateFiles: Seq[PostponedVatStatementFile] = Seq(
@@ -178,8 +179,7 @@ class CollapsibleStatementGroupSpec extends SpecBase {
       period: String,
       isCdsOnly: Boolean = true
     ): Document = Jsoup.parse(
-      app.injector
-        .instanceOf[collapsible_statement_group]
+      instanceOf[collapsible_statement_group](app)
         .apply(
           certificateFiles,
           downloadLinkMessage,

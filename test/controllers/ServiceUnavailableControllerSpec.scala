@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.AppConfig
 import navigation.Navigator
 import org.scalatest.matchers.must.Matchers.mustBe
 import play.api.Application
@@ -24,6 +23,7 @@ import play.api.http.Status.OK
 import play.api.test.Helpers.{
   GET, contentAsString, defaultAwaitTimeout, route, running, status, writeableOf_AnyContentAsEmpty
 }
+import play.api.test.Helpers._
 import utils.SpecBase
 import views.html.service_unavailable
 
@@ -37,7 +37,7 @@ class ServiceUnavailableControllerSpec extends SpecBase {
         val result  = route(app, request).value
 
         status(result) mustBe OK
-        contentAsString(result) mustBe view()(request, messages(app), appConfig).toString()
+        contentAsString(result) mustBe view()(request, messages, appConfig).toString()
       }
     }
 
@@ -49,7 +49,7 @@ class ServiceUnavailableControllerSpec extends SpecBase {
         status(result) mustBe OK
 
         val backlink = Some(routes.PostponedVatController.show(Some("CDS")).url)
-        contentAsString(result) mustBe view(backlink)(request, messages(app), appConfig).toString()
+        contentAsString(result) mustBe view(backlink)(request, messages, appConfig).toString()
       }
     }
 
@@ -61,16 +61,15 @@ class ServiceUnavailableControllerSpec extends SpecBase {
         val backlink = Some(routes.VatController.showVatAccount().url)
 
         status(result) mustBe OK
-        contentAsString(result) mustBe view(backlink)(request, messages(app), appConfig).toString()
+        contentAsString(result) mustBe view(backlink)(request, messages, appConfig).toString()
       }
     }
   }
 
   trait Setup {
-    val app: Application = application().build()
+    val app: Application          = applicationBuilder.build()
+    val view: service_unavailable = instanceOf[service_unavailable](app)
 
-    val view: service_unavailable = app.injector.instanceOf[service_unavailable]
-    val appConfig: AppConfig      = app.injector.instanceOf[AppConfig]
-    val navigator: Navigator      = app.injector.instanceOf[Navigator]
+    val navigator: Navigator = new Navigator()
   }
 }

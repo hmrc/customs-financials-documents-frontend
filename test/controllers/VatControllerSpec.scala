@@ -49,9 +49,8 @@ class VatControllerSpec extends SpecBase {
   "showVatAccount" should {
     "redirect to certificates unavailable page if getting files fails" in new Setup {
 
-      appConfig.historicStatementsEnabled = false
+      appConfigForSetup.historicStatementsEnabled = false
 
-      implicit val config: AppConfig    = appConfig
       val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad(navigator.importVatPageId).url
 
       val vatCertificateFile: VatCertificateFile = VatCertificateFile(
@@ -91,7 +90,7 @@ class VatControllerSpec extends SpecBase {
 
         status(result) mustBe OK
         contentAsString(result) mustBe
-          view(viewModel)(request, msgs, appConfig).toString()
+          view(viewModel)(request, messages, appConfigForSetup).toString()
       }
     }
 
@@ -110,9 +109,8 @@ class VatControllerSpec extends SpecBase {
 
     "display only last 6 months certs' rows when previous cert files are retrieved in SDES" in new Setup {
 
-      appConfig.historicStatementsEnabled = false
+      appConfigForSetup.historicStatementsEnabled = false
 
-      implicit val config: AppConfig    = appConfig
       val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("import-vat").url
 
       val vatCertificateFile1: VatCertificateFile = VatCertificateFile(
@@ -253,7 +251,7 @@ class VatControllerSpec extends SpecBase {
 
         if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
           contentAsString(result) mustBe
-            view(viewModel)(request, msgs, appConfig).toString()
+            view(viewModel)(request, messages, appConfigForSetup).toString()
 
           val doc = Jsoup.parse(contentAsString(result))
 
@@ -275,8 +273,6 @@ class VatControllerSpec extends SpecBase {
 
     "display the cert unavailable text for the relevant month when cert files are retrieved " +
       "after 19th of the month and cert is not available" in new Setup {
-
-        implicit val config: AppConfig = appConfig
 
         val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
           VatCertificatesByMonth(date.minusMonths(ONE_MONTH), Seq()),
@@ -308,8 +304,8 @@ class VatControllerSpec extends SpecBase {
           if (!DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
             contentAsString(result) mustBe view(viewModel)(
               request,
-              msgs,
-              appConfig
+              messages,
+              appConfigForSetup
             ).toString()
 
             val doc = Jsoup.parse(contentAsString(result))
@@ -318,7 +314,7 @@ class VatControllerSpec extends SpecBase {
 
             doc.getElementById("statements-list-0-row-0").children().text() should
               include(
-                msgs(
+                messages(
                   "cf.account.vat.statements.unavailable",
                   Formatters.dateAsMonth(date.minusMonths(ONE_MONTH))
                 )
@@ -330,8 +326,8 @@ class VatControllerSpec extends SpecBase {
     "not display the cert row for the immediate previous month when cert files are retrieved " +
       "before 20th of the month and cert is not available for immediate previous month" in new Setup {
 
-        appConfig.historicStatementsEnabled = false
-        implicit val config: AppConfig    = appConfig
+        appConfigForSetup.historicStatementsEnabled = false
+
         val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("import-vat").url
 
         val currentCertificates: Seq[VatCertificatesByMonth] = Seq(
@@ -362,8 +358,8 @@ class VatControllerSpec extends SpecBase {
           if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
             contentAsString(result) mustBe view(viewModel)(
               request,
-              msgs,
-              appConfig
+              messages,
+              appConfigForSetup
             ).toString()
 
             val doc = Jsoup.parse(contentAsString(result))
@@ -375,7 +371,7 @@ class VatControllerSpec extends SpecBase {
             Option(doc.getElementById("statements-list-0-row-3")) should not be empty
             Option(doc.getElementById("statements-list-0-row-4")) should not be empty
 
-            doc.getElementById("statements-list-0-row-0").children().text() should not include msgs(
+            doc.getElementById("statements-list-0-row-0").children().text() should not include messages(
               "cf.account.vat.statements.unavailable",
               Formatters.dateAsMonth(date.minusMonths(ONE_MONTH))
             )
@@ -386,8 +382,8 @@ class VatControllerSpec extends SpecBase {
     "display all the certs' row when cert files are retrieved before 20th of the month and " +
       "cert is available" in new Setup {
 
-        appConfig.historicStatementsEnabled = false
-        implicit val config: AppConfig    = appConfig
+        appConfigForSetup.historicStatementsEnabled = false
+
         val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("import-vat").url
 
         val vatCertificateFile: VatCertificateFile = VatCertificateFile(
@@ -432,7 +428,7 @@ class VatControllerSpec extends SpecBase {
 
           if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
             contentAsString(result) mustBe
-              view(viewModel)(request, msgs, appConfig).toString()
+              view(viewModel)(request, messages, appConfigForSetup).toString()
 
             val doc = Jsoup.parse(contentAsString(result))
 
@@ -443,7 +439,7 @@ class VatControllerSpec extends SpecBase {
             Option(doc.getElementById("statements-list-0-row-4")) should not be empty
             Option(doc.getElementById("statements-list-0-row-5")) should not be empty
 
-            doc.getElementById("statements-list-0-row-0").children().text() should not include msgs(
+            doc.getElementById("statements-list-0-row-0").children().text() should not include messages(
               "cf.account.vat.statements.unavailable",
               Formatters.dateAsMonth(date.minusMonths(ONE_MONTH))
             )
@@ -453,9 +449,8 @@ class VatControllerSpec extends SpecBase {
 
     "display historic statements Url when feature is enabled" in new Setup {
 
-      appConfig.historicStatementsEnabled = true
-      val historicRequestUrl: String = appConfig.historicRequestUrl(C79Certificate)
-      implicit val config: AppConfig = appConfig
+      appConfigForSetup.historicStatementsEnabled = true
+      val historicRequestUrl: String = appConfigForSetup.historicRequestUrl(C79Certificate)
 
       val vatCertificateFile: VatCertificateFile = VatCertificateFile(
         STAT_FILE_NAME_04,
@@ -499,7 +494,7 @@ class VatControllerSpec extends SpecBase {
 
         if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
           contentAsString(result) mustBe
-            view(viewModel)(request, msgs, appConfig).toString()
+            view(viewModel)(request, messages, appConfigForSetup).toString()
         }
       }
     }
@@ -507,10 +502,9 @@ class VatControllerSpec extends SpecBase {
     "display requested statements Url when regular and " +
       "requested statements are present in the same period" in new Setup {
 
-        appConfig.historicStatementsEnabled = true
+        appConfigForSetup.historicStatementsEnabled = true
 
-        implicit val config: AppConfig    = appConfig
-        val historicRequestUrl: String    = appConfig.historicRequestUrl(C79Certificate)
+        val historicRequestUrl: String    = appConfigForSetup.historicRequestUrl(C79Certificate)
         val someRequestId: Option[String] = Some("statement-request-id")
 
         val vatCertificateFile: VatCertificateFile = VatCertificateFile(
@@ -587,7 +581,7 @@ class VatControllerSpec extends SpecBase {
 
           if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
             contentAsString(result) mustBe
-              view(viewModel)(request, msgs, appConfig).toString()
+              view(viewModel)(request, messages, appConfigForSetup).toString()
           }
 
           val doc = Jsoup.parse(contentAsString(result))
@@ -600,31 +594,29 @@ class VatControllerSpec extends SpecBase {
   "certificatesUnavailablePage" should {
 
     "render correctly" in {
-      val app       = application().build()
-      val view      = app.injector.instanceOf[import_vat_not_available]
-      val appConfig = app.injector.instanceOf[AppConfig]
+      val view = instanceOf[import_vat_not_available](application)
 
       appConfig.historicStatementsEnabled = false
 
-      val navigator = app.injector.instanceOf[Navigator]
+      val navigator = instanceOf[Navigator](application)
 
       val serviceUnavailableUrl: String =
         routes.ServiceUnavailableController.onPageLoad(navigator.importVatNotAvailablePageId).url
 
-      running(app) {
+      running(application) {
         val request = fakeRequest(GET, routes.VatController.certificatesUnavailablePage().url)
-        val result  = route(app, request).value
+        val result  = route(application, request).value
 
         status(result) mustBe OK
         contentAsString(result) mustBe
-          view(Some(serviceUnavailableUrl))(request, messages(app), appConfig).toString()
+          view(Some(serviceUnavailableUrl))(request, messages, appConfig).toString()
       }
     }
 
     "display historic request url when feature is enabled" in {
-      val app       = application().build()
-      val view      = app.injector.instanceOf[import_vat_not_available]
-      val appConfig = app.injector.instanceOf[AppConfig]
+      val app = applicationBuilder.build()
+
+      val view = app.injector.instanceOf[import_vat_not_available]
 
       appConfig.historicStatementsEnabled = true
 
@@ -636,7 +628,7 @@ class VatControllerSpec extends SpecBase {
 
         status(result) mustBe OK
         contentAsString(result) mustBe
-          view(Some(historicRequestUrl))(request, messages(app), appConfig).toString()
+          view(Some(historicRequestUrl))(request, messages, appConfig).toString()
       }
     }
   }
@@ -644,14 +636,15 @@ class VatControllerSpec extends SpecBase {
   trait Setup {
     val mockFinancialsApiConnector: FinancialsApiConnector = mock[FinancialsApiConnector]
     val mockSdesConnector: SdesConnector                   = mock[SdesConnector]
-    val eoriHistory: Seq[EoriHistory]                      = Seq(EoriHistory(EORI_NUMBER, None, None))
-    val date: LocalDate                                    = LocalDate.now().withDayOfMonth(DAY_28)
-    val navigator                                          = new Navigator()
+
+    val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory(EORI_NUMBER, None, None))
+    val date: LocalDate               = LocalDate.now().withDayOfMonth(DAY_28)
+    val navigator                     = new Navigator()
 
     when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
       .thenReturn(Future.successful(true))
 
-    val app: Application = application(eoriHistory)
+    val app: Application = applicationBuilder(eoriHistory)
       .overrides(
         inject.bind[FinancialsApiConnector].toInstance(mockFinancialsApiConnector),
         inject.bind[SdesConnector].toInstance(mockSdesConnector),
@@ -659,8 +652,8 @@ class VatControllerSpec extends SpecBase {
       )
       .build()
 
-    var appConfig: AppConfig    = app.injector.instanceOf[AppConfig]
-    val view: import_vat        = app.injector.instanceOf[import_vat]
-    implicit val msgs: Messages = messages(app)
+    var appConfigForSetup: AppConfig = instanceOf[AppConfig](app)
+
+    val view: import_vat = instanceOf[import_vat](app)
   }
 }

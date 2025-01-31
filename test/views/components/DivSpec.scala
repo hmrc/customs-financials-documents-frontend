@@ -20,13 +20,13 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import org.scalatest.matchers.must.Matchers.{must, mustBe}
-import play.api.Application
-import play.api.i18n.Messages
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.twirl.api.Html
 import utils.SpecBase
 import views.html.components.div
+import play.api.Application
 
-class DivSpec extends SpecBase {
+class DivSpec extends SpecBase with GuiceOneAppPerSuite {
 
   "div component" should {
 
@@ -66,16 +66,15 @@ class DivSpec extends SpecBase {
     }
   }
 
+  override def fakeApplication(): Application = applicationBuilder.build()
+
   trait Setup {
     val contentText   = "some content"
     val content: Html = Html(contentText)
     val testClass     = "test-class"
     val testId        = "test-id"
 
-    val app: Application           = application().build()
-    implicit val message: Messages = messages(app)
-
-    val instanceOfDiv: div = app.injector.instanceOf[div]
+    val instanceOfDiv: div = instanceOf[div](app)
 
     val divComponent: Document               = Jsoup.parse(instanceOfDiv(content).body)
     val divComponentWithClass: Document      = Jsoup.parse(instanceOfDiv(content, classes = Some(testClass)).body)

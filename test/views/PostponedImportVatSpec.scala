@@ -25,22 +25,22 @@ import models.metadata.PostponedVatStatementFileMetadata
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.matchers.must.Matchers.{must, mustBe}
-import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import play.api.test.Helpers.running
 import play.api.{Application, inject}
 import services.DateTimeService
-import utils.CommonTestData._
+import utils.CommonTestData.*
 import utils.SpecBase
 import viewmodels.{PVATUrls, PostponedVatViewModel, PvEmail}
 import views.html.postponed_import_vat
-
 import org.mockito.Mockito.when
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 
 import java.time.{LocalDate, LocalDateTime}
 
-class PostponedImportVatSpec extends SpecBase {
+class PostponedImportVatSpec extends SpecBase with GuiceOneAppPerSuite {
+
+  implicit val mockDateTimeService: DateTimeService = mock[DateTimeService]
 
   "PostponedImportVatView" should {
 
@@ -48,8 +48,7 @@ class PostponedImportVatSpec extends SpecBase {
       when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
 
       val view: Document = Jsoup.parse(
-        app.injector
-          .instanceOf[postponed_import_vat]
+        instanceOf[postponed_import_vat](app)
           .apply(
             PostponedVatViewModel(
               postponedVatStatementFiles,
@@ -62,27 +61,24 @@ class PostponedImportVatSpec extends SpecBase {
           .body
       )
 
-      running(app) {
-        view.title() mustBe s"${messages(app)("cf.account.pvat.title")} - ${messages(app)("service.name")} - GOV.UK"
-        view.getElementById("main-content").html()         must not contain "h2"
-        view.html().contains("cf.account.vat.available.statement-text")
-        view.getElementsByTag("dl").size()                 must be > 0
-        view.getElementsByTag("dt").size()                 must be > 0
-        view.getElementsByTag("dd").size()                 must be > 0
-        view.getElementById("pvat.support.heading").html() must not be empty
-        view.getElementById("pvat.support.message").html() must not be empty
-        view.html().contains(serviceUnavailbleUrl)
-        view.getElementById("chief-guidance-heading").html() mustBe
-          messages(app)("cf.account.vat.chief.heading")
-      }
+      view.title() mustBe s"${messages("cf.account.pvat.title")} - ${messages("service.name")} - GOV.UK"
+      view.getElementById("main-content").html()         must not contain "h2"
+      view.html().contains("cf.account.vat.available.statement-text")
+      view.getElementsByTag("dl").size()                 must be > 0
+      view.getElementsByTag("dt").size()                 must be > 0
+      view.getElementsByTag("dd").size()                 must be > 0
+      view.getElementById("pvat.support.heading").html() must not be empty
+      view.getElementById("pvat.support.message").html() must not be empty
+      view.html().contains(serviceUnavailableUrl)
+      view.getElementById("chief-guidance-heading").html() mustBe
+        messages("cf.account.vat.chief.heading")
     }
 
     "not display CHIEF doc column when there are no CHIEF doc" in new Setup {
       when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
 
       val view: Document = Jsoup.parse(
-        app.injector
-          .instanceOf[postponed_import_vat]
+        instanceOf[postponed_import_vat](app)
           .apply(
             PostponedVatViewModel(
               postponedVatStatementFiles,
@@ -97,11 +93,9 @@ class PostponedImportVatSpec extends SpecBase {
 
       val expectedSize = 7
 
-      running(app) {
-        view.html().contains(messages(app)("cf.account.pvat.download-link", "CDS", "PDF", "111KB"))
-        view.html()                        must not contain messages(app)("cf.account.pvat.download-link", "CHIEF", "PDF", "111KB")
-        view.getElementsByTag("dd").size() must be(expectedSize)
-      }
+      view.html().contains(messages("cf.account.pvat.download-link", "CDS", "PDF", "111KB"))
+      view.html()                        must not contain messages("cf.account.pvat.download-link", "CHIEF", "PDF", "111KB")
+      view.getElementsByTag("dd").size() must be(expectedSize)
     }
 
     "display 'not available' messages correctly when no statements are present " +
@@ -110,8 +104,7 @@ class PostponedImportVatSpec extends SpecBase {
           .thenReturn(LocalDateTime.now().withDayOfMonth(DAY_19).minusMonths(ONE_MONTH))
 
         val view: Document = Jsoup.parse(
-          app.injector
-            .instanceOf[postponed_import_vat]
+          instanceOf[postponed_import_vat](app)
             .apply(
               PostponedVatViewModel(
                 postponedVatStatementFiles,
@@ -124,17 +117,15 @@ class PostponedImportVatSpec extends SpecBase {
             .body
         )
 
-        running(app) {
-          val cdsNotAvailableMessage = view.select("dd").text()
-          cdsNotAvailableMessage must include(messages(app)("cf.common.not-available"))
-        }
+        val cdsNotAvailableMessage: String = view.select("dd").text()
+        cdsNotAvailableMessage must include(messages("cf.common.not-available"))
       }
 
     "display grouped certificates by EORI and format correctly" in new Setup {
       when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
+
       val view: Document = Jsoup.parse(
-        app.injector
-          .instanceOf[postponed_import_vat]
+        instanceOf[postponed_import_vat](app)
           .apply(
             PostponedVatViewModel(
               postponedVatStatementFiles,
@@ -149,18 +140,15 @@ class PostponedImportVatSpec extends SpecBase {
 
       val expectedSize = 13
 
-      running(app) {
-        view.select("dd.govuk-summary-list__actions").size() mustBe expectedSize
-        view.html() must include(messages(app)("cf.account.pvat.aria.amended-download-link"))
-      }
+      view.select("dd.govuk-summary-list__actions").size() mustBe expectedSize
+      view.html() must include(messages("cf.account.pvat.aria.amended-download-link"))
     }
 
     "handle missing files and display messages appropriately" in new Setup {
       when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
 
       val view: Document = Jsoup.parse(
-        app.injector
-          .instanceOf[postponed_import_vat]
+        instanceOf[postponed_import_vat](app)
           .apply(
             PostponedVatViewModel(
               Seq.empty,
@@ -173,16 +161,21 @@ class PostponedImportVatSpec extends SpecBase {
           .body
       )
 
-      running(app) {
-        view.html() must include(messages(app)("cf.common.not-available"))
-      }
+      view.html() must include(messages("cf.common.not-available"))
     }
   }
+
+  override def fakeApplication(): Application =
+    applicationBuilder()
+      .overrides(
+        inject.bind[DateTimeService].toInstance(mockDateTimeService)
+      )
+      .build()
 
   trait Setup {
     val date: LocalDate = LocalDate.now()
 
-    val serviceUnavailbleUrl: String = "service_unavailable_url"
+    val serviceUnavailableUrl: String = "service_unavailable_url"
 
     val postVatStatMetaData1: PostponedVatStatementFileMetadata = PostponedVatStatementFileMetadata(
       date.getYear,
@@ -307,16 +300,6 @@ class PostponedImportVatSpec extends SpecBase {
       PostponedVatStatementFile(STAT_FILE_NAME_02, DOWNLOAD_URL_00, SIZE_111L, postVatStatMetaData12, EORI_NUMBER)
     )
 
-    implicit val mockDateTimeService: DateTimeService = mock[DateTimeService]
-
-    val app: Application = application()
-      .overrides(
-        inject.bind[DateTimeService].toInstance(mockDateTimeService)
-      )
-      .build()
-
-    implicit val appConfig: AppConfig                         = app.injector.instanceOf[AppConfig]
-    implicit val msg: Messages                                = messages(app)
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     val pvatUrls: PVATUrls = PVATUrls(
@@ -324,7 +307,7 @@ class PostponedImportVatSpec extends SpecBase {
       requestStatementsUrl = appConfig.requestedStatements(PostponedVATStatement),
       pvEmail = PvEmail(appConfig.pvEmailEmailAddress, appConfig.pvEmailEmailAddressHref),
       viewVatAccountSupportLink = appConfig.viewVatAccountSupportLink,
-      serviceUnavailableUrl = Some(serviceUnavailbleUrl)
+      serviceUnavailableUrl = Some(serviceUnavailableUrl)
     )
   }
 }

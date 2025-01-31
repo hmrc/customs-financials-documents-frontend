@@ -19,67 +19,60 @@ package views.components
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.matchers.must.Matchers.{must, mustBe}
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import play.twirl.api.{Html, HtmlFormat}
 import utils.SpecBase
 import views.html.components.p
 
-class PSpec extends SpecBase {
+class PSpec extends SpecBase with GuiceOneAppPerSuite {
 
   "P component" should {
 
-    "render the default class name when classes is not defined" in new SetUp {
-      running(app) {
-        val pView                         = app.injector.instanceOf[p]
-        val output: HtmlFormat.Appendable = pView(
-          message = "Hello, world!"
-        )(messages(app))
+    "render the default class name when classes is not defined" in {
+      val pView                         = instanceOf[p](app)
+      val output: HtmlFormat.Appendable = pView(
+        message = "Hello, world!"
+      )(messages)
 
-        val html: Document = Jsoup.parse(contentAsString(output))
+      val html: Document = Jsoup.parse(contentAsString(output))
 
-        html.getElementsByTag("p").attr("class") must include("govuk-body")
-      }
+      html.getElementsByTag("p").attr("class") must include("govuk-body")
     }
 
-    "render the message and classes correctly without id, link, and tabLink" in new SetUp {
-      running(app) {
-        val pView                         = app.injector.instanceOf[p]
-        val output: HtmlFormat.Appendable = pView(
-          message = "Hello, world!",
-          classes = "custom-class"
-        )(messages(app))
+    "render the message and classes correctly without id, link, and tabLink" in {
+      val pView                         = instanceOf[p](app)
+      val output: HtmlFormat.Appendable = pView(
+        message = "Hello, world!",
+        classes = "custom-class"
+      )(messages)
 
-        val html: Document = Jsoup.parse(contentAsString(output))
+      val html: Document = Jsoup.parse(contentAsString(output))
 
-        html.getElementsByClass("custom-class").text() must include("Hello, world!")
-      }
+      html.getElementsByClass("custom-class").text() must include("Hello, world!")
     }
 
-    "render the message, classes, and id correctly with link and tabLink" in new SetUp {
-      running(app) {
-        val linkContent = Html("<a href='/link'>Link</a>")
-        val tabContent  = Html("<a href='/tabLink'>Tab Link</a>")
-        val pView       = app.injector.instanceOf[p]
+    "render the message, classes, and id correctly with link and tabLink" in {
+      val linkContent = Html("<a href='/link'>Link</a>")
+      val tabContent  = Html("<a href='/tabLink'>Tab Link</a>")
+      val pView       = instanceOf[p](app)
 
-        val output: HtmlFormat.Appendable = pView(
-          message = "Hello, world!",
-          classes = "custom-class",
-          id = Some("test-id"),
-          link = Some(linkContent),
-          tabLink = Some(tabContent)
-        )(messages(app))
+      val output: HtmlFormat.Appendable = pView(
+        message = "Hello, world!",
+        classes = "custom-class",
+        id = Some("test-id"),
+        link = Some(linkContent),
+        tabLink = Some(tabContent)
+      )(messages)
 
-        val html: Document = Jsoup.parse(contentAsString(output))
+      val html: Document = Jsoup.parse(contentAsString(output))
 
-        html.getElementById("test-id").text() must include("Hello, world!")
-        html.getElementById("test-id").select("a").get(0).text() mustBe "Link"
-        html.getElementById("test-id").select("a").get(1).text() mustBe "Tab Link"
-      }
+      html.getElementById("test-id").text() must include("Hello, world!")
+      html.getElementById("test-id").select("a").get(0).text() mustBe "Link"
+      html.getElementById("test-id").select("a").get(1).text() mustBe "Tab Link"
     }
   }
 
-  trait SetUp {
-    val app: Application = application().build()
-  }
+  override def fakeApplication(): Application = applicationBuilder.build()
 }

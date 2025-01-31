@@ -154,7 +154,7 @@ class DataStoreConnectorSpec extends SpecBase {
 
   "verifiedEmail" should {
     "return EmailVerifiedResponse with email when the API returns a valid response" in new Setup {
-      val emailResponse = EmailVerifiedResponse(Some("verified@email.com"))
+      val emailResponse: EmailVerifiedResponse = EmailVerifiedResponse(Some("verified@email.com"))
 
       when(mockHttpClient.get(any)(any)).thenReturn(requestBuilder)
       when(requestBuilder.execute(any, any)).thenReturn(Future.successful(emailResponse))
@@ -180,7 +180,7 @@ class DataStoreConnectorSpec extends SpecBase {
 
   "retrieveUnverifiedEmail" should {
     "return EmailUnverifiedResponse with email when the API returns a valid response" in new Setup {
-      val unverifiedEmailResponse = EmailUnverifiedResponse(Some("unverified@email.com"))
+      val unverifiedEmailResponse: EmailUnverifiedResponse = EmailUnverifiedResponse(Some("unverified@email.com"))
 
       when(mockHttpClient.get(any)(any)).thenReturn(requestBuilder)
       when(requestBuilder.execute(any, any)).thenReturn(Future.successful(unverifiedEmailResponse))
@@ -209,7 +209,7 @@ class DataStoreConnectorSpec extends SpecBase {
     val mockHttpClient: HttpClientV2                       = mock[HttpClientV2]
     val requestBuilder: RequestBuilder                     = mock[RequestBuilder]
 
-    val app: Application = application()
+    val app: Application = applicationBuilder()
       .overrides(
         inject.bind[MetricsReporterService].toInstance(mockMetricsReporterService),
         inject.bind[HttpClientV2].toInstance(mockHttpClient)
@@ -217,6 +217,6 @@ class DataStoreConnectorSpec extends SpecBase {
       .build()
 
     implicit val hc: HeaderCarrier    = HeaderCarrier()
-    val connector: DataStoreConnector = app.injector.instanceOf[DataStoreConnector]
+    val connector: DataStoreConnector = instanceOf[DataStoreConnector](app)
   }
 }

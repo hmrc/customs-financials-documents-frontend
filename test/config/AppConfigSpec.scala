@@ -18,72 +18,57 @@ package config
 
 import models.FileRole
 import org.scalatest.matchers.must.Matchers.{must, mustBe}
-import play.api.Application
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.SpecBase
 import play.api.test.Helpers.running
 
-class AppConfigSpec extends SpecBase {
+class AppConfigSpec extends SpecBase with GuiceOneAppPerSuite {
 
   "FrontendAppConfig" should {
 
-    "include the app name" in new Setup {
-      running(app) {
-        appConfig.appName mustBe "customs-financials-documents-frontend"
-      }
+    "include the app name" in {
+      appConfig.appName mustBe "customs-financials-documents-frontend"
     }
 
     "historic request url" should {
-      "contain 'adjustments'" in new Setup {
-        running(app) {
-          appConfig.historicRequestUrl(FileRole.SecurityStatement) must include("adjustments")
-        }
+      "contain 'adjustments'" in {
+        appConfig.historicRequestUrl(FileRole.SecurityStatement) must include("adjustments")
       }
 
-      "contain 'import-vat'" in new Setup {
-        running(app) {
-          appConfig.historicRequestUrl(FileRole.C79Certificate) must include("import-vat")
-        }
+      "contain 'import-vat'" in {
+        appConfig.historicRequestUrl(FileRole.C79Certificate) must include("import-vat")
       }
 
-      "return empty string for invalid filerole" in new Setup {
-        running(app) {
-          appConfig.historicRequestUrl(FileRole.PostponedVATAmendedStatement) mustBe empty
-        }
+      "return empty string for invalid filerole" in {
+        appConfig.historicRequestUrl(FileRole.PostponedVATAmendedStatement) mustBe empty
       }
     }
 
     "requested statements url" should {
-      "contain adjustments" in new Setup {
-        running(app) {
-          appConfig.requestedStatements(FileRole.SecurityStatement) must include("adjustments")
-        }
+      "contain adjustments" in {
+        appConfig.requestedStatements(FileRole.SecurityStatement) must include("adjustments")
       }
 
-      "contain import-vat" in new Setup {
-        running(app) {
-          appConfig.requestedStatements(FileRole.C79Certificate) must include("import-vat")
-        }
+      "contain import-vat" in {
+        appConfig.requestedStatements(FileRole.C79Certificate) must include("import-vat")
       }
 
-      "return empty string for invalid filerole" in new Setup {
-        running(app) {
-          appConfig.requestedStatements(FileRole.PostponedVATAmendedStatement) mustBe empty
-        }
+      "return empty string for invalid filerole" in {
+        appConfig.requestedStatements(FileRole.PostponedVATAmendedStatement) mustBe empty
       }
     }
 
-    "contain correct subscribeCdsUrl" in new Setup {
-      appConfig.subscribeCdsUrl mustBe
-        "https://www.tax.service.gov.uk/customs-enrolment-services/cds/subscribe"
+    "contain correct subscribeCdsUrl" in {
+      appConfig.subscribeCdsUrl mustBe "https://www.tax.service.gov.uk/customs-enrolment-services/cds/subscribe"
     }
 
-    "contain correct contactFrontEndServiceId" in new Setup {
+    "contain correct contactFrontEndServiceId" in {
       appConfig.contactFrontEndServiceId mustBe "CDS Financials"
     }
 
-    "return correct value for deskProLinkUrlForServiceUnavailable" in new Setup {
+    "return correct value for deskProLinkUrlForServiceUnavailable" in {
       val path                                                     = "test_Path"
       implicit val reqHeaders: FakeRequest[AnyContentAsEmpty.type] = fakeRequest("GET", path)
 
@@ -94,19 +79,14 @@ class AppConfigSpec extends SpecBase {
   }
 
   "emailFrontendService" should {
-    "return the correct service address with context" in new Setup {
+    "return the correct service address with context" in {
       appConfig.emailFrontendService mustBe "http://localhost:9898/manage-email-cds"
     }
   }
 
   "emailFrontendUrl" should {
-    "return the correct url" in new Setup {
+    "return the correct url" in {
       appConfig.emailFrontendUrl mustBe "http://localhost:9898/manage-email-cds/service/customs-finance"
     }
-  }
-
-  trait Setup {
-    val app: Application     = application(allEoriHistory = Seq.empty).build()
-    val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
   }
 }

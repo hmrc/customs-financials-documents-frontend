@@ -21,7 +21,6 @@ import models.FileRole.SecurityStatement
 import models.{EoriHistory, SecurityStatementsByPeriod, SecurityStatementsForEori}
 import org.scalatest.matchers.must.Matchers.mustBe
 import org.mockito.Mockito.when
-import play.api.Application
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import utils.CommonTestData.{DAY_28, MONTH_11, YEAR_2019}
@@ -40,7 +39,7 @@ class SecurityStatementsViewModelSpec extends SpecBase {
     "produce SecurityStatementsViewModel with correct contents" when {
 
       "statementsForAllEoris has requested and current statements" in new Setup {
-        result.pageTitle mustBe Some(message("cf.security-statements.title"))
+        result.pageTitle mustBe Some(messages("cf.security-statements.title"))
         result.backLink mustBe Some(appConfig.customsFinancialsFrontendHomepage)
         result.header mustBe expectedHeader
         result.requestedStatementNotification mustBe expectedRequestedNotification
@@ -54,8 +53,6 @@ class SecurityStatementsViewModelSpec extends SpecBase {
 
   trait Setup {
     implicit val appConfig: AppConfig = mock[AppConfig]
-    val app: Application              = application().build()
-    implicit val message: Messages    = messages(app)
 
     val date: LocalDate = LocalDate.of(YEAR_2019, MONTH_11, DAY_28)
 

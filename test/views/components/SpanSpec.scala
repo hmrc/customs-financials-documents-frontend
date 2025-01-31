@@ -20,19 +20,19 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import org.scalatest.matchers.must.Matchers.{must, mustBe}
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
-import play.api.i18n.Messages
 import utils.SpecBase
 import views.html.components.span
 
-class SpanSpec extends SpecBase {
+class SpanSpec extends SpecBase with GuiceOneAppPerSuite {
 
   "span component" should {
 
     "display correct contents" when {
 
       "only message key has been provided" in new Setup {
-        spanComponent.text() mustBe message(msgKey)
+        spanComponent.text() mustBe messages(msgKey)
 
         val span: Elements = spanComponent.select("span")
 
@@ -42,7 +42,7 @@ class SpanSpec extends SpecBase {
       }
 
       "class has been provided along with message key" in new Setup {
-        spanComponentWithClass.text() mustBe message(msgKey)
+        spanComponentWithClass.text() mustBe messages(msgKey)
 
         val span: Elements = spanComponentWithClass.select("span")
 
@@ -51,7 +51,7 @@ class SpanSpec extends SpecBase {
       }
 
       "ariaHidden has been provided along with message key" in new Setup {
-        spanComponentWithAriaHidden.text() mustBe message(msgKey)
+        spanComponentWithAriaHidden.text() mustBe messages(msgKey)
 
         val span: Elements = spanComponentWithAriaHidden.select("span")
 
@@ -60,7 +60,7 @@ class SpanSpec extends SpecBase {
       }
 
       "classes and ariaHidden have been provided along with message key" in new Setup {
-        spanComponentWithClassAndAriaHidden.text() mustBe message(msgKey)
+        spanComponentWithClassAndAriaHidden.text() mustBe messages(msgKey)
 
         val span: Elements = spanComponentWithClassAndAriaHidden.select("span")
 
@@ -71,14 +71,14 @@ class SpanSpec extends SpecBase {
     }
   }
 
+  override def fakeApplication(): Application = applicationBuilder.build()
+
   trait Setup {
     val msgKey     = "messageKey"
     val classes    = "custom-class"
     val ariaHidden = "true"
 
-    val app: Application           = application().build()
-    implicit val message: Messages = messages(app)
-    val instanceOfSpan: span       = app.injector.instanceOf[span]
+    val instanceOfSpan: span = instanceOf[span](app)
 
     val spanComponent: Document               = Jsoup.parse(instanceOfSpan(msgKey).body)
     val spanComponentWithClass: Document      = Jsoup.parse(instanceOfSpan(msgKey, classes = Some(classes)).body)
