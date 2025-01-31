@@ -37,7 +37,7 @@ class DataStoreConnector @Inject() (
     extends Logging {
 
   def getAllEoriHistory(eori: String)(implicit hc: HeaderCarrier): Future[Seq[EoriHistory]] = {
-    val dataStoreEndpoint = s"${appConfig.customsDataStore}/eori/$eori/eori-history"
+    val dataStoreEndpoint = s"${appConfig.customsDataStore}/eori/eori-history"
     val emptyEoriHistory  = Seq(EoriHistory(eori, None, None))
 
     metricsReporter.withResponseTimeLogging("customs-data-store.get.eori-history") {
@@ -52,8 +52,8 @@ class DataStoreConnector @Inject() (
     }
   }
 
-  def getEmail(eori: String)(implicit hc: HeaderCarrier): Future[Either[EmailResponses, Email]] = {
-    val dataStoreEndpoint = s"${appConfig.customsDataStore}/eori/$eori/verified-email"
+  def getEmail(implicit hc: HeaderCarrier): Future[Either[EmailResponses, Email]] = {
+    val dataStoreEndpoint = s"${appConfig.customsDataStore}/eori/verified-email"
 
     metricsReporter.withResponseTimeLogging(resourceName = "customs-data-store.get.email") {
       httpClient
