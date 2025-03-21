@@ -4,7 +4,7 @@ import scoverage.ScoverageKeys
 val appName = "customs-financials-documents-frontend"
 
 val silencerVersion  = "1.7.16"
-val scala3_3_4       = "3.3.4"
+val scala3_3_5       = "3.3.5"
 val bootstrapVersion = "9.5.0"
 
 val testDirectory            = "test"
@@ -14,7 +14,7 @@ val testScalaStyleConfigFile = "test-scalastyle-config.xml"
 Global / lintUnusedKeysOnLoad := false
 
 ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := scala3_3_4
+ThisBuild / scalaVersion := scala3_3_5
 
 lazy val scalastyleSettings = Seq(
   scalastyleConfig := baseDirectory.value / scalaStyleConfigFile,
