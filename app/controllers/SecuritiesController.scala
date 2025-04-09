@@ -48,7 +48,7 @@ class SecuritiesController @Inject() (
 
   def showSecurityStatements(): Action[AnyContent] =
     (authenticate andThen checkEmailIsVerified andThen resolveSessionId) async { implicit req =>
-      financialsApiConnector.deleteNotification(req.eori, SecurityStatement)
+      financialsApiConnector.deleteNotification(SecurityStatement)
 
       (for {
         allStatements          <- Future.sequence(req.allEoriHistory.map(getStatements))

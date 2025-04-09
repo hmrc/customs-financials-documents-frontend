@@ -44,7 +44,7 @@ class FinancialsApiConnectorSpec extends SpecBase {
       .thenReturn(Future.successful(HttpResponse(OK, emptyString)))
 
     running(app) {
-      val result = await(connector.deleteNotification("someEori", FileRole.C79Certificate))
+      val result = await(connector.deleteNotification(FileRole.C79Certificate))
       result mustBe true
     }
   }

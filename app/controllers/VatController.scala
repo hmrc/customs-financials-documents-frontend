@@ -56,7 +56,7 @@ class VatController @Inject() (
   def showVatAccount(): Action[AnyContent] =
     (authenticate andThen checkEmailIsVerified andThen resolveSessionId).async { implicit req =>
 
-      financialsApiConnector.deleteNotification(req.eori, C79Certificate)
+      financialsApiConnector.deleteNotification(C79Certificate)
 
       (
         for {

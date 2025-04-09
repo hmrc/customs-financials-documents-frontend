@@ -61,7 +61,7 @@ class PostponedVatControllerSpec extends SpecBase {
       when(mockSdesConnector.getPostponedVatStatements(eqTo(historicEori))(any))
         .thenReturn(Future.successful(historicPostponedVatStatementFiles))
 
-      when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+      when(mockFinancialsApiConnector.deleteNotification(any)(any))
         .thenReturn(Future.successful(true))
 
       when(mockDateTimeService.systemDateTime())
@@ -102,7 +102,7 @@ class PostponedVatControllerSpec extends SpecBase {
       when(mockSdesConnector.getPostponedVatStatements(eqTo(historicEori))(any))
         .thenReturn(Future.successful(historicPostponedVatStatementFiles))
 
-      when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+      when(mockFinancialsApiConnector.deleteNotification(any)(any))
         .thenReturn(Future.successful(true))
 
       when(mockDateTimeService.systemDateTime())
@@ -134,7 +134,7 @@ class PostponedVatControllerSpec extends SpecBase {
         when(mockSdesConnector.getPostponedVatStatements(eqTo(historicEori))(any))
           .thenReturn(Future.successful(historicPostponedVatStatementFilesWithCHIEF))
 
-        when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+        when(mockFinancialsApiConnector.deleteNotification(any)(any))
           .thenReturn(Future.successful(true))
 
         when(mockDateTimeService.systemDateTime())
@@ -165,7 +165,7 @@ class PostponedVatControllerSpec extends SpecBase {
         when(mockSdesConnector.getPostponedVatStatements(eqTo(historicEori))(any))
           .thenReturn(Future.successful(historicPostponedVatStatementFiles))
 
-        when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+        when(mockFinancialsApiConnector.deleteNotification(any)(any))
           .thenReturn(Future.successful(true))
 
         when(mockDateTimeService.systemDateTime()).thenReturn(currentDate.atStartOfDay())
@@ -217,7 +217,7 @@ class PostponedVatControllerSpec extends SpecBase {
         when(mockSdesConnector.getPostponedVatStatements(eqTo(historicEori))(any))
           .thenReturn(Future.successful(historicPostponedVatStatementFiles))
 
-        when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+        when(mockFinancialsApiConnector.deleteNotification(any)(any))
           .thenReturn(Future.successful(true))
 
         when(mockDateTimeService.systemDateTime())
@@ -263,7 +263,7 @@ class PostponedVatControllerSpec extends SpecBase {
       when(mockSdesConnector.getPostponedVatStatements(eqTo(historicEori))(any))
         .thenReturn(Future.successful(historicPostponedVatStatementFiles))
 
-      when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+      when(mockFinancialsApiConnector.deleteNotification(any)(any))
         .thenReturn(Future.successful(true))
 
       when(mockDateTimeService.systemDateTime())
@@ -321,7 +321,7 @@ class PostponedVatControllerSpec extends SpecBase {
       when(mockSdesConnector.getPostponedVatStatements(any)(any))
         .thenReturn(Future.failed(new Exception("Unknown exception")))
 
-      when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+      when(mockFinancialsApiConnector.deleteNotification(any)(any))
         .thenReturn(Future.successful(true))
 
       running(app) {
