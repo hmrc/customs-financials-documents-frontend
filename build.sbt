@@ -38,6 +38,7 @@ lazy val microservice = Project(appName, file("."))
     Assets / pipelineStages := Seq(gzip),
     scalacOptions := scalacOptions.value.diff(Seq("-Wunused:all")),
     scalacOptions += "-Wconf:msg=Flag.*repeatedly:s",
+    scalacOptions += "-language:implicitConversions",
     Test / scalacOptions := scalacOptions.value.diff(Seq("-Wunused:all")),
     libraryDependencies ++= Seq(
       compilerPlugin(

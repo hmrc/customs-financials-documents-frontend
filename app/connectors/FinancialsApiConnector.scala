@@ -33,8 +33,8 @@ class FinancialsApiConnector @Inject() (
   httpClient: HttpClientV2
 )(implicit executionContext: ExecutionContext) {
 
-  def deleteNotification(eori: String, fileRole: FileRole)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    val apiEndpoint = appConfig.customsFinancialsApi + s"/eori/$eori/notifications/$fileRole"
+  def deleteNotification(fileRole: FileRole)(implicit hc: HeaderCarrier): Future[Boolean] = {
+    val apiEndpoint = appConfig.customsFinancialsApi + s"/eori/notifications/$fileRole"
 
     metricsReporterService.withResponseTimeLogging(resourceName = "customs-financials-api.delete.notification") {
       httpClient

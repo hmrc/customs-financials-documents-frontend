@@ -123,7 +123,7 @@ class SecuritiesControllerSpec extends SpecBase {
     }
 
     "redirect to security statements unavailable if a problem occurs" in new Setup {
-      when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+      when(mockFinancialsApiConnector.deleteNotification(any)(any))
         .thenReturn(Future.successful(true))
       when(mockSdesConnector.getSecurityStatements(eqTo(EORI_NUMBER))(any))
         .thenReturn(Future.failed(new RuntimeException("Something went wrong")))
@@ -174,7 +174,7 @@ class SecuritiesControllerSpec extends SpecBase {
     val date: LocalDate               = LocalDate.now().withDayOfMonth(DAY_28)
     val someRequestId: Option[String] = Some("statement-request-id")
 
-    when(mockFinancialsApiConnector.deleteNotification(any, any)(any)).thenReturn(Future.successful(true))
+    when(mockFinancialsApiConnector.deleteNotification(any)(any)).thenReturn(Future.successful(true))
 
     val securityStatementFile: SecurityStatementFile =
       SecurityStatementFile(

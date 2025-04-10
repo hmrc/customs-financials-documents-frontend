@@ -56,7 +56,7 @@ class PostponedVatController @Inject() (
   def show(location: Option[String]): Action[AnyContent] =
     (authenticate andThen checkEmailIsVerified andThen resolveSessionId) async { implicit req =>
 
-      financialsApiConnector.deleteNotification(req.eori, PostponedVATStatement)
+      financialsApiConnector.deleteNotification(PostponedVATStatement)
 
       (
         for {

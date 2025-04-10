@@ -240,7 +240,7 @@ class VatControllerSpec extends SpecBase {
           )
         )
 
-      when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+      when(mockFinancialsApiConnector.deleteNotification(any)(any))
         .thenReturn(Future.successful(true))
 
       running(app) {
@@ -292,7 +292,7 @@ class VatControllerSpec extends SpecBase {
         when(mockSdesConnector.getVatCertificates(anyString)(any, any))
           .thenReturn(Future.successful(Seq()))
 
-        when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+        when(mockFinancialsApiConnector.deleteNotification(any)(any))
           .thenReturn(Future.successful(true))
 
         running(app) {
@@ -346,7 +346,7 @@ class VatControllerSpec extends SpecBase {
         when(mockSdesConnector.getVatCertificates(anyString)(any, any))
           .thenReturn(Future.successful(Seq()))
 
-        when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+        when(mockFinancialsApiConnector.deleteNotification(any)(any))
           .thenReturn(Future.successful(true))
 
         running(app) {
@@ -417,7 +417,7 @@ class VatControllerSpec extends SpecBase {
         when(mockSdesConnector.getVatCertificates(anyString)(any, any))
           .thenReturn(Future.successful(Seq(vatCertificateFile)))
 
-        when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+        when(mockFinancialsApiConnector.deleteNotification(any)(any))
           .thenReturn(Future.successful(true))
 
         running(app) {
@@ -483,7 +483,7 @@ class VatControllerSpec extends SpecBase {
       when(mockSdesConnector.getVatCertificates(anyString)(any, any))
         .thenReturn(Future.successful(Seq(vatCertificateFile)))
 
-      when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+      when(mockFinancialsApiConnector.deleteNotification(any)(any))
         .thenReturn(Future.successful(true))
 
       running(app) {
@@ -570,7 +570,7 @@ class VatControllerSpec extends SpecBase {
         when(mockSdesConnector.getVatCertificates(anyString)(any, any))
           .thenReturn(Future.successful(Seq(vatCertificateFile, vatCertificateFile_2, vatCertificateFile_3)))
 
-        when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+        when(mockFinancialsApiConnector.deleteNotification(any)(any))
           .thenReturn(Future.successful(true))
 
         running(app) {
@@ -641,7 +641,7 @@ class VatControllerSpec extends SpecBase {
     val date: LocalDate               = LocalDate.now().withDayOfMonth(DAY_28)
     val navigator                     = new Navigator()
 
-    when(mockFinancialsApiConnector.deleteNotification(any, any)(any))
+    when(mockFinancialsApiConnector.deleteNotification(any)(any))
       .thenReturn(Future.successful(true))
 
     val app: Application = applicationBuilder(eoriHistory)
