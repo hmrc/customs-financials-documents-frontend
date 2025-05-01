@@ -94,6 +94,4 @@ class AppConfigSpec extends SpecBase with GuiceOneAppPerSuite {
       appConfig.emailFrontendUrl mustBe "http://localhost:9898/manage-email-cds/service/customs-finance"
     }
   }
-
-
 }
