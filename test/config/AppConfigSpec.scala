@@ -32,6 +32,11 @@ class AppConfigSpec extends SpecBase with GuiceOneAppPerSuite {
       appConfig.appName mustBe "customs-financials-documents-frontend"
     }
 
+    "contain the correct GOV survay banner URL" in {
+      appConfig.helpMakeGovUkBetterUrl shouldBe
+        "https://survey.take-part-in-research.service.gov.uk/jfe/form/SV_74GjifgnGv6GsMC?Source=BannerList_HMRC_CDS_MIDVA"
+    }
+
     "historic request url" should {
       "contain 'adjustments'" in {
         appConfig.historicRequestUrl(FileRole.SecurityStatement) must include("adjustments")
@@ -89,4 +94,6 @@ class AppConfigSpec extends SpecBase with GuiceOneAppPerSuite {
       appConfig.emailFrontendUrl mustBe "http://localhost:9898/manage-email-cds/service/customs-finance"
     }
   }
+
+
 }
