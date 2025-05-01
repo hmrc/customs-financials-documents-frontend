@@ -32,7 +32,7 @@ class AppConfigSpec extends SpecBase with GuiceOneAppPerSuite {
       appConfig.appName mustBe "customs-financials-documents-frontend"
     }
 
-    "contain the correct GOV survay banner URL" in {
+    "contain the correct GOV survey banner URL" in {
       appConfig.helpMakeGovUkBetterUrl shouldBe
         "https://survey.take-part-in-research.service.gov.uk/jfe/form/SV_74GjifgnGv6GsMC?Source=BannerList_HMRC_CDS_MIDVA"
     }
