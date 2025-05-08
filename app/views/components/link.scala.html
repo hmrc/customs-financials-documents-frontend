@@ -32,13 +32,9 @@
 )(implicit messages: Messages)
 
 @link = {
-  <a @{linkId.fold(emptyString)(id => s"id=$id")} class="@linkClass" href="@location">
-    <span>@Html(messages(linkMessage))</span>
-
-    @if(ariaLabel.isDefined){
+  <a @{linkId.fold(emptyString)(id => s"id=$id")} class="@linkClass" href="@location"><span>@Html(messages(linkMessage))</span>@if(ariaLabel.isDefined){
       <span class="govuk-visually-hidden">@ariaLabel</span>
-    }
-  </a>@if(linkSentence){@period}
+    }</a>@if(linkSentence){@period}
 }
 
 @if(pWrapped) {
