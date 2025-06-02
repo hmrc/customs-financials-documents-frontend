@@ -30,7 +30,7 @@ cf.account.pvat.your-statements.heading=Eich datganiadau ar gyfer y 6 mis diweth
 cf.account.pvat.older-statements.heading=Datganiadau sy’n hŷn na 6 mis
 cf.account.pvat.older-statements.description.1=Mae 2 ffordd i ofyn am ddatganiadau.
 cf.account.pvat.older-statements.description.2=Ar gyfer datganiadau a wnaed gan ddefnyddio’r Gwasanaeth Datganiadau Tollau,
-cf.account.pvat.older-statements.description.link=llenwch ac anfon cais am ddatganiad.
+cf.account.pvat.older-statements.description.link=llenwch ac anfon cais am ddatganiad
 cf.account.pvat.older-statements.description.3=Ar gyfer datganiadau a wneir gan ddefnyddio’r gwasanaeth CHIEF, e-bostiwch eich cais i
 # ------------------------------------------------------------------------
 

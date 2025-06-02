@@ -28,11 +28,12 @@
    preLinkMessage: Option[String] = None,
    postLinkMessage: Option[String] = None,
    pId: Option[String] = None,
-   pClass: String = "govuk-body"
+   pClass: String = "govuk-body",
+   openInNewTab: Boolean = false
 )(implicit messages: Messages)
 
 @link = {
-  <a @{linkId.fold(emptyString)(id => s"id=$id")} class="@linkClass" href="@location"><span>@Html(messages(linkMessage))</span>@if(ariaLabel.isDefined){
+  <a @{linkId.fold(emptyString)(id => s"id=$id")} class="@linkClass" target="@{if (openInNewTab) "_blank" else "_self"}" rel="noopener noreferrer" href="@location"><span>@Html(messages(linkMessage))</span>@if(ariaLabel.isDefined){
       <span class="govuk-visually-hidden">@ariaLabel</span>
     }</a>@if(linkSentence){@period}
 }
