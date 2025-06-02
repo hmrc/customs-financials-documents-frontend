@@ -193,8 +193,7 @@ object PostponedVatViewModel {
       pvEmail.emailAddress,
       location = pvEmail.emailAddressHref,
       preLinkMessage = Some("cf.account.pvat.older-statements.description.3"),
-      linkSentence
-       = true
+      linkSentence = true
     )
 
     GuidanceRow(
