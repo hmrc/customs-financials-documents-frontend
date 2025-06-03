@@ -50,7 +50,6 @@ lazy val microservice = Project(appName, file("."))
     scalafmtPrintDiff := true,
     scalafmtFailOnErrors := true
   )
-  .settings(resolvers += Resolver.jcenterRepo)
 
 lazy val scoverageSettings =
   Seq(

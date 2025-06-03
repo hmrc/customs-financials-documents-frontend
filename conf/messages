@@ -29,7 +29,7 @@ cf.account.pvat.your-statements.heading=Your statements for the last 6 months
 cf.account.pvat.older-statements.heading=Statements older than 6 months
 cf.account.pvat.older-statements.description.1=There are 2 ways to request statements.
 cf.account.pvat.older-statements.description.2=For declarations made using the Customs Declaration Service,
-cf.account.pvat.older-statements.description.link=complete and send a statement request.
+cf.account.pvat.older-statements.description.link=complete and send a statement request
 cf.account.pvat.older-statements.description.3=For declarations made using CHIEF, email your request to
 # ------------------------------------------------------------------------
 
@@ -126,10 +126,10 @@ cf.account.vat.unavailable=Sorry, your certificates are not available at the mom
 cf.account.vat.statements.unavailable = There were no certificates in {0}.
 cf.account.vat.support.heading=Help and support
 cf.account.vat.support.message=If you need help with import VAT contact
-cf.account.vat.support.link=Imports and exports: general enquiries (opens in new tab).
+cf.account.vat.support.link=Imports and exports: general enquiries (opens in new tab)
 cf.account.vat.older-certificates.heading=Certificates older than 6 months
 cf.account.vat.older-certificates.description.1=For declarations made using the Customs Declaration Service,
-cf.account.vat.older-certificates.description.link=complete and send a certificate request.
+cf.account.vat.older-certificates.description.link=complete and send a certificate request
 cf.account.vat.chief.heading=Declarations made using CHIEF
 cf.account.vat.older-certificates.description.2=C79 certificates are sent to you in the post. If you need a copy of a certificate email your request to
 # ------------------------------------------------------------------------

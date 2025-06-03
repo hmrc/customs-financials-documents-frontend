@@ -140,7 +140,8 @@ object ImportVatViewModel {
         linkComponent(
           "cf.account.vat.older-certificates.description.link",
           location = serviceUnavailableUrl.getOrElse(emptyString),
-          preLinkMessage = Some("cf.account.vat.older-certificates.description.1")
+          preLinkMessage = Some("cf.account.vat.older-certificates.description.1"),
+          linkSentence = true
         )
       )
     )
@@ -159,7 +160,8 @@ object ImportVatViewModel {
         linkComponent(
           appConfig.c79EmailAddress,
           location = appConfig.c79EmailAddressHref,
-          preLinkMessage = Some("cf.account.vat.older-certificates.description.2")
+          preLinkMessage = Some("cf.account.vat.older-certificates.description.2"),
+          linkSentence = true
         )
       )
     )
@@ -174,20 +176,13 @@ object ImportVatViewModel {
         msg = "cf.account.vat.support.heading",
         classes = "govuk-heading-m govuk-!-margin-top-2"
       ),
-      paragraph = Some(
-        pComponent(
-          message = "cf.account.vat.support.message",
-          classes = "govuk-body govuk-!-margin-bottom-9",
-          tabLink = Some(
-            hmrcNewTabLinkComponent(
-              NewTabLink(
-                language = Some(messages.lang.toString),
-                classList = Some("govuk-link"),
-                href = Some(appConfig.viewVatAccountSupportLink),
-                text = messages("cf.account.vat.support.link")
-              )
-            )
-          )
+      link = Some(
+        linkComponent(
+          preLinkMessage = Some("cf.account.vat.support.message"),
+          linkMessage = "cf.account.vat.support.link",
+          location = appConfig.viewVatAccountSupportLink,
+          openInNewTab = true,
+          linkSentence = true
         )
       )
     )

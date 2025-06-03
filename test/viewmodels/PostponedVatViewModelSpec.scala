@@ -438,7 +438,8 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
         linkComponent.apply(
           "cf.account.pvat.older-statements.description.link",
           location = serviceUnavailableUrl,
-          preLinkMessage = Some("cf.account.pvat.older-statements.description.2")
+          preLinkMessage = Some("cf.account.pvat.older-statements.description.2"),
+          linkSentence = true
         )
       )
     )
@@ -453,7 +454,8 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
         linkComponent.apply(
           pvEmailEmailAddress,
           location = pvEmailEmailAddressHref,
-          preLinkMessage = Some("cf.account.pvat.older-statements.description.3")
+          preLinkMessage = Some("cf.account.pvat.older-statements.description.3"),
+          linkSentence = true
         )
       )
     )
@@ -469,9 +471,10 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
           messages("cf.account.pvat.support.link"),
           location = viewVatAccountSupportLink,
           preLinkMessage = Some("cf.account.pvat.support.message"),
-          postLinkMessage = Some(period),
           pId = Some("pvat.support.message"),
-          pClass = "govuk-body govuk-!-margin-bottom-9"
+          pClass = "govuk-body govuk-!-margin-bottom-9",
+          linkSentence = true,
+          openInNewTab = true
         )
       )
     )
