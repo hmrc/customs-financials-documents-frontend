@@ -46,9 +46,14 @@ class DataStoreConnector @Inject() (
         .get(url"$dataStoreEndpoint")
         .execute[EoriHistoryResponse]
         .map(response => response.eoriHistory)
-        .recover { case e =>
-          logger.error(s"DATASTORE-E-EORI-HISTORY-ERROR: ${e.getClass.getName}")
-          emptyEoriHistory
+        .recover {
+          case e @ WithStatusCode(NOT_FOUND) if e.message.contains(NOT_FOUND.toString) =>
+            logger.warn(s"EORI History not found: ${e.getClass.getName}")
+            emptyEoriHistory
+
+          case e =>
+            logger.error(s"DATASTORE-E-EORI-HISTORY-ERROR: ${e.getClass.getName}")
+            emptyEoriHistory
         }
     }
   }
