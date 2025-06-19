@@ -48,7 +48,7 @@ class DataStoreConnector @Inject() (
         .map(response => response.eoriHistory)
         .recover {
           case e @ WithStatusCode(NOT_FOUND) if e.message.contains(NOT_FOUND.toString) =>
-            logger.warn(s"EORI History not found: ${e.getClass.getName}")
+            logger.warn(s"EORI History not found in data store: ${e.getClass.getName}")
             emptyEoriHistory
 
           case e =>

@@ -73,6 +73,7 @@ class DataStoreConnectorSpec extends SpecBase with WireMockSupportProvider {
       val result: Seq[EoriHistory] = await(connector.getAllEoriHistory("someEori"))
 
       result mustBe expectedEoriHistory
+      verifyEndPointUrlHit(eoriHistoryUrl)
     }
 
     "return the current EORI if no historic EORI's present" in new Setup {
@@ -87,7 +88,9 @@ class DataStoreConnectorSpec extends SpecBase with WireMockSupportProvider {
       )
 
       val result: Seq[EoriHistory] = await(connector.getAllEoriHistory("someEori"))
+
       result mustBe List(EoriHistory("someEori", None, None))
+      verifyEndPointUrlHit(eoriHistoryUrl)
     }
 
     "return the empty seq if no historic EORI's present" in new Setup {
@@ -104,7 +107,9 @@ class DataStoreConnectorSpec extends SpecBase with WireMockSupportProvider {
       )
 
       val result: Seq[EoriHistory] = await(connector.getAllEoriHistory("someEori"))
+
       result mustBe empty
+      verifyEndPointUrlHit(eoriHistoryUrl)
     }
 
     "return emptyEoriHistory if 404 response code is received while fetching the EORI history" in new Setup {
