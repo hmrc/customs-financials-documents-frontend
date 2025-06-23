@@ -1,11 +1,11 @@
+import AppDependencies.bootstrapVersion
 import uk.gov.hmrc.DefaultBuildSettings.itSettings
 import scoverage.ScoverageKeys
 
 val appName = "customs-financials-documents-frontend"
 
-val silencerVersion  = "1.7.16"
-val scala3_3_5       = "3.3.5"
-val bootstrapVersion = "9.11.0"
+val silencerVersion = "1.7.16"
+val scala3_3_5      = "3.3.5"
 
 val testDirectory            = "test"
 val scalaStyleConfigFile     = "scalastyle-config.xml"
