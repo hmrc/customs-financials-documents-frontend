@@ -81,6 +81,10 @@ class AppConfigSpec extends SpecBase with GuiceOneAppPerSuite {
         "http://localhost:9250" +
         "/contact/report-technical-problem?newTab=true&amp;service=CDS%20FinancialsreferrerUrl=test_Path"
     }
+
+    "contain the correct feedbackService url" in {
+      appConfig.feedbackService mustBe "http://localhost:9514/feedback/CDS-FIN"
+    }
   }
 
   "emailFrontendService" should {
