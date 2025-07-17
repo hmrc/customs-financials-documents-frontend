@@ -25,7 +25,15 @@ class EmailResponseSpec extends SpecBase {
     "generate correct output for Json Reads" in new Setup {
       import EmailResponse.format
 
-      Json.fromJson(Json.parse(emailResJsString)) shouldBe JsSuccess(emailResOb)
+      EmailResponse.format.reads(Json.parse(emailResJsString)) shouldBe JsSuccess(emailResOb)
+
+      Json.fromJson(Json.parse(emailResJsString))                     shouldBe JsSuccess(emailResOb)
+      Json.fromJson(Json.parse(emailResWithoutUndeliverableJsString)) shouldBe JsSuccess(
+        emailResOb.copy(undeliverable = None)
+      )
+
+      Json.fromJson(Json.parse(emailResWithoutTSJsString))      shouldBe JsSuccess(emailResOb.copy(timestamp = None))
+      Json.fromJson(Json.parse(emailResWithoutAddressJsString)) shouldBe JsSuccess(emailResOb.copy(address = None))
     }
 
     "generate correct output for Json Writes" in new Setup {
@@ -46,6 +54,24 @@ class EmailResponseSpec extends SpecBase {
     val emailResJsString: String =
       """{
         |"address":"some@email.com",
+        |"timestamp":"2023-12-04T16:17:25",
+        |"undeliverable":{"subject":"some-subject","eventId":"some-event-id","groupId":"some-group-id"}
+        |}""".stripMargin
+
+    val emailResWithoutUndeliverableJsString: String =
+      """{
+        |"address":"some@email.com",
+        |"timestamp":"2023-12-04T16:17:25"
+        |}""".stripMargin
+
+    val emailResWithoutTSJsString: String =
+      """{
+        |"address":"some@email.com",
+        |"undeliverable":{"subject":"some-subject","eventId":"some-event-id","groupId":"some-group-id"}
+        |}""".stripMargin
+
+    val emailResWithoutAddressJsString: String =
+      """{
         |"timestamp":"2023-12-04T16:17:25",
         |"undeliverable":{"subject":"some-subject","eventId":"some-event-id","groupId":"some-group-id"}
         |}""".stripMargin

@@ -59,9 +59,8 @@ lazy val scoverageSettings =
       ".*views.*",
       ".*(BuildInfo|Routes|testOnly).*"
     ).mkString(";"),
-    ScoverageKeys.coverageMinimumBranchTotal := 90,
     ScoverageKeys.coverageMinimumStmtTotal := 90,
-    ScoverageKeys.coverageFailOnMinimum := false,
+    ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true
   )
 

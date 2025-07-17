@@ -40,7 +40,7 @@ class AuditEoriSpec extends SpecBase {
 
   "Invalid JSON" should {
     "fail" in {
-      val invalidJson = "{ \"eori\": \"testEori1\", \"age\": \"thirty\" }"
+      val invalidJson = "{ \"eori\": \"testEori1\", \"isHistoric12\": \"thirty\" }"
 
       intercept[JsResultException] {
         Json.parse(invalidJson).as[AuditEori]
