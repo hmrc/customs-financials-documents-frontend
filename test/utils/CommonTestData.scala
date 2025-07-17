@@ -100,4 +100,12 @@ object CommonTestData {
   val DOWNLOAD_URL_07 = "download_url_07"
 
   val URL_TEST = "http://test.com"
+
+  val TEST_KEY       = "test_key"
+  val TEST_KEY_VALUE = "test_value"
+
+  val STATEMENT_REQUEST_ID: String = "statement-request-id"
+
+  val TEST_EMAIL     = "test@test.com"
+  val TEST_FILE_NAME = "test_name"
 }
