@@ -90,6 +90,15 @@ class ImportVatViewModelSpec extends SpecBase {
     }
   }
 
+  "ImportVatCurrentStatementRow" should {
+    "populate default object correctly with empty value of eoriHeading and dlComponentRow" in {
+      val importVatCurrentStatementRowOb = ImportVatCurrentStatementRow()
+
+      importVatCurrentStatementRowOb.dlComponentRow mustBe HtmlFormat.empty
+      importVatCurrentStatementRowOb.eoriHeading mustBe Some(HtmlFormat.empty)
+    }
+  }
+
   private def shouldContainCorrectTitle(viewModel: ImportVatViewModel)(implicit msgs: Messages): Assertion =
     viewModel.title mustBe Some(messages("cf.account.vat.title"))
 

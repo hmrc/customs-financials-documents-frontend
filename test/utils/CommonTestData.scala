@@ -16,6 +16,8 @@
 
 package utils
 
+import java.time.LocalDate
+
 object CommonTestData {
   val YEAR_2018 = 2018
   val YEAR_2019 = 2019
@@ -108,4 +110,6 @@ object CommonTestData {
 
   val TEST_EMAIL     = "test@test.com"
   val TEST_FILE_NAME = "test_name"
+
+  val TEST_LOCAL_DATE: LocalDate = LocalDate.of(YEAR_2023, MONTH_10, DAY_1)
 }

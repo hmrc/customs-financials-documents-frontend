@@ -281,6 +281,36 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
     }
   }
 
+  "CurrentStatementsSection" should {
+
+    "populate the default object correctly" in {
+      val cussrentStatSectionOb = CurrentStatementsSection()
+
+      cussrentStatSectionOb.noStatementMsg mustBe empty
+      cussrentStatSectionOb.currentStatementRows mustBe empty
+    }
+  }
+
+  "PVATUrls" should {
+    "populate the default value of serviceUnavailableUrl correctly" in new Setup {
+      PVATUrls(
+        customsFinancialsHomePageUrl = customsFinancialsHomePageUrl,
+        requestStatementsUrl = requestedStatementsUrl,
+        pvEmail = PvEmail(pvEmailEmailAddress, pvEmailEmailAddressHref),
+        viewVatAccountSupportLink = viewVatAccountSupportLink
+      ).serviceUnavailableUrl mustBe empty
+    }
+  }
+
+  "CollapsibleStatementGroupRow" should {
+    "populate default object with empty PVAT Statement and Amended Statement" in {
+      val stateGroupRowOb = CollapsibleStatementGroupRow()
+
+      stateGroupRowOb.collapsiblePVATStatement mustBe empty
+      stateGroupRowOb.collapsiblePVATAmendedStatement mustBe empty
+    }
+  }
+
   private def expectedCurrentRowsValue(
     expectedResult: Seq[PostponedVatStatementGroup]
   )(implicit msgs: Messages): Seq[HtmlFormat.Appendable] = {
