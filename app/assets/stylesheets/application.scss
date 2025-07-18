@@ -1,3 +1,5 @@
+$govuk-suppressed-warnings: (libsass);
+
 @import "lib/govuk-frontend/dist/govuk/base";
 
 @import "utils/govuk-summary-list";
