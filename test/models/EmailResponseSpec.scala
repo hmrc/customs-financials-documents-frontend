@@ -25,8 +25,6 @@ class EmailResponseSpec extends SpecBase {
     "generate correct output for Json Reads" in new Setup {
       import EmailResponse.format
 
-      EmailResponse.format.reads(Json.parse(emailResJsString)) shouldBe JsSuccess(emailResOb)
-
       Json.fromJson(Json.parse(emailResJsString))                     shouldBe JsSuccess(emailResOb)
       Json.fromJson(Json.parse(emailResWithoutUndeliverableJsString)) shouldBe JsSuccess(
         emailResOb.copy(undeliverable = None)
