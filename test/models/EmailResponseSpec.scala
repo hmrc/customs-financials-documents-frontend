@@ -17,7 +17,7 @@
 package models
 
 import utils.SpecBase
-import play.api.libs.json.{JsResultException, JsSuccess, Json}
+import play.api.libs.json.{JsSuccess, Json}
 
 class EmailResponseSpec extends SpecBase {
   "Json format" should {

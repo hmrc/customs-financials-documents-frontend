@@ -28,7 +28,7 @@ import play.twirl.api.HtmlFormat
 import services.DateTimeService
 import utils.CommonTestData.*
 import utils.SpecBase
-import utils.Utils.{emptyString, h1Component, h2Component, linkComponent, pComponent, period}
+import utils.Utils.{emptyString, h1Component, h2Component, linkComponent, pComponent}
 import views.helpers.Formatters
 import views.html.components.*
 import views.html.postponed_vat.{collapsible_statement_group, current_statement_row, download_link_pvat_statement}

@@ -18,7 +18,7 @@ package models
 
 import utils.SpecBase
 import play.api.libs.json.{JsResultException, JsSuccess, Json}
-import utils.CommonTestData.{DAY_10, EORI_NUMBER, MONTH_1, YEAR_2023}
+import utils.CommonTestData.EORI_NUMBER
 
 class AuditEoriSpec extends SpecBase {
   "Json Reads" should {

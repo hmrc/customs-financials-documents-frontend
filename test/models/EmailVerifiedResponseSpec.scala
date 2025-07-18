@@ -18,7 +18,7 @@ package models
 
 import utils.SpecBase
 import utils.CommonTestData.TEST_EMAIL
-import play.api.libs.json.{JsResultException, JsSuccess, Json}
+import play.api.libs.json.{JsSuccess, Json}
 
 class EmailVerifiedResponseSpec extends SpecBase {
 

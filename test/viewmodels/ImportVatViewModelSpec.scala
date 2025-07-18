@@ -33,7 +33,6 @@ import utils.Utils.{
 }
 import models.FileFormat.{Csv, Pdf}
 import play.twirl.api.{Html, HtmlFormat}
-import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcNewTabLink
 import _root_.uk.gov.hmrc.hmrcfrontend.views.html.components.NewTabLink
 import views.html.components.download_link
 
