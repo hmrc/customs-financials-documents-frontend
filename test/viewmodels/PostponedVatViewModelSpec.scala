@@ -28,7 +28,7 @@ import play.twirl.api.HtmlFormat
 import services.DateTimeService
 import utils.CommonTestData.*
 import utils.SpecBase
-import utils.Utils.{emptyString, h1Component, h2Component, linkComponent, pComponent, period}
+import utils.Utils.{emptyString, h1Component, h2Component, linkComponent, pComponent}
 import views.helpers.Formatters
 import views.html.components.*
 import views.html.postponed_vat.{collapsible_statement_group, current_statement_row, download_link_pvat_statement}
@@ -278,6 +278,36 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
 
         actualPVatModel.helpAndSupportGuidance mustBe expectedHelpAndSupportGuidance
       }
+    }
+  }
+
+  "CurrentStatementsSection" should {
+
+    "populate the default object correctly" in {
+      val cussrentStatSectionOb = CurrentStatementsSection()
+
+      cussrentStatSectionOb.noStatementMsg mustBe empty
+      cussrentStatSectionOb.currentStatementRows mustBe empty
+    }
+  }
+
+  "PVATUrls" should {
+    "populate the default value of serviceUnavailableUrl correctly" in new Setup {
+      PVATUrls(
+        customsFinancialsHomePageUrl = customsFinancialsHomePageUrl,
+        requestStatementsUrl = requestedStatementsUrl,
+        pvEmail = PvEmail(pvEmailEmailAddress, pvEmailEmailAddressHref),
+        viewVatAccountSupportLink = viewVatAccountSupportLink
+      ).serviceUnavailableUrl mustBe empty
+    }
+  }
+
+  "CollapsibleStatementGroupRow" should {
+    "populate default object with empty PVAT Statement and Amended Statement" in {
+      val stateGroupRowOb = CollapsibleStatementGroupRow()
+
+      stateGroupRowOb.collapsiblePVATStatement mustBe empty
+      stateGroupRowOb.collapsiblePVATAmendedStatement mustBe empty
     }
   }
 

@@ -33,7 +33,6 @@ import utils.Utils.{
 }
 import models.FileFormat.{Csv, Pdf}
 import play.twirl.api.{Html, HtmlFormat}
-import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcNewTabLink
 import _root_.uk.gov.hmrc.hmrcfrontend.views.html.components.NewTabLink
 import views.html.components.download_link
 
@@ -87,6 +86,15 @@ class ImportVatViewModelSpec extends SpecBase {
         shouldContainCorrectChiefDeclarationGuidance(viewModelWithNoCerts)
         shouldContainCorrectHelpAndSupportGuidance(viewModelWithNoCerts)
       }
+    }
+  }
+
+  "ImportVatCurrentStatementRow" should {
+    "populate default object correctly with empty value of eoriHeading and dlComponentRow" in {
+      val importVatCurrentStatementRowOb = ImportVatCurrentStatementRow()
+
+      importVatCurrentStatementRowOb.dlComponentRow mustBe HtmlFormat.empty
+      importVatCurrentStatementRowOb.eoriHeading mustBe Some(HtmlFormat.empty)
     }
   }
 
