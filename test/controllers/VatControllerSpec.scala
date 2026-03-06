@@ -371,7 +371,7 @@ class VatControllerSpec extends SpecBase {
             Option(doc.getElementById("statements-list-0-row-3")) should not be empty
             Option(doc.getElementById("statements-list-0-row-4")) should not be empty
 
-            doc.getElementById("statements-list-0-row-0").children().text() should not include messages(
+            doc.getElementById("statements-list-0-row-0").children().text() should not be messages(
               "cf.account.vat.statements.unavailable",
               Formatters.dateAsMonth(date.minusMonths(ONE_MONTH))
             )
