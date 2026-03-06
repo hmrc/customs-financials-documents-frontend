@@ -113,8 +113,8 @@ cf.security-statements.requested.download-link.aria-text.csv=Download {1} {0} ({
 # VAT Detail view
 # ------------------------------------------------------------------------
 cf.account.vat.title=Import VAT certificates (C79)
-cf.account.vat.available-text=Your certificates will usually be available after the 10th working day of each month.
-cf.account.vat.available.statement-text=Your statements will usually be available after the 10th working day of each month.
+cf.account.vat.available-text=Your certificates may show after the 10th working day of each month if there is any activity. If there is no activity, a message confirming there is no certificate will show from the 20th of the month.
+cf.account.vat.available.statement-text=Your statements may show after the 10th working day of each month if there is any activity. If there is no activity, a message confirming there is no statement will show from the 20th of the month.
 cf.account.vat.your-certificates.heading=Your certificates for the last 6 months
 cf.account.vat.missing-file=Unavailable
 cf.account.vat.missing-file-hidden-text={0} for {1} unavailable
@@ -123,7 +123,7 @@ cf.account.vat.no-certificates-available=There are no certificates available to 
 cf.account.vat.historic.description=This service will only show certificates for the last 6 months.
 cf.account.vat.historic.request=Request a certificate that’s older than 6 months
 cf.account.vat.unavailable=Sorry, your certificates are not available at the moment. Please try again later.
-cf.account.vat.statements.unavailable = There were no certificates in {0}.
+cf.account.vat.statements.unavailable = No certificate
 cf.account.vat.support.heading=Help and support
 cf.account.vat.support.message=If you need help with import VAT contact
 cf.account.vat.support.link=Imports and exports: general enquiries (opens in new tab)
