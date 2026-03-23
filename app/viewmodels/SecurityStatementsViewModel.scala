@@ -27,7 +27,7 @@ import utils.Utils.{
   spanComponent
 }
 import views.helpers.Formatters.{dateAsDayMonthAndYear, dateAsMonthAndYear}
-import views.html.components.{h2Inner, h3Inner, missing_documents_guidance, pInner, requestedStatements, link}
+import views.html.components.{h2Inner, missing_documents_guidance, pInner, requestedStatements, link}
 
 import java.time.LocalDate
 
@@ -38,9 +38,7 @@ case class SecurityStatementsViewModel(
   requestedStatementNotification: HtmlFormat.Appendable,
   currentStatementsHeader: HtmlFormat.Appendable,
   currentStatements: HtmlFormat.Appendable,
-  missingGuidance: HtmlFormat.Appendable,
-//  statementServiceParagraph: HtmlFormat.Appendable,
-//  requestStatementsLink: HtmlFormat.Appendable
+  missingGuidance: HtmlFormat.Appendable
 )
 
 object SecurityStatementsViewModel {
@@ -54,9 +52,7 @@ object SecurityStatementsViewModel {
       requestedStatementNotification = generateRequestedStatementNotification(statementsForAllEoris),
       currentStatementsHeader = h2Component(msg = "cf.account.adjustment-statements.heading"),
       currentStatements = generateCurrentStatements(statementsForAllEoris),
-      missingGuidance = generateMissingGuidance,
-//      statementServiceParagraph = generateStatementServiceParagraph,
-//      requestStatementsLink = generateRequestStatementLink
+      missingGuidance = generateMissingGuidance
     )
 
   private def generateHeader(implicit messages: Messages): HtmlFormat.Appendable =

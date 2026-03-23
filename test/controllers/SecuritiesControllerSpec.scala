@@ -33,7 +33,6 @@ import utils.CommonTestData.{
   CHECK_SUM_000000, DAY_10, DAY_12, DAY_15, DAY_17, DAY_28, DAY_9, DOWNLOAD_URL_00, EIGHT_MONTHS, EORI_NUMBER,
   NINE_MONTHS, ONE_MONTH, SEVEN_MONTHS, SIZE_500L, SIZE_99L, STAT_FILE_NAME_00, TEN_MONTHS, THREE_MONTHS, TWO_MONTHS
 }
-import utils.Constants.{FIXED_DATE_TIME_DAY_OF_MONTH, FIXED_DATE_TIME_MONTH_OF_YEAR, FIXED_DATE_TIME_YEAR}
 import utils.SpecBase
 import viewmodels.SecurityStatementsViewModel
 import views.html.securities.{security_statements, security_statements_not_available}
@@ -172,7 +171,7 @@ class SecuritiesControllerSpec extends SpecBase {
     val result: Future[Result]    = route(app, request).value
     val view: security_statements = instanceOf[security_statements](app)
 
-    val date: LocalDate               = LocalDate.of(FIXED_DATE_TIME_YEAR, FIXED_DATE_TIME_MONTH_OF_YEAR, FIXED_DATE_TIME_DAY_OF_MONTH).withDayOfMonth(DAY_28)
+    val date: LocalDate               = LocalDate.now().withDayOfMonth(DAY_28)
     val someRequestId: Option[String] = Some("statement-request-id")
 
     when(mockFinancialsApiConnector.deleteNotification(any)(any)).thenReturn(Future.successful(true))

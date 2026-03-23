@@ -44,8 +44,6 @@ class SecurityStatementsViewModelSpec extends SpecBase {
         result.requestedStatementNotification mustBe expectedRequestedNotification
         result.currentStatements mustBe expectedCurrentStatements
         result.missingGuidance mustBe expectedMissingGuidance
-//        result.statementServiceParagraph mustBe expectedStatementServiceParagraph
-//        result.requestStatementsLink mustBe expectedRequestStatementsLink
       }
     }
   }
@@ -126,18 +124,6 @@ class SecurityStatementsViewModelSpec extends SpecBase {
 
     val expectedMissingGuidance: HtmlFormat.Appendable =
       new missing_documents_guidance(new h2Inner, new link, new pInner).apply("statement")
-
-    val expectedStatementServiceParagraph: HtmlFormat.Appendable =
-      pComponent("cf.security-statements.historic.description", "govuk-body", Some("historic-statement-request"))
-
-    val expectedRequestStatementsLink: HtmlFormat.Appendable =
-      linkComponent(
-        linkMessage = "cf.security-statements.historic.request",
-        location = "request-statement-url",
-        pClass = "govuk-body govuk-!-margin-bottom-9",
-        linkClass = "govuk-body govuk-link",
-        linkId = Some("historic-statement-request-link")
-      )
 
     val statementsForAllEoris: Seq[SecurityStatementsForEori] = Seq(
       SecurityStatementsForEori(
