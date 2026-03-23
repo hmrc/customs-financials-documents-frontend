@@ -20,7 +20,10 @@ import config.AppConfig
 import models.VatCertificatesForEori
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
-import utils.Utils.{ddComponent, divComponent, dlComponent, dtComponent, emptyString, h1Component, h2Component, hmrcNewTabLinkComponent, linkComponent, pComponent, insetComponent}
+import utils.Utils.{
+  ddComponent, divComponent, dlComponent, dtComponent, emptyString, h1Component, h2Component, hmrcNewTabLinkComponent,
+  insetComponent, linkComponent, pComponent
+}
 import views.html.components.download_link
 import models.FileRole.C79Certificate
 import _root_.uk.gov.hmrc.hmrcfrontend.views.html.components.NewTabLink
@@ -85,7 +88,7 @@ object ImportVatViewModel {
           linkMessage = messages("cf.import-vat.requested-certificates-available-link-text"),
           location = appConfig.requestedStatements(C79Certificate),
           preLinkMessage = Some(messages("cf.account.detail.requested-certificates-available-text.pre")),
-          postLinkMessage = Some(messages("cf.account.detail.requested-certificates-available-text.post")),
+          postLinkMessage = Some(messages("cf.account.detail.requested-certificates-available-text.post"))
         )
       )
     )

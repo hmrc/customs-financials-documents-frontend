@@ -25,7 +25,7 @@ classes: String = "govuk-body",
 id: Option[String] = None,
 link: Option[Html] = None,
 tabLink: Option[Html] = None,
-finalSentence: Option[String] = None   // <-- new optional parameter
+finalSentence: Option[String] = None
 )(implicit messages: Messages)
 
 <p @{id.fold(emptyString)(id => s"id=$id")} class="@{classes}">

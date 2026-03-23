@@ -27,7 +27,7 @@ import utils.Utils.{
   spanComponent
 }
 import views.helpers.Formatters.{dateAsDayMonthAndYear, dateAsMonthAndYear}
-import views.html.components.{h2Inner, missing_documents_guidance, pInner, requestedStatements, link}
+import views.html.components.{h2Inner, link, missing_documents_guidance, pInner, requestedStatements}
 
 import java.time.LocalDate
 

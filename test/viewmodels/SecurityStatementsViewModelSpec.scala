@@ -27,7 +27,7 @@ import utils.SpecBase
 import utils.Utils.{
   ddComponent, divComponent, dlComponent, dtComponent, h1Component, linkComponent, pComponent, spanComponent
 }
-import views.html.components.{h2Inner, h3Inner, missing_documents_guidance, pInner, requestedStatements, link}
+import views.html.components.{h2Inner, h3Inner, link, missing_documents_guidance, pInner, requestedStatements}
 
 import java.time.LocalDate
 

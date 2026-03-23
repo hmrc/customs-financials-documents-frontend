@@ -29,7 +29,8 @@ import utils.CommonTestData.{
 import utils.SpecBase
 import org.scalatest.matchers.must.Matchers.mustBe
 import utils.Utils.{
-  ddComponent, divComponent, dlComponent, dtComponent, emptyString, h1Component, h2Component, linkComponent, pComponent, insetComponent
+  ddComponent, divComponent, dlComponent, dtComponent, emptyString, h1Component, h2Component, insetComponent,
+  linkComponent, pComponent
 }
 import models.FileFormat.{Csv, Pdf}
 import play.twirl.api.{Html, HtmlFormat}
