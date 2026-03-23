@@ -30,8 +30,8 @@ cf.account.pvat.older-statements.heading=Statements older than 7 months
 cf.account.pvat.older-statements.description.1=There are 2 ways to request statements.
 cf.account.pvat.older-statements.description.2=If you need a statement older than 7 months for declarations made using the Customs Declaration Service, you can
 cf.account.pvat.older-statements.description.link=request which postponed import VAT statements you need
-cf.account.pvat.older-statements.description.post-message=We will send an email when your certificates are ready to download.
-cf.account.pvat.older-statements.description.inset-message=Requested certificates will only be available to view and download for 10 days. After 10 days, the requested files will be deleted and you may need to request them again.
+cf.account.pvat.older-statements.description.post-message=We will send an email when your statements are ready to download.
+cf.account.pvat.older-statements.description.inset-message=Requested statements will only be available to view and download for 10 days. After 10 days, the requested files will be deleted and you may need to request them again.
 cf.account.pvat.older-statements.description.3=For declarations made using CHIEF, email your request to
 # ------------------------------------------------------------------------
 
@@ -39,10 +39,10 @@ cf.account.pvat.older-statements.description.3=For declarations made using CHIEF
 # ------------------------------------------------------------------------
 cf.account.adjustment-statements.heading=Your statements for the last 7 months
 cf.account.adjustment-statements.older-statements.heading=Statements older than 7 months
-cf.account.adjustment-statements.older-certificates.description.1=If you need a certificate older than 7 months for declarations made using the Customs Declaration Service, you can
-cf.account.adjustment-statements.older-certificates.description.link=request which import VAT certificates you need
-cf.account.adjustment-statements.older-certificates.description.post-message=We will send an email when your certificates are ready to download.
-cf.account.adjustment-statements.older-certificates.description.inset-message=Requested certificates will only be available to view and download for 10 days. After 10 days, the requested files will be deleted and you may need to request them again.
+cf.account.adjustment-statements.older-certificates.description.1=If you need a statement older than 7 months for declarations made using the Customs Declaration Service, you can
+cf.account.adjustment-statements.older-certificates.description.link=request which notification of adjustment statements you need
+cf.account.adjustment-statements.older-certificates.description.post-message=We will send an email when your statements are ready to download.
+cf.account.adjustment-statements.older-certificates.description.inset-message=Requested statements will only be available to view and download for 10 days. After 10 days, the requested files will be deleted and you may need to request them again.
 cf.account.adjustment-statements.chief.heading=Declarations made using Customs and Handling of Import and Export Freights (CHIEF)
 cf.account.adjustment-statements.chief.description=Statements for import declarations made in CHIEF are not available in this service.
 # ------------------------------------------------------------------------

@@ -178,7 +178,7 @@ object PostponedVatViewModel {
     )
 
     val inset = insetComponent(
-      msg = msgs("cf.account.vat.older-certificates.description.inset-message")
+      msg = msgs("cf.account.pvat.older-statements.description.inset-message")
     )
 
     GuidanceRow(
