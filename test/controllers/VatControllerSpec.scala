@@ -35,6 +35,7 @@ import utils.CommonTestData.{
   DAY_28, DOWNLOAD_URL_06, DOWNLOAD_URL_07, EORI_NUMBER, FIVE_MONTHS, FOUR_MONTHS, ONE_MONTH, SEVEN_MONTHS, SIX_MONTHS,
   SIZE_111L, STAT_FILE_NAME_04, STAT_FILE_NAME_05, THREE_MONTHS, TWO_MONTHS
 }
+import utils.Constants.{FIXED_DATE_TIME_DAY_OF_MONTH, FIXED_DATE_TIME_MONTH_OF_YEAR, FIXED_DATE_TIME_YEAR}
 import utils.Utils.emptyString
 import utils.{DateUtils, SpecBase}
 import viewmodels.ImportVatViewModel
@@ -249,7 +250,7 @@ class VatControllerSpec extends SpecBase {
 
         status(result) mustBe OK
 
-        if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
+        if (DateUtils.isDayBefore20ThDayOfTheMonth(date)) {
           contentAsString(result) mustBe
             view(viewModel)(request, messages, appConfigForSetup).toString()
 
@@ -301,7 +302,7 @@ class VatControllerSpec extends SpecBase {
 
           status(result) mustBe OK
 
-          if (!DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
+          if (!DateUtils.isDayBefore20ThDayOfTheMonth(date)) {
             contentAsString(result) mustBe view(viewModel)(
               request,
               messages,
@@ -355,7 +356,7 @@ class VatControllerSpec extends SpecBase {
 
           status(result) mustBe OK
 
-          if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
+          if (DateUtils.isDayBefore20ThDayOfTheMonth(date)) {
             contentAsString(result) mustBe view(viewModel)(
               request,
               messages,
@@ -426,7 +427,7 @@ class VatControllerSpec extends SpecBase {
 
           status(result) mustBe OK
 
-          if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
+          if (DateUtils.isDayBefore20ThDayOfTheMonth(date)) {
             contentAsString(result) mustBe
               view(viewModel)(request, messages, appConfigForSetup).toString()
 
@@ -492,7 +493,7 @@ class VatControllerSpec extends SpecBase {
 
         status(result) mustBe OK
 
-        if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
+        if (DateUtils.isDayBefore20ThDayOfTheMonth(date)) {
           contentAsString(result) mustBe
             view(viewModel)(request, messages, appConfigForSetup).toString()
         }
@@ -579,7 +580,7 @@ class VatControllerSpec extends SpecBase {
 
           status(result) mustBe OK
 
-          if (DateUtils.isDayBefore20ThDayOfTheMonth(LocalDate.now())) {
+          if (DateUtils.isDayBefore20ThDayOfTheMonth(date)) {
             contentAsString(result) mustBe
               view(viewModel)(request, messages, appConfigForSetup).toString()
           }
@@ -638,7 +639,7 @@ class VatControllerSpec extends SpecBase {
     val mockSdesConnector: SdesConnector                   = mock[SdesConnector]
 
     val eoriHistory: Seq[EoriHistory] = Seq(EoriHistory(EORI_NUMBER, None, None))
-    val date: LocalDate               = LocalDate.now().withDayOfMonth(DAY_28)
+    val date: LocalDate               = LocalDate.of(FIXED_DATE_TIME_YEAR, FIXED_DATE_TIME_MONTH_OF_YEAR, FIXED_DATE_TIME_DAY_OF_MONTH).withDayOfMonth(DAY_28)
     val navigator                     = new Navigator()
 
     when(mockFinancialsApiConnector.deleteNotification(any)(any))

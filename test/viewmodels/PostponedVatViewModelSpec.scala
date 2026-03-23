@@ -28,7 +28,7 @@ import play.twirl.api.HtmlFormat
 import services.DateTimeService
 import utils.CommonTestData.*
 import utils.SpecBase
-import utils.Utils.{emptyString, h1Component, h2Component, linkComponent, pComponent}
+import utils.Utils.{emptyString, h1Component, h2Component, insetComponent, linkComponent, pComponent}
 import views.helpers.Formatters
 import views.html.components.*
 import views.html.postponed_vat.{collapsible_statement_group, current_statement_row, download_link_pvat_statement}
@@ -469,7 +469,13 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
           "cf.account.pvat.older-statements.description.link",
           location = serviceUnavailableUrl,
           preLinkMessage = Some("cf.account.pvat.older-statements.description.2"),
+          postLinkMessage = Some("cf.account.pvat.older-statements.description.post-message"),
           linkSentence = true
+        )
+      ),
+      inset = Some(
+        insetComponent(
+          msg = messages("cf.account.pvat.older-statements.description.inset-message")
         )
       )
     )

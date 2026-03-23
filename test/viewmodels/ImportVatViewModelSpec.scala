@@ -166,7 +166,7 @@ class ImportVatViewModelSpec extends SpecBase {
           linkSentence = true
         )
       ),
-      Some(
+      inset = Some(
         insetComponent(
           msg = msgs("cf.account.vat.older-certificates.description.inset-message")
         )

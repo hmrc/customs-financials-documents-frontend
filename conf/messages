@@ -147,7 +147,7 @@ cf.account.vat.older-certificates.description.link=request which import VAT cert
 cf.account.vat.older-certificates.description.post-message=We will send an email when your certificates are ready to download.
 cf.account.vat.older-certificates.description.inset-message=Requested certificates will only be available to view and download for 10 days. After 10 days, the requested files will be deleted and you may need to request them again.
 cf.account.vat.chief.heading=Declarations made using Customs and Handling of Import and Export Freights (CHIEF)
-cf.account.vat.older-certificates.description.2=C79 certificates are sent to you in the post. If you need a copy of a certificate email your request to
+cf.account.vat.older-certificates.description.2=Import VAT certificates will be posted to you. If you need a copy of a certificate, email your request to
 # ------------------------------------------------------------------------
 
 # Not subscribed to CDS
