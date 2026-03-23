@@ -20,10 +20,7 @@ import config.AppConfig
 import models.VatCertificatesForEori
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
-import utils.Utils.{
-  ddComponent, divComponent, dlComponent, dtComponent, emptyString, h1Component, h2Component, hmrcNewTabLinkComponent,
-  linkComponent, pComponent
-}
+import utils.Utils.{ddComponent, divComponent, dlComponent, dtComponent, emptyString, h1Component, h2Component, hmrcNewTabLinkComponent, linkComponent, pComponent, insetComponent}
 import views.html.components.download_link
 import models.FileRole.C79Certificate
 import _root_.uk.gov.hmrc.hmrcfrontend.views.html.components.NewTabLink
@@ -36,11 +33,11 @@ case class ImportVatViewModel(
   backLink: Option[String],
   heading: HtmlFormat.Appendable,
   certificateAvailableGuidance: HtmlFormat.Appendable,
-  last6MonthsH2Heading: HtmlFormat.Appendable,
+  last7MonthsH2Heading: HtmlFormat.Appendable,
   notificationPanel: Option[HtmlFormat.Appendable] = None,
   currentStatements: Seq[ImportVatCurrentStatementRow] = Seq.empty,
   currentStatementsNotAvailableGuidance: Option[HtmlFormat.Appendable] = None,
-  certsOlderThan6MonthsGuidance: GuidanceRow,
+  certsOlderThan7MonthsGuidance: GuidanceRow,
   chiefDeclarationGuidance: GuidanceRow,
   helpAndSupportGuidance: GuidanceRow
 )
@@ -58,13 +55,13 @@ object ImportVatViewModel {
       title = Some(messages("cf.account.vat.title")),
       backLink = Some(config.customsFinancialsFrontendHomepage),
       heading = populateHeading(),
-      certificateAvailableGuidance = populateCertsAvailableGuidance(),
-      last6MonthsH2Heading = populateLast6MonthsH2Heading(),
       notificationPanel = if (hasRequestedCertificates) Some(populateNotificationPanel()) else None,
+      certificateAvailableGuidance = populateCertsAvailableGuidance(),
+      last7MonthsH2Heading = populateLast7MonthsH2Heading(),
       currentStatements = if (hasCurrentCertificates) populateCurrentStatements(certificatesForAllEoris) else Seq.empty,
       currentStatementsNotAvailableGuidance =
         if (hasCurrentCertificates) None else Some(populateCurrentStatNotAvailableGuidance),
-      certsOlderThan6MonthsGuidance = populateCertsOlderThan6MonthsGuidance(serviceUnavailableUrl),
+      certsOlderThan7MonthsGuidance = populateCertsOlderThan7MonthsGuidance(serviceUnavailableUrl),
       chiefDeclarationGuidance = populateChiefDeclarationGuidance,
       helpAndSupportGuidance = populateHelpAndSupportGuidance
     )
@@ -77,7 +74,7 @@ object ImportVatViewModel {
     "cf.account.vat.available-text"
   )
 
-  private def populateLast6MonthsH2Heading(implicit messages: Messages): HtmlFormat.Appendable = h2Component(
+  private def populateLast7MonthsH2Heading(implicit messages: Messages): HtmlFormat.Appendable = h2Component(
     "cf.account.vat.your-certificates.heading"
   )
 
@@ -89,7 +86,6 @@ object ImportVatViewModel {
           location = appConfig.requestedStatements(C79Certificate),
           preLinkMessage = Some(messages("cf.account.detail.requested-certificates-available-text.pre")),
           postLinkMessage = Some(messages("cf.account.detail.requested-certificates-available-text.post")),
-          pClass = "govuk-body govuk-!-margin-bottom-1"
         )
       )
     )
@@ -127,7 +123,7 @@ object ImportVatViewModel {
   private def populateCurrentStatNotAvailableGuidance(implicit messages: Messages): HtmlFormat.Appendable =
     pComponent("cf.account.vat.no-certificates-available", id = Some("no-certificates-available-text"))
 
-  private def populateCertsOlderThan6MonthsGuidance(serviceUnavailableUrl: Option[String])(implicit
+  private def populateCertsOlderThan7MonthsGuidance(serviceUnavailableUrl: Option[String])(implicit
     messages: Messages
   ): GuidanceRow =
     GuidanceRow(
@@ -141,7 +137,13 @@ object ImportVatViewModel {
           "cf.account.vat.older-certificates.description.link",
           location = serviceUnavailableUrl.getOrElse(emptyString),
           preLinkMessage = Some("cf.account.vat.older-certificates.description.1"),
+          postLinkMessage = Some("cf.account.vat.older-certificates.description.post-message"),
           linkSentence = true
+        )
+      ),
+      inset = Some(
+        insetComponent(
+          msg = messages("cf.account.vat.older-certificates.description.inset-message")
         )
       )
     )

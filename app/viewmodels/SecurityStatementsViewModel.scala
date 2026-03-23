@@ -27,7 +27,7 @@ import utils.Utils.{
   spanComponent
 }
 import views.helpers.Formatters.{dateAsDayMonthAndYear, dateAsMonthAndYear}
-import views.html.components.{h2Inner, h3Inner, missing_documents_guidance, pInner, requestedStatements}
+import views.html.components.{h2Inner, h3Inner, missing_documents_guidance, pInner, requestedStatements, link}
 
 import java.time.LocalDate
 
@@ -36,10 +36,11 @@ case class SecurityStatementsViewModel(
   backLink: Option[String],
   header: HtmlFormat.Appendable,
   requestedStatementNotification: HtmlFormat.Appendable,
+  currentStatementsHeader: HtmlFormat.Appendable,
   currentStatements: HtmlFormat.Appendable,
   missingGuidance: HtmlFormat.Appendable,
-  statementServiceParagraph: HtmlFormat.Appendable,
-  requestStatementsLink: HtmlFormat.Appendable
+//  statementServiceParagraph: HtmlFormat.Appendable,
+//  requestStatementsLink: HtmlFormat.Appendable
 )
 
 object SecurityStatementsViewModel {
@@ -51,10 +52,11 @@ object SecurityStatementsViewModel {
       backLink = Some(appConfig.customsFinancialsFrontendHomepage),
       header = generateHeader,
       requestedStatementNotification = generateRequestedStatementNotification(statementsForAllEoris),
+      currentStatementsHeader = h2Component(msg = "cf.account.adjustment-statements.heading"),
       currentStatements = generateCurrentStatements(statementsForAllEoris),
       missingGuidance = generateMissingGuidance,
-      statementServiceParagraph = generateStatementServiceParagraph,
-      requestStatementsLink = generateRequestStatementLink
+//      statementServiceParagraph = generateStatementServiceParagraph,
+//      requestStatementsLink = generateRequestStatementLink
     )
 
   private def generateHeader(implicit messages: Messages): HtmlFormat.Appendable =
@@ -271,8 +273,8 @@ object SecurityStatementsViewModel {
       id = Some(s"statements-list-$historyIndex-row-$index-link-cell${if (isCsv) "-csv" else emptyString}")
     )
 
-  private def generateMissingGuidance(implicit messages: Messages): HtmlFormat.Appendable =
-    new missing_documents_guidance(new h2Inner, new h3Inner, new pInner).apply(documentType = "statement")
+  private def generateMissingGuidance(implicit messages: Messages, appConfig: config.AppConfig): HtmlFormat.Appendable =
+    new missing_documents_guidance(new h2Inner, new link, new pInner).apply(documentType = "statement")
 
   private def generateStatementServiceParagraph(implicit messages: Messages): HtmlFormat.Appendable =
     pComponent(message = "cf.security-statements.historic.description", id = Some("historic-statement-request"))

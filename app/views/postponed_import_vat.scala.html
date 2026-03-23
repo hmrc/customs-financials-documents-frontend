@@ -30,11 +30,11 @@
     
     @viewModel.pageH1Heading
 
+    @viewModel.requestedStatements.map(identity)
+
     @viewModel.statementsAvailableGuidance
 
     @viewModel.statementH2Heading
-
-    @viewModel.requestedStatements.map(identity)
 
     <dl class="govuk-summary-list statement-list pVat-statements">
         @defining(viewModel.currentStatements) { currentStatementsSection =>
@@ -44,9 +44,10 @@
     </dl>
 
     <div id="missing-documents-guidance" class="govuk-!-padding-top-2">
-        @defining(viewModel.statOlderThanSixMonthsGuidance) { guidance =>
+        @defining(viewModel.statOlderThanSevenMonthsGuidance) { guidance =>
             @guidance.h2Heading
             @guidance.link.map(identity)
+            @guidance.inset.map(identity)
         }
 
         @defining(viewModel.chiefDeclarationGuidance) { guidance =>

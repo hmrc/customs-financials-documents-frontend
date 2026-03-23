@@ -21,5 +21,6 @@ import play.twirl.api.HtmlFormat
 case class GuidanceRow(
   h2Heading: HtmlFormat.Appendable,
   link: Option[HtmlFormat.Appendable] = None,
-  paragraph: Option[HtmlFormat.Appendable] = None
+  paragraph: Option[HtmlFormat.Appendable] = None,
+  inset: Option[HtmlFormat.Appendable] = None
 )

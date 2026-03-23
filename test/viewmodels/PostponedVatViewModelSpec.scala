@@ -234,7 +234,7 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
 
         actualPVatModel.currentStatements.currentStatementRows mustBe expectedCurrentRows
 
-        actualPVatModel.statOlderThanSixMonthsGuidance mustBe expectedStatOlderThanSixMonthsGuidanceRow
+        actualPVatModel.statOlderThanSevenMonthsGuidance mustBe expectedStatOlderThanSevenMonthsGuidanceRow
 
         actualPVatModel.chiefDeclarationGuidance mustBe expectedChiefDeclarationGuidance
 
@@ -272,7 +272,7 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
 
         actualPVatModel.currentStatements.noStatementMsg mustBe None
 
-        actualPVatModel.statOlderThanSixMonthsGuidance mustBe expectedStatOlderThanSixMonthsGuidanceRow
+        actualPVatModel.statOlderThanSevenMonthsGuidance mustBe expectedStatOlderThanSevenMonthsGuidanceRow
 
         actualPVatModel.chiefDeclarationGuidance mustBe expectedChiefDeclarationGuidance
 
@@ -458,7 +458,7 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
       )
     )
 
-    val expectedStatOlderThanSixMonthsGuidanceRow: GuidanceRow = GuidanceRow(
+    val expectedStatOlderThanSevenMonthsGuidanceRow: GuidanceRow = GuidanceRow(
       h2Heading = h2Component.apply(
         "cf.account.pvat.older-statements.heading",
         id = Some("missing-documents-guidance-heading"),

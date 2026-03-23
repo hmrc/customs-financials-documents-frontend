@@ -1,5 +1,5 @@
 @*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,47 +14,66 @@
  * limitations under the License.
  *@
 
+@*
+* Copyright 2023 HM Revenue & Customs
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*@
+
 @this(
     h2Inner: components.h2Inner,
-    h3Inner: components.h3Inner,
+    link: components.link,
     pInner: components.pInner
 )
 
-@(documentType: String)(implicit messages: Messages)
+@(documentType: String)(implicit messages: Messages, appConfig: config.AppConfig)
 
 <div id="missing-documents-guidance" class="govuk-!-padding-top-2">
 
     @h2Inner(
-        id = Some("missing-documents-guidance-heading"),
-        msg = "cf.common.missing-documents-guidance.heading",
-        innerMsg = s"cf.common.missing-documents-guidance.$documentType",
-        classes = "govuk-heading-m govuk-!-margin-top-9"
+        id = Some("adjustment-statements.older-statements.heading"),
+        msg = "cf.account.adjustment-statements.older-statements.heading",
+        innerMsg = s"cf.common.missing-documents-guidance.${documentType}s",
+        classes = "govuk-heading-m govuk-!-margin-top-6"
     )
 
-    @h3Inner(
-        id = Some("missing-documents-guidance-chiefHeading"),
-        msg = "cf.common.missing-documents-guidance.chiefHeading",
+    @link(
+        linkMessage = "cf.account.adjustment-statements.older-certificates.description.link",
+        location = appConfig.historicRequestUrl(models.FileRole.SecurityStatement),
+        linkId = Some("adjustment-statements.older-certificates"),
+        pId = Some("adjustment-statements.older-certificates.link"),
+        preLinkMessage = Some("cf.account.adjustment-statements.older-certificates.description.1"),
+        postLinkMessage = Some("cf.account.adjustment-statements.older-certificates.description.post-message"),
+        pClass = "govuk-body",
+        linkSentence = true
+    )
+
+    <div class="govuk-inset-text" id="missing-documents-guidance-inset">
+        @messages("cf.account.adjustment-statements.older-certificates.description.inset-message")
+    </div>
+
+    @h2Inner(
+        id = Some("adjustment-statements.chief.heading"),
+        msg = "cf.account.adjustment-statements.chief.heading",
         innerMsg = s"cf.common.missing-documents-guidance.${documentType}s",
-        classes = "govuk-heading-s govuk-!-margin-top-6"
+        classes = "govuk-heading-m govuk-!-margin-top-6"
     )
 
     @pInner(
-        message = "cf.common.missing-documents-guidance.text1",
-        innerMessage = s"cf.common.missing-documents-guidance.${documentType}s",
-        id= Some("missing-documents-guidance-text1")
-    )
-
-    @h3Inner(
-        id = Some("missing-documents-guidance-certificatesHeading"),
-        msg = "cf.common.missing-documents-guidance.subHeading", 
-        innerMsg = s"cf.common.missing-documents-guidance.${documentType}s",
-        classes = "govuk-heading-s govuk-!-margin-top-6"
-    )
-
-    @pInner(
-        message = "cf.common.missing-documents-guidance.text2",
+        message = "cf.account.adjustment-statements.chief.description",
         innerMessage = s"cf.common.missing-documents-guidance.${documentType}s",
         id = Some("missing-documents-guidance-text2")
     )
 
 </div>
+

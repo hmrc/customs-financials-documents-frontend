@@ -66,7 +66,7 @@ case class PostponedVatViewModel(
   statementH2Heading: HtmlFormat.Appendable,
   requestedStatements: Option[HtmlFormat.Appendable] = None,
   currentStatements: CurrentStatementsSection,
-  statOlderThanSixMonthsGuidance: GuidanceRow,
+  statOlderThanSevenMonthsGuidance: GuidanceRow,
   chiefDeclarationGuidance: GuidanceRow,
   helpAndSupportGuidance: GuidanceRow
 )
@@ -87,11 +87,11 @@ object PostponedVatViewModel {
       pageTitle = messages("cf.account.pvat.title"),
       backLink = bckLinkUrl,
       pageH1Heading = populatePageHeading,
+      requestedStatements = populateRequestedStatements(hasRequestedStatements, urls.requestStatementsUrl),
       statementsAvailableGuidance = populateStatementsAvailableGuidance,
       statementH2Heading = populateStatementH2Heading,
-      requestedStatements = populateRequestedStatements(hasRequestedStatements, urls.requestStatementsUrl),
       currentStatements = populateCurrentStatements(statementGroupList, isCdsOnly),
-      statOlderThanSixMonthsGuidance = populateOlderThanSixMonthsGuidance(urls.serviceUnavailableUrl),
+      statOlderThanSevenMonthsGuidance = populateOlderThanSevenMonthsGuidance(urls.serviceUnavailableUrl),
       chiefDeclarationGuidance = populateChiefDeclarationGuidance(urls.pvEmail),
       helpAndSupportGuidance = populateHelpAndSupportGuidance(urls.viewVatAccountSupportLink)
     )
@@ -160,7 +160,7 @@ object PostponedVatViewModel {
     )
   }
 
-  private def populateOlderThanSixMonthsGuidance(
+  private def populateOlderThanSevenMonthsGuidance(
     serviceUnavailableUrl: Option[String]
   )(implicit msgs: Messages): GuidanceRow = {
     val h2Heading = h2Component.apply(
@@ -173,12 +173,18 @@ object PostponedVatViewModel {
       "cf.account.pvat.older-statements.description.link",
       location = serviceUnavailableUrl.getOrElse(emptyString),
       preLinkMessage = Some("cf.account.pvat.older-statements.description.2"),
+      postLinkMessage = Some("cf.account.pvat.older-statements.description.post-message"),
       linkSentence = true
     )
 
+    val inset = insetComponent(
+      msg = msgs("cf.account.vat.older-certificates.description.inset-message")
+    )
+
     GuidanceRow(
-      h2Heading,
-      Some(link)
+      h2Heading = h2Heading,
+      link = Some(link),
+      inset = Some(inset)
     )
   }
 
