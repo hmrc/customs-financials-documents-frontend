@@ -183,41 +183,23 @@ class SecurityStatementsSpec extends SpecBase with GuiceOneAppPerSuite {
       s"${messages("cf.security-statements.title")} - ${messages("service.name")} - GOV.UK"
     view.getElementsByTag("h1").text() mustBe messages("cf.security-statements.title")
 
-    view.getElementById("missing-documents-guidance-heading").text mustBe
+    view.getElementById("adjustment-statements.older-statements.heading").text mustBe
       messages(
-        "cf.common.missing-documents-guidance.heading",
-        messages("cf.common.missing-documents-guidance.statement")
-      )
-
-    view.getElementById("missing-documents-guidance-chiefHeading").text mustBe
-      messages(
-        "cf.common.missing-documents-guidance.chiefHeading",
+        "cf.account.adjustment-statements.older-statements.heading",
         messages("cf.common.missing-documents-guidance.statements")
       )
 
-    view.getElementById("missing-documents-guidance-text1").text mustBe
+    view.getElementById("adjustment-statements.chief.heading").text mustBe
       messages(
-        "cf.common.missing-documents-guidance.text1",
-        messages("cf.common.missing-documents-guidance.statements")
-      )
-
-    view.getElementById("missing-documents-guidance-certificatesHeading").text mustBe
-      messages(
-        "cf.common.missing-documents-guidance.subHeading",
+        "cf.account.adjustment-statements.chief.heading",
         messages("cf.common.missing-documents-guidance.statements")
       )
 
     view.getElementById("missing-documents-guidance-text2").text mustBe
       messages(
-        "cf.common.missing-documents-guidance.text2",
+        "cf.account.adjustment-statements.chief.description",
         messages("cf.common.missing-documents-guidance.statements")
       )
-
-    view.getElementById("historic-statement-request").text() mustBe
-      messages("cf.security-statements.historic.description")
-
-    view.getElementById("historic-statement-request-link").text() mustBe
-      messages("cf.security-statements.historic.request")
   }
 
   override def fakeApplication(): Application = applicationBuilder.build()

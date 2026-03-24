@@ -29,7 +29,8 @@ import utils.CommonTestData.{
 import utils.SpecBase
 import org.scalatest.matchers.must.Matchers.mustBe
 import utils.Utils.{
-  ddComponent, divComponent, dlComponent, dtComponent, emptyString, h1Component, h2Component, linkComponent, pComponent
+  ddComponent, divComponent, dlComponent, dtComponent, emptyString, h1Component, h2Component, insetComponent,
+  linkComponent, pComponent
 }
 import models.FileFormat.{Csv, Pdf}
 import play.twirl.api.{Html, HtmlFormat}
@@ -54,7 +55,7 @@ class ImportVatViewModelSpec extends SpecBase {
         shouldNotContainNotificationPanel(viewModelWithCurrentCerts)
         shouldContainCurrentStatements(viewModelWithCurrentCerts, certificatesForAllEoris)
         shouldNotContainCurrentStatementsNotAvailableGuidance(viewModelWithCurrentCerts)
-        shouldContainCorrectCertsOlderThan6MonthsGuidance(viewModelWithCurrentCerts)
+        shouldContainCorrectCertsOlderThan7MonthsGuidance(viewModelWithCurrentCerts)
         shouldContainCorrectChiefDeclarationGuidance(viewModelWithCurrentCerts)
         shouldContainCorrectHelpAndSupportGuidance(viewModelWithCurrentCerts)
       }
@@ -68,7 +69,7 @@ class ImportVatViewModelSpec extends SpecBase {
         shouldContainNotificationPanel(viewModel)
         shouldContainCurrentStatements(viewModel, certificatesForAllEoris)
         shouldNotContainCurrentStatementsNotAvailableGuidance(viewModel)
-        shouldContainCorrectCertsOlderThan6MonthsGuidance(viewModel)
+        shouldContainCorrectCertsOlderThan7MonthsGuidance(viewModel)
         shouldContainCorrectChiefDeclarationGuidance(viewModel)
         shouldContainCorrectHelpAndSupportGuidance(viewModel)
       }
@@ -82,7 +83,7 @@ class ImportVatViewModelSpec extends SpecBase {
         shouldNotContainNotificationPanel(viewModelWithNoCerts)
         shouldNotContainCurrentStatements(viewModelWithNoCerts)
         shouldContainCurrentStatementsNotAvailableGuidance(viewModelWithNoCerts)
-        shouldContainCorrectCertsOlderThan6MonthsGuidance(viewModelWithNoCerts)
+        shouldContainCorrectCertsOlderThan7MonthsGuidance(viewModelWithNoCerts)
         shouldContainCorrectChiefDeclarationGuidance(viewModelWithNoCerts)
         shouldContainCorrectHelpAndSupportGuidance(viewModelWithNoCerts)
       }
@@ -119,7 +120,7 @@ class ImportVatViewModelSpec extends SpecBase {
   private def shouldContainCorrectLast6MonthsHeading(viewModel: ImportVatViewModel)(implicit
     msgs: Messages
   ): Assertion =
-    viewModel.last6MonthsH2Heading mustBe h2Component("cf.account.vat.your-certificates.heading")
+    viewModel.last7MonthsH2Heading mustBe h2Component("cf.account.vat.your-certificates.heading")
 
   private def shouldContainNotificationPanel(viewModel: ImportVatViewModel) = viewModel.notificationPanel mustBe empty
 
@@ -148,10 +149,10 @@ class ImportVatViewModelSpec extends SpecBase {
       )
     )
 
-  private def shouldContainCorrectCertsOlderThan6MonthsGuidance(viewModel: ImportVatViewModel)(implicit
+  private def shouldContainCorrectCertsOlderThan7MonthsGuidance(viewModel: ImportVatViewModel)(implicit
     msgs: Messages
   ) =
-    viewModel.certsOlderThan6MonthsGuidance mustBe GuidanceRow(
+    viewModel.certsOlderThan7MonthsGuidance mustBe GuidanceRow(
       h2Component(
         "cf.account.vat.older-certificates.heading",
         id = Some("missing-certificates-guidance-heading"),
@@ -162,7 +163,13 @@ class ImportVatViewModelSpec extends SpecBase {
           "cf.account.vat.older-certificates.description.link",
           location = URL_TEST,
           preLinkMessage = Some("cf.account.vat.older-certificates.description.1"),
+          postLinkMessage = Some("cf.account.vat.older-certificates.description.post-message"),
           linkSentence = true
+        )
+      ),
+      inset = Some(
+        insetComponent(
+          msg = msgs("cf.account.vat.older-certificates.description.inset-message")
         )
       )
     )

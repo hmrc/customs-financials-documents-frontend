@@ -19,14 +19,16 @@
 @this()
 
 @(
-  message: String,
-  innerMessage: String,
-  classes: String = "govuk-body",
-  id: Option[String] = None,
-  link: Option[Html] = None,
-  tabLink: Option[Html] = None
+message: String,
+innerMessage: String,
+classes: String = "govuk-body",
+id: Option[String] = None,
+link: Option[Html] = None,
+tabLink: Option[Html] = None,
+finalSentence: Option[String] = None
 )(implicit messages: Messages)
 
 <p @{id.fold(emptyString)(id => s"id=$id")} class="@{classes}">
-   @messages(message, messages(innerMessage)) @link @tabLink
+    @messages(message, messages(innerMessage)) @link @tabLink
+    @finalSentence.map(s => Html(s"<span>$s</span>")).getOrElse(Html(""))
 </p>

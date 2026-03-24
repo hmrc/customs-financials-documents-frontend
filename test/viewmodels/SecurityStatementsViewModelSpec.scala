@@ -21,14 +21,13 @@ import models.FileRole.SecurityStatement
 import models.{EoriHistory, SecurityStatementsByPeriod, SecurityStatementsForEori}
 import org.scalatest.matchers.must.Matchers.mustBe
 import org.mockito.Mockito.when
-import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import utils.CommonTestData.{DAY_28, MONTH_11, YEAR_2019}
 import utils.SpecBase
 import utils.Utils.{
   ddComponent, divComponent, dlComponent, dtComponent, h1Component, linkComponent, pComponent, spanComponent
 }
-import views.html.components.{h2Inner, h3Inner, missing_documents_guidance, pInner, requestedStatements}
+import views.html.components.{h2Inner, h3Inner, link, missing_documents_guidance, pInner, requestedStatements}
 
 import java.time.LocalDate
 
@@ -45,8 +44,6 @@ class SecurityStatementsViewModelSpec extends SpecBase {
         result.requestedStatementNotification mustBe expectedRequestedNotification
         result.currentStatements mustBe expectedCurrentStatements
         result.missingGuidance mustBe expectedMissingGuidance
-        result.statementServiceParagraph mustBe expectedStatementServiceParagraph
-        result.requestStatementsLink mustBe expectedRequestStatementsLink
       }
     }
   }
@@ -126,19 +123,7 @@ class SecurityStatementsViewModelSpec extends SpecBase {
       pComponent("cf.security-statements.no-statements", "govuk-body")
 
     val expectedMissingGuidance: HtmlFormat.Appendable =
-      new missing_documents_guidance(new h2Inner, new h3Inner, new pInner).apply("statement")
-
-    val expectedStatementServiceParagraph: HtmlFormat.Appendable =
-      pComponent("cf.security-statements.historic.description", "govuk-body", Some("historic-statement-request"))
-
-    val expectedRequestStatementsLink: HtmlFormat.Appendable =
-      linkComponent(
-        linkMessage = "cf.security-statements.historic.request",
-        location = "request-statement-url",
-        pClass = "govuk-body govuk-!-margin-bottom-9",
-        linkClass = "govuk-body govuk-link",
-        linkId = Some("historic-statement-request-link")
-      )
+      new missing_documents_guidance(new h2Inner, new link, new pInner).apply("statement")
 
     val statementsForAllEoris: Seq[SecurityStatementsForEori] = Seq(
       SecurityStatementsForEori(

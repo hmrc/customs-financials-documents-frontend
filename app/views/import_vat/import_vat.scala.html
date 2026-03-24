@@ -31,11 +31,11 @@
 
     @model.heading
 
+    @model.notificationPanel.map(identity)
+
     @model.certificateAvailableGuidance
 
-    @model.last6MonthsH2Heading
-
-    @model.notificationPanel.map(identity)
+    @model.last7MonthsH2Heading
 
     @model.currentStatements.map { statementRow =>
         @statementRow.eoriHeading.map(identity)
@@ -45,10 +45,11 @@
     @model.currentStatementsNotAvailableGuidance.map(identity)
 
     <div id="missing-certificates-guidance" class="govuk-!-padding-top-2">
-        @defining(model.certsOlderThan6MonthsGuidance) { certsOlderThan6Months =>
-            @certsOlderThan6Months.h2Heading
-            @certsOlderThan6Months.link.map(identity)
-            @certsOlderThan6Months.paragraph.map(identity)
+        @defining(model.certsOlderThan7MonthsGuidance) { certsOlderThan7Months =>
+            @certsOlderThan7Months.h2Heading
+            @certsOlderThan7Months.link.map(identity)
+            @certsOlderThan7Months.paragraph.map(identity)
+            @certsOlderThan7Months.inset.map(identity)
         }
 
         @defining(model.chiefDeclarationGuidance) { chiefDeclaration =>
