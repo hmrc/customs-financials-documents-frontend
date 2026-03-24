@@ -16,14 +16,12 @@
 
 @import views.html.components._
 @import views.html.Layout
-@import models.FileRole.SecurityStatement
 
 @this(
         layout: Layout,
         h1: components.h1,
-        link: components.link,
-        p: components.p,
-        p2: components.p2,
+        h2: components.h2,
+        inset: components.inset,
         missing_guidance: components.missing_documents_guidance
 )
 
@@ -32,21 +30,14 @@
 @layout(pageTitle = Some(messages("cf.security-statements.title")),
         backLinkUrl = Some(appConfig.customsFinancialsFrontendHomepage)) {
 
-    @h1("cf.security-statements.title", id=Some("security-statements-heading"), classes = "govuk-heading-xl")
+    @h1("cf.security-statements.title", id = Some("security-statements-heading"), classes = "govuk-heading-xl")
 
-    @p(
-        message = "cf.security-statements.unavailable", 
-        id = Some("no-statements"),
-        classes = "govuk-body govuk-!-margin-top-7 govuk-!-margin-bottom-9"
+    @h2("cf.account.adjustment-statements.heading")
+
+    @inset(
+        msg = messages("cf.security-statements.unavailable"),
+        id = Some("no-statements")
     )
 
     @missing_guidance("statement")
-
-    @p(id = Some("historic-statement-request"), message = "cf.security-statements.historic.description")
-
-    @p2(Some("historic-statement-request-link"),
-        anchor = link(
-                        linkMessage = "cf.security-statements.historic.request",
-                        location = appConfig.historicRequestUrl(SecurityStatement))
-                    )
 }

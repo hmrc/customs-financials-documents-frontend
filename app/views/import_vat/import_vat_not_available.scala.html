@@ -14,22 +14,16 @@
  * limitations under the License.
  *@
 
-@import views.html.components._
 @import views.html.Layout
-@import models.FileRole.C79Certificate
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcNewTabLink
-@import uk.gov.hmrc.hmrcfrontend.views.Aliases.NewTabLink
 @import utils.Utils.emptyString
 
 @this(
     layout: Layout,
     h1: components.h1,
     h2: components.h2,
-    hmrcNewTabLink: HmrcNewTabLink,
     link: components.link,
     p: components.p,
-    p2: components.p2,
-    missing_guidance: components.missing_documents_guidance
+    inset: components.inset
 )
 
 @(
@@ -45,10 +39,13 @@
 
     @h1("cf.account.vat.title", id = Some("import-vat-certificates-heading"), classes = "govuk-heading-xl")
 
-    @p(
-        message = "cf.account.vat.unavailable", 
-        id = Some("no-certificates-available-text"),
-        classes = "govuk-body govuk-!-margin-top-7 govuk-!-margin-bottom-9"
+    @p(message = "cf.account.vat.available-text")
+
+    @h2("cf.account.vat.your-certificates.heading")
+
+    @inset(
+        msg = messages("cf.account.vat.unavailable"),
+        id = Some("no-certificates-available-text")
     )
 
     <div id="missing-certificates-guidance" class="govuk-!-padding-top-2">
@@ -61,8 +58,12 @@
         @link(
             "cf.account.vat.older-certificates.description.link",
             location = serviceUnavailableUrl.getOrElse(emptyString),
-            preLinkMessage = Some("cf.account.vat.older-certificates.description.1")
+            preLinkMessage = Some("cf.account.vat.older-certificates.description.1"),
+            postLinkMessage = Some("cf.account.vat.older-certificates.description.post-message"),
+            linkSentence = true
         )
+
+        @inset(msg = messages("cf.account.vat.older-certificates.description.inset-message"))
 
         @h2(
             "cf.account.vat.chief.heading",
@@ -73,7 +74,8 @@
         @link(
             appConfig.c79EmailAddress,
             location = appConfig.c79EmailAddressHref,
-            preLinkMessage = Some("cf.account.vat.older-certificates.description.2")
+            preLinkMessage = Some("cf.account.vat.older-certificates.description.2"),
+            linkSentence = true
         )
 
     </div>
@@ -85,18 +87,12 @@
             classes = "govuk-heading-m govuk-!-margin-top-2"
         )
 
-        @p(
-            message = "cf.account.vat.support.message",
-            classes = "govuk-body govuk-!-margin-bottom-9",
-            tabLink = Some(hmrcNewTabLink(
-                NewTabLink(
-                    language = Some(messages.lang.toString),
-                    classList = Some("govuk-link"),
-                    href=Some(appConfig.viewVatAccountSupportLink),
-                    text=messages("cf.account.vat.support.link")
-                    )
-                )
-            )
+        @link(
+            "cf.account.vat.support.link",
+            location = appConfig.viewVatAccountSupportLink,
+            preLinkMessage = Some("cf.account.vat.support.message"),
+            openInNewTab = true,
+            linkSentence = true
         )
     </div>
 }
