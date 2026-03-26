@@ -23,8 +23,8 @@ import models.FileRole.C79Certificate
 import org.scalatest.Assertion
 import play.api.i18n.Messages
 import utils.CommonTestData.{
-  DAY_28, EORI_NUMBER, FIVE_MONTHS, FOUR_MONTHS, ONE_MONTH, SIX_MONTHS, SIZE_111L, STAT_FILE_NAME_04, THREE_MONTHS,
-  TWO_MONTHS, URL_TEST
+  DAY_28, EORI_NUMBER, FIVE_MONTHS, FOUR_MONTHS, ONE_MONTH, SEVEN_MONTHS, SIX_MONTHS, SIZE_111L, STAT_FILE_NAME_04,
+  THREE_MONTHS, TWO_MONTHS, URL_TEST
 }
 import utils.SpecBase
 import org.scalatest.matchers.must.Matchers.mustBe
@@ -72,6 +72,21 @@ class ImportVatViewModelSpec extends SpecBase {
         shouldContainCorrectCertsOlderThan7MonthsGuidance(viewModel)
         shouldContainCorrectChiefDeclarationGuidance(viewModel)
         shouldContainCorrectHelpAndSupportGuidance(viewModel)
+      }
+
+      "model has last certificate with no files, excludes that row" in new Setup {
+        val currentCertificatesWithEmptyLast: Seq[VatCertificatesByMonth] = currentCertificates :+
+          VatCertificatesByMonth(date.minusMonths(SEVEN_MONTHS), Seq.empty)
+
+        val certsWithEmptyLast: Seq[VatCertificatesForEori] = Seq(
+          VatCertificatesForEori(eoriHistory.head, currentCertificatesWithEmptyLast, Seq.empty)
+        )
+
+        val viewModelEmptyLast = ImportVatViewModel(certsWithEmptyLast, Some(serviceUnavailableUrl))
+
+        val body: String = viewModelEmptyLast.currentStatements.head.dlComponentRow.body
+        body.contains("statements-list-0-row-5") mustBe true
+        body.contains("statements-list-0-row-6") mustBe false
       }
 
       "model has neither requested nor current certificates" in new Setup {
@@ -164,7 +179,7 @@ class ImportVatViewModelSpec extends SpecBase {
           location = URL_TEST,
           preLinkMessage = Some("cf.account.vat.older-certificates.description.1"),
           postLinkMessage = Some("cf.account.vat.older-certificates.description.post-message"),
-          linkSentence = true
+          linkSentence = false
         )
       ),
       inset = Some(
@@ -218,22 +233,26 @@ class ImportVatViewModelSpec extends SpecBase {
     certsForAllEoris: Seq[VatCertificatesForEori]
   )(implicit msgs: Messages): List[ImportVatCurrentStatementRow] = {
 
-    val divContentRows = certsForAllEoris.head.currentCertificates.sorted.reverse.zipWithIndex.map {
-      (statementsOfOneMonth, index) =>
+    val currentCertificates = certsForAllEoris.head.currentCertificates.sorted.reverse
+    val statements          =
+      if (currentCertificates.lastOption.exists(_.files.isEmpty)) currentCertificates.dropRight(1)
+      else currentCertificates
 
-        val dt = dtComponent(
-          content = Html(statementsOfOneMonth.formattedMonthYear),
-          classes = Some("govuk-summary-list__value"),
-          id = Some(s"statements-list-0-row-$index-date-cell")
-        )
+    val divContentRows = statements.zipWithIndex.map { (statementsOfOneMonth, index) =>
 
-        val dd = populateDDComponentForImportVatStatement(statementsOfOneMonth, index)
+      val dt = dtComponent(
+        content = Html(statementsOfOneMonth.formattedMonthYear),
+        classes = Some("govuk-summary-list__value"),
+        id = Some(s"statements-list-0-row-$index-date-cell")
+      )
 
-        divComponent(
-          content = HtmlFormat.fill(Seq(dt, dd)),
-          classes = Some("govuk-summary-list__row"),
-          id = Some(s"statements-list-0-row-$index")
-        )
+      val dd = populateDDComponentForImportVatStatement(statementsOfOneMonth, index)
+
+      divComponent(
+        content = HtmlFormat.fill(Seq(dt, dd)),
+        classes = Some("govuk-summary-list__row"),
+        id = Some(s"statements-list-0-row-$index")
+      )
     }
 
     val dlComponentRow = dlComponent(

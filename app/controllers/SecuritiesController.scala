@@ -25,7 +25,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.DateTimeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.DateUtils.isDateInLastSixMonths
+import utils.DateUtils.isDateInLastSevenMonths
 import viewmodels.SecurityStatementsViewModel
 import views.html.securities.{security_statements, security_statements_not_available}
 
@@ -71,14 +71,14 @@ class SecuritiesController @Inject() (
       .map(groupByMonthDescending)
       .map(_.partition(_.files.exists(_.metadata.statementRequestId.isDefined)))
       .map { case (requested, current) =>
-        SecurityStatementsForEori(historicEori, securityStatementsInLastSixMonths(current), requested)
+        SecurityStatementsForEori(historicEori, filterCurrentStatements(current), requested)
       }
 
-  private def securityStatementsInLastSixMonths(
+  private def filterCurrentStatements(
     securityStatementFiles: Seq[SecurityStatementsByPeriod]
   ): Seq[SecurityStatementsByPeriod] =
     securityStatementFiles.filter(stf =>
-      isDateInLastSixMonths(stf.startDate, dateTimeService.systemDateTime().toLocalDate)
+      isDateInLastSevenMonths(stf.startDate, dateTimeService.systemDateTime().toLocalDate)
     )
 
   private def groupByMonthDescending(

@@ -88,7 +88,7 @@ class PostponedVatControllerSpec extends SpecBase {
       }
     }
 
-    "display the PostponedVat page with two columns (CHIEF and CDS) for last 6 months" in new Setup {
+    "display the PostponedVat page with two columns (CHIEF and CDS) for last 7 months" in new Setup {
       appConfigForSetup.historicStatementsEnabled = false
 
       val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("postponed-vat").url
@@ -120,7 +120,7 @@ class PostponedVatControllerSpec extends SpecBase {
     }
 
     "display the PostponedVat page with one column(CDS) " +
-      "and Ignore historic CHIEF statements older than 6 months" in new Setup {
+      "and Ignore historic CHIEF statements older than 7 months" in new Setup {
         appConfigForSetup.historicStatementsEnabled = false
 
         val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("postponed-vat").url
@@ -659,6 +659,20 @@ class PostponedVatControllerSpec extends SpecBase {
         PostponedVatStatementFileMetadata(
           yearValueOfCurrentDate(FIVE_MONTHS),
           monthValueOfCurrentDate(FIVE_MONTHS),
+          Pdf,
+          PostponedVATStatement,
+          CDS,
+          None
+        ),
+        eori
+      ),
+      PostponedVatStatementFile(
+        STAT_FILE_NAME_01,
+        DOWNLOAD_URL_00,
+        SIZE_4096L,
+        PostponedVatStatementFileMetadata(
+          yearValueOfCurrentDate(SEVEN_MONTHS),
+          monthValueOfCurrentDate(SEVEN_MONTHS),
           Pdf,
           PostponedVATStatement,
           CDS,

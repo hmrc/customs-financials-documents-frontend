@@ -54,7 +54,7 @@ class SecuritiesControllerSpec extends SpecBase {
       }
     }
 
-    "display Pdf statements only for last 6 months" in new Setup {
+    "display Pdf statements only for last 7 months" in new Setup {
       when(mockSdesConnector.getSecurityStatements(any)(any))
         .thenReturn(
           Future.successful(
@@ -75,7 +75,7 @@ class SecuritiesControllerSpec extends SpecBase {
       }
     }
 
-    "display Csv statements only for last 6 months" in new Setup {
+    "display Csv statements only for last 7 months" in new Setup {
       when(mockSdesConnector.getSecurityStatements(any)(any))
         .thenReturn(
           Future.successful(

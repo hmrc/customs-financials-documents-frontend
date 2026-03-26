@@ -28,7 +28,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.api.{Logger, LoggerLike}
 import services.DateTimeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.Constants.MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE
+import utils.Constants.MONTHS_RANGE_ONE_TO_SEVEN_INCLUSIVE
 import viewmodels.{PVATUrls, PostponedVatViewModel, PvEmail}
 import views.html.{postponed_import_vat, postponed_import_vat_not_available}
 
@@ -74,7 +74,7 @@ class PostponedVatController @Inject() (
           val allPostponedVatStatements: Seq[PostponedVatStatementFile] =
             postponedVatStatements ++ historicPostponedVatStatements
 
-          val currentStatements: Seq[PostponedVatStatementFile] = filterLastSixMonthsStatements(postponedVatStatements)
+          val currentStatements: Seq[PostponedVatStatementFile] = filterCurrentStatements(postponedVatStatements)
 
           val historicUrl = if (appConfig.historicStatementsEnabled) {
             appConfig.historicRequestUrl(PostponedVATStatement)
@@ -111,9 +111,9 @@ class PostponedVatController @Inject() (
       )
     }
 
-  private def filterLastSixMonthsStatements(files: Seq[PostponedVatStatementFile]): Seq[PostponedVatStatementFile] = {
+  private def filterCurrentStatements(files: Seq[PostponedVatStatementFile]): Seq[PostponedVatStatementFile] = {
     val monthList =
-      MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE.map(n => dateTimeService.systemDateTime().toLocalDate.minusMonths(n))
+      MONTHS_RANGE_ONE_TO_SEVEN_INCLUSIVE.map(n => dateTimeService.systemDateTime().toLocalDate.minusMonths(n))
 
     monthList.flatMap { date =>
       files.find(file => file.monthAndYear.getYear == date.getYear && file.monthAndYear.getMonth == date.getMonth).toSeq

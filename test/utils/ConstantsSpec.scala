@@ -51,9 +51,9 @@ class ConstantsSpec extends SpecBase {
     }
   }
 
-  "MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE" should {
+  "MONTHS_RANGE_ONE_TO_SEVEN_INCLUSIVE" should {
     "return correct value" in {
-      MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE mustBe (1 to 6)
+      MONTHS_RANGE_ONE_TO_SEVEN_INCLUSIVE mustBe (1 to 7)
     }
   }
 

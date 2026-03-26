@@ -228,7 +228,7 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
         actualPVatModel.currentStatements.noStatementMsg mustBe None
 
         val expectedResult: Seq[PostponedVatStatementGroup] =
-          Seq(pVatGroup1, pVatGroup2, pVatGroup3, pVatGroup6, pVatGroup5, pVatGroup4)
+          Seq(pVatGroup1, pVatGroup2, pVatGroup3, pVatGroup6, pVatGroup5, pVatGroup4, pVatGroupMarch2018)
 
         val expectedCurrentRows: Seq[HtmlFormat.Appendable] = expectedCurrentRowsValue(expectedResult)
 
@@ -441,6 +441,9 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
         Seq(pVatStatCsvFileForMonth4, pVatStatPdfFileForMonth4)
       )
 
+    val pVatGroupMarch2018: PostponedVatStatementGroup =
+      PostponedVatStatementGroup(LocalDate.of(YEAR_2018, MONTH_3, DAY_1), Seq(pVatStatPdfFileForMonth3))
+
     val expectedHeading: HtmlFormat.Appendable =
       h1Component.apply(msg = "cf.account.pvat.title", classes = "govuk-heading-xl  govuk-!-margin-bottom-6")
 
@@ -470,7 +473,7 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
           location = serviceUnavailableUrl,
           preLinkMessage = Some("cf.account.pvat.older-statements.description.2"),
           postLinkMessage = Some("cf.account.pvat.older-statements.description.post-message"),
-          linkSentence = true
+          linkSentence = false
         )
       ),
       inset = Some(
