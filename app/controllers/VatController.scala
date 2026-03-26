@@ -27,7 +27,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.api.{Logger, LoggerLike}
 import services.DateTimeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.Constants.{MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE, sevenMonths}
+import utils.Constants.{MONTHS_RANGE_ONE_TO_SEVEN_INCLUSIVE, vatCertCutoffMonths}
 import utils.DateUtils._
 import viewmodels.ImportVatViewModel
 import views.html.import_vat.{import_vat, import_vat_not_available}
@@ -96,8 +96,8 @@ class VatController @Inject() (
       )
       .map(_.partition(_.files.exists(_.metadata.statementRequestId.isDefined)))
       .map { case (requested, current) =>
-        val currentCertificatesLast6Months = filterLastSixMonthsStatements(current)
-        VatCertificatesForEori(historicEori, currentCertificatesLast6Months, requested)
+        val currentCertificates = filterCurrentStatements(current)
+        VatCertificatesForEori(historicEori, currentCertificates, requested)
       }
 
     populateEmptyMonths(certificates)
@@ -109,7 +109,7 @@ class VatController @Inject() (
     for {
       certs    <- certificates
       monthList =
-        MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE.map(n => dateTimeService.systemDateTime().toLocalDate.minusMonths(n))
+        MONTHS_RANGE_ONE_TO_SEVEN_INCLUSIVE.map(n => dateTimeService.systemDateTime().toLocalDate.minusMonths(n))
 
       response = certs.copy(
                    currentCertificates =
@@ -135,10 +135,9 @@ class VatController @Inject() (
       currentCerts
     }
 
-  private def filterLastSixMonthsStatements(currentCerts: Seq[VatCertificatesByMonth]): Seq[VatCertificatesByMonth] = {
-
-    val sevenMonthsAgo = LocalDate.now().minusMonths(sevenMonths)
-    currentCerts.filter(_.date.isAfter(sevenMonthsAgo))
+  private def filterCurrentStatements(currentCerts: Seq[VatCertificatesByMonth]): Seq[VatCertificatesByMonth] = {
+    val vatCertCutOffDate = LocalDate.now().minusMonths(vatCertCutoffMonths)
+    currentCerts.filter(_.date.isAfter(vatCertCutOffDate))
   }
 
   private def retrieveHistoricUrl =

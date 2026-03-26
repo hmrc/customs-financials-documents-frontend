@@ -18,7 +18,7 @@ package utils
 
 import org.scalatest.matchers.must.Matchers.mustBe
 import utils.CommonTestData._
-import utils.DateUtils.{isDateInLastSixMonths, isDayBefore20ThDayOfTheMonth}
+import utils.DateUtils.{isDateInLastSevenMonths, isDayBefore20ThDayOfTheMonth}
 
 import java.time.LocalDate
 
@@ -49,43 +49,39 @@ class DateUtilsSpec extends SpecBase {
     }
   }
 
-  "isDateInLastSixMonths" should {
+  "isDateInLastSevenMonths" should {
 
     "return true" when {
-      "date is in last 6 months" in {
-        val date1 = LocalDate.of(YEAR_2023, MONTH_5, DAY_20)
-        val date2 = LocalDate.of(YEAR_2023, MONTH_6, DAY_10)
-        val date3 = LocalDate.of(YEAR_2023, MONTH_8, DAY_2)
-        val date4 = LocalDate.of(YEAR_2023, MONTH_9, DAY_20)
-        val date5 = LocalDate.of(YEAR_2023, MONTH_5, DAY_21)
-        val date6 = LocalDate.of(YEAR_2023, MONTH_5, DAY_1)
+      "date is in last 7 months" in {
+        val date1 = LocalDate.of(YEAR_2023, MONTH_4, DAY_20)
+        val date2 = LocalDate.of(YEAR_2023, MONTH_4, DAY_1)
+        val date3 = LocalDate.of(YEAR_2023, MONTH_5, DAY_1)
+        val date4 = LocalDate.of(YEAR_2023, MONTH_8, DAY_2)
+        val date5 = LocalDate.of(YEAR_2023, MONTH_9, DAY_20)
 
         val currentDate = LocalDate.of(YEAR_2023, MONTH_11, DAY_20)
 
-        isDateInLastSixMonths(date1, currentDate) mustBe true
-        isDateInLastSixMonths(date2, currentDate) mustBe true
-        isDateInLastSixMonths(date3, currentDate) mustBe true
-        isDateInLastSixMonths(date4, currentDate) mustBe true
-        isDateInLastSixMonths(date5, currentDate) mustBe true
-        isDateInLastSixMonths(date6, currentDate) mustBe true
+        isDateInLastSevenMonths(date1, currentDate) mustBe true
+        isDateInLastSevenMonths(date2, currentDate) mustBe true
+        isDateInLastSevenMonths(date3, currentDate) mustBe true
+        isDateInLastSevenMonths(date4, currentDate) mustBe true
+        isDateInLastSevenMonths(date5, currentDate) mustBe true
       }
     }
 
     "return false" when {
-      "date is not in last 6 months" in {
-        val date1 = LocalDate.of(YEAR_2023, MONTH_4, DAY_29)
-        val date2 = LocalDate.of(YEAR_2023, MONTH_4, DAY_10)
+      "date is not in last 7 months" in {
+        val date1 = LocalDate.of(YEAR_2023, MONTH_3, DAY_31)
+        val date2 = LocalDate.of(YEAR_2023, MONTH_3, DAY_20)
         val date3 = LocalDate.of(YEAR_2022, MONTH_12, DAY_31)
-        val date4 = LocalDate.of(YEAR_2023, MONTH_3, DAY_20)
-        val date5 = LocalDate.of(YEAR_2023, MONTH_4, DAY_30)
+        val date4 = LocalDate.of(YEAR_2023, MONTH_3, DAY_1)
 
         val currentDate = LocalDate.of(YEAR_2023, MONTH_11, DAY_20)
 
-        isDateInLastSixMonths(date1, currentDate) mustBe false
-        isDateInLastSixMonths(date2, currentDate) mustBe false
-        isDateInLastSixMonths(date3, currentDate) mustBe false
-        isDateInLastSixMonths(date4, currentDate) mustBe false
-        isDateInLastSixMonths(date5, currentDate) mustBe false
+        isDateInLastSevenMonths(date1, currentDate) mustBe false
+        isDateInLastSevenMonths(date2, currentDate) mustBe false
+        isDateInLastSevenMonths(date3, currentDate) mustBe false
+        isDateInLastSevenMonths(date4, currentDate) mustBe false
       }
     }
   }

@@ -21,13 +21,11 @@ import models.FileRole.SecurityStatement
 import models.{EoriHistory, SecurityStatementsByPeriod, SecurityStatementsForEori}
 import org.scalatest.matchers.must.Matchers.mustBe
 import org.mockito.Mockito.when
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.HtmlFormat
 import utils.CommonTestData.{DAY_28, MONTH_11, YEAR_2019}
 import utils.SpecBase
-import utils.Utils.{
-  ddComponent, divComponent, dlComponent, dtComponent, h1Component, linkComponent, pComponent, spanComponent
-}
-import views.html.components.{h2Inner, h3Inner, link, missing_documents_guidance, pInner, requestedStatements}
+import utils.Utils.{dlComponent, h1Component, linkComponent, pComponent}
+import views.html.components.{h2Inner, link, missing_documents_guidance, pInner, requestedStatements}
 
 import java.time.LocalDate
 
@@ -37,13 +35,18 @@ class SecurityStatementsViewModelSpec extends SpecBase {
 
     "produce SecurityStatementsViewModel with correct contents" when {
 
-      "statementsForAllEoris has requested and current statements" in new Setup {
+      "statementsForAllEoris has requested and current statements, last statement has no files" in new Setup {
         result.pageTitle mustBe Some(messages("cf.security-statements.title"))
         result.backLink mustBe Some(appConfig.customsFinancialsFrontendHomepage)
         result.header mustBe expectedHeader
         result.requestedStatementNotification mustBe expectedRequestedNotification
         result.currentStatements mustBe expectedCurrentStatements
         result.missingGuidance mustBe expectedMissingGuidance
+      }
+
+      "last statement has empty files, it is excluded from rows" in new Setup {
+        val body = result.currentStatements.body
+        body.contains("statements-list-0-row-0") mustBe false
       }
     }
   }
@@ -76,48 +79,13 @@ class SecurityStatementsViewModelSpec extends SpecBase {
           classes = Some("govuk-summary-list statement-list"),
           id = Some("statements-list-0")
         ),
-        createDetailedList()
-      )
-    )
-
-    private def createDetailedList(): HtmlFormat.Appendable =
-      dlComponent(
-        content = HtmlFormat.fill(Seq(createSummaryListRow())),
-        classes = Some("govuk-summary-list statement-list"),
-        id = Some("statements-list-0-csv")
-      )
-
-    private def createSummaryListRow(): HtmlFormat.Appendable =
-      divComponent(
-        content = HtmlFormat.fill(Seq(createDateCell(), createUnavailableLinkCell())),
-        classes = Some("govuk-summary-list__row"),
-        id = Some("statements-list-0-row-0-csv")
-      )
-
-    private def createDateCell(): HtmlFormat.Appendable =
-      dtComponent(
-        content = Html("November 2019"),
-        classes = Some("govuk-summary-list__value"),
-        id = Some("statements-list-0-row-0-date-cell-csv")
-      )
-
-    private def createUnavailableLinkCell(): HtmlFormat.Appendable =
-      ddComponent(
-        content = divComponent(
-          content = createUnavailableCsvCell(),
-          id = Some("statements-list-0-row-0-unavailable-csv")
-        ),
-        classes = Some("govuk-summary-list__actions"),
-        id = Some("statements-list-0-row-0-link-cell-csv")
-      )
-
-    private def createUnavailableCsvCell(): HtmlFormat.Appendable =
-      HtmlFormat.fill(
-        Seq(
-          spanComponent(key = "CSV for November 2019 unavailable", classes = Some("govuk-visually-hidden")),
-          spanComponent(key = "Unavailable", ariaHidden = Some("true"))
+        dlComponent(
+          content = HtmlFormat.empty,
+          classes = Some("govuk-summary-list statement-list"),
+          id = Some("statements-list-0-csv")
         )
       )
+    )
 
     val expectedNoStatementsParagraph: HtmlFormat.Appendable =
       pComponent("cf.security-statements.no-statements", "govuk-body")

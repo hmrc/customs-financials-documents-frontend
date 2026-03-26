@@ -141,7 +141,7 @@ object ImportVatViewModel {
           location = serviceUnavailableUrl.getOrElse(emptyString),
           preLinkMessage = Some("cf.account.vat.older-certificates.description.1"),
           postLinkMessage = Some("cf.account.vat.older-certificates.description.post-message"),
-          linkSentence = true
+          linkSentence = false
         )
       ),
       inset = Some(
@@ -209,49 +209,54 @@ object ImportVatViewModel {
 
   private def populateDivComponent(certsForAllEoris: Seq[VatCertificatesForEori], historyIndex: Int)(implicit
     msgs: Messages
-  ): Seq[HtmlFormat.Appendable] =
-    certsForAllEoris(historyIndex).currentCertificates.sorted.reverse.zipWithIndex.map {
-      (statementsOfOneMonth, index) =>
+  ): Seq[HtmlFormat.Appendable] = {
+    val currentCertificates = certsForAllEoris(historyIndex).currentCertificates.sorted.reverse
+    val statements          =
+      if (currentCertificates.lastOption.exists(_.files.isEmpty)) currentCertificates.dropRight(1)
+      else currentCertificates
 
-        val dt = dtComponent(
-          content = Html(statementsOfOneMonth.formattedMonthYear),
-          classes = Some("govuk-summary-list__value"),
-          id = Some(s"statements-list-$historyIndex-row-$index-date-cell")
-        )
+    statements.zipWithIndex.map { (statementsOfOneMonth, index) =>
 
-        val dd = if (statementsOfOneMonth.files.nonEmpty) {
-          ddComponent(
-            content = HtmlFormat.fill(
-              Seq(
-                download_link(
-                  statementsOfOneMonth.pdf,
-                  Pdf,
-                  s"statements-list-$historyIndex-row-$index-pdf-download-link",
-                  statementsOfOneMonth.formattedMonthYear
-                ),
-                download_link(
-                  statementsOfOneMonth.csv,
-                  Csv,
-                  s"statements-list-$historyIndex-row-$index-csv-download-link",
-                  statementsOfOneMonth.formattedMonthYear
-                )
+      val dt = dtComponent(
+        content = Html(statementsOfOneMonth.formattedMonthYear),
+        classes = Some("govuk-summary-list__value"),
+        id = Some(s"statements-list-$historyIndex-row-$index-date-cell")
+      )
+
+      val dd = if (statementsOfOneMonth.files.nonEmpty) {
+        ddComponent(
+          content = HtmlFormat.fill(
+            Seq(
+              download_link(
+                statementsOfOneMonth.pdf,
+                Pdf,
+                s"statements-list-$historyIndex-row-$index-pdf-download-link",
+                statementsOfOneMonth.formattedMonthYear
+              ),
+              download_link(
+                statementsOfOneMonth.csv,
+                Csv,
+                s"statements-list-$historyIndex-row-$index-csv-download-link",
+                statementsOfOneMonth.formattedMonthYear
               )
-            ),
-            classes = Some("govuk-summary-list__actions")
-          )
-        } else {
-          ddComponent(
-            content = Html(msgs("cf.account.vat.statements.unavailable", statementsOfOneMonth.formattedMonth)),
-            classes = Some("govuk-summary-list__actions")
-          )
-        }
-
-        divComponent(
-          content = HtmlFormat.fill(Seq(dt, dd)),
-          classes = Some("govuk-summary-list__row"),
-          id = Some(s"statements-list-$historyIndex-row-$index")
+            )
+          ),
+          classes = Some("govuk-summary-list__actions")
         )
+      } else {
+        ddComponent(
+          content = Html(msgs("cf.account.vat.statements.unavailable", statementsOfOneMonth.formattedMonth)),
+          classes = Some("govuk-summary-list__actions")
+        )
+      }
+
+      divComponent(
+        content = HtmlFormat.fill(Seq(dt, dd)),
+        classes = Some("govuk-summary-list__row"),
+        id = Some(s"statements-list-$historyIndex-row-$index")
+      )
     }
+  }
 }
 
 case class ImportVatCurrentStatementRow(

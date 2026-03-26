@@ -119,7 +119,14 @@ object SecurityStatementsViewModel {
   private def generateStatements(statementsForEori: SecurityStatementsForEori, historyIndex: Int, isCsv: Boolean)(
     implicit messages: Messages
   ): HtmlFormat.Appendable = {
-    val statementContent = statementsForEori.currentStatements.zipWithIndex.flatMap {
+    val currentStatements = statementsForEori.currentStatements
+    val statements        = if (currentStatements.lastOption.exists(_.files.isEmpty)) {
+      currentStatements.dropRight(1)
+    } else {
+      currentStatements
+    }
+
+    val statementContent = statements.zipWithIndex.flatMap {
       case (statement, index) if isCsv != statement.hasPdf =>
         Some(generateStatementRow(statement, historyIndex, index, isCsv))
       case _                                               => None

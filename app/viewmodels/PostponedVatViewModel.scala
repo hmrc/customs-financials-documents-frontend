@@ -21,7 +21,7 @@ import models.{PostponedVatStatementFile, PostponedVatStatementGroup}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import services.DateTimeService
-import utils.Constants.MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE
+import utils.Constants.MONTHS_RANGE_ONE_TO_SEVEN_INCLUSIVE
 import utils.Utils._
 import views.helpers.Formatters
 import views.html.components._
@@ -110,7 +110,7 @@ object PostponedVatViewModel {
         .toList
 
     val monthList =
-      MONTHS_RANGE_ONE_TO_SIX_INCLUSIVE.map(n => dateTimeService.systemDateTime().toLocalDate.minusMonths(n))
+      MONTHS_RANGE_ONE_TO_SEVEN_INCLUSIVE.map(n => dateTimeService.systemDateTime().toLocalDate.minusMonths(n))
 
     monthList
       .map { date =>
@@ -174,7 +174,7 @@ object PostponedVatViewModel {
       location = serviceUnavailableUrl.getOrElse(emptyString),
       preLinkMessage = Some("cf.account.pvat.older-statements.description.2"),
       postLinkMessage = Some("cf.account.pvat.older-statements.description.post-message"),
-      linkSentence = true
+      linkSentence = false
     )
 
     val inset = insetComponent(
@@ -238,7 +238,13 @@ object PostponedVatViewModel {
     implicit msgs: Messages
   ): Seq[HtmlFormat.Appendable] = {
 
-    val filteredPVATStatGroups = statementGroupList.filter(statementGroup =>
+    val trimmedGroupList = if (statementGroupList.lastOption.exists(_.noStatements)) {
+      statementGroupList.dropRight(1)
+    } else {
+      statementGroupList
+    }
+
+    val filteredPVATStatGroups = trimmedGroupList.filter(statementGroup =>
       !statementGroup.noStatements || statementGroup.isPreviousMonthAndAfter19Th
     )
 
