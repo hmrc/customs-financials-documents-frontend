@@ -209,9 +209,8 @@ object ImportVatViewModel {
 
   private def populateDivComponent(certsForAllEoris: Seq[VatCertificatesForEori], historyIndex: Int)(implicit
     msgs: Messages
-  ): Seq[HtmlFormat.Appendable] =
+  ): Seq[HtmlFormat.Appendable] = {
     val currentCertificates = certsForAllEoris(historyIndex).currentCertificates.sorted.reverse
-    // drop last certificate if there is no metadata
     val statements          =
       if (currentCertificates.lastOption.exists(_.files.isEmpty)) currentCertificates.dropRight(1)
       else currentCertificates
@@ -257,6 +256,7 @@ object ImportVatViewModel {
         id = Some(s"statements-list-$historyIndex-row-$index")
       )
     }
+  }
 }
 
 case class ImportVatCurrentStatementRow(
