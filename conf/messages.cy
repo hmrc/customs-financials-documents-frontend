@@ -26,23 +26,23 @@ cf.account.pvat.historic.request=Gwneud cais am ddatganiad sy’n hŷn na 7 mis
 cf.account.pvat.support.heading=Help a chymorth
 cf.account.pvat.support.message=Os oes angen help arnoch gyda TAW mewnforio
 cf.account.pvat.support.link=cysylltwch â’r Llinell Gymorth TAW ac Ecséis (yn agor mewn tab newydd)
-cf.account.pvat.your-statements.heading=Eich datganiadau ar gyfer y 7 mis diwethaf
-cf.account.pvat.older-statements.heading=Datganiadau sy’n hŷn na 7 mis
+cf.account.pvat.your-statements.heading=Eich datganiadau presennol
+cf.account.pvat.older-statements.heading=Eich datganiadau blaenorol
 cf.account.pvat.older-statements.description.1=Mae 2 ffordd i ofyn am ddatganiadau.
-cf.account.pvat.older-statements.description.2=Os bydd angen datganiad sy’n hŷn na 7 mis arnoch ar gyfer datganiadau a wnaed gan ddefnyddio’r Gwasanaeth Datganiadau Tollau, gallwch
-cf.account.pvat.older-statements.description.link=wneud cais am ba ddatganiadau TAW mewnforio ohiriedig sydd eu hangen arnoch
-cf.account.pvat.older-statements.description.post-message=Byddwn yn anfon e-bost atoch pan fydd eich datganiadau yn barod i’w lawrlwytho.
+cf.account.pvat.older-statements.description.2=Gallwch wneud
+cf.account.pvat.older-statements.description.link=cais am ddatganiadau TAW ohiriedig
+cf.account.pvat.older-statements.description.post-message=nad ydynt yn eich datganiadau presennol. Byddwn yn anfon e-bost atoch pan fyddant yn barod i’w lawrlwytho.
 cf.account.pvat.older-statements.description.inset-message=Bydd datganiadau a ofynnwyd amdanynt ar gael i’w gweld a’u lawrlwytho am 10 diwrnod yn unig. Ar ôl 10 diwrnod, bydd y ffeiliau a ofynnwyd amdanynt yn cael eu dileu, ac mae’n bosibl y bydd angen i chi wneud cais amdanynt eto.
 cf.account.pvat.older-statements.description.3=Ar gyfer datganiadau a wneir gan ddefnyddio’r gwasanaeth CHIEF, e-bostiwch eich cais i
 # ------------------------------------------------------------------------
 
 # Adjustment statements view
 # ------------------------------------------------------------------------
-cf.account.adjustment-statements.heading=Eich datganiadau ar gyfer y 7 mis diwethaf
-cf.account.adjustment-statements.older-statements.heading=Datganiadau sy’n hŷn na 7 mis
-cf.account.adjustment-statements.older-certificates.description.1=Os bydd angen datganiad sy’n hŷn na 7 mis arnoch ar gyfer datganiadau a wnaed gan ddefnyddio’r Gwasanaeth Datganiadau Tollau, gallwch
-cf.account.adjustment-statements.older-certificates.description.link=wneud cais am ba ddatganiadau TAW mewnforio ohiriedig sydd eu hangen arnoch
-cf.account.adjustment-statements.older-certificates.description.post-message=Byddwn yn anfon e-bost atoch pan fydd eich datganiadau yn barod i’w lawrlwytho.
+cf.account.adjustment-statements.heading=Eich datganiadau presennol
+cf.account.adjustment-statements.older-statements.heading=Eich datganiadau blaenorol
+cf.account.adjustment-statements.older-certificates.description.1=Gallwch wneud
+cf.account.adjustment-statements.older-certificates.description.link=cais i gael hysbysiad am ddatganiadau addasu
+cf.account.adjustment-statements.older-certificates.description.post-message=nad ydynt yn eich datganiadau presennol. Byddwn yn anfon e-bost atoch pan fyddant yn barod i’w lawrlwytho.
 cf.account.adjustment-statements.older-certificates.description.inset-message=Bydd datganiadau a ofynnwyd amdanynt ar gael i’w gweld a’u lawrlwytho am 10 diwrnod yn unig. Ar ôl 10 diwrnod, bydd y ffeiliau a ofynnwyd amdanynt yn cael eu dileu, ac mae’n bosibl y bydd angen i chi wneud cais amdanynt eto.
 cf.account.adjustment-statements.chief.heading=Datganiadau a wnaed gan ddefnyddio System y Tollau ar gyfer Trin Nwyddau a Gaiff eu Mewnforio a’u Hallforio (CHIEF)
 cf.account.adjustment-statements.chief.description=Nid yw datganiadau ar gyfer datganiadau mewnforio a wneir yn CHIEF ar gael yn y gwasanaeth hwn.
@@ -129,7 +129,7 @@ cf.security-statements.requested.download-link.aria-text.csv=Lawrlwytho {1} {0} 
 # ------------------------------------------------------------------------
 cf.account.vat.support.heading=Help a chymorth
 cf.account.vat.available-text=Gall eich tystysgrifau ymddangos ar ôl y 10fed diwrnod gwaith o bob mis, os oes unrhyw weithgarwch. Os nad oes gweithgarwch, bydd neges yn cadarnhau nad oes tystysgrif yn ymddangos o’r 20fed o’r mis.
-cf.account.vat.your-certificates.heading= Eich tystysgrifau ar gyfer y 7 mis diwethaf
+cf.account.vat.your-certificates.heading=Eich tystysgrifau presennol
 cf.account.vat.support.message=Os oes angen help arnoch gyda TAW mewnforio, cysylltwch â’r
 cf.account.vat.support.link=Llinell Gymorth TAW ac Ecséis (yn agor mewn tab newydd)
 cf.account.vat.title=Tystysgrifau TAW mewnforio (C79)
@@ -141,13 +141,13 @@ cf.account.vat.historic.description=Dim ond ar gyfer y 7 mis diwethaf y bydd y g
 cf.account.vat.historic.request=Gwneud cais am dystysgrif sy’n hŷn na 7 mis
 cf.account.vat.unavailable=Mae’n ddrwg gennym, nid yw’ch tystysgrifau ar gael ar hyn o bryd. Rhowch gynnig arall arni yn nes ymlaen.
 cf.account.vat.statements.unavailable = Dim tystysgrif
-cf.account.vat.older-certificates.heading=Tystysgrifau sy’n hŷn na 7 mis
-cf.account.vat.older-certificates.description.1=Os bydd angen tystysgrif sy’n hŷn na 7 mis arnoch ar gyfer datganiadau a wnaed gan ddefnyddio’r Gwasanaeth Datganiadau Tollau, gallwch
-cf.account.vat.older-certificates.description.link=wneud cais am ba dystysgrifau TAW mewnforio sydd eu hangen arnoch
-cf.account.vat.older-certificates.description.post-message=Byddwn yn anfon e-bost atoch pan fydd eich tystysgrifau yn barod i’w lawrlwytho.
+cf.account.vat.older-certificates.heading=Eich tystysgrifau blaenorol
+cf.account.vat.older-certificates.description.1=Gallwch wneud
+cf.account.vat.older-certificates.description.link=cais am dystysgrifau TAW mewnforio
+cf.account.vat.older-certificates.description.post-message=nad ydynt yn eich tystysgrifau presennol. Byddwn yn anfon e-bost atoch pan fyddant yn barod i’w lawrlwytho.
 cf.account.vat.older-certificates.description.inset-message=Bydd tystysgrifau a ofynnwyd amdanynt ar gael i’w gweld a’u lawrlwytho am 10 diwrnod yn unig. Ar ôl 10 diwrnod, bydd y ffeiliau a ofynnwyd amdanynt yn cael eu dileu, ac mae’n bosibl y bydd angen i chi wneud cais amdanynt eto.
 cf.account.vat.chief.heading=Datganiadau a wnaed gan ddefnyddio System y Tollau ar gyfer Trin Nwyddau a Gaiff eu Mewnforio a’u Hallforio (CHIEF)
-cf.account.vat.older-certificates.description.2=Caiff tystysgrifau C79 eu hanfon atoch drwy’r post. Os oes angen copi o dystysgrif arnoch, anfonwch eich cais drwy e-bost at
+cf.account.vat.older-certificates.description.2=Caiff tystysgrifau TAW mewnforio eu hanfon atoch drwy’r post. Os oes angen copi o dystysgrif arnoch, anfonwch eich cais drwy e-bost at
 # ------------------------------------------------------------------------
 
 # Not subscribed to CDS
