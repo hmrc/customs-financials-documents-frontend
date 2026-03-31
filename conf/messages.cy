@@ -147,7 +147,7 @@ cf.account.vat.older-certificates.description.link=cais am dystysgrifau TAW mewn
 cf.account.vat.older-certificates.description.post-message=nad ydynt yn eich tystysgrifau presennol. Byddwn yn anfon e-bost atoch pan fyddant yn barod i’w lawrlwytho.
 cf.account.vat.older-certificates.description.inset-message=Bydd tystysgrifau a ofynnwyd amdanynt ar gael i’w gweld a’u lawrlwytho am 10 diwrnod yn unig. Ar ôl 10 diwrnod, bydd y ffeiliau a ofynnwyd amdanynt yn cael eu dileu, ac mae’n bosibl y bydd angen i chi wneud cais amdanynt eto.
 cf.account.vat.chief.heading=Datganiadau a wnaed gan ddefnyddio System y Tollau ar gyfer Trin Nwyddau a Gaiff eu Mewnforio a’u Hallforio (CHIEF)
-cf.account.vat.older-certificates.description.2=Caiff tystysgrifau TAW mewnforio eu hanfon atoch drwy’r post. Os oes angen copi o dystysgrif arnoch, anfonwch eich cais drwy e-bost at
+cf.account.vat.older-certificates.description.2=Caiff tystysgrifau TAW mewnforio eu postio atoch. Os oes angen copi o dystysgrif arnoch, anfonwch eich cais drwy e-bost at
 # ------------------------------------------------------------------------
 
 # Not subscribed to CDS
