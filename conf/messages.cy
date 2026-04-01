@@ -18,7 +18,6 @@ cf.account.pvat.aria.download-link=Datganiad {0} ar gyfer {1} – {2} ({3})
 cf.account.pvat.aria.original.download-link=Datganiad {0} ar gyfer {1} – {2} ({3})
 cf.account.pvat.aria.amended.download-link=Datganiad diwygiedig {0} ar gyfer {1} – {2} ({3})
 cf.account.pvat.no-statements-yet=Nid oes datganiadau ar gael i’w gweld eto.
-cf.account.vat.available.statement-text=Gall eich datganiadau ymddangos ar ôl y 10fed diwrnod gwaith o bob mis, os oes unrhyw weithgarwch. Os nad oes gweithgarwch, bydd neges yn cadarnhau nad oes datganiad yn ymddangos o’r 20fed o’r mis.
 cf.account.pvat.link-message=wirio os gallwch ddefnyddio cyfrifyddu TAW ohiriedig (yn agor tab newydd)
 cf.account.pvat.statements.unavailable = Nid oedd unrhyw ddatganiadau i mewn {0}
 cf.account.pvat.historic.description=Dim ond ar gyfer y 7 mis diwethaf y bydd y gwasanaeth hwn yn dangos datganiadau.
@@ -129,6 +128,7 @@ cf.security-statements.requested.download-link.aria-text.csv=Lawrlwytho {1} {0} 
 # ------------------------------------------------------------------------
 cf.account.vat.support.heading=Help a chymorth
 cf.account.vat.available-text=Gall eich tystysgrifau ymddangos ar ôl y 10fed diwrnod gwaith o bob mis, os oes unrhyw weithgarwch. Os nad oes gweithgarwch, bydd neges yn cadarnhau nad oes tystysgrif yn ymddangos o’r 20fed o’r mis.
+cf.account.vat.available.statement-text=Gall eich datganiadau ymddangos ar ôl y 10fed diwrnod gwaith o bob mis, os oes unrhyw weithgarwch. Os nad oes gweithgarwch, bydd neges yn cadarnhau nad oes datganiad yn ymddangos o’r 20fed o’r mis.
 cf.account.vat.your-certificates.heading=Eich tystysgrifau presennol
 cf.account.vat.support.message=Os oes angen help arnoch gyda TAW mewnforio, cysylltwch â’r
 cf.account.vat.support.link=Llinell Gymorth TAW ac Ecséis (yn agor mewn tab newydd)
