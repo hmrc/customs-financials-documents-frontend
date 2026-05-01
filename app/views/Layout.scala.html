@@ -26,6 +26,8 @@
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.userresearchbanner.UserResearchBanner
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.backlink.BackLink
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.timeoutdialog.TimeoutDialog
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.servicenavigation.ServiceNavigation
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import views.html.helper.CSPNonce
 @import utils.Utils.emptyString
 
@@ -43,22 +45,25 @@
     pageTitle: Option[String] = None,
     backLinkUrl: Option[String] = None,
     help: Boolean = true,
-    deskpro: Boolean = true,
-    welshToggle: Boolean = true,
+    deskpro: Boolean = true
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
- @phaseBannerContent = {
-    @messages("feedback.before")
-    <a class='govuk-link' href='/contact/beta-feedback-unauthenticated?service=CDS-FIN'>
+@phaseBannerLink = {
+    <a class="govuk-link"
+       href="/contact/beta-feedback-unauthenticated?service=CDS-FIN"
+       target="_blank">
         @messages("feedback.link")
     </a>
-    @messages("feedback.after")
- }
+}
+
+@phaseBannerContent = {
+    @Html(messages("feedback.text", phaseBannerLink))
+}
 
  @fullPageTitle = @{
     pageTitle match {
-    case Some(text) => Some(s"$text - ${messages("service.name")} - GOV.UK")
-    case _ => Some(s"${messages("service.name")} - GOV.UK")
+        case Some(text) => Some(s"$text - ${messages("service.name")} - GOV.UK")
+        case _ => Some(s"${messages("service.name")} - GOV.UK")
     }
  }
 
@@ -86,18 +91,26 @@
 @hmrcStandardPage(
     HmrcStandardPageParams(
     pageTitle = fullPageTitle,
+    serviceName = Some(""),
     serviceURLs =  ServiceURLs(
-        serviceUrl =  Some(appConfig.customsFinancialsFrontendHomepage),
         signOutUrl = Some(routes.LogoutController.logout.url),
         accessibilityStatementUrl = Some("/accessibility-statement/customs-financials")
-        ),
+    ),
+    serviceNavigation = Some(
+        ServiceNavigation(
+            serviceName = Some(messages("service.name")),
+            serviceUrl = Some(appConfig.customsFinancialsFrontendHomepage)
+        ).withLanguageToggle()
+    ),
     backLink = Some(BackLink(href = backLinkUrl.getOrElse(emptyString))),
     templateOverrides = TemplateOverrides(additionalHeadBlock = Some(additionalHead)),
     banners = Banners(
-        phaseBanner = Some(PhaseBanner(
-                            tag = Some(Tag(content = Text("BETA"))),
-                            content = HtmlContent(phaseBannerContent))),
+        phaseBanner = Some(
+            PhaseBanner(
+                tag = Some(Tag(content = Text("Beta"))),
+                content = HtmlContent(phaseBannerContent)
+            )
+        ),
         userResearchBanner = Some(UserResearchBanner(url = appConfig.helpMakeGovUkBetterUrl))
-    ),
-    isWelshTranslationAvailable = welshToggle
+    )
 ))(mainContent)

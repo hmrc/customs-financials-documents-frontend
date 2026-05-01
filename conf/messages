@@ -96,9 +96,8 @@ month.abbr.12 = Dec
 
 # BETA Banner
 # ------------------------------------------------------------------------
-feedback.before = This is a new service - your
-feedback.link = feedback
-feedback.after = will help us to improve it.
+feedback.text = This is a new service. Help us improve it and {0}.
+feedback.link = give your feedback (opens in new tab)
 # ------------------------------------------------------------------------
 
 # Security Statements View
