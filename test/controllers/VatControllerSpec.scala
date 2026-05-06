@@ -371,13 +371,13 @@ class VatControllerSpec extends SpecBase {
 
             val doc = Jsoup.parse(contentAsString(result))
 
-            Option(doc.getElementById("statements-list-0-row-6")) mustBe empty
             Option(doc.getElementById("statements-list-0-row-0")) should not be empty
             Option(doc.getElementById("statements-list-0-row-1")) should not be empty
             Option(doc.getElementById("statements-list-0-row-2")) should not be empty
             Option(doc.getElementById("statements-list-0-row-3")) should not be empty
             Option(doc.getElementById("statements-list-0-row-4")) should not be empty
-            Option(doc.getElementById("statements-list-0-row-5")) should not be empty
+            Option(doc.getElementById("statements-list-0-row-5")) mustBe empty
+            Option(doc.getElementById("statements-list-0-row-6")) mustBe empty
 
             doc.getElementById("statements-list-0-row-0").children().text() should not be messages(
               "cf.account.vat.statements.unavailable",
@@ -447,7 +447,7 @@ class VatControllerSpec extends SpecBase {
             Option(doc.getElementById("statements-list-0-row-3")) should not be empty
             Option(doc.getElementById("statements-list-0-row-4")) should not be empty
             Option(doc.getElementById("statements-list-0-row-5")) should not be empty
-            Option(doc.getElementById("statements-list-0-row-6")) should not be empty
+            Option(doc.getElementById("statements-list-0-row-6")) mustBe empty
 
             doc.getElementById("statements-list-0-row-0").children().text() should not include messages(
               "cf.account.vat.statements.unavailable",
@@ -567,11 +567,11 @@ class VatControllerSpec extends SpecBase {
           VatCertificatesByMonth(date.minusMonths(FOUR_MONTHS), Seq()),
           VatCertificatesByMonth(date.minusMonths(FIVE_MONTHS), Seq()),
           VatCertificatesByMonth(date.minusMonths(SIX_MONTHS), Seq()),
-          VatCertificatesByMonth(date.minusMonths(SEVEN_MONTHS), Seq(vatCertificateFile_2))
+          VatCertificatesByMonth(date.minusMonths(SEVEN_MONTHS), Seq())
         )
 
         val requestedCertificates: Seq[VatCertificatesByMonth] = Seq(
-          VatCertificatesByMonth(date.minusMonths(SEVEN_MONTHS), Seq(vatCertificateFile_3))
+          VatCertificatesByMonth(date.minusMonths(SEVEN_MONTHS), Seq(vatCertificateFile_2, vatCertificateFile_3))
         )
 
         val vatCertificatesForEoris: Seq[VatCertificatesForEori] =

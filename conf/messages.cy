@@ -95,10 +95,9 @@ month.abbr.12 = Rhag
 # ------------------------------------------------------------------------
 
 # BETA Banner
-# ------------------------------------------------------------------------
-feedback.before =  Gwasanaeth newydd yw hwn – bydd eich
-feedback.link =  adborth
-feedback.after =  yn ein helpu i’w wella.
+# ----------------------------------------------------------
+feedback.text = Gwasanaeth newydd yw hwn. Rhowch help i ni ei wella, a {0}.
+feedback.link = rhoi eich adborth (yn agor tab newydd)
 # ------------------------------------------------------------------------
 
 # Security Statements View
