@@ -1,7 +1,7 @@
-$govuk-suppressed-warnings: (libsass);
+$govuk-suppressed-warnings: (libssl);
 
 @import "lib/govuk-frontend/dist/govuk/base";
 
-@import "utils/govuk-summary-list";
-@import "utils/colours";
-@import "utils/custom";
+@import "../utils/govuk-summary-list";
+@import "../utils/colours";
+@import "../utils/custom";
