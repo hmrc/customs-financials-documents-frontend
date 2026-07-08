@@ -16,7 +16,7 @@
 
 package viewmodels
 
-import models.DutyPaymentMethod.{CDS, CHIEF}
+import models.DutyPaymentMethod.CDS
 import models.{PostponedVatStatementFile, PostponedVatStatementGroup}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -28,12 +28,9 @@ import views.html.components._
 import views.html.postponed_vat.{collapsible_statement_group, current_statement_row, download_link_pvat_statement}
 import common.GuidanceRow
 
-case class PvEmail(emailAddress: String, emailAddressHref: String)
-
 case class PVATUrls(
   customsFinancialsHomePageUrl: String,
   requestStatementsUrl: String,
-  pvEmail: PvEmail,
   viewVatAccountSupportLink: String,
   serviceUnavailableUrl: Option[String] = None
 )
@@ -49,7 +46,6 @@ case class CurrentStatementRow(
   periodId: String,
   startDateMsgKey: String,
   cdsDDRow: Option[DDRow] = None,
-  chiefDDRow: Option[DDRow] = None,
   collapsibleStatementGroupRows: Seq[CollapsibleStatementGroupRow] = Seq()
 )
 
@@ -67,7 +63,6 @@ case class PostponedVatViewModel(
   requestedStatements: Option[HtmlFormat.Appendable] = None,
   currentStatements: CurrentStatementsSection,
   statOlderThanSevenMonthsGuidance: GuidanceRow,
-  chiefDeclarationGuidance: GuidanceRow,
   helpAndSupportGuidance: GuidanceRow
 )
 
@@ -75,7 +70,6 @@ object PostponedVatViewModel {
   def apply(
     files: Seq[PostponedVatStatementFile],
     hasRequestedStatements: Boolean,
-    isCdsOnly: Boolean,
     location: Option[String],
     urls: PVATUrls
   )(implicit messages: Messages, dateTimeService: DateTimeService): PostponedVatViewModel = {
@@ -90,9 +84,8 @@ object PostponedVatViewModel {
       requestedStatements = populateRequestedStatements(hasRequestedStatements, urls.requestStatementsUrl),
       statementsAvailableGuidance = populateStatementsAvailableGuidance,
       statementH2Heading = populateStatementH2Heading,
-      currentStatements = populateCurrentStatements(statementGroupList, isCdsOnly),
+      currentStatements = populateCurrentStatements(statementGroupList),
       statOlderThanSevenMonthsGuidance = populateOlderThanSevenMonthsGuidance(urls.serviceUnavailableUrl),
-      chiefDeclarationGuidance = populateChiefDeclarationGuidance(urls.pvEmail),
       helpAndSupportGuidance = populateHelpAndSupportGuidance(urls.viewVatAccountSupportLink)
     )
   }
@@ -144,8 +137,8 @@ object PostponedVatViewModel {
       None
     }
 
-  private def populateCurrentStatements(statementGroupList: Seq[PostponedVatStatementGroup], isCdsOnly: Boolean)(
-    implicit msgs: Messages
+  private def populateCurrentStatements(statementGroupList: Seq[PostponedVatStatementGroup])(implicit
+    msgs: Messages
   ): CurrentStatementsSection = {
     val noStatementMsg =
       if (statementGroupList.isEmpty) {
@@ -155,7 +148,7 @@ object PostponedVatViewModel {
       }
 
     CurrentStatementsSection(
-      currentStatementRows = populateCurrentStatementRows(statementGroupList, isCdsOnly),
+      currentStatementRows = populateCurrentStatementRows(statementGroupList),
       noStatementMsg = noStatementMsg
     )
   }
@@ -188,26 +181,6 @@ object PostponedVatViewModel {
     )
   }
 
-  private def populateChiefDeclarationGuidance(pvEmail: PvEmail)(implicit msgs: Messages): GuidanceRow = {
-    val h2Heading = h2Component.apply(
-      id = Some("chief-guidance-heading"),
-      msg = "cf.account.vat.chief.heading",
-      classes = "govuk-heading-m govuk-!-margin-top-6"
-    )
-
-    val link = linkComponent.apply(
-      pvEmail.emailAddress,
-      location = pvEmail.emailAddressHref,
-      preLinkMessage = Some("cf.account.pvat.older-statements.description.3"),
-      linkSentence = true
-    )
-
-    GuidanceRow(
-      h2Heading,
-      Some(link)
-    )
-  }
-
   private def populateHelpAndSupportGuidance(
     viewVatAccountSupportLink: String
   )(implicit msgs: Messages): GuidanceRow = {
@@ -234,8 +207,8 @@ object PostponedVatViewModel {
     )
   }
 
-  private def populateCurrentStatementRows(statementGroupList: Seq[PostponedVatStatementGroup], isCdsOnly: Boolean)(
-    implicit msgs: Messages
+  private def populateCurrentStatementRows(statementGroupList: Seq[PostponedVatStatementGroup])(implicit
+    msgs: Messages
   ): Seq[HtmlFormat.Appendable] = {
 
     val trimmedGroupList = if (statementGroupList.lastOption.exists(_.noStatements)) {
@@ -251,7 +224,7 @@ object PostponedVatViewModel {
     filteredPVATStatGroups.map { statementGroup =>
 
       val currentStatementRow =
-        CurrentStatementRow(statementGroup, dutyPaymentMethodSource = Seq(CDS, CHIEF), isCdsOnly)
+        CurrentStatementRow(statementGroup, dutyPaymentMethodSource = Seq(CDS))
 
       val innerLink                 = new linkInner()
       val pVATDownloadLinkStatement = new download_link_pvat_statement(innerLink)
@@ -265,8 +238,8 @@ object PostponedVatViewModel {
 
 object CurrentStatementRow {
 
-  def apply(statementGroup: PostponedVatStatementGroup, dutyPaymentMethodSource: Seq[String], isCdsOnly: Boolean)(
-    implicit messages: Messages
+  def apply(statementGroup: PostponedVatStatementGroup, dutyPaymentMethodSource: Seq[String])(implicit
+    messages: Messages
   ): CurrentStatementRow = {
 
     val startDateMsgKey = messages(Formatters.dateAsMonthAndYear(statementGroup.startDate))
@@ -275,9 +248,7 @@ object CurrentStatementRow {
       periodId = statementGroup.periodId,
       startDateMsgKey = startDateMsgKey,
       cdsDDRow = populateCdsDDRow(statementGroup),
-      chiefDDRow = populateChiefDDRow(statementGroup, isCdsOnly),
-      collapsibleStatementGroupRows =
-        populateCollapsibleStatementGroupRows(statementGroup, dutyPaymentMethodSource, isCdsOnly)
+      collapsibleStatementGroupRows = populateCollapsibleStatementGroupRows(statementGroup, dutyPaymentMethodSource)
     )
   }
 
@@ -296,27 +267,9 @@ object CurrentStatementRow {
       None
     }
 
-  private def populateChiefDDRow(statementGroup: PostponedVatStatementGroup, isCdsOnly: Boolean)(implicit
-    messages: Messages
-  ): Option[DDRow] =
-    if (statementGroup.noStatements && statementGroup.isPreviousMonthAndAfter19Th && !isCdsOnly) {
-      Some(
-        DDRow(
-          notAvailableMsg = messages("cf.common.not-available"),
-          visuallyHiddenMsg = messages(
-            "cf.common.not-available-screen-reader-chief",
-            Formatters.dateAsMonthAndYear(statementGroup.startDate)
-          )
-        )
-      )
-    } else {
-      None
-    }
-
   private def populateCollapsibleStatementGroupRows(
     statementGroup: PostponedVatStatementGroup,
-    dutyPaymentMethodSource: Seq[String],
-    isCdsOnly: Boolean
+    dutyPaymentMethodSource: Seq[String]
   )(implicit messages: Messages): Seq[CollapsibleStatementGroupRow] =
     if (statementGroup.noStatements) {
       Seq()
@@ -326,15 +279,14 @@ object CurrentStatementRow {
         val downloadLinkPvatStatement = new download_link_pvat_statement(linkInner)
 
         CollapsibleStatementGroupRow(
-          collapsibleStatementGroupForAmendedPVAT(statementGroup, isCdsOnly, paymentSource, downloadLinkPvatStatement),
-          collapsibleStatementGroupForPVAT(statementGroup, isCdsOnly, paymentSource, downloadLinkPvatStatement)
+          collapsibleStatementGroupForAmendedPVAT(statementGroup, paymentSource, downloadLinkPvatStatement),
+          collapsibleStatementGroupForPVAT(statementGroup, paymentSource, downloadLinkPvatStatement)
         )
       }
     }
 
   private def collapsibleStatementGroupForPVAT(
     statementGroup: PostponedVatStatementGroup,
-    isCdsOnly: Boolean,
     paymentSource: String,
     downloadLinkPvatStatement: download_link_pvat_statement
   )(implicit messages: Messages): Option[HtmlFormat.Appendable] = {
@@ -353,8 +305,7 @@ object CurrentStatementRow {
           s"cf.account.pvat.aria.${originalSubStringForMsgKey}download-link",
           Some("cf.common.not-available"),
           paymentSource,
-          Formatters.dateAsMonthAndYear(statementGroup.startDate),
-          isCdsOnly
+          Formatters.dateAsMonthAndYear(statementGroup.startDate)
         )
       )
     } else {
@@ -364,7 +315,6 @@ object CurrentStatementRow {
 
   private def collapsibleStatementGroupForAmendedPVAT(
     statementGroup: PostponedVatStatementGroup,
-    isCdsOnly: Boolean,
     paymentSource: String,
     downloadLinkPvatStatement: download_link_pvat_statement
   )(implicit messages: Messages): Option[HtmlFormat.Appendable] =
@@ -377,8 +327,7 @@ object CurrentStatementRow {
             "cf.account.pvat.aria.amended-download-link",
             None,
             paymentSource,
-            Formatters.dateAsMonthAndYear(statementGroup.startDate),
-            isCdsOnly
+            Formatters.dateAsMonthAndYear(statementGroup.startDate)
           )
       )
     } else {

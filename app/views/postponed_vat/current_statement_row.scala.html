@@ -42,17 +42,6 @@
         </dd>
     }
 
-    @model.chiefDDRow.map { chiefRow =>
-        <dd class="govuk-summary-list__actions">
-            <span aria-hidden="true">
-                @chiefRow.notAvailableMsg
-            </span>
-            <span class="govuk-visually-hidden">
-                @chiefRow.visuallyHiddenMsg
-            </span>
-        </dd>
-    }
-
     @model.collapsibleStatementGroupRows.map { collapsibleRow =>
         @collapsibleRow.collapsiblePVATAmendedStatement.map(identity)
         @collapsibleRow.collapsiblePVATStatement.map(identity)

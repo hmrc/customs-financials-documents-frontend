@@ -48,8 +48,6 @@ class ImportVatSpec extends SpecBase with GuiceOneAppPerSuite {
       view.getElementById("import-vat-certificates-heading").text() mustBe messages("cf.account.vat.title")
       view.getElementById("missing-certificates-guidance-heading").text() mustBe
         messages("cf.account.vat.older-certificates.heading")
-      view.getElementById("chief-guidance-heading").text() mustBe
-        messages("cf.account.vat.chief.heading")
       view.getElementById("vat.support.message.heading").text() mustBe
         messages("cf.account.vat.support.heading")
 

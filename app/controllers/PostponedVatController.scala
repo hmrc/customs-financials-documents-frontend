@@ -19,7 +19,6 @@ package controllers
 import actions.{EmailAction, PvatIdentifierAction, SessionIdAction}
 import config.{AppConfig, ErrorHandler}
 import connectors.{FinancialsApiConnector, SdesConnector}
-import models.DutyPaymentMethod.CHIEF
 import models.FileRole.PostponedVATStatement
 import models.PostponedVatStatementFile
 import navigation.Navigator
@@ -29,7 +28,7 @@ import play.api.{Logger, LoggerLike}
 import services.DateTimeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Constants.MONTHS_RANGE_ONE_TO_SEVEN_INCLUSIVE
-import viewmodels.{PVATUrls, PostponedVatViewModel, PvEmail}
+import viewmodels.{PVATUrls, PostponedVatViewModel}
 import views.html.{postponed_import_vat, postponed_import_vat_not_available}
 
 import javax.inject.{Inject, Singleton}
@@ -87,7 +86,6 @@ class PostponedVatController @Inject() (
               PostponedVatViewModel(
                 currentStatements,
                 allPostponedVatStatements.exists(statement => statement.metadata.statementRequestId.nonEmpty),
-                currentStatements.count(_.metadata.source != CHIEF) == currentStatements.size,
                 location,
                 populatePVATUrls(historicUrl)
               )
@@ -124,7 +122,6 @@ class PostponedVatController @Inject() (
     PVATUrls(
       customsFinancialsHomePageUrl = appConfig.customsFinancialsFrontendHomepage,
       requestStatementsUrl = appConfig.requestedStatements(PostponedVATStatement),
-      pvEmail = PvEmail(appConfig.pvEmailEmailAddress, appConfig.pvEmailEmailAddressHref),
       viewVatAccountSupportLink = appConfig.viewVatAccountSupportLink,
       serviceUnavailableUrl = Some(historicUrl)
     )

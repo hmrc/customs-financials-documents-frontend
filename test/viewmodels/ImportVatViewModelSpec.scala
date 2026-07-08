@@ -56,7 +56,6 @@ class ImportVatViewModelSpec extends SpecBase {
         shouldContainCurrentStatements(viewModelWithCurrentCerts, certificatesForAllEoris)
         shouldNotContainCurrentStatementsNotAvailableGuidance(viewModelWithCurrentCerts)
         shouldContainCorrectCertsOlderThan7MonthsGuidance(viewModelWithCurrentCerts)
-        shouldContainCorrectChiefDeclarationGuidance(viewModelWithCurrentCerts)
         shouldContainCorrectHelpAndSupportGuidance(viewModelWithCurrentCerts)
       }
 
@@ -70,7 +69,6 @@ class ImportVatViewModelSpec extends SpecBase {
         shouldContainCurrentStatements(viewModel, certificatesForAllEoris)
         shouldNotContainCurrentStatementsNotAvailableGuidance(viewModel)
         shouldContainCorrectCertsOlderThan7MonthsGuidance(viewModel)
-        shouldContainCorrectChiefDeclarationGuidance(viewModel)
         shouldContainCorrectHelpAndSupportGuidance(viewModel)
       }
 
@@ -99,7 +97,6 @@ class ImportVatViewModelSpec extends SpecBase {
         shouldNotContainCurrentStatements(viewModelWithNoCerts)
         shouldContainCurrentStatementsNotAvailableGuidance(viewModelWithNoCerts)
         shouldContainCorrectCertsOlderThan7MonthsGuidance(viewModelWithNoCerts)
-        shouldContainCorrectChiefDeclarationGuidance(viewModelWithNoCerts)
         shouldContainCorrectHelpAndSupportGuidance(viewModelWithNoCerts)
       }
     }
@@ -185,26 +182,6 @@ class ImportVatViewModelSpec extends SpecBase {
       inset = Some(
         insetComponent(
           msg = msgs("cf.account.vat.older-certificates.description.inset-message")
-        )
-      )
-    )
-
-  private def shouldContainCorrectChiefDeclarationGuidance(viewModel: ImportVatViewModel)(implicit
-    appConfig: AppConfig,
-    msgs: Messages
-  ) =
-    viewModel.chiefDeclarationGuidance mustBe GuidanceRow(
-      h2Component(
-        "cf.account.vat.chief.heading",
-        id = Some("chief-guidance-heading"),
-        classes = "govuk-heading-m govuk-!-margin-top-6"
-      ),
-      Some(
-        linkComponent(
-          appConfig.c79EmailAddress,
-          location = appConfig.c79EmailAddressHref,
-          preLinkMessage = Some("cf.account.vat.older-certificates.description.2"),
-          linkSentence = true
         )
       )
     )

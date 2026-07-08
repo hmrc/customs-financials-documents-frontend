@@ -31,7 +31,7 @@ import play.api.{Application, inject}
 import services.DateTimeService
 import utils.CommonTestData.*
 import utils.SpecBase
-import viewmodels.{PVATUrls, PostponedVatViewModel, PvEmail}
+import viewmodels.{PVATUrls, PostponedVatViewModel}
 import views.html.postponed_import_vat
 import org.mockito.Mockito.when
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -53,7 +53,6 @@ class PostponedImportVatSpec extends SpecBase with GuiceOneAppPerSuite {
             PostponedVatViewModel(
               postponedVatStatementFiles,
               hasRequestedStatements = true,
-              isCdsOnly = true,
               Option("some_url"),
               urls = pvatUrls
             )
@@ -70,32 +69,6 @@ class PostponedImportVatSpec extends SpecBase with GuiceOneAppPerSuite {
       view.getElementById("pvat.support.heading").html() must not be empty
       view.getElementById("pvat.support.message").html() must not be empty
       view.html().contains(serviceUnavailableUrl)
-      view.getElementById("chief-guidance-heading").html() mustBe
-        messages("cf.account.vat.chief.heading")
-    }
-
-    "not display CHIEF doc column when there are no CHIEF doc" in new Setup {
-      when(mockDateTimeService.systemDateTime()).thenReturn(LocalDateTime.now())
-
-      val view: Document = Jsoup.parse(
-        instanceOf[postponed_import_vat](app)
-          .apply(
-            PostponedVatViewModel(
-              postponedVatStatementFiles,
-              hasRequestedStatements = true,
-              isCdsOnly = true,
-              location = Option("some_url"),
-              urls = pvatUrls.copy(serviceUnavailableUrl = None)
-            )
-          )
-          .body
-      )
-
-      val expectedSize = 7
-
-      view.html().contains(messages("cf.account.pvat.download-link", "CDS", "PDF", "111KB"))
-      view.html()                        must not contain messages("cf.account.pvat.download-link", "CHIEF", "PDF", "111KB")
-      view.getElementsByTag("dd").size() must be(expectedSize)
     }
 
     "display 'not available' messages correctly when no statements are present " +
@@ -109,7 +82,6 @@ class PostponedImportVatSpec extends SpecBase with GuiceOneAppPerSuite {
               PostponedVatViewModel(
                 postponedVatStatementFiles,
                 hasRequestedStatements = true,
-                isCdsOnly = true,
                 Option("some_url"),
                 urls = pvatUrls.copy(serviceUnavailableUrl = None)
               )
@@ -130,7 +102,6 @@ class PostponedImportVatSpec extends SpecBase with GuiceOneAppPerSuite {
             PostponedVatViewModel(
               postponedVatStatementFiles,
               hasRequestedStatements = true,
-              isCdsOnly = false,
               Option("some_url"),
               urls = pvatUrls.copy(serviceUnavailableUrl = None)
             )
@@ -138,7 +109,7 @@ class PostponedImportVatSpec extends SpecBase with GuiceOneAppPerSuite {
           .body
       )
 
-      val expectedSize = 13
+      val expectedSize = 7
 
       view.select("dd.govuk-summary-list__actions").size() mustBe expectedSize
       view.html() must include(messages("cf.account.pvat.aria.amended-download-link"))
@@ -153,7 +124,6 @@ class PostponedImportVatSpec extends SpecBase with GuiceOneAppPerSuite {
             PostponedVatViewModel(
               Seq.empty,
               hasRequestedStatements = true,
-              isCdsOnly = false,
               Option("some_url"),
               urls = pvatUrls.copy(serviceUnavailableUrl = None)
             )
@@ -305,7 +275,6 @@ class PostponedImportVatSpec extends SpecBase with GuiceOneAppPerSuite {
     val pvatUrls: PVATUrls = PVATUrls(
       customsFinancialsHomePageUrl = appConfig.customsFinancialsFrontendHomepage,
       requestStatementsUrl = appConfig.requestedStatements(PostponedVATStatement),
-      pvEmail = PvEmail(appConfig.pvEmailEmailAddress, appConfig.pvEmailEmailAddressHref),
       viewVatAccountSupportLink = appConfig.viewVatAccountSupportLink,
       serviceUnavailableUrl = Some(serviceUnavailableUrl)
     )

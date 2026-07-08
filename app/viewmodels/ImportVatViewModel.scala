@@ -41,7 +41,6 @@ case class ImportVatViewModel(
   currentStatements: Seq[ImportVatCurrentStatementRow] = Seq.empty,
   currentStatementsNotAvailableGuidance: Option[HtmlFormat.Appendable] = None,
   certsOlderThan7MonthsGuidance: GuidanceRow,
-  chiefDeclarationGuidance: GuidanceRow,
   helpAndSupportGuidance: GuidanceRow
 )
 
@@ -65,7 +64,6 @@ object ImportVatViewModel {
       currentStatementsNotAvailableGuidance =
         if (hasCurrentCertificates) None else Some(populateCurrentStatNotAvailableGuidance),
       certsOlderThan7MonthsGuidance = populateCertsOlderThan7MonthsGuidance(serviceUnavailableUrl),
-      chiefDeclarationGuidance = populateChiefDeclarationGuidance,
       helpAndSupportGuidance = populateHelpAndSupportGuidance
     )
   }
@@ -147,26 +145,6 @@ object ImportVatViewModel {
       inset = Some(
         insetComponent(
           msg = messages("cf.account.vat.older-certificates.description.inset-message")
-        )
-      )
-    )
-
-  private def populateChiefDeclarationGuidance(implicit
-    messages: Messages,
-    appConfig: AppConfig
-  ): GuidanceRow =
-    GuidanceRow(
-      h2Heading = h2Component(
-        "cf.account.vat.chief.heading",
-        id = Some("chief-guidance-heading"),
-        classes = "govuk-heading-m govuk-!-margin-top-6"
-      ),
-      link = Some(
-        linkComponent(
-          appConfig.c79EmailAddress,
-          location = appConfig.c79EmailAddressHref,
-          preLinkMessage = Some("cf.account.vat.older-certificates.description.2"),
-          linkSentence = true
         )
       )
     )

@@ -16,7 +16,7 @@
 
 package models
 
-import models.DutyPaymentMethod.{CDS, CHIEF}
+import models.DutyPaymentMethod.CDS
 import models.FileRole.{PostponedVATAmendedStatement, PostponedVATStatement}
 import models.metadata.PostponedVatStatementFileMetadata
 import play.api.i18n.Messages
@@ -33,7 +33,7 @@ case class PostponedVatStatementGroup(startDate: LocalDate, files: Seq[Postponed
 
   private val periodName    = Formatters.dateAsMonthAndYear(startDate).replace(singleSpace, hyphen).toLowerCase
   val periodId: String      = s"""period-$periodName"""
-  val noStatements: Boolean = Seq(CDS, CHIEF).flatMap(source => collectFiles(amended = false, source)).isEmpty
+  val noStatements: Boolean = collectFiles(amended = false, CDS).isEmpty
 
   def collectFiles(amended: Boolean, source: String): Seq[PostponedVatStatementFile] = {
     val amendedPred: PostponedVatStatementFileMetadata => Boolean = if (amended) {

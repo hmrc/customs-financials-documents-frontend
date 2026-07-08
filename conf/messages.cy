@@ -32,7 +32,6 @@ cf.account.pvat.older-statements.description.2=Gallwch wneud
 cf.account.pvat.older-statements.description.link=cais am ddatganiadau TAW ohiriedig
 cf.account.pvat.older-statements.description.post-message=nad ydynt yn eich datganiadau presennol. Byddwn yn anfon e-bost atoch pan fyddant yn barod i’w lawrlwytho.
 cf.account.pvat.older-statements.description.inset-message=Bydd datganiadau a ofynnwyd amdanynt ar gael i’w gweld a’u lawrlwytho am 10 diwrnod yn unig. Ar ôl 10 diwrnod, bydd y ffeiliau a ofynnwyd amdanynt yn cael eu dileu, ac mae’n bosibl y bydd angen i chi wneud cais amdanynt eto.
-cf.account.pvat.older-statements.description.3=Ar gyfer datganiadau a wneir gan ddefnyddio’r gwasanaeth CHIEF, e-bostiwch eich cais i
 # ------------------------------------------------------------------------
 
 # Adjustment statements view
@@ -43,8 +42,6 @@ cf.account.adjustment-statements.older-certificates.description.1=Gallwch wneud
 cf.account.adjustment-statements.older-certificates.description.link=cais i gael hysbysiad am ddatganiadau addasu
 cf.account.adjustment-statements.older-certificates.description.post-message=nad ydynt yn eich datganiadau presennol. Byddwn yn anfon e-bost atoch pan fyddant yn barod i’w lawrlwytho.
 cf.account.adjustment-statements.older-certificates.description.inset-message=Bydd datganiadau a ofynnwyd amdanynt ar gael i’w gweld a’u lawrlwytho am 10 diwrnod yn unig. Ar ôl 10 diwrnod, bydd y ffeiliau a ofynnwyd amdanynt yn cael eu dileu, ac mae’n bosibl y bydd angen i chi wneud cais amdanynt eto.
-cf.account.adjustment-statements.chief.heading=Datganiadau a wnaed gan ddefnyddio System y Tollau ar gyfer Trin Nwyddau a Gaiff eu Mewnforio a’u Hallforio (CHIEF)
-cf.account.adjustment-statements.chief.description=Nid yw datganiadau ar gyfer datganiadau mewnforio a wneir yn CHIEF ar gael yn y gwasanaeth hwn.
 # ------------------------------------------------------------------------
 
 # Common messages
@@ -56,13 +53,10 @@ cf.common.missing-documents-guidance.certificate = tystysgrif
 cf.common.missing-documents-guidance.certificates = Tystysgrifau
 
 cf.common.missing-documents-guidance.heading=Pam nad yw fy {0} ar gael?
-cf.common.missing-documents-guidance.chiefHeading={0} a wneir yn CHIEF
-cf.common.missing-documents-guidance.text1=Nid yw {0} ar gyfer datganiadau mewnforio a wneir yn System y Tollau ar gyfer Trin Nwyddau a Gaiff eu Mewnforio a’u Hallforio (CHIEF) ar gael yn y gwasanaeth hwn.
 cf.common.missing-documents-guidance.subHeading={0} sy’n hŷn na 6 mis
 cf.common.missing-documents-guidance.text2= Dim ond ar gyfer cyfnodau lle y gwnaethoch fewnforio nwyddau y mae {0} cael eu creu.
 cf.common.not-available=Dim datganiad
 cf.common.not-available-screen-reader-cds=Dim datganiad CDS ar gyfer {0}
-cf.common.not-available-screen-reader-chief=Dim datganiad CHIEF ar gyfer {0}
 # ------------------------------------------------------------------------
 
 # Date Format
@@ -145,8 +139,6 @@ cf.account.vat.older-certificates.description.1=Gallwch wneud
 cf.account.vat.older-certificates.description.link=cais am dystysgrifau TAW mewnforio
 cf.account.vat.older-certificates.description.post-message=nad ydynt yn eich tystysgrifau presennol. Byddwn yn anfon e-bost atoch pan fyddant yn barod i’w lawrlwytho.
 cf.account.vat.older-certificates.description.inset-message=Bydd tystysgrifau a ofynnwyd amdanynt ar gael i’w gweld a’u lawrlwytho am 10 diwrnod yn unig. Ar ôl 10 diwrnod, bydd y ffeiliau a ofynnwyd amdanynt yn cael eu dileu, ac mae’n bosibl y bydd angen i chi wneud cais amdanynt eto.
-cf.account.vat.chief.heading=Datganiadau a wnaed gan ddefnyddio System y Tollau ar gyfer Trin Nwyddau a Gaiff eu Mewnforio a’u Hallforio (CHIEF)
-cf.account.vat.older-certificates.description.2=Caiff tystysgrifau TAW mewnforio eu postio atoch. Os oes angen copi o dystysgrif arnoch, anfonwch eich cais drwy e-bost at
 # ------------------------------------------------------------------------
 
 # Not subscribed to CDS
