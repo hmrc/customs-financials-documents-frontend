@@ -137,8 +137,8 @@ object PostponedVatViewModel {
       None
     }
 
-  private def populateCurrentStatements(statementGroupList: Seq[PostponedVatStatementGroup])(
-    implicit msgs: Messages
+  private def populateCurrentStatements(statementGroupList: Seq[PostponedVatStatementGroup])(implicit
+    msgs: Messages
   ): CurrentStatementsSection = {
     val noStatementMsg =
       if (statementGroupList.isEmpty) {
@@ -207,8 +207,8 @@ object PostponedVatViewModel {
     )
   }
 
-  private def populateCurrentStatementRows(statementGroupList: Seq[PostponedVatStatementGroup])(
-    implicit msgs: Messages
+  private def populateCurrentStatementRows(statementGroupList: Seq[PostponedVatStatementGroup])(implicit
+    msgs: Messages
   ): Seq[HtmlFormat.Appendable] = {
 
     val trimmedGroupList = if (statementGroupList.lastOption.exists(_.noStatements)) {
@@ -238,8 +238,8 @@ object PostponedVatViewModel {
 
 object CurrentStatementRow {
 
-  def apply(statementGroup: PostponedVatStatementGroup, dutyPaymentMethodSource: Seq[String])(
-    implicit messages: Messages
+  def apply(statementGroup: PostponedVatStatementGroup, dutyPaymentMethodSource: Seq[String])(implicit
+    messages: Messages
   ): CurrentStatementRow = {
 
     val startDateMsgKey = messages(Formatters.dateAsMonthAndYear(statementGroup.startDate))
@@ -248,8 +248,7 @@ object CurrentStatementRow {
       periodId = statementGroup.periodId,
       startDateMsgKey = startDateMsgKey,
       cdsDDRow = populateCdsDDRow(statementGroup),
-      collapsibleStatementGroupRows =
-        populateCollapsibleStatementGroupRows(statementGroup, dutyPaymentMethodSource)
+      collapsibleStatementGroupRows = populateCollapsibleStatementGroupRows(statementGroup, dutyPaymentMethodSource)
     )
   }
 

@@ -76,28 +76,28 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
 
       "PostponedVatStatementGroup has no statements and startDate is of the previous month (after 19th)" in new Setup {
 
-          when(mockDateTimeService.systemDateTime()).thenReturn(date)
+        when(mockDateTimeService.systemDateTime()).thenReturn(date)
 
-          val pvatStatementGroup: PostponedVatStatementGroup =
-            PostponedVatStatementGroup(dateOfPreviousMonthAndAfter19th, Seq())
+        val pvatStatementGroup: PostponedVatStatementGroup =
+          PostponedVatStatementGroup(dateOfPreviousMonthAndAfter19th, Seq())
 
-          val cdsDDRow: DDRow = DDRow(
-            messages("cf.common.not-available"),
-            messages(
-              "cf.common.not-available-screen-reader-cds",
-              Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate)
-            )
+        val cdsDDRow: DDRow = DDRow(
+          messages("cf.common.not-available"),
+          messages(
+            "cf.common.not-available-screen-reader-cds",
+            Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate)
           )
+        )
 
-          val expectedResult: CurrentStatementRow = CurrentStatementRow(
-            pvatStatementGroup.periodId,
-            messages(Formatters.dateAsMonthAndYear(dateOfPreviousMonthAndAfter19th)),
-            cdsDDRow = Some(cdsDDRow),
-            collapsibleStatementGroupRows = Seq()
-          )
+        val expectedResult: CurrentStatementRow = CurrentStatementRow(
+          pvatStatementGroup.periodId,
+          messages(Formatters.dateAsMonthAndYear(dateOfPreviousMonthAndAfter19th)),
+          cdsDDRow = Some(cdsDDRow),
+          collapsibleStatementGroupRows = Seq()
+        )
 
-          CurrentStatementRow(pvatStatementGroup, dutyPaymentMethodSource) mustBe expectedResult
-        }
+        CurrentStatementRow(pvatStatementGroup, dutyPaymentMethodSource) mustBe expectedResult
+      }
 
     }
   }
@@ -242,12 +242,12 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
       )
     )
 
-    val periodId                  = "test_id"
-    val location                  = "test_location"
-    val serviceUnavailableUrl     = "unavailable_url"
-    val viewVatAccountSupportLink = "https://accountsupport.test.com"
-    val requestedStatementsUrl          = "http://localhost:9396/customs/historic-statement/requested/postponed-vat"
-    val customsFinancialsHomePageUrl    = "http://localhost:9876/customs/payment-records"
+    val periodId                     = "test_id"
+    val location                     = "test_location"
+    val serviceUnavailableUrl        = "unavailable_url"
+    val viewVatAccountSupportLink    = "https://accountsupport.test.com"
+    val requestedStatementsUrl       = "http://localhost:9396/customs/historic-statement/requested/postponed-vat"
+    val customsFinancialsHomePageUrl = "http://localhost:9876/customs/payment-records"
 
     val date: LocalDateTime                        = LocalDateTime.of(YEAR_2023, MONTH_10, DAY_20, HOUR_12, MINUTES_30, SECONDS_50)
     val dateOfPreviousMonthAndAfter19th: LocalDate = date.toLocalDate.minusMonths(ONE_MONTH).withDayOfMonth(DAY_20)

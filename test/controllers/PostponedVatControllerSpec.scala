@@ -87,34 +87,34 @@ class PostponedVatControllerSpec extends SpecBase {
     }
 
     "display the PostponedVat page ignoring historic statements older than 7 months" in new Setup {
-        appConfigForSetup.historicStatementsEnabled = false
+      appConfigForSetup.historicStatementsEnabled = false
 
-        val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("postponed-vat").url
+      val serviceUnavailableUrl: String = routes.ServiceUnavailableController.onPageLoad("postponed-vat").url
 
-        when(mockDataStoreConnector.getEmail(any))
-          .thenReturn(Future.successful(Right(Email(emailValue))))
+      when(mockDataStoreConnector.getEmail(any))
+        .thenReturn(Future.successful(Right(Email(emailValue))))
 
-        when(mockSdesConnector.getPostponedVatStatements(eqTo(eori))(any))
-          .thenReturn(Future.successful(postponedVatStatementFiles))
+      when(mockSdesConnector.getPostponedVatStatements(eqTo(eori))(any))
+        .thenReturn(Future.successful(postponedVatStatementFiles))
 
-        when(mockSdesConnector.getPostponedVatStatements(eqTo(historicEori))(any))
-          .thenReturn(Future.successful(historicPostponedVatStatementFiles))
+      when(mockSdesConnector.getPostponedVatStatements(eqTo(historicEori))(any))
+        .thenReturn(Future.successful(historicPostponedVatStatementFiles))
 
-        when(mockFinancialsApiConnector.deleteNotification(any)(any))
-          .thenReturn(Future.successful(true))
+      when(mockFinancialsApiConnector.deleteNotification(any)(any))
+        .thenReturn(Future.successful(true))
 
-        when(mockDateTimeService.systemDateTime())
-          .thenReturn(date.atStartOfDay())
+      when(mockDateTimeService.systemDateTime())
+        .thenReturn(date.atStartOfDay())
 
-        running(app) {
-          val request = fakeRequest(GET, routes.PostponedVatController.show(Some(cdsLocation)).url)
-          val result  = route(app, request).value
+      running(app) {
+        val request = fakeRequest(GET, routes.PostponedVatController.show(Some(cdsLocation)).url)
+        val result  = route(app, request).value
 
-          status(result) mustBe OK
+        status(result) mustBe OK
 
-          contentAsString(result).contains(serviceUnavailableUrl)
-        }
+        contentAsString(result).contains(serviceUnavailableUrl)
       }
+    }
 
     "display the PostponedVat page with no statements text when statement is not available for the " +
       "immediate previous month and accessed after 19th of the month" in new Setup {
