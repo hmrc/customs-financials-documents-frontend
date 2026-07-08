@@ -46,9 +46,6 @@ class PostponedImportVatNotAvailableSpec extends SpecBase with GuiceOneAppPerSui
       view.getElementById("pvat.support.heading").text() must not be empty
 
       view.html().contains(tradeAndExciseEnquiryLink)
-      view.getElementById("chief-guidance-heading").html() mustBe
-        messages("cf.account.vat.chief.heading")
-      view.html().contains(messages("cf.account.pvat.older-statements.description.3"))
       view.html().contains(serviceUnavailableUrl)
     }
   }

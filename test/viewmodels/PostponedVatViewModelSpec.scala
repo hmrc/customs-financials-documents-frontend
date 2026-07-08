@@ -16,7 +16,7 @@
 
 package viewmodels
 
-import models.DutyPaymentMethod.{CDS, CHIEF}
+import models.DutyPaymentMethod.CDS
 import models.FileFormat.{Csv, Pdf}
 import models.FileRole.PostponedVATStatement
 import models.metadata.PostponedVatStatementFileMetadata
@@ -44,9 +44,7 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
 
     "produce CurrentStatementRow with correct contents" when {
 
-      "isCdsOnly is true and PostponedVatStatementGroup has statements" in new Setup {
-
-        val isCdsOnly = true
+      "PostponedVatStatementGroup has statements" in new Setup {
 
         val pvatStatementGroup: PostponedVatStatementGroup =
           PostponedVatStatementGroup(dateOfPreviousMonthAndAfter19th, certificateFiles)
@@ -61,72 +59,22 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
                 "cf.account.pvat.aria.download-link",
                 Some("cf.common.not-available"),
                 CDS,
-                Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate),
-                isCdsOnly
+                Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate)
               )
             )
-          )
-
-        val collapStatGroupRowForSourceCHIEF: CollapsibleStatementGroupRow =
-          CollapsibleStatementGroupRow(
-            collapsiblePVATAmendedStatement = None,
-            collapsiblePVATStatement = None
           )
 
         val expectedResult: CurrentStatementRow = CurrentStatementRow(
           pvatStatementGroup.periodId,
           messages(Formatters.dateAsMonthAndYear(dateOfPreviousMonthAndAfter19th)),
           cdsDDRow = None,
-          chiefDDRow = None,
-          collapsibleStatementGroupRows = Seq(collapStatGroupRowForSourceCDS, collapStatGroupRowForSourceCHIEF)
+          collapsibleStatementGroupRows = Seq(collapStatGroupRowForSourceCDS)
         )
 
-        CurrentStatementRow(pvatStatementGroup, dutyPaymentMethodSource, isCdsOnly) mustBe expectedResult
+        CurrentStatementRow(pvatStatementGroup, dutyPaymentMethodSource) mustBe expectedResult
       }
 
-      "isCdsOnly is false and PostponedVatStatementGroup has statements" in new Setup {
-        val isCdsOnly = false
-
-        val pvatStatementGroup: PostponedVatStatementGroup =
-          PostponedVatStatementGroup(dateOfPreviousMonthAndAfter19th, certificateFiles)
-
-        val collapStatGroupRowForSourceCDS: CollapsibleStatementGroupRow =
-          CollapsibleStatementGroupRow(
-            collapsiblePVATAmendedStatement = None,
-            collapsiblePVATStatement = Some(
-              new collapsible_statement_group(downloadLinkPvatStatement).apply(
-                pvatStatementGroup.collectFiles(amended = false, CDS),
-                "cf.account.pvat.download-link",
-                "cf.account.pvat.aria.download-link",
-                Some("cf.common.not-available"),
-                CDS,
-                Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate),
-                isCdsOnly
-              )
-            )
-          )
-
-        val collapStatGroupRowForSourceCHIEF: CollapsibleStatementGroupRow =
-          CollapsibleStatementGroupRow(
-            collapsiblePVATAmendedStatement = None,
-            collapsiblePVATStatement = None
-          )
-
-        val expectedResult: CurrentStatementRow = CurrentStatementRow(
-          pvatStatementGroup.periodId,
-          messages(Formatters.dateAsMonthAndYear(dateOfPreviousMonthAndAfter19th)),
-          cdsDDRow = None,
-          chiefDDRow = None,
-          collapsibleStatementGroupRows = Seq(collapStatGroupRowForSourceCDS, collapStatGroupRowForSourceCHIEF)
-        )
-
-        CurrentStatementRow(pvatStatementGroup, dutyPaymentMethodSource, isCdsOnly) mustBe expectedResult
-      }
-
-      "PostponedVatStatementGroup has no statements, startDate is of the previous month (after 19th) " +
-        "and isCdsOnly is true" in new Setup {
-
-          val isCdsOnly = true
+      "PostponedVatStatementGroup has no statements and startDate is of the previous month (after 19th)" in new Setup {
 
           when(mockDateTimeService.systemDateTime()).thenReturn(date)
 
@@ -145,48 +93,10 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
             pvatStatementGroup.periodId,
             messages(Formatters.dateAsMonthAndYear(dateOfPreviousMonthAndAfter19th)),
             cdsDDRow = Some(cdsDDRow),
-            chiefDDRow = None,
             collapsibleStatementGroupRows = Seq()
           )
 
-          CurrentStatementRow(pvatStatementGroup, dutyPaymentMethodSource, isCdsOnly) mustBe expectedResult
-        }
-
-      "PostponedVatStatementGroup has no statements, startDate is of the previous month (after 19th) " +
-        "and isCdsOnly is false" in new Setup {
-
-          val isCdsOnly = false
-
-          when(mockDateTimeService.systemDateTime()).thenReturn(date)
-
-          val pvatStatementGroup: PostponedVatStatementGroup =
-            PostponedVatStatementGroup(dateOfPreviousMonthAndAfter19th, Seq())
-
-          val cdsDDRow: DDRow = DDRow(
-            messages("cf.common.not-available"),
-            messages(
-              "cf.common.not-available-screen-reader-cds",
-              Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate)
-            )
-          )
-
-          val chiefDDRow: DDRow = DDRow(
-            messages("cf.common.not-available"),
-            messages(
-              "cf.common.not-available-screen-reader-chief",
-              Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate)
-            )
-          )
-
-          val expectedResult: CurrentStatementRow = CurrentStatementRow(
-            pvatStatementGroup.periodId,
-            messages(Formatters.dateAsMonthAndYear(dateOfPreviousMonthAndAfter19th)),
-            cdsDDRow = Some(cdsDDRow),
-            chiefDDRow = Some(chiefDDRow),
-            collapsibleStatementGroupRows = Seq()
-          )
-
-          CurrentStatementRow(pvatStatementGroup, dutyPaymentMethodSource, isCdsOnly) mustBe expectedResult
+          CurrentStatementRow(pvatStatementGroup, dutyPaymentMethodSource) mustBe expectedResult
         }
 
     }
@@ -203,12 +113,10 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
         val actualPVatModel: PostponedVatViewModel = PostponedVatViewModel(
           postponedVatCertificateFiles,
           hasRequestedStatements = true,
-          isCdsOnly = true,
           Some(location),
           PVATUrls(
             customsFinancialsHomePageUrl = customsFinancialsHomePageUrl,
             requestStatementsUrl = requestedStatementsUrl,
-            pvEmail = PvEmail(pvEmailEmailAddress, pvEmailEmailAddressHref),
             viewVatAccountSupportLink = viewVatAccountSupportLink,
             serviceUnavailableUrl = Some(serviceUnavailableUrl)
           )
@@ -236,8 +144,6 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
 
         actualPVatModel.statOlderThanSevenMonthsGuidance mustBe expectedStatOlderThanSevenMonthsGuidanceRow
 
-        actualPVatModel.chiefDeclarationGuidance mustBe expectedChiefDeclarationGuidance
-
         actualPVatModel.helpAndSupportGuidance mustBe expectedHelpAndSupportGuidance
       }
 
@@ -248,12 +154,10 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
         val actualPVatModel: PostponedVatViewModel = PostponedVatViewModel(
           Seq(),
           hasRequestedStatements = true,
-          isCdsOnly = true,
           Some(location),
           PVATUrls(
             customsFinancialsHomePageUrl = customsFinancialsHomePageUrl,
             requestStatementsUrl = requestedStatementsUrl,
-            pvEmail = PvEmail(pvEmailEmailAddress, pvEmailEmailAddressHref),
             viewVatAccountSupportLink = viewVatAccountSupportLink,
             serviceUnavailableUrl = Some(serviceUnavailableUrl)
           )
@@ -273,8 +177,6 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
         actualPVatModel.currentStatements.noStatementMsg mustBe None
 
         actualPVatModel.statOlderThanSevenMonthsGuidance mustBe expectedStatOlderThanSevenMonthsGuidanceRow
-
-        actualPVatModel.chiefDeclarationGuidance mustBe expectedChiefDeclarationGuidance
 
         actualPVatModel.helpAndSupportGuidance mustBe expectedHelpAndSupportGuidance
       }
@@ -296,7 +198,6 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
       PVATUrls(
         customsFinancialsHomePageUrl = customsFinancialsHomePageUrl,
         requestStatementsUrl = requestedStatementsUrl,
-        pvEmail = PvEmail(pvEmailEmailAddress, pvEmailEmailAddressHref),
         viewVatAccountSupportLink = viewVatAccountSupportLink
       ).serviceUnavailableUrl mustBe empty
     }
@@ -316,7 +217,7 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
   )(implicit msgs: Messages): Seq[HtmlFormat.Appendable] = {
     val expectedCurrentRows: Seq[HtmlFormat.Appendable] = expectedResult
       .map { pvaStatGroup =>
-        CurrentStatementRow(pvaStatGroup, Seq(CDS, CHIEF), isCdsOnly = true)
+        CurrentStatementRow(pvaStatGroup, Seq(CDS))
       }
       .map { currentRow =>
         val innerLink                 = new linkInner()
@@ -341,12 +242,10 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
       )
     )
 
-    val periodId                        = "test_id"
-    val location                        = "test_location"
-    val serviceUnavailableUrl           = "unavailable_url"
-    val pvEmailEmailAddress: String     = "pvaenquiries@hmrc.gov.uk"
-    val pvEmailEmailAddressHref: String = "mailto:pvaenquiries@hmrc.gov.uk"
-    val viewVatAccountSupportLink       = "https://accountsupport.test.com"
+    val periodId                  = "test_id"
+    val location                  = "test_location"
+    val serviceUnavailableUrl     = "unavailable_url"
+    val viewVatAccountSupportLink = "https://accountsupport.test.com"
     val requestedStatementsUrl          = "http://localhost:9396/customs/historic-statement/requested/postponed-vat"
     val customsFinancialsHomePageUrl    = "http://localhost:9876/customs/payment-records"
 
@@ -354,7 +253,7 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
     val dateOfPreviousMonthAndAfter19th: LocalDate = date.toLocalDate.minusMonths(ONE_MONTH).withDayOfMonth(DAY_20)
     val currentDate: LocalDate                     = LocalDate.of(YEAR_2023, MONTH_10, DAY_20)
 
-    val dutyPaymentMethodSource: Seq[String] = Seq(CDS, CHIEF)
+    val dutyPaymentMethodSource: Seq[String] = Seq(CDS)
     val linkInner                            = new linkInner()
     val downloadLinkPvatStatement            = new download_link_pvat_statement(linkInner)
 
@@ -479,22 +378,6 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
       inset = Some(
         insetComponent(
           msg = messages("cf.account.pvat.older-statements.description.inset-message")
-        )
-      )
-    )
-
-    val expectedChiefDeclarationGuidance: GuidanceRow = GuidanceRow(
-      h2Heading = h2Component.apply(
-        id = Some("chief-guidance-heading"),
-        msg = "cf.account.vat.chief.heading",
-        classes = "govuk-heading-m govuk-!-margin-top-6"
-      ),
-      link = Some(
-        linkComponent.apply(
-          pvEmailEmailAddress,
-          location = pvEmailEmailAddressHref,
-          preLinkMessage = Some("cf.account.pvat.older-statements.description.3"),
-          linkSentence = true
         )
       )
     )

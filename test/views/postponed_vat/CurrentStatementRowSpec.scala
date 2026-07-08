@@ -47,29 +47,26 @@ class CurrentStatementRowSpec extends SpecBase with GuiceOneAppPerSuite {
 
     "display correct contents" when {
 
-      "collapsibleStatementGroupRows are empty but contains dd row for CDS and CHIEF" in new Setup {
+      "collapsibleStatementGroupRows are empty but contains dd row for CDS" in new Setup {
 
-        val cdsDDRow: DDRow   = DDRow(notAvailableMsg = notAvailableMsg, visuallyHiddenMsg = visuallyHiddenMsg)
-        val chiefDDRow: DDRow = DDRow(notAvailableMsg = notAvailableMsg, visuallyHiddenMsg = visuallyHiddenMsg)
+        val cdsDDRow: DDRow = DDRow(notAvailableMsg = notAvailableMsg, visuallyHiddenMsg = visuallyHiddenMsg)
 
         val statementRow: CurrentStatementRow =
-          CurrentStatementRow(periodId, startDateMsg, Some(cdsDDRow), Some(chiefDDRow))
+          CurrentStatementRow(periodId, startDateMsg, Some(cdsDDRow))
 
         val viewDoc: Document = view(statementRow)
 
         shouldDisplayPeriodId(viewDoc, periodId)
         shouldDisplayStartDateMsg(viewDoc, startDateMsg)
         shouldDisplayCDSDDRow(viewDoc, notAvailableMsg, visuallyHiddenMsg)
-        shouldDisplayCHIEFDDRow(viewDoc, notAvailableMsg, visuallyHiddenMsg)
       }
 
-      "collapsibleStatementGroupRows are present but no dd row for CDS and CHIEF" in new Setup {
+      "collapsibleStatementGroupRows are present but no dd row for CDS" in new Setup {
 
         val statementRow: CurrentStatementRow = CurrentStatementRow(
           periodId,
           startDateMsg,
           cdsDDRow = None,
-          chiefDDRow = None,
           collapsibleStatementGroupRows = collapsibleStatementGroupRows
         )
 
@@ -77,8 +74,8 @@ class CurrentStatementRowSpec extends SpecBase with GuiceOneAppPerSuite {
 
         shouldDisplayPeriodId(viewDoc, periodId)
         shouldDisplayStartDateMsg(viewDoc, startDateMsg)
-        shouldNotDisplayCDsAndCHIEFDDRows(viewDoc, notAvailableMsg, visuallyHiddenMsg)
-        shouldDisplayCollapsibleRows(viewDoc, isCdsOnly)
+        shouldNotDisplayCDSDDRow(viewDoc, notAvailableMsg, visuallyHiddenMsg)
+        shouldDisplayCollapsibleRows(viewDoc)
       }
     }
   }
@@ -101,40 +98,22 @@ class CurrentStatementRowSpec extends SpecBase with GuiceOneAppPerSuite {
     cdsDDElement.html().contains(visuallyHiddenMsg) mustBe true
   }
 
-  private def shouldDisplayCHIEFDDRow(
+  private def shouldNotDisplayCDSDDRow(
     viewDoc: Document,
     notAvailableMsg: String,
     visuallyHiddenMsg: String
   ): Assertion = {
-    val ddElements     = viewDoc.getElementsByTag("dd")
-    val chiefDDElement = ddElements.get(1)
-
-    chiefDDElement.html().contains(notAvailableMsg) mustBe true
-    chiefDDElement.html().contains(visuallyHiddenMsg) mustBe true
-  }
-
-  private def shouldNotDisplayCDsAndCHIEFDDRows(
-    viewDoc: Document,
-    notAvailableMsg: String,
-    visuallyHiddenMsg: String
-  ): Assertion = {
-    val ddElements = viewDoc.getElementsByTag("dd")
-
-    val cdsDDElement   = ddElements.get(0)
-    val chiefDDElement = ddElements.get(1)
+    val ddElements   = viewDoc.getElementsByTag("dd")
+    val cdsDDElement = ddElements.get(0)
 
     cdsDDElement.html().contains(notAvailableMsg) mustBe false
     cdsDDElement.html().contains(visuallyHiddenMsg) mustBe false
-
-    chiefDDElement.html().contains(notAvailableMsg) mustBe false
-    chiefDDElement.html().contains(visuallyHiddenMsg) mustBe false
   }
 
-  private def shouldDisplayCollapsibleRows(viewDoc: Document, isCDSOnly: Boolean): Assertion = {
+  private def shouldDisplayCollapsibleRows(viewDoc: Document): Assertion = {
 
-    val ddElements = viewDoc.getElementsByTag("dd")
-
-    val ddElementWithDownloadLink = if (isCDSOnly) ddElements.get(0) else ddElements.get(1)
+    val ddElements                = viewDoc.getElementsByTag("dd")
+    val ddElementWithDownloadLink = ddElements.get(0)
 
     val anchorTag = ddElementWithDownloadLink.getElementsByTag("a").get(0)
 
@@ -170,8 +149,6 @@ class CurrentStatementRowSpec extends SpecBase with GuiceOneAppPerSuite {
       )
     )
 
-    val isCdsOnly = false
-
     val date: LocalDateTime                        = LocalDateTime.of(YEAR_2023, MONTH_10, DAY_20, HOUR_12, MINUTES_30, SECONDS_50)
     val dateOfPreviousMonthAndAfter19th: LocalDate = date.toLocalDate.minusMonths(ONE_MONTH).withDayOfMonth(DAY_20)
 
@@ -191,19 +168,12 @@ class CurrentStatementRowSpec extends SpecBase with GuiceOneAppPerSuite {
             "cf.account.pvat.aria.download-link",
             Some("cf.common.not-available"),
             CDS,
-            Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate),
-            isCdsOnly
+            Formatters.dateAsMonthAndYear(pvatStatementGroup.startDate)
           )
         )
       )
 
-    val collapStatGroupRowForSourceCHIEF: CollapsibleStatementGroupRow =
-      CollapsibleStatementGroupRow(
-        collapsiblePVATAmendedStatement = None,
-        collapsiblePVATStatement = None
-      )
-
     val collapsibleStatementGroupRows: Seq[CollapsibleStatementGroupRow] =
-      Seq(collapStatGroupRowForSourceCDS, collapStatGroupRowForSourceCHIEF)
+      Seq(collapStatGroupRowForSourceCDS)
   }
 }

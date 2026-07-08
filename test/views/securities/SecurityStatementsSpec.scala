@@ -189,17 +189,6 @@ class SecurityStatementsSpec extends SpecBase with GuiceOneAppPerSuite {
         messages("cf.common.missing-documents-guidance.statements")
       )
 
-    view.getElementById("adjustment-statements.chief.heading").text mustBe
-      messages(
-        "cf.account.adjustment-statements.chief.heading",
-        messages("cf.common.missing-documents-guidance.statements")
-      )
-
-    view.getElementById("missing-documents-guidance-text2").text mustBe
-      messages(
-        "cf.account.adjustment-statements.chief.description",
-        messages("cf.common.missing-documents-guidance.statements")
-      )
   }
 
   override def fakeApplication(): Application = applicationBuilder.build()
