@@ -65,6 +65,19 @@
 
         @inset(msg = messages("cf.account.vat.older-certificates.description.inset-message"))
 
+        @h2(
+            "cf.account.vat.chief.heading",
+            id = Some("chief-guidance-heading"),
+            classes = "govuk-heading-m govuk-!-margin-top-6"
+        )
+
+        @link(
+            appConfig.c79EmailAddress,
+            location = appConfig.c79EmailAddressHref,
+            preLinkMessage = Some("cf.account.vat.older-certificates.description.2"),
+            linkSentence = true
+        )
+
     </div>
 
     <div id="vat.support.heading" class="govuk-!-padding-top-2">

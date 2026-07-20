@@ -52,6 +52,12 @@
             @certsOlderThan7Months.inset.map(identity)
         }
 
+        @defining(model.chiefDeclarationGuidance) { chiefDeclaration =>
+            @chiefDeclaration.h2Heading
+            @chiefDeclaration.link.map(identity)
+            @chiefDeclaration.paragraph.map(identity)
+        }
+
     </div>
 
     <div id="vat.support.heading" class="govuk-!-padding-top-2">

@@ -17,19 +17,15 @@
 package viewmodels
 
 import config.AppConfig
+import models.FileFormat.{Csv, Pdf}
+import models.FileRole.C79Certificate
 import models.VatCertificatesForEori
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
-import utils.Utils.{
-  ddComponent, divComponent, dlComponent, dtComponent, emptyString, h1Component, h2Component, hmrcNewTabLinkComponent,
-  insetComponent, linkComponent, pComponent
-}
-import views.html.components.download_link
-import models.FileRole.C79Certificate
-import _root_.uk.gov.hmrc.hmrcfrontend.views.html.components.NewTabLink
 import utils.Utils
-import models.FileFormat.{Csv, Pdf}
-import common.GuidanceRow
+import utils.Utils.*
+import viewmodels.common.GuidanceRow
+import views.html.components.download_link
 
 case class ImportVatViewModel(
   title: Option[String],
@@ -41,6 +37,7 @@ case class ImportVatViewModel(
   currentStatements: Seq[ImportVatCurrentStatementRow] = Seq.empty,
   currentStatementsNotAvailableGuidance: Option[HtmlFormat.Appendable] = None,
   certsOlderThan7MonthsGuidance: GuidanceRow,
+  chiefDeclarationGuidance: GuidanceRow,
   helpAndSupportGuidance: GuidanceRow
 )
 
@@ -64,6 +61,7 @@ object ImportVatViewModel {
       currentStatementsNotAvailableGuidance =
         if (hasCurrentCertificates) None else Some(populateCurrentStatNotAvailableGuidance),
       certsOlderThan7MonthsGuidance = populateCertsOlderThan7MonthsGuidance(serviceUnavailableUrl),
+      chiefDeclarationGuidance = populateChiefDeclarationGuidance,
       helpAndSupportGuidance = populateHelpAndSupportGuidance
     )
   }
@@ -145,6 +143,26 @@ object ImportVatViewModel {
       inset = Some(
         insetComponent(
           msg = messages("cf.account.vat.older-certificates.description.inset-message")
+        )
+      )
+    )
+
+  private def populateChiefDeclarationGuidance(implicit
+    messages: Messages,
+    appConfig: AppConfig
+  ): GuidanceRow =
+    GuidanceRow(
+      h2Heading = h2Component(
+        "cf.account.vat.chief.heading",
+        id = Some("chief-guidance-heading"),
+        classes = "govuk-heading-m govuk-!-margin-top-6"
+      ),
+      link = Some(
+        linkComponent(
+          appConfig.c79EmailAddress,
+          location = appConfig.c79EmailAddressHref,
+          preLinkMessage = Some("cf.account.vat.older-certificates.description.2"),
+          linkSentence = true
         )
       )
     )
