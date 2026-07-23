@@ -16,29 +16,23 @@
 
 package viewmodels
 
-import config.AppConfig
-import models.{EoriHistory, VatCertificateFile, VatCertificatesByMonth, VatCertificatesForEori}
-import models.metadata.VatCertificateFileMetadata
-import models.FileRole.C79Certificate
-import org.scalatest.Assertion
-import play.api.i18n.Messages
-import utils.CommonTestData.{
-  DAY_28, EORI_NUMBER, FIVE_MONTHS, FOUR_MONTHS, ONE_MONTH, SEVEN_MONTHS, SIX_MONTHS, SIZE_111L, STAT_FILE_NAME_04,
-  THREE_MONTHS, TWO_MONTHS, URL_TEST
-}
-import utils.SpecBase
-import org.scalatest.matchers.must.Matchers.mustBe
-import utils.Utils.{
-  ddComponent, divComponent, dlComponent, dtComponent, emptyString, h1Component, h2Component, insetComponent,
-  linkComponent, pComponent
-}
-import models.FileFormat.{Csv, Pdf}
-import play.twirl.api.{Html, HtmlFormat}
 import _root_.uk.gov.hmrc.hmrcfrontend.views.html.components.NewTabLink
+import config.AppConfig
+import models.FileFormat.{Csv, Pdf}
+import models.FileRole.C79Certificate
+import models.metadata.VatCertificateFileMetadata
+import models.{EoriHistory, VatCertificateFile, VatCertificatesByMonth, VatCertificatesForEori}
+import org.scalatest.Assertion
+import org.scalatest.matchers.must.Matchers.mustBe
+import play.api.i18n.Messages
+import play.twirl.api.{Html, HtmlFormat}
+import utils.CommonTestData.*
+import utils.SpecBase
+import utils.Utils.*
+import viewmodels.common.GuidanceRow
 import views.html.components.download_link
 
 import java.time.LocalDate
-import viewmodels.common.GuidanceRow
 
 class ImportVatViewModelSpec extends SpecBase {
 
@@ -56,6 +50,7 @@ class ImportVatViewModelSpec extends SpecBase {
         shouldContainCurrentStatements(viewModelWithCurrentCerts, certificatesForAllEoris)
         shouldNotContainCurrentStatementsNotAvailableGuidance(viewModelWithCurrentCerts)
         shouldContainCorrectCertsOlderThan7MonthsGuidance(viewModelWithCurrentCerts)
+        shouldContainCorrectChiefDeclarationGuidance(viewModelWithCurrentCerts)
         shouldContainCorrectHelpAndSupportGuidance(viewModelWithCurrentCerts)
       }
 
@@ -69,6 +64,7 @@ class ImportVatViewModelSpec extends SpecBase {
         shouldContainCurrentStatements(viewModel, certificatesForAllEoris)
         shouldNotContainCurrentStatementsNotAvailableGuidance(viewModel)
         shouldContainCorrectCertsOlderThan7MonthsGuidance(viewModel)
+        shouldContainCorrectChiefDeclarationGuidance(viewModel)
         shouldContainCorrectHelpAndSupportGuidance(viewModel)
       }
 
@@ -97,6 +93,7 @@ class ImportVatViewModelSpec extends SpecBase {
         shouldNotContainCurrentStatements(viewModelWithNoCerts)
         shouldContainCurrentStatementsNotAvailableGuidance(viewModelWithNoCerts)
         shouldContainCorrectCertsOlderThan7MonthsGuidance(viewModelWithNoCerts)
+        shouldContainCorrectChiefDeclarationGuidance(viewModelWithNoCerts)
         shouldContainCorrectHelpAndSupportGuidance(viewModelWithNoCerts)
       }
     }
@@ -182,6 +179,26 @@ class ImportVatViewModelSpec extends SpecBase {
       inset = Some(
         insetComponent(
           msg = msgs("cf.account.vat.older-certificates.description.inset-message")
+        )
+      )
+    )
+
+  private def shouldContainCorrectChiefDeclarationGuidance(viewModel: ImportVatViewModel)(implicit
+    appConfig: AppConfig,
+    msgs: Messages
+  ) =
+    viewModel.chiefDeclarationGuidance mustBe GuidanceRow(
+      h2Component(
+        "cf.account.vat.chief.heading",
+        id = Some("chief-guidance-heading"),
+        classes = "govuk-heading-m govuk-!-margin-top-6"
+      ),
+      Some(
+        linkComponent(
+          appConfig.c79EmailAddress,
+          location = appConfig.c79EmailAddressHref,
+          preLinkMessage = Some("cf.account.vat.older-certificates.description.2"),
+          linkSentence = true
         )
       )
     )

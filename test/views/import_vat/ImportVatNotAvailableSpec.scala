@@ -40,6 +40,9 @@ class ImportVatNotAvailableSpec extends SpecBase with GuiceOneAppPerSuite {
       view.getElementById("missing-certificates-guidance-heading").html() mustBe
         messages("cf.account.vat.older-certificates.heading")
 
+      view.getElementById("chief-guidance-heading").html() mustBe
+        messages("cf.account.vat.chief.heading")
+
       view.getElementById("vat.support.message.heading").html() mustBe
         messages("cf.account.vat.support.heading")
 
