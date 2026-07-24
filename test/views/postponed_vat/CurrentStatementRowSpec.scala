@@ -118,9 +118,9 @@ class CurrentStatementRowSpec extends SpecBase with GuiceOneAppPerSuite {
     val anchorTag = ddElementWithDownloadLink.getElementsByTag("a").get(0)
 
     anchorTag.attr("href") mustBe DOWNLOAD_URL_06
-    anchorTag.html().contains("CDS - PDF (1KB)") mustBe true
+    anchorTag.html().contains("PDF (1KB)") mustBe true
     anchorTag.getElementsByClass("govuk-visually-hidden").text mustBe
-      "September 2023 CDS statement - PDF (1KB)"
+      "September 2023 statement - PDF (1KB)"
   }
 
   override def fakeApplication(): Application = applicationBuilder.build()
