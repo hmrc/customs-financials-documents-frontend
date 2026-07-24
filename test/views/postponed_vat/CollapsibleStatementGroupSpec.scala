@@ -82,7 +82,7 @@ class CollapsibleStatementGroupSpec extends SpecBase with GuiceOneAppPerSuite {
     anchorTag.attr("href") mustBe DOWNLOAD_URL_06
     anchorTag.html().contains("CDS amended statement - PDF (1KB)") mustBe true
     anchorTag.getElementsByClass("govuk-visually-hidden").text mustBe
-      "test_period CDS statement - PDF (1KB)"
+      "test_period statement - PDF (1KB)"
 
     ddElements.size() mustBe 1
   }
