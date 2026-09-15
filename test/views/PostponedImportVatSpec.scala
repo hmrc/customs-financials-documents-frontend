@@ -109,7 +109,7 @@ class PostponedImportVatSpec extends SpecBase with GuiceOneAppPerSuite {
           .body
       )
 
-      val expectedSize = 7
+      val expectedSize = 8
 
       view.select("dd.govuk-summary-list__actions").size() mustBe expectedSize
       view.html() must include(messages("cf.account.pvat.aria.amended-download-link"))
