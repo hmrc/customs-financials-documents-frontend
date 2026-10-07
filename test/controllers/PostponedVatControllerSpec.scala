@@ -36,7 +36,7 @@ import uk.gov.hmrc.auth.core.retrieve.Email
 import utils.CommonTestData._
 import utils.SpecBase
 import utils.Utils.{hyphen, singleSpace}
-import viewmodels.{PVATUrls, PostponedVatViewModel}
+import viewmodels.{PVATUrls, PostponedVatStatementsForEori, PostponedVatViewModel}
 import views.helpers.Formatters
 import views.html.{postponed_import_vat, postponed_import_vat_not_available}
 
@@ -75,7 +75,16 @@ class PostponedVatControllerSpec extends SpecBase {
 
         contentAsString(result) mustBe view(
           PostponedVatViewModel(
-            currentStatements,
+            Seq(
+              PostponedVatStatementsForEori(
+                EoriHistory(eori, Some(date.minusMonths(SIX_MONTHS)), None),
+                postponedVatStatementFiles
+              ),
+              PostponedVatStatementsForEori(
+                EoriHistory(historicEori, Some(date.minusYears(ONE_YEAR)), Some(date.minusMonths(SIX_MONTHS))),
+                historicPostponedVatStatementFiles
+              )
+            ).sorted,
             hasRequestedStatements = true,
             location = Some(cdsLocation),
             urls = pvatUrls
@@ -143,7 +152,16 @@ class PostponedVatControllerSpec extends SpecBase {
 
           contentAsString(result) mustBe view(
             PostponedVatViewModel(
-              postponedVatStatementFilesWithImmediateUnavailable,
+              Seq(
+                PostponedVatStatementsForEori(
+                  EoriHistory(eori, Some(date.minusMonths(SIX_MONTHS)), None),
+                  postponedVatStatementFilesWithImmediateUnavailable
+                ),
+                PostponedVatStatementsForEori(
+                  EoriHistory(historicEori, Some(date.minusYears(ONE_YEAR)), Some(date.minusMonths(SIX_MONTHS))),
+                  historicPostponedVatStatementFiles
+                )
+              ).sorted,
               hasRequestedStatements = true,
               location = Some(cdsLocation),
               urls =
@@ -194,7 +212,16 @@ class PostponedVatControllerSpec extends SpecBase {
 
           contentAsString(result) mustBe view(
             PostponedVatViewModel(
-              postponedVatStatementFilesWithImmediateUnavailable,
+              Seq(
+                PostponedVatStatementsForEori(
+                  EoriHistory(eori, Some(date.minusMonths(SIX_MONTHS)), None),
+                  postponedVatStatementFilesWithImmediateUnavailable
+                ),
+                PostponedVatStatementsForEori(
+                  EoriHistory(historicEori, Some(date.minusYears(ONE_YEAR)), Some(date.minusMonths(SIX_MONTHS))),
+                  historicPostponedVatStatementFiles
+                )
+              ).sorted,
               hasRequestedStatements = true,
               location = Some(cdsLocation),
               urls = pvatUrls
@@ -239,7 +266,16 @@ class PostponedVatControllerSpec extends SpecBase {
 
         contentAsString(result) mustBe view(
           PostponedVatViewModel(
-            postponedVatStatementFilesWithImmediateUnavailable,
+            Seq(
+              PostponedVatStatementsForEori(
+                EoriHistory(eori, Some(date.minusMonths(SIX_MONTHS)), None),
+                postponedVatStatementFilesWithImmediateUnavailable
+              ),
+              PostponedVatStatementsForEori(
+                EoriHistory(historicEori, Some(date.minusYears(ONE_YEAR)), Some(date.minusMonths(SIX_MONTHS))),
+                historicPostponedVatStatementFiles
+              )
+            ).sorted,
             hasRequestedStatements = true,
             location = Some(cdsLocation),
             urls = pvatUrls.copy(serviceUnavailableUrl = Some(historicRequestUrl))
@@ -576,7 +612,10 @@ class PostponedVatControllerSpec extends SpecBase {
 
     val app: Application =
       applicationBuilder(
-        Seq(EoriHistory(historicEori, Some(date.minusYears(ONE_YEAR)), Some(date.minusMonths(SIX_MONTHS))))
+        Seq(
+          EoriHistory(eori, Some(date.minusMonths(SIX_MONTHS)), None),
+          EoriHistory(historicEori, Some(date.minusYears(ONE_YEAR)), Some(date.minusMonths(SIX_MONTHS)))
+        )
       )
         .overrides(
           inject.bind[FinancialsApiConnector].toInstance(mockFinancialsApiConnector),

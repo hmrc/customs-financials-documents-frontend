@@ -20,7 +20,7 @@ import config.AppConfig
 import models.DutyPaymentMethod.CDS
 import models.FileFormat.{Csv, Pdf}
 import models.FileRole.{PostponedVATAmendedStatement, PostponedVATStatement}
-import models.PostponedVatStatementFile
+import models.{EoriHistory, PostponedVatStatementFile}
 import models.metadata.PostponedVatStatementFileMetadata
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -31,7 +31,7 @@ import play.api.{Application, inject}
 import services.DateTimeService
 import utils.CommonTestData.*
 import utils.SpecBase
-import viewmodels.{PVATUrls, PostponedVatViewModel}
+import viewmodels.{PVATUrls, PostponedVatStatementsForEori, PostponedVatViewModel}
 import views.html.postponed_import_vat
 import org.mockito.Mockito.when
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -51,7 +51,7 @@ class PostponedImportVatSpec extends SpecBase with GuiceOneAppPerSuite {
         instanceOf[postponed_import_vat](app)
           .apply(
             PostponedVatViewModel(
-              postponedVatStatementFiles,
+              Seq(PostponedVatStatementsForEori(EoriHistory(EORI_NUMBER, None, None), postponedVatStatementFiles)),
               hasRequestedStatements = true,
               Option("some_url"),
               urls = pvatUrls
@@ -80,7 +80,7 @@ class PostponedImportVatSpec extends SpecBase with GuiceOneAppPerSuite {
           instanceOf[postponed_import_vat](app)
             .apply(
               PostponedVatViewModel(
-                postponedVatStatementFiles,
+                Seq(PostponedVatStatementsForEori(EoriHistory(EORI_NUMBER, None, None), postponedVatStatementFiles)),
                 hasRequestedStatements = true,
                 Option("some_url"),
                 urls = pvatUrls.copy(serviceUnavailableUrl = None)
@@ -100,7 +100,7 @@ class PostponedImportVatSpec extends SpecBase with GuiceOneAppPerSuite {
         instanceOf[postponed_import_vat](app)
           .apply(
             PostponedVatViewModel(
-              postponedVatStatementFiles,
+              Seq(PostponedVatStatementsForEori(EoriHistory(EORI_NUMBER, None, None), postponedVatStatementFiles)),
               hasRequestedStatements = true,
               Option("some_url"),
               urls = pvatUrls.copy(serviceUnavailableUrl = None)
@@ -122,7 +122,7 @@ class PostponedImportVatSpec extends SpecBase with GuiceOneAppPerSuite {
         instanceOf[postponed_import_vat](app)
           .apply(
             PostponedVatViewModel(
-              Seq.empty,
+              Seq(PostponedVatStatementsForEori(EoriHistory(EORI_NUMBER, None, None), Seq.empty)),
               hasRequestedStatements = true,
               Option("some_url"),
               urls = pvatUrls.copy(serviceUnavailableUrl = None)

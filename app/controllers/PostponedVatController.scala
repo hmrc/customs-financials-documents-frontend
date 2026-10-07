@@ -28,7 +28,7 @@ import play.api.{Logger, LoggerLike}
 import services.DateTimeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Constants.MONTHS_RANGE_ONE_TO_SEVEN_INCLUSIVE
-import viewmodels.{PVATUrls, PostponedVatViewModel}
+import viewmodels.{PVATUrls, PostponedVatStatementsForEori, PostponedVatViewModel}
 import views.html.{postponed_import_vat, postponed_import_vat_not_available}
 
 import javax.inject.{Inject, Singleton}
@@ -59,21 +59,20 @@ class PostponedVatController @Inject() (
 
       (
         for {
-          postponedVatStatements         <- sdesConnector.getPostponedVatStatements(req.eori)
-          filteredHistoricEoris           = req.allEoriHistory.filterNot(_.eori == req.eori)
-          historicPostponedVatStatements <- Future
-                                              .sequence(
-                                                filteredHistoricEoris.map { eoriHistory =>
-                                                  sdesConnector.getPostponedVatStatements(eoriHistory.eori)
-                                                }
-                                              )
-                                              .map(_.flatten)
+          allFilesPerEori <- Future.sequence(
+                               req.allEoriHistory.map { eoriHistory =>
+                                 sdesConnector
+                                   .getPostponedVatStatements(eoriHistory.eori)
+                                   .map(files => (eoriHistory, files))
+                               }
+                             )
         } yield {
 
-          val allPostponedVatStatements: Seq[PostponedVatStatementFile] =
-            postponedVatStatements ++ historicPostponedVatStatements
+          val hasRequestedStatements = allFilesPerEori.flatMap(_._2).exists(_.metadata.statementRequestId.nonEmpty)
 
-          val currentStatements: Seq[PostponedVatStatementFile] = filterCurrentStatements(postponedVatStatements)
+          val statementsForAllEoris = allFilesPerEori.map { case (eoriHistory, files) =>
+            PostponedVatStatementsForEori(eoriHistory, filterCurrentStatements(files))
+          }
 
           val historicUrl = if (appConfig.historicStatementsEnabled) {
             appConfig.historicRequestUrl(PostponedVATStatement)
@@ -84,8 +83,8 @@ class PostponedVatController @Inject() (
           Ok(
             postponedImportVatView(
               PostponedVatViewModel(
-                currentStatements,
-                allPostponedVatStatements.exists(statement => statement.metadata.statementRequestId.nonEmpty),
+                statementsForAllEoris.sorted,
+                hasRequestedStatements,
                 location,
                 populatePVATUrls(historicUrl)
               )

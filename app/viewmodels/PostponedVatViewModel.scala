@@ -17,7 +17,7 @@
 package viewmodels
 
 import models.DutyPaymentMethod.CDS
-import models.{PostponedVatStatementFile, PostponedVatStatementGroup}
+import models.{EoriHistory, OrderedByEoriHistory, PostponedVatStatementFile, PostponedVatStatementGroup}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import services.DateTimeService
@@ -49,7 +49,13 @@ case class CurrentStatementRow(
   collapsibleStatementGroupRows: Seq[CollapsibleStatementGroupRow] = Seq()
 )
 
-case class CurrentStatementsSection(
+case class PostponedVatStatementsForEori(
+  eoriHistory: EoriHistory,
+  currentStatements: Seq[PostponedVatStatementFile]
+) extends OrderedByEoriHistory[PostponedVatStatementsForEori]
+
+case class PostponedVatCurrentStatementsForEori(
+  eoriHeading: Option[HtmlFormat.Appendable] = None,
   currentStatementRows: Seq[HtmlFormat.Appendable] = Seq(),
   noStatementMsg: Option[HtmlFormat.Appendable] = None
 )
@@ -61,21 +67,20 @@ case class PostponedVatViewModel(
   statementsAvailableGuidance: HtmlFormat.Appendable,
   statementH2Heading: HtmlFormat.Appendable,
   requestedStatements: Option[HtmlFormat.Appendable] = None,
-  currentStatements: CurrentStatementsSection,
+  currentStatements: Seq[PostponedVatCurrentStatementsForEori],
   statOlderThanSevenMonthsGuidance: GuidanceRow,
   helpAndSupportGuidance: GuidanceRow
 )
 
 object PostponedVatViewModel {
   def apply(
-    files: Seq[PostponedVatStatementFile],
+    statementsForAllEoris: Seq[PostponedVatStatementsForEori],
     hasRequestedStatements: Boolean,
     location: Option[String],
     urls: PVATUrls
   )(implicit messages: Messages, dateTimeService: DateTimeService): PostponedVatViewModel = {
 
-    val statementGroupList: Seq[PostponedVatStatementGroup] = statementGroups(files)
-    val bckLinkUrl                                          = location.map(_ => urls.customsFinancialsHomePageUrl)
+    val bckLinkUrl = location.map(_ => urls.customsFinancialsHomePageUrl)
 
     PostponedVatViewModel(
       pageTitle = messages("cf.account.pvat.title"),
@@ -84,7 +89,7 @@ object PostponedVatViewModel {
       requestedStatements = populateRequestedStatements(hasRequestedStatements, urls.requestStatementsUrl),
       statementsAvailableGuidance = populateStatementsAvailableGuidance,
       statementH2Heading = populateStatementH2Heading,
-      currentStatements = populateCurrentStatements(statementGroupList),
+      currentStatements = populateCurrentStatements(statementsForAllEoris),
       statOlderThanSevenMonthsGuidance = populateOlderThanSevenMonthsGuidance(urls.serviceUnavailableUrl),
       helpAndSupportGuidance = populateHelpAndSupportGuidance(urls.viewVatAccountSupportLink)
     )
@@ -137,21 +142,34 @@ object PostponedVatViewModel {
       None
     }
 
-  private def populateCurrentStatements(statementGroupList: Seq[PostponedVatStatementGroup])(implicit
-    msgs: Messages
-  ): CurrentStatementsSection = {
-    val noStatementMsg =
-      if (statementGroupList.isEmpty) {
-        Some(insetComponent.apply("cf.account.pvat.no-statements-yet"))
-      } else {
-        None
-      }
+  private def populateCurrentStatements(
+    statementsForAllEoris: Seq[PostponedVatStatementsForEori]
+  )(implicit msgs: Messages, dateTimeService: DateTimeService): Seq[PostponedVatCurrentStatementsForEori] =
+    statementsForAllEoris.zipWithIndex.map { case (stmtsForEori, historyIndex) =>
+      val statementGroupList = statementGroups(stmtsForEori.currentStatements)
 
-    CurrentStatementsSection(
-      currentStatementRows = populateCurrentStatementRows(statementGroupList),
-      noStatementMsg = noStatementMsg
-    )
-  }
+      val eoriHeading = if (historyIndex > 0) {
+        Some(
+          h2Component(
+            msg = msgs("cf.account.details.previous-eori", stmtsForEori.eoriHistory.eori),
+            id = Some(s"historic-eori-$historyIndex"),
+            classes = "govuk-heading-s"
+          )
+        )
+      } else None
+
+      val statementRows = populateCurrentStatementRows(statementGroupList)
+
+      val noStatementMsg =
+        if (statementRows.isEmpty) Some(insetComponent.apply("cf.account.pvat.no-statements-yet"))
+        else None
+
+      PostponedVatCurrentStatementsForEori(
+        eoriHeading = eoriHeading,
+        currentStatementRows = statementRows,
+        noStatementMsg = noStatementMsg
+      )
+    }
 
   private def populateOlderThanSevenMonthsGuidance(
     serviceUnavailableUrl: Option[String]
