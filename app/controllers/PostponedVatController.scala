@@ -16,11 +16,11 @@
 
 package controllers
 
-import actions.{EmailAction, PvatIdentifierAction, SessionIdAction}
+import actions.{AuthenticatedRequestWithSessionId, EmailAction, PvatIdentifierAction, SessionIdAction}
 import config.{AppConfig, ErrorHandler}
 import connectors.{FinancialsApiConnector, SdesConnector}
 import models.FileRole.PostponedVATStatement
-import models.PostponedVatStatementFile
+import models.{EoriHistory, PostponedVatStatementFile}
 import navigation.Navigator
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -60,7 +60,7 @@ class PostponedVatController @Inject() (
       (
         for {
           allFilesPerEori <- Future.sequence(
-                               req.allEoriHistory.map { eoriHistory =>
+                               eoriHistoryWithCurrent(req).map { eoriHistory =>
                                  sdesConnector
                                    .getPostponedVatStatements(eoriHistory.eori)
                                    .map(files => (eoriHistory, files))
@@ -94,6 +94,13 @@ class PostponedVatController @Inject() (
       ).recover { case _ =>
         Redirect(routes.PostponedVatController.statementsUnavailablePage())
       }
+    }
+
+  private def eoriHistoryWithCurrent(req: AuthenticatedRequestWithSessionId[_]): Seq[EoriHistory] =
+    if (req.allEoriHistory.exists(_.eori == req.eori)) {
+      req.allEoriHistory
+    } else {
+      EoriHistory(req.eori, None, None) +: req.allEoriHistory
     }
 
   def statementsUnavailablePage(): Action[AnyContent] =

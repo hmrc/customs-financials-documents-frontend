@@ -125,6 +125,56 @@ class PostponedVatControllerSpec extends SpecBase {
       }
     }
 
+    "display current EORI statements when no EORI history is returned" in new Setup {
+      val appWithNoEoriHistory: Application =
+        applicationBuilder(Seq.empty)
+          .overrides(
+            inject.bind[FinancialsApiConnector].toInstance(mockFinancialsApiConnector),
+            inject.bind[SdesConnector].toInstance(mockSdesConnector),
+            inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector),
+            inject.bind[DateTimeService].toInstance(mockDateTimeService)
+          )
+          .build()
+
+      val viewWithNoEoriHistory: postponed_import_vat = instanceOf[postponed_import_vat](appWithNoEoriHistory)
+      val appConfigWithNoEoriHistory: AppConfig       = instanceOf[AppConfig](appWithNoEoriHistory)
+
+      when(mockDataStoreConnector.getEmail(any))
+        .thenReturn(Future.successful(Right(Email(emailValue))))
+
+      when(mockSdesConnector.getPostponedVatStatements(eqTo(eori))(any))
+        .thenReturn(Future.successful(postponedVatStatementFiles))
+
+      when(mockFinancialsApiConnector.deleteNotification(any)(any))
+        .thenReturn(Future.successful(true))
+
+      when(mockDateTimeService.systemDateTime())
+        .thenReturn(date.atStartOfDay())
+
+      running(appWithNoEoriHistory) {
+        val request = fakeRequest(GET, routes.PostponedVatController.show(Some(cdsLocation)).url)
+        val result  = route(appWithNoEoriHistory, request).value
+
+        status(result) mustBe OK
+
+        contentAsString(result) mustBe viewWithNoEoriHistory(
+          PostponedVatViewModel(
+            Seq(
+              PostponedVatStatementsForEori(
+                EoriHistory(eori, None, None),
+                postponedVatStatementFiles
+              )
+            ),
+            hasRequestedStatements = false,
+            location = Some(cdsLocation),
+            urls = pvatUrls.copy(
+              serviceUnavailableUrl = Some(appConfigWithNoEoriHistory.historicRequestUrl(PostponedVATStatement))
+            )
+          )(messages, mockDateTimeService)
+        )(request, messages, appConfigWithNoEoriHistory).toString()
+      }
+    }
+
     "display the PostponedVat page with no statements text when statement is not available for the " +
       "immediate previous month and accessed after 19th of the month" in new Setup {
 
