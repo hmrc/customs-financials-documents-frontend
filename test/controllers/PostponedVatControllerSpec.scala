@@ -175,6 +175,58 @@ class PostponedVatControllerSpec extends SpecBase {
       }
     }
 
+    "display historic EORI current-window statements" in new Setup {
+      val historicCurrentStatementFiles: Seq[PostponedVatStatementFile] = Seq(
+        PostponedVatStatementFile(
+          STAT_FILE_NAME_01,
+          DOWNLOAD_URL_00,
+          SIZE_4096L,
+          PostponedVatStatementFileMetadata(
+            date.minusMonths(ONE_MONTH).getYear,
+            date.minusMonths(ONE_MONTH).getMonthValue,
+            Pdf,
+            PostponedVATStatement,
+            CDS,
+            None
+          ),
+          historicEori
+        )
+      )
+
+      when(mockDataStoreConnector.getEmail(any))
+        .thenReturn(Future.successful(Right(Email(emailValue))))
+
+      when(mockSdesConnector.getPostponedVatStatements(eqTo(eori))(any))
+        .thenReturn(Future.successful(postponedVatStatementFiles))
+
+      when(mockSdesConnector.getPostponedVatStatements(eqTo(historicEori))(any))
+        .thenReturn(Future.successful(historicCurrentStatementFiles))
+
+      when(mockFinancialsApiConnector.deleteNotification(any)(any))
+        .thenReturn(Future.successful(true))
+
+      when(mockDateTimeService.systemDateTime())
+        .thenReturn(date.atStartOfDay())
+
+      running(app) {
+        val request = fakeRequest(GET, routes.PostponedVatController.show(Some(cdsLocation)).url)
+        val result  = route(app, request).value
+
+        status(result) mustBe OK
+
+        val doc = Jsoup.parse(contentAsString(result))
+
+        doc.getElementById("historic-eori-1").text() mustBe messages(
+          "cf.account.details.previous-eori",
+          historicEori
+        )
+
+        val historicStatements = doc.select("#historic-eori-1 + dl").first()
+
+        historicStatements.text() should include("PDF")
+      }
+    }
+
     "display the PostponedVat page with no statements text when statement is not available for the " +
       "immediate previous month and accessed after 19th of the month" in new Setup {
 
