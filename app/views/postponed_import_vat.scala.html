@@ -36,12 +36,13 @@
 
     @viewModel.statementH2Heading
 
-    <dl class="govuk-summary-list statement-list pVat-statements">
-        @defining(viewModel.currentStatements) { currentStatementsSection =>
-            @currentStatementsSection.currentStatementRows.map(identity)
-            @currentStatementsSection.noStatementMsg.map(identity)
-        }
-    </dl>
+    @viewModel.currentStatements.map { eoriSection =>
+        @eoriSection.eoriHeading.map(identity)
+        <dl class="govuk-summary-list statement-list pVat-statements">
+            @eoriSection.currentStatementRows.map(identity)
+            @eoriSection.noStatementMsg.map(identity)
+        </dl>
+    }
 
     <div id="missing-documents-guidance" class="govuk-!-padding-top-2">
         @defining(viewModel.statOlderThanSevenMonthsGuidance) { guidance =>

@@ -36,7 +36,7 @@ import uk.gov.hmrc.auth.core.retrieve.Email
 import utils.CommonTestData._
 import utils.SpecBase
 import utils.Utils.{hyphen, singleSpace}
-import viewmodels.{PVATUrls, PostponedVatViewModel}
+import viewmodels.{PVATUrls, PostponedVatStatementsForEori, PostponedVatViewModel}
 import views.helpers.Formatters
 import views.html.{postponed_import_vat, postponed_import_vat_not_available}
 
@@ -75,7 +75,16 @@ class PostponedVatControllerSpec extends SpecBase {
 
         contentAsString(result) mustBe view(
           PostponedVatViewModel(
-            currentStatements,
+            Seq(
+              PostponedVatStatementsForEori(
+                EoriHistory(eori, Some(date.minusMonths(SIX_MONTHS)), None),
+                postponedVatStatementFiles
+              ),
+              PostponedVatStatementsForEori(
+                EoriHistory(historicEori, Some(date.minusYears(ONE_YEAR)), Some(date.minusMonths(SIX_MONTHS))),
+                historicPostponedVatStatementFiles
+              )
+            ).sorted,
             hasRequestedStatements = true,
             location = Some(cdsLocation),
             urls = pvatUrls
@@ -116,6 +125,108 @@ class PostponedVatControllerSpec extends SpecBase {
       }
     }
 
+    "display current EORI statements when no EORI history is returned" in new Setup {
+      val appWithNoEoriHistory: Application =
+        applicationBuilder(Seq.empty)
+          .overrides(
+            inject.bind[FinancialsApiConnector].toInstance(mockFinancialsApiConnector),
+            inject.bind[SdesConnector].toInstance(mockSdesConnector),
+            inject.bind[DataStoreConnector].toInstance(mockDataStoreConnector),
+            inject.bind[DateTimeService].toInstance(mockDateTimeService)
+          )
+          .build()
+
+      val viewWithNoEoriHistory: postponed_import_vat = instanceOf[postponed_import_vat](appWithNoEoriHistory)
+      val appConfigWithNoEoriHistory: AppConfig       = instanceOf[AppConfig](appWithNoEoriHistory)
+
+      when(mockDataStoreConnector.getEmail(any))
+        .thenReturn(Future.successful(Right(Email(emailValue))))
+
+      when(mockSdesConnector.getPostponedVatStatements(eqTo(eori))(any))
+        .thenReturn(Future.successful(postponedVatStatementFiles))
+
+      when(mockFinancialsApiConnector.deleteNotification(any)(any))
+        .thenReturn(Future.successful(true))
+
+      when(mockDateTimeService.systemDateTime())
+        .thenReturn(date.atStartOfDay())
+
+      running(appWithNoEoriHistory) {
+        val request = fakeRequest(GET, routes.PostponedVatController.show(Some(cdsLocation)).url)
+        val result  = route(appWithNoEoriHistory, request).value
+
+        status(result) mustBe OK
+
+        contentAsString(result) mustBe viewWithNoEoriHistory(
+          PostponedVatViewModel(
+            Seq(
+              PostponedVatStatementsForEori(
+                EoriHistory(eori, None, None),
+                postponedVatStatementFiles
+              )
+            ),
+            hasRequestedStatements = false,
+            location = Some(cdsLocation),
+            urls = pvatUrls.copy(
+              serviceUnavailableUrl = Some(appConfigWithNoEoriHistory.historicRequestUrl(PostponedVATStatement))
+            )
+          )(messages, mockDateTimeService)
+        )(request, messages, appConfigWithNoEoriHistory).toString()
+      }
+    }
+
+    "display historic EORI current-window statements" in new Setup {
+      val historicCurrentStatementFiles: Seq[PostponedVatStatementFile] = Seq(
+        PostponedVatStatementFile(
+          STAT_FILE_NAME_01,
+          DOWNLOAD_URL_00,
+          SIZE_4096L,
+          PostponedVatStatementFileMetadata(
+            date.minusMonths(ONE_MONTH).getYear,
+            date.minusMonths(ONE_MONTH).getMonthValue,
+            Pdf,
+            PostponedVATStatement,
+            CDS,
+            None
+          ),
+          historicEori
+        )
+      )
+
+      when(mockDataStoreConnector.getEmail(any))
+        .thenReturn(Future.successful(Right(Email(emailValue))))
+
+      when(mockSdesConnector.getPostponedVatStatements(eqTo(eori))(any))
+        .thenReturn(Future.successful(postponedVatStatementFiles))
+
+      when(mockSdesConnector.getPostponedVatStatements(eqTo(historicEori))(any))
+        .thenReturn(Future.successful(historicCurrentStatementFiles))
+
+      when(mockFinancialsApiConnector.deleteNotification(any)(any))
+        .thenReturn(Future.successful(true))
+
+      when(mockDateTimeService.systemDateTime())
+        .thenReturn(date.atStartOfDay())
+
+      running(app) {
+        val request = fakeRequest(GET, routes.PostponedVatController.show(Some(cdsLocation)).url)
+        val result  = route(app, request).value
+
+        status(result) mustBe OK
+
+        val doc = Jsoup.parse(contentAsString(result))
+
+        doc.getElementById("historic-eori-1").text() mustBe messages(
+          "cf.account.details.previous-eori",
+          historicEori
+        )
+
+        val historicStatements = doc.select("#historic-eori-1 + dl").first()
+
+        historicStatements.text() should include("PDF")
+      }
+    }
+
     "display the PostponedVat page with no statements text when statement is not available for the " +
       "immediate previous month and accessed after 19th of the month" in new Setup {
 
@@ -143,7 +254,16 @@ class PostponedVatControllerSpec extends SpecBase {
 
           contentAsString(result) mustBe view(
             PostponedVatViewModel(
-              postponedVatStatementFilesWithImmediateUnavailable,
+              Seq(
+                PostponedVatStatementsForEori(
+                  EoriHistory(eori, Some(date.minusMonths(SIX_MONTHS)), None),
+                  postponedVatStatementFilesWithImmediateUnavailable
+                ),
+                PostponedVatStatementsForEori(
+                  EoriHistory(historicEori, Some(date.minusYears(ONE_YEAR)), Some(date.minusMonths(SIX_MONTHS))),
+                  historicPostponedVatStatementFiles
+                )
+              ).sorted,
               hasRequestedStatements = true,
               location = Some(cdsLocation),
               urls =
@@ -194,7 +314,16 @@ class PostponedVatControllerSpec extends SpecBase {
 
           contentAsString(result) mustBe view(
             PostponedVatViewModel(
-              postponedVatStatementFilesWithImmediateUnavailable,
+              Seq(
+                PostponedVatStatementsForEori(
+                  EoriHistory(eori, Some(date.minusMonths(SIX_MONTHS)), None),
+                  postponedVatStatementFilesWithImmediateUnavailable
+                ),
+                PostponedVatStatementsForEori(
+                  EoriHistory(historicEori, Some(date.minusYears(ONE_YEAR)), Some(date.minusMonths(SIX_MONTHS))),
+                  historicPostponedVatStatementFiles
+                )
+              ).sorted,
               hasRequestedStatements = true,
               location = Some(cdsLocation),
               urls = pvatUrls
@@ -239,7 +368,16 @@ class PostponedVatControllerSpec extends SpecBase {
 
         contentAsString(result) mustBe view(
           PostponedVatViewModel(
-            postponedVatStatementFilesWithImmediateUnavailable,
+            Seq(
+              PostponedVatStatementsForEori(
+                EoriHistory(eori, Some(date.minusMonths(SIX_MONTHS)), None),
+                postponedVatStatementFilesWithImmediateUnavailable
+              ),
+              PostponedVatStatementsForEori(
+                EoriHistory(historicEori, Some(date.minusYears(ONE_YEAR)), Some(date.minusMonths(SIX_MONTHS))),
+                historicPostponedVatStatementFiles
+              )
+            ).sorted,
             hasRequestedStatements = true,
             location = Some(cdsLocation),
             urls = pvatUrls.copy(serviceUnavailableUrl = Some(historicRequestUrl))
@@ -576,7 +714,10 @@ class PostponedVatControllerSpec extends SpecBase {
 
     val app: Application =
       applicationBuilder(
-        Seq(EoriHistory(historicEori, Some(date.minusYears(ONE_YEAR)), Some(date.minusMonths(SIX_MONTHS))))
+        Seq(
+          EoriHistory(eori, Some(date.minusMonths(SIX_MONTHS)), None),
+          EoriHistory(historicEori, Some(date.minusYears(ONE_YEAR)), Some(date.minusMonths(SIX_MONTHS)))
+        )
       )
         .overrides(
           inject.bind[FinancialsApiConnector].toInstance(mockFinancialsApiConnector),

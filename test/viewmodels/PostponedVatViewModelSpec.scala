@@ -20,7 +20,7 @@ import models.DutyPaymentMethod.CDS
 import models.FileFormat.{Csv, Pdf}
 import models.FileRole.PostponedVATStatement
 import models.metadata.PostponedVatStatementFileMetadata
-import models.{PostponedVatStatementFile, PostponedVatStatementGroup}
+import models.{EoriHistory, PostponedVatStatementFile, PostponedVatStatementGroup}
 import org.scalatest.matchers.must.Matchers.mustBe
 import org.mockito.Mockito.when
 import play.api.i18n.Messages
@@ -111,7 +111,7 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
         when(mockDateTimeService.systemDateTime()).thenReturn(date)
 
         val actualPVatModel: PostponedVatViewModel = PostponedVatViewModel(
-          postponedVatCertificateFiles,
+          Seq(PostponedVatStatementsForEori(EoriHistory(EORI_NUMBER, None, None), postponedVatCertificateFiles)),
           hasRequestedStatements = true,
           Some(location),
           PVATUrls(
@@ -133,14 +133,14 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
 
         actualPVatModel.requestedStatements mustBe expectedRequestedStatements
 
-        actualPVatModel.currentStatements.noStatementMsg mustBe None
+        actualPVatModel.currentStatements.head.noStatementMsg mustBe None
 
         val expectedResult: Seq[PostponedVatStatementGroup] =
           Seq(pVatGroup1, pVatGroup2, pVatGroup3, pVatGroup6, pVatGroup5, pVatGroup4, pVatGroupMarch2018)
 
         val expectedCurrentRows: Seq[HtmlFormat.Appendable] = expectedCurrentRowsValue(expectedResult)
 
-        actualPVatModel.currentStatements.currentStatementRows mustBe expectedCurrentRows
+        actualPVatModel.currentStatements.head.currentStatementRows mustBe expectedCurrentRows
 
         actualPVatModel.statOlderThanSevenMonthsGuidance mustBe expectedStatOlderThanSevenMonthsGuidanceRow
 
@@ -152,7 +152,7 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
         when(mockDateTimeService.systemDateTime()).thenReturn(date)
 
         val actualPVatModel: PostponedVatViewModel = PostponedVatViewModel(
-          Seq(),
+          Seq(PostponedVatStatementsForEori(EoriHistory(EORI_NUMBER, None, None), Seq())),
           hasRequestedStatements = true,
           Some(location),
           PVATUrls(
@@ -174,7 +174,7 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
 
         actualPVatModel.requestedStatements mustBe expectedRequestedStatements
 
-        actualPVatModel.currentStatements.noStatementMsg mustBe None
+        actualPVatModel.currentStatements.head.noStatementMsg mustBe None
 
         actualPVatModel.statOlderThanSevenMonthsGuidance mustBe expectedStatOlderThanSevenMonthsGuidanceRow
 
@@ -183,13 +183,14 @@ class PostponedVatViewModelSpec extends SpecBase with GuiceOneAppPerSuite {
     }
   }
 
-  "CurrentStatementsSection" should {
+  "PostponedVatCurrentStatementsForEori" should {
 
     "populate the default object correctly" in {
-      val cussrentStatSectionOb = CurrentStatementsSection()
+      val ob = PostponedVatCurrentStatementsForEori()
 
-      cussrentStatSectionOb.noStatementMsg mustBe empty
-      cussrentStatSectionOb.currentStatementRows mustBe empty
+      ob.eoriHeading mustBe empty
+      ob.currentStatementRows mustBe empty
+      ob.noStatementMsg mustBe empty
     }
   }
 
