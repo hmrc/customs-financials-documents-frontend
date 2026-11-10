@@ -1,137 +1,139 @@
 
 # customs-financials-documents-frontend
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![Coverage](https://img.shields.io/badge/test_coverage-90-green.svg)](/target/scala-2.11/scoverage-report/index.html) [![Accessibility](https://img.shields.io/badge/WCAG2.2-AA-purple.svg)](https://www.gov.uk/service-manual/helping-people-to-use-your-service/understanding-wcag)
+## About
+A frontend microservice for the CDS Financials project, designed to display C79, PVAT, and Notification of Adjustments statements.
 
-A frontend microservice for the CDS Financials project which display C79, PVAT and Notification of adjustments statements.
+| Key                             | Value                                                                                                                     | 
+|---------------------------------|---------------------------------------------------------------------------------------------------------------------------|
+| Digital service                 | CDS Financials                                                                                                            |
+| Local port                      | `9398`                                                                                                                    |
+| Base path                       | `/customs/payment-records`                                                                                                |
+| Back-end                        | [customs-financials-api](https://github.com/hmrc/customs-financials-api) (port `9878`)                                    |
+| Acceptance tests                | [customs-financials-documents-acceptance-tests](https://github.com/hmrc/customs-financials-documents-acceptance-tests)    |
+| Performance tests               | [customs-financials-performance-tests](https://github.com/hmrc/customs-financials-performance-tests)                      |
 
-This service is built following GDS standards to [WCAG 2.2 AA](https://www.gov.uk/service-manual/helping-people-to-use-your-service/understanding-wcag)
+## How to Run this Service
 
-We use the [GOV.UK design system](https://design-system.service.gov.uk/) to ensure consistency and compliance through the project
+### Prerequisites
+Use [Service Manager](#service-manager-profiles) to start the services required by CDS Financials.
 
-This application lives in the "public" zone. It integrates with:
+From the terminal, run:
 
-Secure Document Exchange Service (SDES) bulk data API via the [SDES proxy](https://github.com/hmrc/secure-data-exchange-proxy)
+```bash
+sm2 --start CUSTOMS_FINANCIALS_ALL
+```
 
-### Runtime dependencies
+### Running the service locally
+To run this service from source (for example, to test your own changes), stop the instance started by Service Manager and run it with sbt.
 
-The application has the following runtime dependencies:
+From the root of this repository, run:
 
-* `AUTH`
-* `AUTH_LOGIN_STUB`
-* `AUTH_LOGIN_API`
-* `BAS_GATEWAY`
-* `CA_FRONTEND`
-* `SSO`
-* `USER_DETAILS`
-* `CUSTOMS_FINANCIALS_API`
-* `CUSTOMS_FINANCIALS_HODS_STUB`
-* `CUSTOMS_FINANCIALS_SDES_STUB`
-* `CONTACT_FRONTEND`
-* `CUSTOMS_DATA_STORE`
-* `CUSTOMS_FINANCIALS_SESSION_CACHE`
-* `CUSTOMS-FINANCIALS_ACCOUNT_CONTACT_FRONTEND`
+```bash
+sm2 --stop CUSTOMS_FINANCIALS_DOCUMENTS_FRONTEND
+sbt run
+```
+The service starts on port `9398`.
 
-Default service port on local - 9398
+## How to Test this Service
 
-The easiest way to get started with these is via the service manager CLI - you can find the installation guide [here](https://docs.tax.service.gov.uk/mdtp-handbook/documentation/developer-set-up/set-up-service-manager.html)
+### Local
 
-| Command                                            | Description                                      |
-|----------------------------------------------------|--------------------------------------------------|
-| `sm2 --start CUSTOMS_FINANCIALS_ALL -f`            | Runs all dependencies                            |
-| `sm2 -s`                                           | Shows running services                           |
-| `sm2 --stop CUSTOMS_FINANCIALS_DOCUMENTS_FRONTEND` | Stop the micro service                           |
-| `sbt run` or `sbt "run 9398"`                      | (from root dir) starts the service on port  9398 |
-| `sbt "start -Dhttp.port=9398"`                     | Run service in 'PROD mode'                       |
+#### Unit tests
+```bash
+sbt test
+```
 
-### Login enrolments
+#### Pre-push check
+This is a project-specific sbt command alias that runs Scala style checks, executes unit and integration tests, and generates a code coverage report:
+```bash
+sbt runAllChecks
+```
 
-The service can be accessed via MIDVA home page (CUSTOMS FINANCIALS FRONTEND microservice) using 'View statements' link under 'Duty deferment accounts'
+#### Acceptance tests (smoke and regression)
+The acceptance tests for this service are in [customs-financials-documents-acceptance-tests](https://github.com/hmrc/customs-financials-documents-acceptance-tests). For information about how to run them, and which environments they run against, see [README](https://github.com/hmrc/movements-internal-ui-acceptance-tests#how-to-run-the-tests).
 
-Access CUSTOMS FINANCIALS FRONTEND using below enrolments and with below sample EORI numbers
-via http://localhost:9949/auth-login-stub/gg-sign-in (on local) or https://<host:port>/auth-login-stub/gg-sign-in on DEV/QA/STAGING
+#### Performance tests
+The performance tests for this service are in [customs-financials-performance-tests](https://github.com/hmrc/customs-financials-performance-tests). For information about how to run them, and which environments they run against, see [README](https://github.com/hmrc/cds-movements-performance-tests#how-to-run-the-tests).
 
-Redirect URL - `/customs/payment-records`
+### Manual Testing in QA and Staging
+After a successful [deployment pipeline](https://build.tax.service.gov.uk/job/BordersAndTradeLiveServices/job/CDSFinancials/job/customs-financials-documents-frontend-pipeline/), perform manual verification in QA and/or Staging using the [manual testing instructions](https://github.com/hmrc/customs-financials-documents-acceptance-tests#manual-testing-in-qa-and-staging).
 
-| Enrolment Key	 | Identifier Name | Identifier Value |
+## Service Catalogue
+- [customs-financials-documents-frontend in the MDTP Catalogue](https://catalogue.tax.service.gov.uk/repositories/customs-financials-documents-frontend)
+
+## Jenkins Pipeline
+Front End Build and Deployment Pipeline
+-  [Build pipeline](https://build.tax.service.gov.uk/job/BordersAndTradeLiveServices/job/CDSFinancials/job/customs-financials-documents-frontend/)
+-  [Deployment pipeline](https://build.tax.service.gov.uk/job/BordersAndTradeLiveServices/job/CDSFinancials/job/customs-financials-documents-frontend-pipeline/)
+
+The acceptance test Jenkins jobs (smoke and regression) are listed in the [movements-internal-ui-acceptance-tests README](https://github.com/hmrc/movements-internal-ui-acceptance-tests#jenkins-builds).
+
+The performance test Jenkins jobs are listed in the [cds-movements-performance-tests README](https://github.com/hmrc/cds-movements-performance-tests#jenkins-builds).
+
+## Service Manager Profiles
+These profiles are defined in [service-manager-config](https://github.com/hmrc/service-manager-config).
+
+| Profile                     | Use                                                                                                                        | Services started                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+|-----------------------------|----------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `CUSTOMS_FINANCIALS_ALL`    | Running and developing this service locally                                                                                | `CUSTOMS_FINANCIALS_FRONTEND`, `CUSTOMS_FINANCIALS_DOCUMENTS_FRONTEND`, `CUSTOMS_FINANCIALS_SECURE_MESSAGING_FRONTEND`, `ENTITY_RESOLVER`, `CHANNEL_PREFERENCES`, `SECURE_MESSAGE_FRONTEND`, `SECURE_MESSAGE`, `SECURE_MESSAGE_STUB`, `MESSAGE`, `CUSTOMS_DUTY_DEFERMENT_FRONTEND`, `CUSTOMS_MANAGE_AUTHORITIES_FRONTEND`, `CUSTOMS_CASH_ACCOUNT_FRONTEND`, `CUSTOMS_GUARANTEE_ACCOUNT_FRONTEND`, `CUSTOMS_HISTORIC_STATEMENT_FRONTEND`, `CUSTOMS_FINANCIALS_API`, `CUSTOMS_FINANCIALS_EMAIL_THROTTLER`, `AUTH`, `AUTH_LOGIN_STUB`, `AUTH_LOGIN_API`, `CENTRALISED_AUTHORISATION_SERVER`, `SSO`, `USER_DETAILS`, `FEEDBACK_FRONTEND`, `CUSTOMS_FINANCIALS_HODS_STUB`, `CUSTOMS_FINANCIALS_SDES_STUB`, `CUSTOMS_FINANCIALS_SDDS_STUB`, `IDENTITY_VERIFICATION`, `BAS_STUBS`, `BAS_GATEWAY`, `BAS_PROXY`, `BAS_GATEWAY_FRONTEND`, `TWO_STEP_VERIFICATION_RULE_ENGINE`, `TAR_FRONTEND`, `DATASTREAM`, `EMAIL`, `HMRC_EMAIL_RENDERER`, `CUSTOMS_DATA_STORE`, `CUSTOMS_FINANCIALS_SESSION_CACHE`, `TRACKING_CONSENT_FRONTEND`, `CONTACT_FRONTEND`, `ACCESSIBILITY_STATEMENT_FRONTEND`  |
+| `CUSTOMS_FINANCIALS_ATS`    | Running the [acceptance tests](https://github.com/hmrc/customs-financials-documents-acceptance-tests#how-to-run-the-tests) | `CUSTOMS_FINANCIALS_FRONTEND`, `CUSTOMS_FINANCIALS_DOCUMENTS_FRONTEND`, `CUSTOMS_FINANCIALS_SECURE_MESSAGING_FRONTEND`, `SECURE_MESSAGE_FRONTEND`, `SECURE_MESSAGE`, `CUSTOMS_DUTY_DEFERMENT_FRONTEND`, `CUSTOMS_MANAGE_AUTHORITIES_FRONTEND`, `CUSTOMS_CASH_ACCOUNT_FRONTEND`, `CUSTOMS_GUARANTEE_ACCOUNT_FRONTEND`, `CUSTOMS_HISTORIC_STATEMENT_FRONTEND`, `CUSTOMS_FINANCIALS_API`, `CUSTOMS_FINANCIALS_EMAIL_THROTTLER`, `AUTH`, `AUTH_LOGIN_STUB`, `AUTH_LOGIN_API`, `USER_DETAILS`, `CUSTOMS_FINANCIALS_HODS_STUB`, `CUSTOMS_FINANCIALS_SDES_STUB`, `IDENTITY_VERIFICATION`, `BAS_STUBS`, `BAS_GATEWAY`, `BAS_PROXY`, `BAS_GATEWAY_FRONTEND`, `BAS_STUB_FRONTEND`, `DATASTREAM`, `EMAIL`, `FEEDBACK_FRONTEND`, `HMRC_EMAIL_RENDERER`, `CUSTOMS_DATA_STORE`, `CUSTOMS_FINANCIALS_SESSION_CACHE`, `TRACKING_CONSENT_FRONTEND`                                                                                                                                                                                                                                                 |
+
+## Endpoints
+
+| Method   | Path                    | Purpose                                                                | Sample request (query / form body)                                                      | Response                                                                                                                     |
+|----------|-------------------------|------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------|
+| GET      | `/postponed-vat`        | Retrieve postponed vat / historic postponed vat statements             | Optional query parameter: location. Example: `/postponed-vat?location=historic`         | `200` renders postponed VAT statements page. `303` → `/postponed-vat/statements-unavailable` if retrieval fails.             |
+| GET      | `/adjustments`          | Retrieve security statements for EORI                                  | –                                                                                       | `200` renders security statements page. `303` → `/adjustments/statements-unavailable` if retrieval fails.                    |
+| GET      | `/import-vat `          | Retrieve vat certificates for EORI                                     | –                                                                                       | `200` renders VAT certificates page. `303` → `/import-vat/certificates-unavailable` if retrieval fails.                      |
+
+## Enrolment Required
+
+To access the Customs Financials Frontend, use the following enrolment details and sample EORI numbers.
+
+| Environment      | Service URL                                                         |
+|------------------|---------------------------------------------------------------------|
+| Local            | http://localhost:9949/auth-login-stub/gg-sign-in                    |
+| QA               | https://www.qa.tax.service.gov.uk/auth-login-stub/gg-sign-in        |
+| Staging          | https://www.staging.tax.service.gov.uk/auth-login-stub/gg-sign-in   |
+
+Redirect URL: `/customs/payment-records`
+
+Use the following enrolment details when signing in:
+
+| Enrolment Key  | Identifier Name | Identifier Value |
 |----------------|-----------------|------------------|
 | `HMRC-CUS-ORG` | `EORINumber`    | `GB744638982000` |
 | `HMRC-CUS-ORG` | `EORINumber`    | `GB744638982001` |
 
-## Running tests and test coverage
+### Feature flags
+The following feature flags are used across the service:
 
-There is just one test source tree in the `test` folder. Use `sbt test` to run them.
-
-To get a unit test coverage report, you can run `sbt clean coverage test coverageReport`,
-then open the resulting coverage report `target/scala-3.x.x/scoverage-report/index.html` in a web browser.
-
-The minimum requirement for test coverage is 90%. Builds will fail when the project drops below this threshold.
-
-## Available Routes
-
-You can find a list of microservice specific routes here - `/conf/app.routes`
-
-Microservice entrypoint: `/customs/documents`
-
-| Path                | Description                                               |
-|---------------------|-----------------------------------------------------------|
-| GET  /postponed-vat | Retrieve postponed vat/ historic postponed vat statements |                
-| GET  /adjustments   | Retrieve security statements for EORI                     |                
-| GET  /import-vat    | Retrieve vat certificates for EORI                        |    
-
-## Feature Switches
-
-> ### Caution!
-> There's a risk of WIP features being exposed in production!
-> **Don't** enable features in `application.conf`, as this will apply globally by default
-
-Feature flags are used appropriately on different envs and could be updated in customs-financials-documents-frontend.yaml on pertinent env
-
-### Enable features
-| Command                                       | Description                                        |
-|-----------------------------------------------|----------------------------------------------------|
-| `sbt "run -Dfeatures.some-feature-name=true"` | enables a feature locally without risking exposure |
-
-Feature switches can be enabled per-environment via the `app-config-<env>` project in customs-financials-documents-frontend.conf/.yaml
-
-### Available feature flags
 | Flag                          | Description                                                                                                                                         |
 |-------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
 | `fixed-systemdate-for-tests`  | Enable the fixed datetime for DateTimeService by enabling the stub data for current and requested statements. It is only enabled in Development env |
 | `historic-statements-enabled` | Enable historic statements                                                                                                                          |
 
-## Scalastyle, scala formatting and run all checks
+### Scalafmt
+The code is formatted with [sbt-scalafmt](https://scalameta.org/scalafmt/docs/installation.html#sbt), using the rules in `.scalafmt.conf`.
 
-### Scalastyle checks
-| Command               | Description                                                                |
-|-----------------------|----------------------------------------------------------------------------|
-| `sbt scalastyle`      | Runs scala style checks based on scalastyle-config.xml                     |                                                     |
-| `sbt Test/scalastyle` | Runs scala style checks for unit tests based on test-scalastyle-config.xml |
+Check that all project files are formatted as expected:
 
-### Scala format
-| Command                | Description                                 |
-|------------------------|---------------------------------------------|
-| `sbt scalafmtCheckAll` | Scala Format checks based on .scalafmt.conf |                                                     |
-| `sbt scalafmtAll`      | Formats the code based on .scalafmt.conf    |
-| `sbt scalafmtOnly`     | Formats specified files listed              |
+```bash
+sbt scalafmtCheckAll scalafmtSbtCheck
+```
 
-### Run all checks
-This is an sbt command alias specific to this project. It will run a scala style check, run unit tests, run integration tests and produce a coverage report:
-> `sbt runAllChecks`
+Format `*.sbt` and `project/*.scala` files:
 
-## Helpful commands
+```bash
+sbt scalafmtSbt
+```
 
-| Command                                       | Description                                                                                                                                 |
-|-----------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
-| `sbt runAllChecks`                            | Runs all standard code checks                                                                                                               |
-| `sbt clean`                                   | Cleans code                                                                                                                                 |
-| `sbt compile`                                 | Compiles the code                                                                                                                           |
-| `sbt test`                                    | Runs unit tests                                                                                                                             |
-| `sbt it/test`                                 | Runs integration tests                                                                                                                      |
-| `sbt scalafmtCheckAll`                        | Runs code formatting checks based on .scalafmt.conf                                                                                         |
-| `sbt scalastyle`                              | Runs scala style checks based on scalastyle-config.xml                                                                                      |
-| `sbt Test/scalastyle`                         | Runs scala style checks for unit tests based on test-scalastyle-config.xml                                                                  |
-| `sbt coverageReport`                          | Produces a code coverage report                                                                                                             |
-| `sbt "test:testOnly *TEST_FILE_NAME*"`        | Runs tests for a single file                                                                                                                |
-| `sbt clean coverage test coverageReport`      | Runs the unit tests with enabled coverage and generates coverage report that you can find in target/scala-3.x.x/scoverage-report/index.html |
-| `sbt "run -Dfeatures.some-feature-name=true"` | Enables a feature locally without risking exposure                                                                                          |
+Format all project files:
+
+```bash
+sbt scalafmtAll
+```
+
+## License
+This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
